@@ -1,10 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-acorp:
-  tag: A Corp.
+abstract:
+  tag: abstract
 
-smithj:
-  tag: Smith, John
+sergey:
+  tag: Sergey
 
-zinc:
-  tag: Z Inc.
+jdow:
+  tag: "J. Dow"
+
+sbrfbank:
+  tag: "SB RF Bank"
