@@ -7,7 +7,7 @@ class CreateDeals < ActiveRecord::Migration
       t.references :give, :polymorphic => true
       t.references :take, :polymorphic => true
     end
-	add_index :deals, [:entity_id, :tag], :unique => true
+    add_index :deals, [:entity_id, :tag], :unique => true
   end
 
   def self.down

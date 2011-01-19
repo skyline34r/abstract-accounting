@@ -56,12 +56,6 @@ class Fact < ActiveRecord::Base
       end
     end
     true
-#    state.deal = aDeal
-#    state.apply_fact(self)
-#    if state.new_record? or state.start == self.day
-#      state.save!
-#    elsif state.
-#    end
   end
 end
 
