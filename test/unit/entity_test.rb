@@ -7,6 +7,6 @@ class EntityTest < ActiveSupport::TestCase
     assert !e.save, "Entity without tag saved"
     e.tag = entities(:abstract).tag
     assert !e.save, "Entity with repeating tag saved"
-    assert_equal 4, Entity.all.count
+    assert_equal 5, Entity.all.count
   end
 end

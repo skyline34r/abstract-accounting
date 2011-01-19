@@ -17,9 +17,10 @@ class Fact < ActiveRecord::Base
 
   private
   def do_save
-    return false unless from.states.count <= 1 and to.states.count <= 1
-    return false unless init_state(self.from.states.first, self.from)
-    return false unless init_state(self.to.states.first, self.to)
+    if changed? or new_record?
+      return false unless init_state(self.from.state(nil), self.from)
+      return false unless init_state(self.to.state(nil), self.to)
+    end
   end
   
   def init_state(aState, aDeal)
@@ -30,9 +31,34 @@ class Fact < ActiveRecord::Base
       else
         aState
       end
-    state.deal = aDeal
-    state.apply_fact(self)
-    state.save!
+    if state.new_record?
+      state.deal = aDeal
+      state.apply_fact(self)
+      return state.save!
+    elsif state.start == self.day
+      state.apply_fact(self)
+      if state.is_zero?
+        return state.destroy
+      else
+        return state.save!
+      end
+    else
+      state.paid = self.day
+      state.save!
+      state2 = State.new \
+        :start => self.day,
+        :amount => state.amount,
+        :deal => aDeal,
+        :side => state.side
+      state2.apply_fact(self)
+      return state2.save!
+    end
+#    state.deal = aDeal
+#    state.apply_fact(self)
+#    if state.new_record? or state.start == self.day
+#      state.save!
+#    elsif state.
+#    end
   end
 end
 

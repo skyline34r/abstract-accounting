@@ -8,7 +8,7 @@ class ResourceTest < ActiveSupport::TestCase
     a.tag = assets(:aasiishare).tag
     assert !a.save, "Asset with repeating tag saved"
 
-    assert_equal 1, Asset.all.count, "Count of asset records is not equal to 1"
+    assert_equal 2, Asset.all.count, "Count of asset records is not equal to 1"
   end
 
   test "money should store" do
@@ -22,6 +22,6 @@ class ResourceTest < ActiveSupport::TestCase
     assert !m.save, "Money with empty alpha_code saved"
     m.alpha_code = "RUB"
     assert !m.save, "Copy of rub money is saved"
-    assert_equal 1, Money.all.count, "Count of money record is not equal to 1"
+    assert_equal 2, Money.all.count, "Count of money record is not equal to 1"
   end
 end

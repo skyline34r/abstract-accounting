@@ -16,76 +16,70 @@ class State < ActiveRecord::Base
     return false if aFact.nil?
     true if set_fact_side(aFact) and update_time(aFact.day)
   end
-  
-  def value
-    return @value if self.deal.nil?
-    if self.side == "passive"
-      return self.amount * @debit_rate if @debit_rate
-    else
-      return self.amount * @credit_rate if @credit_rate
-    end
-    return @value
+
+  def is_zero?
+    is_zero(self.amount)
   end
   
   private
   def do_init
     self.side ||= "active"
     self.amount ||= 0.0
-    @value = 0.0
-    @credit_rate = 0.0
-    @debit_rate = 0.0
-    @rate = 1.0
-    @diff0 = 0.0
-    @diff1 = 0.0
   end
   
   def set_fact_side(aFact)
     return false if aFact.nil?
-    @fact_side =
+    fact_side =
       if self.deal == aFact.from
-        "active"
-      else
         "passive"
+      else
+        "active"
       end
-    @old_amount = self.amount
-    @old_value = self.value
     
-    @rate = self.deal.rate
-    if self.side == @fact_side
-      @diff0 = aFact.amount
-      self.amount -= @diff0
+    rate = self.deal.rate
+    if self.side == fact_side
+      self.amount -= aFact.amount
     else
-      @diff1 = aFact.amount *
+      self.amount += aFact.amount *
         if self.side == "passive"
-          @rate
+          rate
         else
-          1/@rate
+          1/rate
         end
-      self.amount += @diff1
     end
     
-    if self.amount != 0.0 && self.amount < 0.0
+    if !is_zero(self.amount) and self.amount < 0.0
       self.side =
         if self.side == "passive"
           "active"
         else
           "passive"
         end
-      self.amount = self.amount * -1 *
+      self.amount *= -1 *
         if self.side == "passive"
-          @rate
+          rate
         else
-          1/@rate
+          1/rate
         end
-      @diff0 = @old_amount
-      @diff1 = self.amount
-      @old_value = -@old_value
     end
+    self.amount = norm_value(self.amount)
     true
   end
   
   def update_time(aTime)
     self.start = aTime
     true
+  end
+
+  #helpers
+  def is_zero(value)
+    value < 0.00009 and value > -0.00009
+  end
+  def round64(value)
+    return (value - 0.5).ceil if value < 0.0
+    (value + 0.5).floor
+  end
+  def norm_value(value)
+    round64(value * 100.0) / 100.0
   end
 end

@@ -4,7 +4,15 @@ class Deal < ActiveRecord::Base
   belongs_to :give, :polymorphic => true
   belongs_to :take, :polymorphic => true
   has_many :states
+
   def state(day)
-    states.where(:start => day).first
+    states.where(:start =>
+        if !day.nil?
+          states.where("start <= ?", day)
+            .maximum("start")
+        else
+          states.maximum("start")
+        end
+      ).first
   end
 end
