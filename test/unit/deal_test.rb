@@ -30,6 +30,6 @@ class DealTest < ActiveSupport::TestCase
     assert_equal d, deal_give.deal_gives.where(:tag => deal_tag).first,
       "Give resource not contain equityshare1"
 
-    assert_equal 6, Deal.all.count, "Count of deals is not equal to 3"
+    assert_equal 7, Deal.all.count, "Count of deals is not equal to 7"
   end
 end

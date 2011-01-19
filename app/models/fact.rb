@@ -51,8 +51,11 @@ class Fact < ActiveRecord::Base
         :deal => aDeal,
         :side => state.side
       state2.apply_fact(self)
-      return state2.save!
+      if !state2.is_zero?
+        return state2.save!
+      end
     end
+    true
 #    state.deal = aDeal
 #    state.apply_fact(self)
 #    if state.new_record? or state.start == self.day

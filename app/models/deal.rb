@@ -13,6 +13,6 @@ class Deal < ActiveRecord::Base
         else
           states.maximum("start")
         end
-      ).first
+      ).where("paid is NULL").first
   end
 end
