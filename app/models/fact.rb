@@ -33,11 +33,11 @@ class Fact < ActiveRecord::Base
       end
     if state.new_record?
       state.deal = aDeal
-      state.apply_fact(self)
+      state.fact = self
       return state.save!
     elsif state.start == self.day
-      state.apply_fact(self)
-      if state.is_zero?
+      state.fact = self
+      if state.amount?
         return state.destroy
       else
         return state.save!
@@ -50,8 +50,8 @@ class Fact < ActiveRecord::Base
         :amount => state.amount,
         :deal => aDeal,
         :side => state.side
-      state2.apply_fact(self)
-      if !state2.is_zero?
+      state2.fact = self
+      if !state2.amount?
         return state2.save!
       end
     end

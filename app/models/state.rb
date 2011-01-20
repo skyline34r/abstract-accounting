@@ -6,28 +6,29 @@ class State < ActiveRecord::Base
   after_initialize :do_init
   
   def resource
-    return nil? unless self.deal
+    return nil if self.deal.nil?
     return self.deal.take if self.side == "passive"
     self.deal.give
   end
-  
-  def apply_fact(aFact)
+
+  def fact=(aFact)
     return false if self.deal.nil?
     return false if aFact.nil?
-    true if set_fact_side(aFact) and update_time(aFact.day)
+    self.start = aFact.day if init_from_fact(aFact)
+    self.start_changed?
   end
 
-  def is_zero?
-    is_zero(self.amount)
+  def amount?
+    self.amount.accounting_zero?
   end
   
-  private
+  protected
   def do_init
     self.side ||= "active"
     self.amount ||= 0.0
   end
   
-  def set_fact_side(aFact)
+  def init_from_fact(aFact)
     return false if aFact.nil?
     fact_side =
       if self.deal == aFact.from
@@ -36,50 +37,31 @@ class State < ActiveRecord::Base
         "active"
       end
     
-    rate = self.deal.rate
     if self.side == fact_side
       self.amount -= aFact.amount
     else
-      self.amount += aFact.amount *
-        if self.side == "passive"
-          rate
-        else
-          1/rate
-        end
+      self.amount += aFact.amount * self.rate
     end
     
-    if !is_zero(self.amount) and self.amount < 0.0
+    if self.amount.accounting_negative?
       self.side =
         if self.side == "passive"
           "active"
         else
           "passive"
         end
-      self.amount *= -1 *
-        if self.side == "passive"
-          rate
-        else
-          1/rate
-        end
+      self.amount *= -1 * self.rate
     end
-    self.amount = norm_value(self.amount)
-    true
-  end
-  
-  def update_time(aTime)
-    self.start = aTime
+    self.amount = self.amount.accounting_norm
     true
   end
 
-  #helpers
-  def is_zero(value)
-    value < 0.00009 and value > -0.00009
-  end
-  def round64(value)
-    return (value - 0.5).ceil if value < 0.0
-    (value + 0.5).floor
-  end
-  def norm_value(value)
-    round64(value * 100.0) / 100.0
+  def rate
+    return 0.0 if self.deal.nil?
+    if self.side == "passive"
+      self.deal.rate
+    else
+      1.0 / self.deal.rate
+    end
   end
 end
