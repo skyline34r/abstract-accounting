@@ -54,6 +54,7 @@ class AccountTest < ActiveSupport::TestCase
     assert b.invalid?, "Balance with wrong side is valid"
     b.side = "active"
     assert b.save, "Balance is not saved"
+    assert_equal 1, Balance.all.count, "Balance is not deleted"
 
     assert Balance.new(:deal => Deal.first, :amount => 51, :value => 43,
       :side => "passive", :start => DateTime.civil(2011, 1, 8)).invalid?,
@@ -61,5 +62,51 @@ class AccountTest < ActiveSupport::TestCase
 
     b.destroy
     assert_equal 0, Balance.all.count, "Balance is not deleted"
+  end
+
+  test "account test" do
+    init_facts
+    assert !Fact.pendings.nil?, "Pending facts is nil"
+    assert_equal 6, Fact.pendings.count, "Pending facts count is not equal to 6"
+  end
+
+  private
+  def init_facts
+    #fill table
+    assert Fact.new(:amount => 100000.0,
+      :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
+      :from => deals(:equityshare2),
+      :to => deals(:bankaccount),
+      :resource => deals(:equityshare2).take).save, "Fact is not saved"
+
+    assert Fact.new(:amount => 142000.0,
+      :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
+      :from => deals(:equityshare1),
+      :to => deals(:bankaccount),
+      :resource => deals(:equityshare1).take).save, "Fact is not saved"
+
+    assert Fact.new(:amount => 70000.0,
+      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+      :from => deals(:bankaccount),
+      :to => deals(:purchase),
+      :resource => deals(:bankaccount).take).save, "Fact is not saved"
+
+    assert Fact.new(:amount => 1000.0,
+      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+      :from => deals(:forex),
+      :to => deals(:bankaccount2),
+      :resource => deals(:forex).take).save, "Fact is not saved"
+
+    assert Fact.new(:amount => 34950.0,
+      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+      :from => deals(:bankaccount),
+      :to => deals(:forex),
+      :resource => deals(:bankaccount).take).save, "Fact is not saved"
+
+    assert Fact.new(:amount => 1000.0,
+      :day => DateTime.civil(2007, 8, 31, 12, 0, 0),
+      :from => deals(:bankaccount2),
+      :to => deals(:forex2),
+      :resource => deals(:bankaccount2).take).save, "Fact is not saved"
   end
 end

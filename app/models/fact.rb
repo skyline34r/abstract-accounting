@@ -15,6 +15,10 @@ class Fact < ActiveRecord::Base
 
   before_save :do_save
 
+  def self.pendings
+    nil
+  end
+
   private
   def do_save
     if changed? or new_record?
