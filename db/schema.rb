@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110120142142) do
+ActiveRecord::Schema.define(:version => 20110121100649) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(:version => 20110120142142) do
   add_index "balances", ["deal_id", "start"], :name => "index_balances_on_deal_id_and_start", :unique => true
 
   create_table "charts", :force => true do |t|
-    t.integer "money_id"
+    t.integer "currency_id"
   end
 
   create_table "deals", :force => true do |t|
