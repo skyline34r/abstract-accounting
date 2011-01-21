@@ -68,6 +68,18 @@ class AccountTest < ActiveSupport::TestCase
     init_facts
     assert !Fact.pendings.nil?, "Pending facts is nil"
     assert_equal 6, Fact.pendings.count, "Pending facts count is not equal to 6"
+
+    pendingFact = Fact.pendings.first
+    assert_equal 100000.0, pendingFact.amount, "Wrong pending fact amount"
+    assert_equal deals(:equityshare2), pendingFact.from,
+      "Wrong pending fact from deal"
+    assert_equal deals(:bankaccount), pendingFact.to,
+      "Wrong pending fact to deal"
+
+    #check currency
+    assert_equal 1, Chart.all.count, "Wrong chart count"
+    assert_equal money(:rub), Chart.all.first.currency,
+      "Wrong chart currency"
   end
 
   private
