@@ -107,6 +107,15 @@ class AccountTest < ActiveSupport::TestCase
       "To balance amount is not equal"
     assert_equal pendingFact.amount, bto.value,
       "To balance value is not equal"
+
+    assert_equal 5, Fact.pendings.count, "Pending facts count is not equal to 5"
+    #check pending facts
+    pendingFact = Fact.pendings.first
+    assert_equal 142000.0, pendingFact.amount, "Wrong pending fact amount"
+    assert_equal deals(:equityshare1), pendingFact.from,
+      "Wrong pending fact from deal"
+    assert_equal deals(:bankaccount), pendingFact.to,
+      "Wrong pending fact to deal"
   end
 
   private

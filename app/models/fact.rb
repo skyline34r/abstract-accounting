@@ -17,7 +17,9 @@ class Fact < ActiveRecord::Base
   before_save :do_save
 
   def self.pendings
-    Fact.all.collect { |aFact| aFact if aFact.txn.nil? }
+    arr = Array.new
+    Fact.all.each { |item| arr << item if item.txn.nil?  }
+    return arr
   end
 
   private
