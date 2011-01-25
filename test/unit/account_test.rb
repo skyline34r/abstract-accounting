@@ -81,6 +81,32 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1, Chart.all.count, "Wrong chart count"
     assert_equal money(:rub), Chart.all.first.currency,
       "Wrong chart currency"
+
+    t = Txn.new :fact => pendingFact
+    assert t.valid?, "Transaction is not valid"
+    assert t.save, "Txn is not saved"
+
+    bfrom = t.from_balance
+    assert !bfrom.nil?, "Balance is nil"
+    assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+    assert_equal pendingFact.from.give, bfrom.resource,
+      "From balance invalid resource"
+    assert_equal "active", bfrom.side, "From balance invalid side"
+    assert_equal pendingFact.amount / deals(:equityshare2).rate, bfrom.amount,
+      "From balance amount is not equal"
+    assert_equal pendingFact.amount, bfrom.value,
+      "From balance value is not equal"
+
+    bto = t.to_balance
+    assert !bto.nil?, "Balance is nil"
+    assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
+    assert_equal pendingFact.to.take, bto.resource,
+      "To balance invalid resource"
+    assert_equal "passive", bto.side, "To balance invalid side"
+    assert_equal pendingFact.amount, bto.amount,
+      "To balance amount is not equal"
+    assert_equal pendingFact.amount, bto.value,
+      "To balance value is not equal"
   end
 
   private

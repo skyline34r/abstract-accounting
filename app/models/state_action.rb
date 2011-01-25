@@ -26,14 +26,19 @@ module StateAction
 
   def init_from_fact(aFact)
     return false if aFact.nil?
-    fact_side =
+    @fact_side =
       if self.deal == aFact.from
         "passive"
       else
         "active"
       end
 
-    if self.side == fact_side
+    if self.methods.include?('value_i')
+      @old_amount = self.amount
+      @old_value = self.value_i()
+    end
+
+    if self.side == @fact_side
       self.amount -= aFact.amount
     else
       self.amount += aFact.amount * self.rate
@@ -47,6 +52,9 @@ module StateAction
           "passive"
         end
       self.amount *= -1 * self.rate
+      if self.methods.include?('value')
+        @old_value = -@old_value
+      end
     end
     self.amount = self.amount.accounting_norm
     true
