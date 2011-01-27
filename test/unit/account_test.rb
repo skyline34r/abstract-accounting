@@ -161,6 +161,52 @@ class AccountTest < ActiveSupport::TestCase
       "Wrong pending fact from deal"
     assert_equal deals(:purchase), pendingFact.to,
       "Wrong pending fact to deal"
+
+    t = Txn.new :fact => pendingFact
+    assert t.valid?, "Transaction is not valid"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 4, Balance.all.count, "Balance count is not equal to 4"
+    b = deals(:equityshare2).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
+    assert_equal deals(:equityshare2).give, b.resource,
+      "balance invalid resource"
+    assert_equal "active", b.side, "balance invalid side"
+    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
+      "balance amount is not equal"
+    assert_equal 100000.0, b.value,
+      "balance value is not equal"
+    b = deals(:bankaccount).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
+    assert_equal deals(:bankaccount).take, b.resource,
+      "balance invalid resource"
+    assert_equal "passive", b.side, "balance invalid side"
+    assert_equal 100000.0 + 142000.0 - 70000.0, b.amount,
+      "balance amount is not equal"
+    assert_equal 100000.0 + 142000.0 - 70000.0, b.value,
+      "balance value is not equal"
+    b = deals(:equityshare1).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
+    assert_equal deals(:equityshare1).give, b.resource,
+      "balance invalid resource"
+    assert_equal "active", b.side, "balance invalid side"
+    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
+      "balance amount is not equal"
+    assert_equal 142000.0, b.value,
+      "balance value is not equal"
+    b = deals(:purchase).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal deals(:purchase), b.deal, "balance invalid deal"
+    assert_equal deals(:purchase).take, b.resource,
+      "balance invalid resource"
+    assert_equal "passive", b.side, "balance invalid side"
+    assert_equal 1.0, b.amount,
+      "balance amount is not equal"
+    assert_equal 70000.0, b.value,
+      "balance value is not equal"
   end
 
   private

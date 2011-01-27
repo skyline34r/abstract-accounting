@@ -33,7 +33,7 @@ module StateAction
         "active"
       end
 
-    if self.methods.include?('value_i')
+    if self.methods.include?(:value_i)
       @old_amount = self.amount
       @old_value = self.value_i()
     end
@@ -52,7 +52,7 @@ module StateAction
           "passive"
         end
       self.amount *= -1 * self.rate
-      if self.methods.include?('value')
+      if self.methods.include?(:value_i)
         @old_value = -@old_value
       end
     end

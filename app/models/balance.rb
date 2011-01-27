@@ -24,10 +24,10 @@ class Balance < ActiveRecord::Base
     else
       raise "unknown chart currency"
     end
-
     self.start = aTxn.fact.day if init_from_fact(aTxn.fact)
     val = nil
     val = update_value(aTxn.value) if self.start_changed?
+    self.value = value_i
     if !val.nil?
       arr = Array.new
       arr[0] = val
