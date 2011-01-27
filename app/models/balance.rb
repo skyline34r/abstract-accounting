@@ -21,8 +21,6 @@ class Balance < ActiveRecord::Base
       @debit = 1.0
     elsif self.deal.give == Chart.first.currency
       @credit = 1.0
-    else
-      raise "unknown chart currency"
     end
     self.start = aTxn.fact.day if init_from_fact(aTxn.fact)
     val = nil
