@@ -15,26 +15,28 @@ class Txn < ActiveRecord::Base
   private
   def do_before_save
     return false if self.fact.nil?
-    @from_balance = self.fact.from.balance
-    @to_balance = self.fact.to.balance
-    calculate
-    @from_balance.save!
-    @to_balance.save!
-    true
-  end
-
-  def calculate
     self.status = 0
     self.earnings = 0.0
     self.value = 0.0
-    val = @from_balance.txn(self)
-    if !val.nil?
+    calculate(((@from_balance = self.fact.from.balance).nil? ?
+      @from_balance = Balance.new : @from_balance), self.fact.from) do |val|
       self.value = val[0]
     end
-    val = @to_balance.txn(self)
-    if !val.nil?
+    calculate((@to_balance = self.fact.to.balance).nil? ?
+      @to_balance = Balance.new : @to_balance, self.fact.to) do |val|
       self.earnings = val[0]
       self.status = (val[1] == true ? 1 : 0)
+    end
+    true
+  end
+
+  def calculate(aBalance, aDeal)
+    aBalance.save_or_replace!(self.fact.day) do |balance|
+      balance.deal = aDeal
+      val = balance.txn(self)
+      if !val.nil?
+        yield(val)
+      end
     end
   end
 end

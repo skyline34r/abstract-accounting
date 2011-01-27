@@ -166,7 +166,7 @@ class AccountTest < ActiveSupport::TestCase
     assert t.valid?, "Transaction is not valid"
     assert t.save, "Txn is not saved"
 
-    assert_equal 4, Balance.all.count, "Balance count is not equal to 4"
+    assert_equal 5, Balance.all.count, "Balance count is not equal to 5"
     b = deals(:equityshare2).balance
     assert !b.nil?, "Balance is nil"
     assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
@@ -206,6 +206,26 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1.0, b.amount,
       "balance amount is not equal"
     assert_equal 70000.0, b.value,
+      "balance value is not equal"
+
+    assert_equal 3, Fact.pendings.count, "Pending facts count is not equal to 3"
+    #check pending facts
+    pendingFact = Fact.pendings.first
+    assert_equal 1000.0, pendingFact.amount, "Wrong pending fact amount"
+    assert_equal deals(:forex), pendingFact.from,
+      "Wrong pending fact from deal"
+    assert_equal deals(:bankaccount2), pendingFact.to,
+      "Wrong pending fact to deal"
+
+    b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 29, 12, 0, 1)
+    assert !b.nil?, "Balance is nil"
+    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
+    assert_equal deals(:bankaccount).take, b.resource,
+      "balance invalid resource"
+    assert_equal "passive", b.side, "balance invalid side"
+    assert_equal 100000.0 + 142000.0, b.amount,
+      "balance amount is not equal"
+    assert_equal 100000.0 + 142000.0, b.value,
       "balance value is not equal"
   end
 

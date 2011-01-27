@@ -32,35 +32,13 @@ class Fact < ActiveRecord::Base
   
   def init_state(aState, aDeal)
     return false if aDeal.nil?
-    state =
-      if aState.nil?
-        State.new
-      else
-        aState
-      end
-    if state.new_record?
+    (if aState.nil?
+      State.new
+    else
+      aState
+    end).save_or_replace!(self.day) do |state|
       state.deal = aDeal
       state.fact = self
-      return state.save!
-    elsif state.start == self.day
-      state.fact = self
-      if state.amount?
-        return state.destroy
-      else
-        return state.save!
-      end
-    else
-      state.paid = self.day
-      state.save!
-      state2 = State.new \
-        :start => self.day,
-        :amount => state.amount,
-        :deal => aDeal,
-        :side => state.side
-      state2.fact = self
-      if !state2.amount?
-        return state2.save!
-      end
     end
     true
   end

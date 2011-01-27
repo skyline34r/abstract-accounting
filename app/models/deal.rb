@@ -16,13 +16,18 @@ class Deal < ActiveRecord::Base
         end
       ).where("paid is NULL").first
   end
-  def balance(day = nil)
+  def balance(day = nil, paid = nil)
     ret_balances = (if day.nil?
                       balances
                     else
                       balances.where("start <= ?", day)
-                    end).where("paid is NULL")
-    return Balance.new(:deal => self) if ret_balances.empty?
+                    end).where(
+                    (if paid.nil?
+                      "paid is ?"
+                    else
+                      "paid <= ?"
+                    end), paid)
+    return nil if ret_balances.empty?
     ret_balances.first
   end
 end
