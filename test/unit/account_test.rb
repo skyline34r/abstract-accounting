@@ -362,6 +362,9 @@ class AccountTest < ActiveSupport::TestCase
       "balance amount is not equal"
     assert_equal (1000.0 / deals(:forex).rate).accounting_norm, b.value,
       "balance value is not equal"
+
+    assert_equal (1000.0 / deals(:forex).rate).accounting_norm,
+      Fact.find(pendingFact.id).txn.value, "Txn value is not equal"
   end
 
   private

@@ -22,19 +22,21 @@ class Balance < ActiveRecord::Base
     elsif self.deal.give == Chart.first.currency
       @credit = 1.0
     end
-    self.start = aTxn.fact.day if init_from_fact(aTxn.fact)
-    val = nil
-    val = update_value(aTxn.value) if self.start_changed?
-    self.value = value_i
-    if !val.nil?
-      arr = Array.new
-      arr[0] = val
-      arr[1] = !val.accounting_zero?
-      if @fact_side == "active" && !@debit.zero? &&
-          self.deal.take != self.deal.give
-        arr[1] = true
+    if init_from_fact(aTxn.fact)
+      self.start = aTxn.fact.day
+      val = nil
+      val = update_value(aTxn.value)
+      self.value = value_i
+      if !val.nil?
+        arr = Array.new
+        arr[0] = val
+        arr[1] = !val.accounting_zero?
+        if @fact_side == "active" && !@debit.zero? &&
+            self.deal.take != self.deal.give
+          arr[1] = true
+        end
+        return arr
       end
-      return arr
     end
     return nil
   end
