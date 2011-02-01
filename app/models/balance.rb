@@ -77,7 +77,8 @@ class Balance < ActiveRecord::Base
           if !@debit.zero?
             self.value = (self.amount * @debit).accounting_norm
           else
-            raise "Old value is great then zero" if @old_value >= 0.0
+            raise "Old value(" + @old_value.to_s +
+              ") is great then zero" if @old_value < 0.0
             raise "Invalid old value" if @old_amount.zero?
             self.value =
               (@old_value * self.amount / @old_amount).accounting_norm
@@ -105,7 +106,7 @@ class Balance < ActiveRecord::Base
           if !@credit.zero?
             self.value = (self.amount * @credit).accounting_norm
           else
-            raise "Old value is great then zero" if @old_value > 0.0
+            raise "Old value is great then zero" if @old_value < 0.0
             raise "Invalid old value" if !@old_amount.zero?
             self.value =
               (@old_value * self.amount / @old_amount).accounting_norm
