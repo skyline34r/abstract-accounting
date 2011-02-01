@@ -447,6 +447,14 @@ class AccountTest < ActiveSupport::TestCase
       "balance amount is not equal"
     assert_equal 1000.0 * deals(:forex2).rate, b.value,
       "balance value is not equal"
+
+    assert_equal 1, Income.all.count, "Income count is wrong"
+    inc = Income.all.first
+    @profit = (1000.0 * (deals(:forex2).rate -
+          (1/deals(:forex).rate))).accounting_norm
+    assert_equal @profit, inc.value, "Invalid income value"
+
+    assert_equal 0, Fact.pendings.count, "Pending facts count is wrong"
   end
 
   private

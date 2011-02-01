@@ -26,6 +26,11 @@ class Txn < ActiveRecord::Base
       @to_balance = Balance.new : @to_balance, self.fact.to) do |val|
       self.earnings = val[0]
       self.status = (val[1] == true ? 1 : 0)
+      if self.status == 1
+        i = Income.new
+        i.txn = self
+        i.save!
+      end
     end
     true
   end
