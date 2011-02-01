@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110121100649) do
+ActiveRecord::Schema.define(:version => 20110201111844) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -57,6 +57,15 @@ ActiveRecord::Schema.define(:version => 20110121100649) do
     t.integer  "resource_id"
     t.string   "resource_type"
   end
+
+  create_table "incomes", :force => true do |t|
+    t.datetime "start"
+    t.string   "side"
+    t.float    "value"
+    t.datetime "paid"
+  end
+
+  add_index "incomes", ["start"], :name => "index_incomes_on_start", :unique => true
 
   create_table "money", :force => true do |t|
     t.integer "num_code"

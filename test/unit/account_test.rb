@@ -365,6 +365,8 @@ class AccountTest < ActiveSupport::TestCase
 
     assert_equal (1000.0 / deals(:forex).rate).accounting_norm,
       Fact.find(pendingFact.id).txn.value, "Txn value is not equal"
+
+    assert_equal 0, Income.all.count, "Income count is not equal to 0"
   end
 
   private
