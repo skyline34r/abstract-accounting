@@ -15,7 +15,7 @@ module StateAction
   end
 
   def amount?
-    self.amount.accounting_zero?
+    !self.amount.accounting_zero?
   end
 
   def save_or_replace!(aDay)
@@ -24,7 +24,7 @@ module StateAction
       return self.save!
     elsif self.start == aDay
       yield(self)
-      if self.amount?
+      if !self.amount?
         return self.destroy
       else
         return self.save!
@@ -34,7 +34,7 @@ module StateAction
       self.paid = self.start
       self.save!
       yield(state2)
-      if !state2.amount?
+      if state2.amount?
         return state2.save!
       end
     end

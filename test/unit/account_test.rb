@@ -65,435 +65,218 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test "account test" do
-    init_facts
+    facts = init_facts
     assert !Fact.pendings.nil?, "Pending facts is nil"
-    assert_equal 6, Fact.pendings.count, "Pending facts count is not equal to 6"
 
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 100000.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:equityshare2), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:bankaccount), pendingFact.to,
-      "Wrong pending fact to deal"
+    facts.count.times do
+      assert_equal facts.count, Fact.pendings.count,
+        "Wrong pending facts count"
+      assert_equal facts.first, Fact.pendings.first,
+        "Pending fact is wrong"
 
-    #check currency
-    assert_equal 1, Chart.all.count, "Wrong chart count"
-    assert_equal money(:rub), Chart.all.first.currency,
-      "Wrong chart currency"
+      pendingFact = Fact.pendings.first
+      t = Txn.new :fact => pendingFact
+      assert t.valid?, "Transaction is not valid"
+      assert t.save, "Txn is not saved"
 
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
+      case facts.count
+      when 6
+        assert_equal 1, Chart.all.count, "Wrong chart count"
+        assert_equal money(:rub), Chart.all.first.currency,
+          "Wrong chart currency"
 
-    bfrom = t.from_balance
-    assert !bfrom.nil?, "Balance is nil"
-    assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
-    assert_equal pendingFact.from.give, bfrom.resource,
-      "From balance invalid resource"
-    assert_equal "active", bfrom.side, "From balance invalid side"
-    assert_equal pendingFact.amount / deals(:equityshare2).rate, bfrom.amount,
-      "From balance amount is not equal"
-    assert_equal pendingFact.amount, bfrom.value,
-      "From balance value is not equal"
+        bfrom = t.from_balance
+        assert !bfrom.nil?, "Balance is nil"
+        assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+        assert_equal pendingFact.from.give, bfrom.resource,
+          "From balance invalid resource"
+        assert_equal "active", bfrom.side, "From balance invalid side"
+        assert_equal pendingFact.amount / deals(:equityshare2).rate, bfrom.amount,
+          "From balance amount is not equal"
+        assert_equal pendingFact.amount, bfrom.value,
+          "From balance value is not equal"
+        assert_equal t.from_balance, deals(:equityshare2).balance,
+          "Deal balance is wrong"
 
-    bto = t.to_balance
-    assert !bto.nil?, "Balance is nil"
-    assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
-    assert_equal pendingFact.to.take, bto.resource,
-      "To balance invalid resource"
-    assert_equal "passive", bto.side, "To balance invalid side"
-    assert_equal pendingFact.amount, bto.amount,
-      "To balance amount is not equal"
-    assert_equal pendingFact.amount, bto.value,
-      "To balance value is not equal"
+        bto = t.to_balance
+        assert !bto.nil?, "Balance is nil"
+        assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
+        assert_equal pendingFact.to.take, bto.resource,
+          "To balance invalid resource"
+        assert_equal "passive", bto.side, "To balance invalid side"
+        assert_equal pendingFact.amount, bto.amount,
+          "To balance amount is not equal"
+        assert_equal pendingFact.amount, bto.value,
+          "To balance value is not equal"
+      when 5
+        assert_equal 3, Balance.all.count, "Balance count is not equal to 3"
 
-    assert_equal 5, Fact.pendings.count, "Pending facts count is not equal to 5"
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 142000.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:equityshare1), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:bankaccount), pendingFact.to,
-      "Wrong pending fact to deal"
+        bfrom = t.from_balance
+        assert !bfrom.nil?, "Balance is nil"
+        assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+        assert_equal pendingFact.from.give, bfrom.resource,
+          "From balance invalid resource"
+        assert_equal "active", bfrom.side, "From balance invalid side"
+        assert_equal pendingFact.amount / deals(:equityshare1).rate, bfrom.amount,
+          "From balance amount is not equal"
+        assert_equal pendingFact.amount, bfrom.value,
+          "From balance value is not equal"
 
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
+        bto = t.to_balance
+        assert !bto.nil?, "Balance is nil"
+        assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
+        assert_equal pendingFact.to.take, bto.resource,
+          "To balance invalid resource"
+        assert_equal "passive", bto.side, "To balance invalid side"
+        assert_equal pendingFact.amount + 100000.0, bto.amount,
+          "To balance amount is not equal"
+        assert_equal pendingFact.amount + 100000.0, bto.value,
+          "To balance value is not equal"
+      when 4
+        assert_equal 5, Balance.all.count, "Balance count is not equal to 5"
 
-    assert_equal 3, Balance.all.count, "Balance count is not equal to 3"
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0, b.value,
-      "balance value is not equal"
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare1).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 142000.0, b.value,
-      "balance value is not equal"
+        bfrom = t.from_balance
+        assert !bfrom.nil?, "Balance is nil"
+        assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+        assert_equal pendingFact.from.give, bfrom.resource,
+          "From balance invalid resource"
+        assert_equal "passive", bfrom.side, "From balance invalid side"
+        assert_equal 142000.0 + 100000.0 - pendingFact.amount, bfrom.amount,
+          "From balance amount is not equal"
+        assert_equal 142000.0 + 100000.0 - pendingFact.amount, bfrom.value,
+          "From balance value is not equal"
 
-    assert_equal 4, Fact.pendings.count, "Pending facts count is not equal to 4"
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 70000.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:bankaccount), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:purchase), pendingFact.to,
-      "Wrong pending fact to deal"
+        bto = t.to_balance
+        assert !bto.nil?, "Balance is nil"
+        assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
+        assert_equal pendingFact.to.take, bto.resource,
+          "To balance invalid resource"
+        assert_equal "passive", bto.side, "To balance invalid side"
+        assert_equal (pendingFact.amount *
+            deals(:purchase).rate).accounting_norm, bto.amount,
+          "To balance amount is not equal"
+        assert_equal pendingFact.amount, bto.value,
+          "To balance value is not equal"
 
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
+        b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 29, 12, 0, 1)
+        assert !b.nil?, "Balance is nil"
+        assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
+        assert_equal deals(:bankaccount).take, b.resource,
+          "balance invalid resource"
+        assert_equal "passive", b.side, "balance invalid side"
+        assert_equal 100000.0 + 142000.0, b.amount,
+          "balance amount is not equal"
+        assert_equal 100000.0 + 142000.0, b.value,
+          "balance value is not equal"
+      when 3
+        assert_equal 7, Balance.all.count, "Balance count is not equal to 7"
 
-    assert_equal 5, Balance.all.count, "Balance count is not equal to 5"
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0 - 70000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0 - 70000.0, b.value,
-      "balance value is not equal"
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare1).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 142000.0, b.value,
-      "balance value is not equal"
-    b = deals(:purchase).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:purchase), b.deal, "balance invalid deal"
-    assert_equal deals(:purchase).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 70000.0, b.value,
-      "balance value is not equal"
+        bfrom = t.from_balance
+        assert !bfrom.nil?, "Balance is nil"
+        assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+        assert_equal pendingFact.from.give, bfrom.resource,
+          "From balance invalid resource"
+        assert_equal "active", bfrom.side, "From balance invalid side"
+        assert_equal (pendingFact.amount / deals(:forex).rate).accounting_norm,
+          bfrom.amount, "From balance amount is not equal"
+        assert_equal (pendingFact.amount / deals(:forex).rate).accounting_norm,
+          bfrom.value, "From balance value is not equal"
 
-    assert_equal 3, Fact.pendings.count, "Pending facts count is not equal to 3"
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 1000.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:forex), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:bankaccount2), pendingFact.to,
-      "Wrong pending fact to deal"
+        bto = t.to_balance
+        assert !bto.nil?, "Balance is nil"
+        assert_equal pendingFact.to, bto.deal, "To balance invalid deal"
+        assert_equal pendingFact.to.take, bto.resource,
+          "To balance invalid resource"
+        assert_equal "passive", bto.side, "To balance invalid side"
+        assert_equal pendingFact.amount, bto.amount,
+          "To balance amount is not equal"
+        assert_equal (pendingFact.amount / deals(:forex).rate).accounting_norm,
+          bto.value, "To balance value is not equal"
+      when 2
+        assert_equal 6, Balance.all.count, "Balance count is not equal to 6"
 
-    b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 29, 12, 0, 1)
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0, b.value,
-      "balance value is not equal"
+        bfrom = t.from_balance
+        assert !bfrom.nil?, "Balance is nil"
+        assert_equal pendingFact.from, bfrom.deal, "From balance invalid deal"
+        assert_equal pendingFact.from.give, bfrom.resource,
+          "From balance invalid resource"
+        assert_equal "passive", bfrom.side, "From balance invalid side"
+        assert_equal 142000.0 + 100000.0 - 70000.0 - pendingFact.amount,
+          bfrom.amount, "From balance amount is not equal"
+        assert_equal 142000.0 + 100000.0 - 70000.0 - pendingFact.amount,
+          bfrom.value, "From balance value is not equal"
 
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
+        bto = t.to_balance
+        assert bto.nil?, "Balance is not nil"
+        assert deals(:forex).balance.nil?, "Forex deal balance is not nil"
 
-    assert_equal 7, Balance.all.count, "Balance count is not equal to 7"
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0 - 70000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0 - 70000.0, b.value,
-      "balance value is not equal"
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare1).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 142000.0, b.value,
-      "balance value is not equal"
-    b = deals(:purchase).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:purchase), b.deal, "balance invalid deal"
-    assert_equal deals(:purchase).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 70000.0, b.value,
-      "balance value is not equal"
-    b = deals(:forex).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:forex), b.deal, "balance invalid deal"
-    assert_equal deals(:forex).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal (1000.0 / deals(:forex).rate).accounting_norm, b.amount,
-      "balance amount is not equal"
-    assert_equal (1000.0 / deals(:forex).rate).accounting_norm, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount2), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal (1000.0 / deals(:forex).rate).accounting_norm, b.value,
-      "balance value is not equal"
+        assert_equal (1000.0 / deals(:forex).rate).accounting_norm,
+          Fact.find(pendingFact.id).txn.value, "Txn value is not equal"
 
-    assert_equal 2, Fact.pendings.count, "Pending facts count is not equal to 2"
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 34950.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:bankaccount), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:forex), pendingFact.to,
-      "Wrong pending fact to deal"
+        assert_equal 0, Income.all.count, "Income count is not equal to 0"
+      when 1
+        b = deals(:bankaccount2).balance
+        assert b.nil?, "Balance is not nil"
+        b = deals(:forex2).balance
+        assert !b.nil?, "Balance is nil"
+        assert_equal deals(:forex2), b.deal, "balance invalid deal"
+        assert_equal deals(:forex2).take, b.resource,
+          "balance invalid resource"
+        assert_equal "passive", b.side, "balance invalid side"
+        assert_equal pendingFact.amount * deals(:forex2).rate, b.amount,
+          "balance amount is not equal"
+        assert_equal pendingFact.amount * deals(:forex2).rate, b.value,
+          "balance value is not equal"
 
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
+        assert_equal 1, Income.all.count, "Income count is wrong"
+        inc = Income.all.first
+        @profit = (pendingFact.amount * (deals(:forex2).rate -
+              (1/deals(:forex).rate))).accounting_norm
+        assert_equal @profit, inc.value, "Invalid income value"
 
-    assert_equal 6, Balance.all.count, "Balance count is not equal to 6"
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0 - 70000.0 -
-      (1000.0 / deals(:forex).rate).accounting_norm, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0 - 70000.0 -
-      (1000.0 / deals(:forex).rate).accounting_norm, b.value,
-      "balance value is not equal"
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare1).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 142000.0, b.value,
-      "balance value is not equal"
-    b = deals(:purchase).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:purchase), b.deal, "balance invalid deal"
-    assert_equal deals(:purchase).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 70000.0, b.value,
-      "balance value is not equal"
-    b = deals(:forex).balance
-    assert b.nil?, "Balance is not nil"
-    b = deals(:bankaccount2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount2), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1000.0, b.amount,
-      "balance amount is not equal"
-    assert_equal (1000.0 / deals(:forex).rate).accounting_norm, b.value,
-      "balance value is not equal"
-
-    assert_equal (1000.0 / deals(:forex).rate).accounting_norm,
-      Fact.find(pendingFact.id).txn.value, "Txn value is not equal"
-
-    assert_equal 0, Income.all.count, "Income count is not equal to 0"
-
-    #test stop transaction
-    assert_equal 1, Fact.pendings.count, "Pending facts count is not equal to 2"
-    #check pending facts
-    pendingFact = Fact.pendings.first
-    assert_equal 1000.0, pendingFact.amount, "Wrong pending fact amount"
-    assert_equal deals(:bankaccount2), pendingFact.from,
-      "Wrong pending fact from deal"
-    assert_equal deals(:forex2), pendingFact.to,
-      "Wrong pending fact to deal"
-
-    t = Txn.new :fact => pendingFact
-    assert t.valid?, "Transaction is not valid"
-    assert t.save, "Txn is not saved"
-
-    assert_equal (1000.0/deals(:forex).rate).accounting_norm,
-      Fact.find(pendingFact.id).txn.value, "Txn value is not equal"
-    assert_equal 1, Fact.find(pendingFact.id).txn.status,
-      "Txn status is not equal"
-    assert_equal (1000.0 * (deals(:forex2).rate -
-          (1/deals(:forex).rate))).accounting_norm,
-      Fact.find(pendingFact.id).txn.earnings, "Txn earning is not equal"
-
-    assert_equal 7, Balance.all.count, "Balance count is not equal to 5"
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare2), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare2).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 100000.0 / deals(:equityshare2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0, b.value,
-      "balance value is not equal"
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
-    assert_equal deals(:bankaccount).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 100000.0 + 142000.0 - 70000.0 -
-      (1000.0 / deals(:forex).rate).accounting_norm, b.amount,
-      "balance amount is not equal"
-    assert_equal 100000.0 + 142000.0 - 70000.0 -
-      (1000.0 / deals(:forex).rate).accounting_norm, b.value,
-      "balance value is not equal"
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:equityshare1), b.deal, "balance invalid deal"
-    assert_equal deals(:equityshare1).give, b.resource,
-      "balance invalid resource"
-    assert_equal "active", b.side, "balance invalid side"
-    assert_equal 142000.0 / deals(:equityshare1).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 142000.0, b.value,
-      "balance value is not equal"
-    b = deals(:purchase).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:purchase), b.deal, "balance invalid deal"
-    assert_equal deals(:purchase).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1.0, b.amount,
-      "balance amount is not equal"
-    assert_equal 70000.0, b.value,
-      "balance value is not equal"
-    b = deals(:forex).balance
-    assert b.nil?, "Balance is not nil"
-    b = deals(:bankaccount2).balance
-    assert b.nil?, "Balance is not nil"
-    b = deals(:forex2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal deals(:forex2), b.deal, "balance invalid deal"
-    assert_equal deals(:forex2).take, b.resource,
-      "balance invalid resource"
-    assert_equal "passive", b.side, "balance invalid side"
-    assert_equal 1000.0 * deals(:forex2).rate, b.amount,
-      "balance amount is not equal"
-    assert_equal 1000.0 * deals(:forex2).rate, b.value,
-      "balance value is not equal"
-
-    assert_equal 1, Income.all.count, "Income count is wrong"
-    inc = Income.all.first
-    @profit = (1000.0 * (deals(:forex2).rate -
-          (1/deals(:forex).rate))).accounting_norm
-    assert_equal @profit, inc.value, "Invalid income value"
-
-    assert_equal 0, Fact.pendings.count, "Pending facts count is wrong"
+        assert_equal 0, Fact.pendings.count, "Pending facts count is wrong"
+      end
+      facts.delete_at(0)
+    end
   end
 
   private
   def init_facts
-    #fill table
-    assert Fact.new(:amount => 100000.0,
-      :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
-      :from => deals(:equityshare2),
-      :to => deals(:bankaccount),
-      :resource => deals(:equityshare2).take).save, "Fact is not saved"
-
-    assert Fact.new(:amount => 142000.0,
-      :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
-      :from => deals(:equityshare1),
-      :to => deals(:bankaccount),
-      :resource => deals(:equityshare1).take).save, "Fact is not saved"
-
-    assert Fact.new(:amount => 70000.0,
-      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
-      :from => deals(:bankaccount),
-      :to => deals(:purchase),
-      :resource => deals(:bankaccount).take).save, "Fact is not saved"
-
-    assert Fact.new(:amount => 1000.0,
-      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
-      :from => deals(:forex),
-      :to => deals(:bankaccount2),
-      :resource => deals(:forex).take).save, "Fact is not saved"
-
-    assert Fact.new(:amount => 34950.0,
-      :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
-      :from => deals(:bankaccount),
-      :to => deals(:forex),
-      :resource => deals(:bankaccount).take).save, "Fact is not saved"
-
-    assert Fact.new(:amount => 1000.0,
-      :day => DateTime.civil(2007, 8, 31, 12, 0, 0),
-      :from => deals(:bankaccount2),
-      :to => deals(:forex2),
-      :resource => deals(:bankaccount2).take).save, "Fact is not saved"
+    facts = [
+      Fact.new(:amount => 100000.0,
+              :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
+              :from => deals(:equityshare2),
+              :to => deals(:bankaccount),
+              :resource => deals(:equityshare2).take),
+      Fact.new(:amount => 142000.0,
+              :day => DateTime.civil(2007, 8, 29, 12, 0, 0),
+              :from => deals(:equityshare1),
+              :to => deals(:bankaccount),
+              :resource => deals(:equityshare1).take),
+      Fact.new(:amount => 70000.0,
+              :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+              :from => deals(:bankaccount),
+              :to => deals(:purchase),
+              :resource => deals(:bankaccount).take),
+      Fact.new(:amount => 1000.0,
+              :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+              :from => deals(:forex),
+              :to => deals(:bankaccount2),
+              :resource => deals(:forex).take),
+      Fact.new(:amount => 34950.0,
+              :day => DateTime.civil(2007, 8, 30, 12, 0, 0),
+              :from => deals(:bankaccount),
+              :to => deals(:forex),
+              :resource => deals(:bankaccount).take),
+      Fact.new(:amount => 1000.0,
+              :day => DateTime.civil(2007, 8, 31, 12, 0, 0),
+              :from => deals(:bankaccount2),
+              :to => deals(:forex2),
+              :resource => deals(:bankaccount2).take)
+    ]
+    facts.each do |f|
+      assert f.save, "Fact is not saved"
+    end
+    facts
   end
 end
