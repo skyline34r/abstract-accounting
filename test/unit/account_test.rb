@@ -240,6 +240,52 @@ class AccountTest < ActiveSupport::TestCase
     end
   end
 
+  test "loss transaction" do
+    init_facts.each do |fact|
+      assert Txn.new(:fact => fact).save, "Txn is not saved"
+    end
+
+    t = Txn.new :fact => Fact.new(:amount => 1000.0 * deals(:forex2).rate,
+              :day => DateTime.civil(2007, 9, 3, 12, 0, 0),
+              :from => deals(:forex2),
+              :to => deals(:bankaccount),
+              :resource => deals(:forex2).take)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert !Balance.open.nil?, "Open balances is nil"
+    assert_equal 4, Balance.open.count, "Open balances count is wrong"
+
+    b = deals(:equityshare2).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal (100000.0 / deals(:equityshare2).rate).accounting_norm,
+      b.amount, "Wrong balance amount"
+    assert_equal 100000.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+
+    b = deals(:equityshare1).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal (142000.0 / deals(:equityshare1).rate).accounting_norm,
+      b.amount, "Wrong balance amount"
+    assert_equal 142000.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+
+    b = deals(:purchase).balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal (70000.0 * deals(:purchase).rate).accounting_norm,
+      b.amount, "Wrong balance amount"
+    assert_equal 70000.0, b.value, "Wrong balance value"
+    assert_equal "passive", b.side, "Wrong balance side"
+
+    b = deals(:bankaccount).balance
+    value = 100000.0 + 142000.0 - 70000.0 +
+      (1000.0 * (deals(:forex2).rate - 1 / deals(:forex).rate))
+    assert !b.nil?, "Balance is nil"
+    assert_equal value.accounting_norm, b.amount, "Wrong balance amount"
+    assert_equal value.accounting_norm, b.value, "Wrong balance value"
+    assert_equal "passive", b.side, "Wrong balance side"
+  end
+
   private
   def init_facts
     facts = [

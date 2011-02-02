@@ -9,6 +9,10 @@ class Balance < ActiveRecord::Base
   after_initialize :balance_init
   before_save :balance_save
 
+  def Balance.open
+    Balance.find_all_by_paid nil
+  end
+
   def txn(aTxn)
     return nil if self.deal.nil?
     return nil if aTxn.nil?
