@@ -7,5 +7,9 @@ class State < ActiveRecord::Base
   
   after_initialize :do_init
 
+  def State.open
+    State.find_all_by_paid nil
+  end
+
   include StateAction
 end

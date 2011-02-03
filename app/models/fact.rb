@@ -2,7 +2,7 @@ class FactValidator
   def validate(record)
     record.errors[:base] << "bad resource" unless
       record.resource == record.from.take \
-        and record.resource == record.to.give
+        and (record.resource == record.to.give or record.to.income?)
   end
 end
 
@@ -32,6 +32,7 @@ class Fact < ActiveRecord::Base
   
   def init_state(aState, aDeal)
     return false if aDeal.nil?
+    return true if (aDeal.nil? or aDeal.income?) and aState.nil?
     (if aState.nil?
       State.new
     else

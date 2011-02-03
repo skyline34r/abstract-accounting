@@ -6,6 +6,16 @@ class Deal < ActiveRecord::Base
   has_many :states
   has_many :balances
 
+  def Deal.income
+    #TODO: deprecate any changes
+    income = Deal.where(:id => 0).first
+    income = Deal.new :tag => "profit and loss", :rate => 1.0 if income.nil?
+    income.id = 0 if income.id.nil?
+    income
+  end
+  def income?
+    self.id == 0
+  end
   def state(day = nil)
     states.where(:start =>
         if !day.nil?
