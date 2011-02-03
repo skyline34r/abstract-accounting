@@ -18,9 +18,9 @@ class Txn < ActiveRecord::Base
     self.status = 0
     self.earnings = 0.0
     self.value = 0.0
-    calculate(((@from_balance = self.fact.from.balance).nil? ?
-      @from_balance = Balance.new : @from_balance),
-      self.fact.from) do |val, balance|
+    @from_balance = nil
+    @to_balance = nil
+    calculate self.fact.from.balance, self.fact.from do |val, balance|
       @from_balance = balance
       if !val.nil?
         self.value = val[0]
@@ -29,27 +29,34 @@ class Txn < ActiveRecord::Base
         @from_balance = nil
       end
     end
-    calculate((@to_balance = self.fact.to.balance).nil? ?
-      @to_balance = Balance.new : @to_balance, self.fact.to) do |val, balance|
+    calculate self.fact.to.balance, self.fact.to do |val, balance|
       @to_balance = balance
       if !val.nil?
         self.earnings = val[0]
         self.status = (val[1] == true ? 1 : 0)
-        if self.status == 1
-          i = Income.new
-          i.txn = self
-          i.save!
-        end
       end
       if !@to_balance.amount?
         @to_balance = nil
       end
     end
+    if !self.fact.to.nil? and self.fact.to.income? and self.fact.to.balance.nil?
+      self.earnings = -self.value
+      self.status = 1
+    end
+    if self.status == 1
+      income = Income.open.first
+      income = Income.new if income.nil?
+      income.txn = self
+      income.save!
+    end
     true
   end
 
   def calculate(aBalance, aDeal)
-    aBalance.save_or_replace!(self.fact.day) do |balance|
+    return true if (aDeal.nil? or aDeal.income?) and aBalance.nil?
+    b = aBalance
+    b = Balance.new if b.nil?
+    b.save_or_replace!(self.fact.day) do |balance|
       balance.deal = aDeal
       val = balance.txn(self)
       yield(val, balance)

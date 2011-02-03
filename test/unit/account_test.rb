@@ -230,9 +230,9 @@ class AccountTest < ActiveSupport::TestCase
 
         assert_equal 1, Income.all.count, "Income count is wrong"
         inc = Income.all.first
-        @profit = (pendingFact.amount * (deals(:forex2).rate -
+        profit = (pendingFact.amount * (deals(:forex2).rate -
               (1/deals(:forex).rate))).accounting_norm
-        assert_equal @profit, inc.value, "Invalid income value"
+        assert_equal profit, inc.value, "Invalid income value"
 
         assert_equal 0, Fact.pendings.count, "Pending facts count is wrong"
       end
@@ -369,6 +369,25 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal value.accounting_norm, s.amount,
       "State amount is wrong"
     assert_equal money(:rub), s.resource, "State resource is wrong"
+
+    #Reflect office rent for august
+    assert t.save, "Txn is not saved"
+
+    assert_equal 6, Balance.open.count, "Balance count is wrong"
+    assert t.to_balance.nil?, "To balance is not nil"
+    assert !t.from_balance.nil?, "From balance is nil"
+    assert_equal (1 / office.rate).accounting_norm, t.from_balance.amount,
+      "From balance amount is wrong"
+    assert_equal (1 / office.rate).accounting_norm, t.from_balance.value,
+      "From balance value is wrong"
+    assert_equal "active", t.from_balance.side, "From balance side is wrong"
+
+    assert_equal 1, Income.open.count, "Income count is wrong"
+    profit = (1000.0 * (deals(:forex2).rate -
+          (1/deals(:forex).rate))).accounting_norm
+    profit -= (1 / office.rate).accounting_norm
+    assert (profit + Income.open.first.value).accounting_zero?,
+      "Income value is wrong"
   end
 
   private
