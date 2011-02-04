@@ -1,3 +1,5 @@
+require "closable"
+
 class Income < ActiveRecord::Base
   validates :start, :side, :value, :presence => true
   validates :start, :uniqueness => true
@@ -10,7 +12,7 @@ class Income < ActiveRecord::Base
   def txn=(aTxn)
     return nil if aTxn.status == 0
     self.side ||= "active"
-    if self.new_record?
+    if self.start.nil?
       self.start = aTxn.fact.day
       if aTxn.earnings > 0.0
         self.value = aTxn.earnings
@@ -20,6 +22,7 @@ class Income < ActiveRecord::Base
         self.side = "passive"
       end
     else
+      self.start = aTxn.fact.day
       self.value += self.side == "passive" ? -aTxn.earnings : aTxn.earnings
       if self.value.accounting_negative?
         self.value *= -1
@@ -27,4 +30,10 @@ class Income < ActiveRecord::Base
       end
     end
   end
+
+  def amount?
+    !self.value.accounting_zero?
+  end
+
+  include Closable
 end

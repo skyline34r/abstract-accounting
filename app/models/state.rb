@@ -1,4 +1,5 @@
 require "state_action"
+require "closable"
 
 class State < ActiveRecord::Base
   validates :amount, :start, :side, :deal, :presence => true
@@ -11,5 +12,6 @@ class State < ActiveRecord::Base
     State.find_all_by_paid nil
   end
 
+  include Closable
   include StateAction
 end

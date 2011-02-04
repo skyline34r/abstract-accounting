@@ -46,8 +46,9 @@ class Txn < ActiveRecord::Base
     if self.status == 1
       income = Income.open.first
       income = Income.new if income.nil?
-      income.txn = self
-      income.save!
+      income.save_or_replace! self.fact.day do |inc|
+        inc.txn = self
+      end
     end
     true
   end

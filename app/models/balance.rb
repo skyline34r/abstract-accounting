@@ -1,4 +1,5 @@
 require "state_action"
+require "closable"
 
 class Balance < ActiveRecord::Base
   validates :amount, :value, :start, :side, :deal, :presence => true
@@ -45,6 +46,7 @@ class Balance < ActiveRecord::Base
     return nil
   end
 
+  include Closable
   include StateAction
 
   protected #TODO: Replace default method value
