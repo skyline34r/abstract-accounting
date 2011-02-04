@@ -230,22 +230,22 @@ class AccountTest < ActiveSupport::TestCase
 
         assert_equal 1, Income.all.count, "Income count is wrong"
         inc = Income.all.first
-        profit = (pendingFact.amount * (deals(:forex2).rate -
+        @profit = (pendingFact.amount * (deals(:forex2).rate -
               (1/deals(:forex).rate))).accounting_norm
-        assert_equal profit, inc.value, "Invalid income value"
+        assert_equal @profit, inc.value, "Invalid income value"
 
         assert_equal 0, Fact.pendings.count, "Pending facts count is wrong"
       end
       facts.delete_at(0)
     end
+
+    loss_transaction
+    split_transaction
   end
 
-  test "loss transaction" do
-    init_facts.each do |fact|
-      assert Txn.new(:fact => fact).save, "Txn is not saved"
-    end
-
-    # Settle forex deal #2
+  private
+  def loss_transaction
+     # Settle forex deal #2
     t = Txn.new :fact => Fact.new(:amount => 1000.0 * deals(:forex2).rate,
               :day => DateTime.civil(2007, 9, 3, 12, 0, 0),
               :from => deals(:forex2),
@@ -257,116 +257,118 @@ class AccountTest < ActiveSupport::TestCase
     assert !Balance.open.nil?, "Open balances is nil"
     assert_equal 4, Balance.open.count, "Open balances count is wrong"
 
-    b = deals(:equityshare2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (100000.0 / deals(:equityshare2).rate).accounting_norm,
-      b.amount, "Wrong balance amount"
-    assert_equal 100000.0, b.value, "Wrong balance value"
-    assert_equal "active", b.side, "Wrong balance side"
+    test_balance deals(:equityshare2).balance,
+                 (100000.0 / deals(:equityshare2).rate).accounting_norm,
+                 100000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
-    b = deals(:equityshare1).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (142000.0 / deals(:equityshare1).rate).accounting_norm,
-      b.amount, "Wrong balance amount"
-    assert_equal 142000.0, b.value, "Wrong balance value"
-    assert_equal "active", b.side, "Wrong balance side"
+    test_balance deals(:equityshare1).balance,
+                 (142000.0 / deals(:equityshare1).rate).accounting_norm,
+                 142000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
-    b = deals(:purchase).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (70000.0 * deals(:purchase).rate).accounting_norm,
-      b.amount, "Wrong balance amount"
-    assert_equal 70000.0, b.value, "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    test_balance deals(:purchase).balance,
+                 (70000.0 * deals(:purchase).rate).accounting_norm,
+                 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
-    b = deals(:bankaccount).balance
-    value = 100000.0 + 142000.0 - 70000.0 +
+    @rubs = 100000.0 + 142000.0 - 70000.0 +
       (1000.0 * (deals(:forex2).rate - 1 / deals(:forex).rate))
-    assert !b.nil?, "Balance is nil"
-    assert_equal value.accounting_norm, b.amount, "Wrong balance amount"
-    assert_equal value.accounting_norm, b.value, "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
     #forex deal #3
-    forex = Deal.new :tag => "forex deal 3",
+    @forex3 = Deal.new :tag => "forex deal 3",
       :rate => (1 / 34.2),
       :entity => entities(:sbrfbank),
       :give => money(:rub),
       :take => money(:eur)
-    assert forex.save, "Forex deal 3 is not saved"
+    assert @forex3.save, "Forex deal 3 is not saved"
     #Pay forex deal #3
     t = Txn.new :fact => Fact.new(
-              :amount => (5000.0 / forex.rate).accounting_norm,
+              :amount => (5000.0 / @forex3.rate).accounting_norm,
               :day => DateTime.civil(2007, 9, 3, 12, 0, 0),
               :from => deals(:bankaccount),
-              :to => forex,
+              :to => @forex3,
               :resource => deals(:bankaccount).take)
     assert t.fact.save, "Fact is not saved"
     assert t.save, "Txn is not saved"
 
     assert_equal 5, Balance.open.count, "Open balances count is wrong"
-    b = deals(:bankaccount).balance
-    value -= (5000.0 / forex.rate).accounting_norm
-    assert !b.nil?, "Balance is nil"
-    assert_equal value.accounting_norm, b.amount, "Wrong balance amount"
-    assert_equal value.accounting_norm, b.value, "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
-    b = forex.balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal 5000.0, b.amount, "Wrong balance amount"
-    assert_equal (5000.0 / forex.rate).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    @rubs -= (5000.0 / @forex3.rate).accounting_norm
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance @forex3.balance,
+                 5000.0,
+                 (5000.0 / @forex3.rate).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
     #Recieve settlement from forex deal #3
     t = Txn.new :fact => Fact.new(
               :amount => 5000.0,
               :day => DateTime.civil(2007, 9, 4, 12, 0, 0),
-              :from => forex,
+              :from => @forex3,
               :to => deals(:bankaccount2),
-              :resource => forex.take)
+              :resource => @forex3.take)
     assert t.fact.save, "Fact is not saved"
     assert t.save, "Txn is not saved"
 
     assert_equal 5, Balance.open.count, "Open balances count is wrong"
-    assert forex.balance.nil?, "Balance is not nil"
-    b = deals(:bankaccount2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal 5000.0, b.amount, "Wrong balance amount"
-    assert_equal (5000.0 / forex.rate).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    assert @forex3.balance.nil?, "Balance is not nil"
+    test_balance deals(:bankaccount2).balance,
+                 5000.0,
+                 (5000.0 / @forex3.rate).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
     #Create flow for office rent
-    landlord = Entity.new :tag => "Audit service"
-    assert landlord.save, "Audit service not saved"
-    rent = Asset.new :tag => "office space"
-    assert rent.save, "Asset not saved"
-    office = Deal.new :tag => "rented office 1",
+    @landlord = Entity.new :tag => "Audit service"
+    assert @landlord.save, "Audit service not saved"
+    @rent = Asset.new :tag => "office space"
+    assert @rent.save, "Asset not saved"
+    @office = Deal.new :tag => "rented office 1",
       :rate => (1 / 2000.0),
-      :entity => landlord,
+      :entity => @landlord,
       :give => money(:rub),
-      :take => rent
-    assert office.save, "Flow is not saved"
+      :take => @rent
+    assert @office.save, "Flow is not saved"
 
     #Accrue office rent for august
     t = Txn.new :fact => Fact.new(
               :amount => 1.0,
               :day => DateTime.civil(2007, 8, 31, 12, 0, 0),
-              :from => office,
+              :from => @office,
               :to => Deal.income,
-              :resource => office.take)
+              :resource => @office.take)
     assert t.fact.valid?, "Fact is not valid"
     assert t.fact.save, "Fact is not saved"
 
     assert_equal 6, State.open.count, "State count is wrong"
-    s = office.state
+    s = @office.state
     assert !s.nil?, "State is nil"
-    assert_equal (1 / office.rate).accounting_norm, s.amount,
+    assert_equal (1 / @office.rate).accounting_norm, s.amount,
       "State amount is wrong"
     assert_equal money(:rub), s.resource, "State resource is wrong"
 
     s = deals(:bankaccount).state
     assert !s.nil?, "State is nil"
-    assert_equal value.accounting_norm, s.amount,
+    assert_equal @rubs.accounting_norm, s.amount,
       "State amount is wrong"
     assert_equal money(:rub), s.resource, "State resource is wrong"
 
@@ -374,142 +376,72 @@ class AccountTest < ActiveSupport::TestCase
     assert t.save, "Txn is not saved"
 
     assert_equal 6, Balance.open.count, "Balance count is wrong"
+    test_balance t.from_balance,
+                 (1 / @office.rate).accounting_norm,
+                 (1 / @office.rate).accounting_norm,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
     assert t.to_balance.nil?, "To balance is not nil"
-    assert !t.from_balance.nil?, "From balance is nil"
-    assert_equal (1 / office.rate).accounting_norm, t.from_balance.amount,
-      "From balance amount is wrong"
-    assert_equal (1 / office.rate).accounting_norm, t.from_balance.value,
-      "From balance value is wrong"
-    assert_equal "active", t.from_balance.side, "From balance side is wrong"
 
     assert_equal 1, Income.open.count, "Income count is wrong"
-    profit = (1000.0 * (deals(:forex2).rate -
-          (1/deals(:forex).rate))).accounting_norm
-    profit -= (1 / office.rate).accounting_norm
-    assert (profit + Income.open.first.value).accounting_zero?,
+    @profit -= (1 / @office.rate).accounting_norm
+    assert (@profit + Income.open.first.value).accounting_zero?,
       "Income value is wrong"
   end
 
-  test "split transaction" do
-    init_facts.each do |fact|
-      assert Txn.new(:fact => fact).save, "Txn is not saved"
-    end
-
-    # Settle forex deal #2
-    t = Txn.new :fact => Fact.new(:amount => 1000.0 * deals(:forex2).rate,
-              :day => DateTime.civil(2007, 9, 3, 12, 0, 0),
-              :from => deals(:forex2),
-              :to => deals(:bankaccount),
-              :resource => deals(:forex2).take)
-    assert t.fact.save, "Fact is not saved"
-    assert t.save, "Txn is not saved"
-
-    #forex deal #3
-    forex = Deal.new :tag => "forex deal 3",
-      :rate => (1 / 34.2),
-      :entity => entities(:sbrfbank),
-      :give => money(:rub),
-      :take => money(:eur)
-    assert forex.save, "Forex deal 3 is not saved"
-    #Pay forex deal #3
-    t = Txn.new :fact => Fact.new(
-              :amount => (5000.0 / forex.rate).accounting_norm,
-              :day => DateTime.civil(2007, 9, 3, 12, 0, 0),
-              :from => deals(:bankaccount),
-              :to => forex,
-              :resource => deals(:bankaccount).take)
-    assert t.fact.save, "Fact is not saved"
-    assert t.save, "Txn is not saved"
-
-    #Recieve settlement from forex deal #3
-    t = Txn.new :fact => Fact.new(
-              :amount => 5000.0,
-              :day => DateTime.civil(2007, 9, 4, 12, 0, 0),
-              :from => forex,
-              :to => deals(:bankaccount2),
-              :resource => forex.take)
-    assert t.fact.save, "Fact is not saved"
-    assert t.save, "Txn is not saved"
-
-    #Create flow for office rent
-    landlord = Entity.new :tag => "Audit service"
-    assert landlord.save, "Audit service not saved"
-    rent = Asset.new :tag => "office space"
-    assert rent.save, "Asset not saved"
-    office = Deal.new :tag => "rented office 1",
-      :rate => (1 / 2000.0),
-      :entity => landlord,
-      :give => money(:rub),
-      :take => rent
-    assert office.save, "Flow is not saved"
-
-    #Accrue office rent for august
-    t = Txn.new :fact => Fact.new(
-              :amount => 1.0,
-              :day => DateTime.civil(2007, 8, 31, 12, 0, 0),
-              :from => office,
-              :to => Deal.income,
-              :resource => office.take)
-    assert t.fact.save, "Fact is not saved"
-    #Reflect office rent for august
-    assert t.save, "Txn is not saved"
-
-    profit = (1000.0 * (deals(:forex2).rate -
-          (1/deals(:forex).rate))).accounting_norm
-    profit -= (1 / office.rate).accounting_norm
-
+  def split_transaction
     #Create flow for forex deal #4
-    forex = Deal.new :tag => "forex deal 4",
+    @forex4 = Deal.new :tag => "forex deal 4",
       :rate => 34.95,
       :entity => entities(:sbrfbank),
       :give => money(:eur),
       :take => money(:rub)
-    assert forex.save, "Flow is not saved"
+    assert @forex4.save, "Flow is not saved"
 
     #Partially pay forex deal #4
     t = Txn.new :fact => Fact.new(
               :amount => 2000.0,
               :day => DateTime.civil(2007, 9, 5, 12, 0, 0),
               :from => deals(:bankaccount2),
-              :to => forex,
+              :to => @forex4,
               :resource => deals(:bankaccount2).take)
     assert t.fact.save, "Fact is not saved"
     assert t.save, "Txn is not saved"
 
     assert_equal 7, Balance.open.count, "Open balances count is wrong"
-    euros = 5000.0 - t.fact.amount
-    b = deals(:bankaccount2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal euros, b.amount, "Wrong balance amount"
-    assert_equal (euros * 34.2).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    @euros = 5000.0 - t.fact.amount
+    test_balance deals(:bankaccount2).balance,
+                 @euros,
+                 (@euros * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
-    b = forex.balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (t.fact.amount * forex.rate).accounting_norm, b.amount,
-      "Wrong balance amount"
-    assert_equal (t.fact.amount * forex.rate).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    test_balance @forex4.balance,
+                 (t.fact.amount * @forex4.rate).accounting_norm,
+                 (t.fact.amount * @forex4.rate).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
     assert_equal 1, Income.open.count, "Wrong income count"
 
-    profit += (34.95 - 34.2) * t.fact.amount
-    assert (profit + Income.open.first.value).accounting_zero?,
+    @profit += (34.95 - 34.2) * t.fact.amount
+    assert (@profit + Income.open.first.value).accounting_zero?,
       "Wrong income value"
 
     #Partially receive from forex deal #4
     t = Txn.new :fact => Fact.new(
               :amount => (2500.0 * 34.95),
               :day => DateTime.civil(2007, 9, 5, 12, 0, 0),
-              :from => forex,
+              :from => @forex4,
               :to => deals(:bankaccount),
-              :resource => forex.take)
+              :resource => @forex4.take)
     assert t.fact.save, "Fact is not saved"
     assert_equal 7, State.open.count, "Wrong open states count"
 
-    s = forex.state
+    s = @forex4.state
     assert !s.nil?, "Forex state is nil"
     assert_equal 2500.0 - 2000.0, s.amount, "Wrong forex state amount"
     assert_equal money(:eur), s.resource, "Wrong forex state resource"
@@ -518,40 +450,35 @@ class AccountTest < ActiveSupport::TestCase
     assert t.save, "Txn is not saved"
 
     assert_equal 7, Balance.open.count, "Wrong open balances count"
-    b = forex.balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal 2500.0 - 2000.0, b.amount,
-      "Wrong balance amount"
-    assert_equal ((2500.0 - 2000.0) * 34.95).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "active", b.side, "Wrong balance side"
+    test_balance @forex4.balance,
+                 2500.0 - 2000.0,
+                 ((2500.0 - 2000.0) * 34.95).accounting_norm,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
-    rubs = 100000.0 + 142000.0 - 70000.0 +
-      (1000.0 * (deals(:forex2).rate - 1 / deals(:forex).rate))
-    rubs -= (5000.0 * 34.2).accounting_norm
-    rubs += t.fact.amount
-    b = deals(:bankaccount).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal rubs.accounting_norm, b.amount,
-      "Wrong balance amount"
-    assert_equal rubs.accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    @rubs += t.fact.amount
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
     assert_equal 1, Income.open.count, "Wrong open incomes count"
-    assert profit + Income.open.first.value, "Wrong income value"
+    assert @profit + Income.open.first.value, "Wrong income value"
 
     #Fully pay forex deal #4
     t = Txn.new :fact => Fact.new(
               :amount => 600.0,
               :day => DateTime.civil(2007, 9, 5, 12, 0, 0),
               :from => deals(:bankaccount2),
-              :to => forex,
+              :to => @forex4,
               :resource => deals(:bankaccount2).take)
     assert t.fact.save, "Fact is not saved"
 
     assert_equal 7, State.open.count, "Wrong open states count"
-    s = forex.state
+    s = @forex4.state
     assert !s.nil?, "Forex state is nil"
     assert_equal (100.0 * 34.95).accounting_norm, s.amount, "Wrong forex state amount"
     assert_equal money(:rub), s.resource, "Wrong forex state resource"
@@ -560,28 +487,32 @@ class AccountTest < ActiveSupport::TestCase
     assert t.save, "Txn is not saved"
 
     assert_equal 7, Balance.open.count, "Wrong open balances count"
-    b = forex.balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (100.0 * 34.95).accounting_norm, b.amount,
-      "Wrong balance amount"
-    assert_equal (100.0 * 34.95).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
-
-    euros -= 600.0
-    b = deals(:bankaccount2).balance
-    assert !b.nil?, "Balance is nil"
-    assert_equal (euros).accounting_norm, b.amount,
-      "Wrong balance amount"
-    assert_equal (euros * 34.2).accounting_norm, b.value,
-      "Wrong balance value"
-    assert_equal "passive", b.side, "Wrong balance side"
+    test_balance @forex4.balance,
+                 (100.0 * 34.95).accounting_norm,
+                 (100.0 * 34.95).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    @euros -= 600.0
+    test_balance deals(:bankaccount2).balance,
+                 (@euros).accounting_norm,
+                 (@euros * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
 
     assert_equal 0, Income.open.count, "Wrong open income count"
-    #profit += (34.95 - 34.2) * 600.0
+
+    @profit += (34.95 - 34.2) * 600.0
   end
 
-  private
+  def test_balance(b, amount, value, side)
+    yield(false, b.nil?, "Balance is nil")
+    yield(amount, b.amount, "Wrong balance amount")
+    yield(value, b.value, "Wrong balance value")
+    yield(side, b.side, "Wrong balance side")
+  end
+
   def init_facts
     facts = [
       Fact.new(:amount => 100000.0,
