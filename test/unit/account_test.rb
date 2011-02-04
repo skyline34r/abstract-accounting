@@ -242,6 +242,7 @@ class AccountTest < ActiveSupport::TestCase
     loss_transaction
     split_transaction
     gain_transaction
+    direct_gains_losses
   end
 
   private
@@ -603,6 +604,109 @@ class AccountTest < ActiveSupport::TestCase
     end
     assert_equal 0, Income.open.count, "Wrong open incomes count"
     @profit = 0.0
+  end
+
+  def direct_gains_losses
+    #Receive prepayment from forex deal #4
+    t = Txn.new :fact => Fact.new(
+              :amount => 400.0 * 34.95,
+              :day => DateTime.civil(2007, 9, 10, 12, 0, 0),
+              :from => @forex4,
+              :to => deals(:bankaccount),
+              :resource => @forex4.take)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 7, Balance.open.count, "Wrong open balances count"
+    test_balance @forex4.balance,
+                 400.0,
+                 (400.0 * 34.95).accounting_norm,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    @rubs += 400.0 * 34.95
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    #Direct write-off - loss
+    t = Txn.new :fact => Fact.new(
+              :amount => 400.0,
+              :day => DateTime.civil(2007, 9, 10, 12, 0, 0),
+              :from => deals(:bankaccount2),
+              :to => Deal.income,
+              :resource => deals(:bankaccount2).take)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 7, Balance.open.count, "Wrong open balances count"
+    @euros -= 400.0
+    test_balance deals(:bankaccount2).balance,
+                 @euros.accounting_norm,
+                 (@euros * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    assert_equal 1, Income.open.count, "Wrong open incomes count"
+    @profit -= 400.0 * 34.2
+    assert (@profit + Income.open.first.value), "Wrong income value"
+
+    #Direct write-in - gain
+    t = Txn.new :fact => Fact.new(
+              :amount => 400.0,
+              :day => DateTime.civil(2007, 9, 10, 12, 0, 0),
+              :from => Deal.income,
+              :to => @forex4,
+              :resource => @forex4.give)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 6, Balance.open.count, "Wrong open balances count"
+    #check balances
+    test_balance Balance.open[0],
+                 100000.0 / 10000.0,
+                 100000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance Balance.open[1],
+                 142000.0 / 10000.0,
+                 142000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance Balance.open[2],
+                 1.0,
+                 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance Balance.open[3],
+                 1.0,
+                 2000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance Balance.open[4],
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance Balance.open[5],
+                 @euros.accounting_norm,
+                 (@euros * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    assert_equal 1, Income.open.count, "Wrong open incomes count"
+    @profit += 400.0 * 34.95
+    assert (@profit + Income.open.first.value), "Wrong income value"
   end
 
   def test_balance(b, amount, value, side)
