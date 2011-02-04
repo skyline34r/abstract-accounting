@@ -241,6 +241,7 @@ class AccountTest < ActiveSupport::TestCase
 
     loss_transaction
     split_transaction
+    gain_transaction
   end
 
   private
@@ -504,6 +505,104 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 0, Income.open.count, "Wrong open income count"
 
     @profit += (34.95 - 34.2) * 600.0
+  end
+
+  def gain_transaction
+    #Recieve settlement from forex deal #4
+    t = Txn.new :fact => Fact.new(
+              :amount => 100.0 * 34.95,
+              :day => DateTime.civil(2007, 9, 5, 12, 0, 0),
+              :from => @forex4,
+              :to => deals(:bankaccount),
+              :resource => @forex4.take)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 6, Balance.open.count, "Wrong open balances count"
+    assert @forex4.balance.nil?, "Forex 4 balance is not nil"
+
+    @rubs += 100.0 * 34.95
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    #Settle office rent for Aug and prepay for Sep
+    t = Txn.new :fact => Fact.new(
+              :amount => 2 * 2000.0,
+              :day => DateTime.civil(2007, 9, 5, 12, 0, 0),
+              :from => deals(:bankaccount),
+              :to => @office,
+              :resource => deals(:bankaccount).take)
+    assert t.fact.save, "Fact is not saved"
+    assert_equal 6, State.open.count, "Open states count is wrong"
+    s = @office.state
+    assert !s.nil?, "Office state is nil"
+    assert_equal 1.0, s.amount, "Wrong forex state amount"
+    assert_equal @office.take, s.resource, "Wrong forex state resource"
+
+    #Reflect payment for office
+    assert t.save, "Txn is not saved"
+    assert_equal 6, Balance.open.count, "Wrong open balances count"
+    @rubs -= 2 * 2000.0
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance @office.balance,
+                 1.0,
+                 2000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert_equal 0, Income.open.count, "Wrong open incomes count"
+
+    #Direct monetary loss
+    t = Txn.new :fact => Fact.new(
+              :amount => 50.0,
+              :day => DateTime.civil(2007, 9, 6, 12, 0, 0),
+              :from => deals(:bankaccount),
+              :to => Deal.income,
+              :resource => deals(:bankaccount).take)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 6, Balance.open.count, "Wrong open balances count"
+    @rubs -= 50.0
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert_equal 1, Income.open.count, "Wrong open incomes count"
+    @profit -= 50.0
+    assert (Income.open.first.value + @profit).accounting_zero?,
+      "Wrong income value"
+
+    #Direct monetary gain
+    t = Txn.new :fact => Fact.new(
+              :amount => 50.0,
+              :day => DateTime.civil(2007, 9, 7, 12, 0, 0),
+              :from => Deal.income,
+              :to => deals(:bankaccount),
+              :resource => deals(:bankaccount).give)
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 6, Balance.open.count, "Wrong open balances count"
+    @rubs += 50.0
+    test_balance deals(:bankaccount).balance,
+                 @rubs.accounting_norm,
+                 @rubs.accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert_equal 0, Income.open.count, "Wrong open incomes count"
+    @profit = 0.0
   end
 
   def test_balance(b, amount, value, side)
