@@ -87,6 +87,7 @@ class CurrencyTest < ActiveSupport::TestCase
   test "currency" do
     check_quote
     purchase
+    rate_change_before_income
   end
 
   private
@@ -127,5 +128,14 @@ class CurrencyTest < ActiveSupport::TestCase
     assert_equal 45000.0, b.value, "Wrong balance value"
     assert_equal @dx, b.deal, "Wrong balance deal"
     assert_equal "passive", b.side, "Wrong balance side"
+  end
+
+  def rate_change_before_income
+    assert_equal @c1.quotes.first, @c1.quote, "Maximum quote for money is wrong"
+
+    assert (q = Quote.new(:money => @c1, :rate => 1.6,
+      :day => DateTime.civil(2008, 3, 25, 12, 0, 0))).save, "Quote is not saved"
+
+    assert_equal q, @c1.quote, "Maximum quote for money is wrong"
   end
 end
