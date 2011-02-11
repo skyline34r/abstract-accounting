@@ -21,6 +21,11 @@ class Quote < ActiveRecord::Base
         end
       end
     end
+    if !self.diff.accounting_zero?
+      income = Income.new
+      income.quote = self
+      income.save!
+    end
     true
   end
 end
