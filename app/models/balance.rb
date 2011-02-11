@@ -24,13 +24,16 @@ class Balance < ActiveRecord::Base
     if Chart.all.count > 0
       if self.deal.take == Chart.first.currency
         @debit = 1.0
-      elsif self.deal.give == Chart.first.currency
-        @credit = 1.0
       end
     end
-    q = Quote.where(:money_id => self.deal.give.id).first \
-      if self.deal.give.instance_of?(Money)
-    @credit = q.rate unless q.nil?
+    @credit = if self.deal.give.instance_of?(Money) and
+        !self.deal.give.quotes.first.nil?
+      self.deal.give.quotes.first.rate
+    elsif !Chart.first.nil? and self.deal.give == Chart.first.currency
+      1.0
+    else
+      0.0
+    end
 
     if init_from_fact(aTxn.fact)
       self.start = aTxn.fact.day
