@@ -86,11 +86,11 @@ class CurrencyTest < ActiveSupport::TestCase
 
   test "currency" do
     check_quote
+    purchase
   end
 
   private
   def check_quote
-    #PRExplodedTime tm = {0,0,0,12,24,2,2008};
     q = Quote.new :money => @cf,
       :rate => 1.0,
       :day => DateTime.civil(2008, 3, 24, 12, 0, 0)
@@ -98,5 +98,34 @@ class CurrencyTest < ActiveSupport::TestCase
     assert q.valid?, "Quote is not valid"
     assert q.save, "Quote is not saved"
     assert_equal 0.0, Quote.find(q.id).diff, "Quote diff is not saved"
+
+    assert Quote.new(:money => @c1, :rate => 1.5,
+      :day => DateTime.civil(2008, 3, 24, 12, 0, 0)).save, "Quote is not saved"
+  end
+
+  def purchase
+    t = Txn.new(:fact => Fact.new(:amount => 300.0,
+              :day => DateTime.civil(2008, 3, 24, 12, 0, 0),
+              :from => @bx1,
+              :to => @dx,
+              :resource => @bx1.take))
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    assert_equal 2, Balance.all.count, "Balance count is not equal to 2"
+
+    b = t.from_balance
+    assert !b.nil?, "From balance is nil"
+    assert_equal 30000.0, b.amount, "Wrong balance amount"
+    assert_equal 45000.0, b.value, "Wrong balance value"
+    assert_equal @bx1, b.deal, "Wrong balance deal"
+    assert_equal "active", b.side, "Wrong balance side"
+
+    b = t.to_balance
+    assert !b.nil?, "From balance is nil"
+    assert_equal 300.0, b.amount, "Wrong balance amount"
+    assert_equal 45000.0, b.value, "Wrong balance value"
+    assert_equal @dx, b.deal, "Wrong balance deal"
+    assert_equal "passive", b.side, "Wrong balance side"
   end
 end
