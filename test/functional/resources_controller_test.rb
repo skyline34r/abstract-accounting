@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class ResourcesControllerTest < ActionController::TestCase
+  setup do
+    @asset = assets(:iron)
+  end
 
   test "should get index resource" do
     get :index
@@ -15,6 +18,11 @@ class ResourcesControllerTest < ActionController::TestCase
 
   test "should get new money in resource" do
     xml_http_request :get, :new_money
+    assert_response :success
+  end
+
+  test "should get edit asset in resource" do
+    xml_http_request :get, :edit_asset, :id => @asset.to_param
     assert_response :success
   end
 
