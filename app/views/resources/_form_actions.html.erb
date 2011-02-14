@@ -1,0 +1,30 @@
+<table>
+  <tr align="right">
+    <td>
+      <input name="cancel" type="button" value="cancel"
+        onclick=""/>
+      <input name="reset" type="button" value="reset"
+        onclick=""/>
+    </td>
+    <td width="50">
+      <%= form_for(@resource, :url => { :action => "create_asset" }, :remote => true) do |f| %>
+      <%= f.submit "save", :id => "save_resource",
+                           :onclick => "" %>
+      <%= f.hidden_field :tag, :id => "hide_res_tag", :value => @resource.tag %>
+      <% end %>
+    </td>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      monetary:
+      <input id="resource_type_a" type="checkbox" disabled="true"/>
+    </td>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      tag:
+      <input id="resource_tag_a" type="text" value="" size="83"
+             onkeypress=""/>
+    </td>
+  </tr>
+</table>
