@@ -21,7 +21,24 @@ module ResourcesHelper
       :rowList => [10, 20, 30],
       :sortname => 'tag',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => "function(cell)
+      {
+        $('#resource_tag').val(cell);
+        $('#change_resource').removeAttr('disabled');
+        if($('#resources_list').getCell(cell, 'type') == 'asset')
+        {
+          $('#change_resource').parent().parent().attr('action',
+            '/resources/edit_asset.' + $('#resources_list').getCell(cell, 'id'));
+          $('#resource_type').removeAttr('checked');
+        }
+        else
+        {
+          $('#change_resource').parent().parent().attr('action',
+            '/resources/edit_money.' + $('#resources_list').getCell(cell, 'id'));
+          $('#resource_type').attr('checked','checked');
+        }
+      }".to_json_var
     }]
 
     jqgrid_api 'resources_list', grid, options
