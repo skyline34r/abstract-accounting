@@ -3,6 +3,7 @@ Abstract::Application.routes.draw do
   resources :resources do
     collection do
       get 'new_asset'
+      get 'new_money'
     end
   end
   get "home/index"

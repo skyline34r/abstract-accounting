@@ -12,4 +12,8 @@ class ResourcesController < ApplicationController
     @asset = Asset.new
   end
 
+  def new_money
+    @money = Money.new
+  end
+
 end

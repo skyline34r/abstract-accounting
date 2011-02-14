@@ -13,4 +13,9 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get new money in resource" do
+    xml_http_request :get, :new_money
+    assert_response :success
+  end
+
 end
