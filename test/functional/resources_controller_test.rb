@@ -48,4 +48,12 @@ class ResourcesControllerTest < ActionController::TestCase
       'Money \'BY\' not saved'
   end
 
+  test "should update asset in resources" do
+    xml_http_request :put, :update_asset, :id => @asset.to_param,
+      :asset => { :tag => 'Iron update' }
+    assert_response :success
+    assert_equal 'Iron update', Asset.find(@asset.id).tag,
+      'Asset \'Iron\' not edited'
+  end
+
 end

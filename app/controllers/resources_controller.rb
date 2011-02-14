@@ -38,4 +38,11 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def update_asset
+    @asset = Asset.find(params[:id])
+    if !@asset.update_attributes(params[:asset])
+      render :action => "edit_asset"
+    end
+  end
+
 end
