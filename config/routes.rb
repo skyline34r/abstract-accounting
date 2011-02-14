@@ -6,6 +6,7 @@ Abstract::Application.routes.draw do
       get 'new_money'
       get 'edit_asset'
       get 'edit_money'
+      post 'create_asset'
     end
   end
   get "home/index"

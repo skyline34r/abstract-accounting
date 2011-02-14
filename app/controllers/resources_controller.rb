@@ -24,4 +24,11 @@ class ResourcesController < ApplicationController
     @money = Money.find(params[:id])
   end
 
+  def create_asset
+    @asset = Asset.new(params[:asset])
+    if !@asset.save
+      render :action => "new_asset"
+    end
+  end
+
 end

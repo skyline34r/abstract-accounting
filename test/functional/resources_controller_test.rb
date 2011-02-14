@@ -32,4 +32,12 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should create asset in resources" do
+    assert_difference('Asset.count') do
+       xml_http_request :post, :create_asset, :asset => { :tag => 'Iron tester' }
+    end
+    assert_equal 1, Asset.where(:tag =>'Iron tester').count,
+      'Asset \'Iron tester\' not saved'
+  end
+
 end
