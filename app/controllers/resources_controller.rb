@@ -45,4 +45,10 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def update_money
+    @money = Money.find(params[:id])
+    if !@money.update_attributes(params[:money])
+      render :action => "edit_money"
+    end
+  end
 end

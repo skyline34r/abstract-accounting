@@ -56,4 +56,13 @@ class ResourcesControllerTest < ActionController::TestCase
       'Asset \'Iron\' not edited'
   end
 
+  test "should update money in resources" do
+    xml_http_request :put, :update_money, :id => @money.to_param,
+      :money => { :alpha_code => 'BLR', :num_code => 333 }
+    assert_response :success
+    assert_equal 'BLR', Money.find(@money.id).alpha_code,
+      'Money \'EUR\' not edited'
+    assert_equal 333, Money.find(@money.id).num_code,
+      'Money \'978\' not edited'
+  end
 end
