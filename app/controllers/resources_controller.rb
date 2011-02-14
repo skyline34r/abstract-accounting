@@ -20,4 +20,8 @@ class ResourcesController < ApplicationController
     @asset = Asset.find(params[:id])
   end
 
+  def edit_money
+    @money = Money.find(params[:id])
+  end
+
 end
