@@ -31,4 +31,11 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def create_money
+    @money = Money.new(params[:money])
+    if !@money.save
+      render :action => "new_money"
+    end
+  end
+
 end

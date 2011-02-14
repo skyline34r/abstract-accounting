@@ -40,4 +40,12 @@ class ResourcesControllerTest < ActionController::TestCase
       'Asset \'Iron tester\' not saved'
   end
 
+  test "should create money in resources" do
+    assert_difference('Money.count') do
+       xml_http_request :post, :create_money, :money => { :alpha_code => 'BY', :num_code => 123 }
+    end
+    assert_equal 1, Money.where(:alpha_code => 'BY', :num_code => 123).count,
+      'Money \'BY\' not saved'
+  end
+
 end
