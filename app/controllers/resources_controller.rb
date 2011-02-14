@@ -31,45 +31,45 @@ class ResourcesController < ApplicationController
   end
 
   def new_asset
-    @asset = Asset.new
+    @resource = Asset.new
   end
 
   def new_money
-    @money = Money.new
+    @resource = Money.new
   end
 
   def edit_asset
-    @asset = Asset.find(params[:id])
+    @resource = Asset.find(params[:id])
   end
 
   def edit_money
-    @money = Money.find(params[:id])
+    @resource = Money.find(params[:id])
   end
 
   def create_asset
-    @asset = Asset.new(params[:asset])
-    if !@asset.save
+    @resource = Asset.new(params[:asset])
+    if !@resource.save
       render :action => "new_asset"
     end
   end
 
   def create_money
-    @money = Money.new(params[:money])
-    if !@money.save
+    @resource = Money.new(params[:money])
+    if !@resource.save
       render :action => "new_money"
     end
   end
 
   def update_asset
-    @asset = Asset.find(params[:id])
-    if !@asset.update_attributes(params[:asset])
+    @resource = Asset.find(params[:id])
+    if !@resource.update_attributes(params[:asset])
       render :action => "edit_asset"
     end
   end
 
   def update_money
-    @money = Money.find(params[:id])
-    if !@money.update_attributes(params[:money])
+    @resource = Money.find(params[:id])
+    if !@resource.update_attributes(params[:money])
       render :action => "edit_money"
     end
   end
