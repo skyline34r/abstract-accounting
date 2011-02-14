@@ -7,5 +7,9 @@ class ResourcesController < ApplicationController
     @money = Money.select('id, alpha_code AS tag, "money" AS type')
     @resources = @money + @asset
   end
-  
+
+  def new_asset
+    @asset = Asset.new
+  end
+
 end

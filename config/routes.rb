@@ -1,6 +1,10 @@
 Abstract::Application.routes.draw do
   resources :entities
-  resources :resources
+  resources :resources do
+    collection do
+      get 'new_asset'
+    end
+  end
   get "home/index"
 
   # The priority is based upon order of creation:

@@ -8,4 +8,9 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_not_nil assigns(:resources)
   end
 
+  test "should get new asset in resource" do
+    xml_http_request :get, :new_asset
+    assert_response :success
+  end
+
 end
