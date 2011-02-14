@@ -1,5 +1,6 @@
 Abstract::Application.routes.draw do
   resources :entities
+  resources :resources
   get "home/index"
 
   # The priority is based upon order of creation:
