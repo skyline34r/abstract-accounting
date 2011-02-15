@@ -30,11 +30,9 @@
         onclick=""/>
     </td>
     <td width="50">
-      <%= form_for(@resource, :url => { :action => "create_asset" }, :remote => true) do |f| %>
-      <%= f.submit "save", :id => "save_resource",
-                           :onclick => "sendTagResource();" %>
-      <%= f.hidden_field :tag, :id => "hide_res_tag", :value => @resource.tag %>
-      <% end %>
+      <div id="resource_action">
+        <%= render 'form_action_asset' %>
+      </div>
     </td>
   </tr>
   <tr align="left">
