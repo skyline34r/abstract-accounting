@@ -1,4 +1,6 @@
 <script type="text/javascript">
+  var tagResource = unescape($('#hide_res_tag').val());
+  $('#resource_tag_a').val(tagResource);
   function escape(text)
   {
     return text.replace(/&/g, '&amp;')
@@ -13,6 +15,10 @@
                .replace(/&gt;/g, '>')
                .replace(/&amp;/g, '&');
   }
+  function sendTagResource()
+  {
+    $('#hide_res_tag').val(escape($('#resource_tag_a').val()));
+  }
 </script>
 
 <table>
@@ -26,7 +32,7 @@
     <td width="50">
       <%= form_for(@resource, :url => { :action => "create_asset" }, :remote => true) do |f| %>
       <%= f.submit "save", :id => "save_resource",
-                           :onclick => "" %>
+                           :onclick => "sendTagResource();" %>
       <%= f.hidden_field :tag, :id => "hide_res_tag", :value => @resource.tag %>
       <% end %>
     </td>
