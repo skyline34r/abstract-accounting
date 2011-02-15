@@ -1,15 +1,17 @@
 Abstract::Application.routes.draw do
   resources :entities
   resources :resources do
+    member do
+      get 'edit_asset'
+      get 'edit_money'
+      put 'update_asset'
+      put 'update_money'
+    end
     collection do
       get 'new_asset'
       get 'new_money'
-      get 'edit_asset'
-      get 'edit_money'
       post 'create_asset'
       post 'create_money'
-      put 'update_asset'
-      put 'update_money'
     end
   end
   get "home/index"

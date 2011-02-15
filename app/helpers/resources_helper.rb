@@ -29,13 +29,13 @@ module ResourcesHelper
         if($('#resources_list').getCell(cell, 'type') == 'asset')
         {
           $('#change_resource').parent().parent().attr('action',
-            '/resources/edit_asset.' + $('#resources_list').getCell(cell, 'id'));
+            '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_asset');
           $('#resource_type').removeAttr('checked');
         }
         else
         {
           $('#change_resource').parent().parent().attr('action',
-            '/resources/edit_money.' + $('#resources_list').getCell(cell, 'id'));
+            '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_money');
           $('#resource_type').attr('checked','checked');
         }
       }".to_json_var
