@@ -15,6 +15,7 @@ class Fact < ActiveRecord::Base
   has_one :txn
 
   before_save :do_save
+  before_destroy :do_destroy
 
   def self.pendings
     arr = Array.new
@@ -28,6 +29,12 @@ class Fact < ActiveRecord::Base
       return false unless init_state(self.from.state(nil), self.from)
       return false unless init_state(self.to.state(nil), self.to)
     end
+  end
+
+  def do_destroy
+    self.amount = -self.amount
+    init_state self.from.state(nil), self.from
+    init_state self.to.state(nil), self.to
   end
   
   def init_state(aState, aDeal)
