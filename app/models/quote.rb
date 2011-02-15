@@ -29,7 +29,8 @@ class Quote < ActiveRecord::Base
       end
     end
     if !self.diff.accounting_zero?
-      income = Income.new
+      income = Income.open.first
+      income = Income.new if income.nil?
       income.quote = self
       income.save!
     end

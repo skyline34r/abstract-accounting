@@ -266,5 +266,9 @@ class CurrencyTest < ActiveSupport::TestCase
 
     assert_equal q, @c2.quote, "Maximum quote for money is wrong"
     assert_equal 3000.0, q.diff, "Quote diff is wrong"
+
+    assert_equal 1, Income.open.count, "Wrong open incomes count"
+    assert_equal "active", Income.open.first.side, "Invalid open income side"
+    assert_equal 500.0, Income.open.first.value, "Invalid open income value"
   end
 end
