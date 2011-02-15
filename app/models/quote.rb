@@ -31,8 +31,9 @@ class Quote < ActiveRecord::Base
     if !self.diff.accounting_zero?
       income = Income.open.first
       income = Income.new if income.nil?
-      income.quote = self
-      income.save!
+      income.save_or_replace! self.day do |income|
+        income.quote = self
+      end
     end
     true
   end
