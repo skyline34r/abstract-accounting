@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  var tagResource = unescape($('#hide_res_tag').val());
+  var tagResource = unescape($('#hide_asset_tag').val());
   $('#resource_tag_a').val(tagResource);
   function escape(text)
   {
@@ -15,9 +15,25 @@
                .replace(/&gt;/g, '>')
                .replace(/&amp;/g, '&');
   }
-  function sendTagResource()
+  function sendTagAsset()
   {
-    $('#hide_res_tag').val(escape($('#resource_tag_a').val()));
+    $('#hide_asset_tag').val(escape($('#resource_tag_a').val()));
+  }
+  function sendTagMoney()
+  {
+    $('#hide_money_code').val(escape($('#resource_code_a').val()));
+    $('#hide_money_tag').val(escape($('#resource_tag_a').val()));
+  }
+  function changeType()
+  {
+    if($('#resource_type_a').attr('checked'))
+    {
+      $.ajax({url: '<%= new_money_resources_path %>'})
+    }
+    else
+    {
+      $.ajax({url: '<%= new_asset_resources_path %>'})
+    }
   }
 </script>
 
@@ -39,7 +55,7 @@
     <td colspan="2">
       <div style="float: left">
         monetary:
-        <input id="resource_type_a" type="checkbox" onchange=""/>
+        <input id="resource_type_a" type="checkbox" onchange="changeType();"/>
       </div>
       <div id="div_code" style="float: right; display: none">
         code:
