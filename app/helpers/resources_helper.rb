@@ -10,11 +10,12 @@ module ResourcesHelper
       :url => '/resources',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'type', 'id'],
+      :colNames => ['tag', 'type', 'id', 'code'],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 700 },
-        { :name => 'type',  :index => 'type',   :width => 100 },
-        { :name => 'id',   :index => 'id',    :width => 5, :hidden => true }
+        { :name => 'type', :index => 'type',  :width => 100 },
+        { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
+        { :name => 'code', :index => 'code',  :width => 5, :hidden => true }
       ],
       :pager => '#resources_pager',
       :rowNum => 10,
