@@ -88,6 +88,7 @@ class CurrencyTest < ActiveSupport::TestCase
     check_quote
     purchase
     rate_change_before_income
+    sale_advance
   end
 
   private
@@ -143,5 +144,34 @@ class CurrencyTest < ActiveSupport::TestCase
     assert_equal "passive", Income.open.first.side, "Open income wrong side"
     assert_equal 0.0, Income.open.first.value + q.diff,
       "Open income wrong value"
+  end
+
+  def sale_advance
+    assert @c2.quote.nil?, "Money c2 quote is not nil"
+
+    assert (q = Quote.new(:money => @c2, :rate => 2.0,
+      :day => DateTime.civil(2008, 3, 25, 12, 0, 0))).save, "Quote is not saved"
+
+    t = Txn.new(:fact => Fact.new(:amount => 60000.0,
+              :day => DateTime.civil(2008, 3, 25, 12, 0, 0),
+              :from => @sy2,
+              :to => @a2,
+              :resource => @sy2.take))
+    assert t.fact.save, "Fact is not saved"
+    assert t.save, "Txn is not saved"
+
+    b = t.from_balance
+    assert !b.nil?, "From balance is nil"
+    assert_equal 400.0, b.amount, "Wrong balance amount"
+    assert_equal 120000.0, b.value, "Wrong balance value"
+    assert_equal @sy2, b.deal, "Wrong balance deal"
+    assert_equal "active", b.side, "Wrong balance side"
+
+    b = t.to_balance
+    assert !b.nil?, "From balance is nil"
+    assert_equal 60000.0, b.amount, "Wrong balance amount"
+    assert_equal 120000.0, b.value, "Wrong balance value"
+    assert_equal @a2, b.deal, "Wrong balance deal"
+    assert_equal "passive", b.side, "Wrong balance side"
   end
 end

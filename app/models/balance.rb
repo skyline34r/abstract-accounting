@@ -21,15 +21,18 @@ class Balance < ActiveRecord::Base
 
     #TODO: separate quote initialization
     #TODO: add quote instead of checking currency
-    if Chart.all.count > 0
-      if self.deal.take == Chart.first.currency
-        @debit = 1.0
-      end
-    end
     @credit = if self.deal.give.instance_of?(Money) and
         !self.deal.give.quotes.first.nil?
       self.deal.give.quotes.first.rate
     elsif !Chart.first.nil? and self.deal.give == Chart.first.currency
+      1.0
+    else
+      0.0
+    end
+    @debit = if self.deal.take.instance_of?(Money) and
+        !self.deal.take.quotes.first.nil?
+      self.deal.take.quotes.first.rate
+    elsif !Chart.first.nil? and self.deal.take == Chart.first.currency
       1.0
     else
       0.0
