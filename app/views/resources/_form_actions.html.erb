@@ -41,14 +41,19 @@
      $('#resource_code_a').val(tagCode);
      $('#save_resource').attr('disabled','disabled');
   }
-
+  function onCancel()
+  {
+     canSelect = true;
+     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
+     $('#resources_list').resetSelection();
+  }
 </script>
 
 <table>
   <tr align="right">
     <td>
       <input name="cancel" type="button" value="cancel"
-        onclick=""/>
+        onclick="onCancel();"/>
       <input name="reset" type="button" value="reset"
         onclick="onReset();"/>
     </td>
