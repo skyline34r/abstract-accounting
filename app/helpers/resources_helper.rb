@@ -27,17 +27,18 @@ module ResourcesHelper
       {
         $('#resource_tag').val(cell);
         $('#change_resource').removeAttr('disabled');
+        selId = $('#resources_list').getCell(cell, 'id');
         if($('#resources_list').getCell(cell, 'type') == 'asset')
         {
           $('#change_resource').parent().parent().attr('action',
-            '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_asset');
+            '/resources/' + selId + '/edit_asset');
           $('#resource_type').removeAttr('checked');
           $('#index_div_code').css('display','none');
         }
         else
         {
           $('#change_resource').parent().parent().attr('action',
-            '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_money');
+            '/resources/' + selId + '/edit_money');
           $('#resource_type').attr('checked','checked');
           $('#index_div_code').css('display','block');
           $('#resource_code').val($('#resources_list').getCell(cell, 'code'));
