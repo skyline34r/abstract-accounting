@@ -43,6 +43,11 @@ module ResourcesHelper
           $('#index_div_code').css('display','block');
           $('#resource_code').val($('#resources_list').getCell(cell, 'code'));
         }
+      }".to_json_var,
+      :beforeSelectRow =>	"function()
+      {
+        if (canSelect) return true;
+        return false;
       }".to_json_var
     }]
 

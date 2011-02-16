@@ -1,6 +1,8 @@
 <script type="text/javascript">
   var tagCode = '';
   var tagResource = '';
+  $('#resources_list').resetSelection();
+  canSelect = false;
   function escape(text)
   {
     return text.replace(/&/g, '&amp;')
