@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110211091737) do
+ActiveRecord::Schema.define(:version => 20110216105921) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -83,6 +83,16 @@ ActiveRecord::Schema.define(:version => 20110211091737) do
   end
 
   add_index "quotes", ["money_id", "day"], :name => "index_quotes_on_money_id_and_day", :unique => true
+
+  create_table "rules", :force => true do |t|
+    t.integer "deal_id"
+    t.boolean "fact_side"
+    t.boolean "change_side"
+    t.float   "rate"
+    t.string  "tag"
+    t.integer "from_id"
+    t.integer "to_id"
+  end
 
   create_table "states", :force => true do |t|
     t.integer  "deal_id"
