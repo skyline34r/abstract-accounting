@@ -32,12 +32,15 @@ module ResourcesHelper
           $('#change_resource').parent().parent().attr('action',
             '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_asset');
           $('#resource_type').removeAttr('checked');
+          $('#index_div_code').css('display','none');
         }
         else
         {
           $('#change_resource').parent().parent().attr('action',
             '/resources/' + $('#resources_list').getCell(cell, 'id') + '/edit_money');
           $('#resource_type').attr('checked','checked');
+          $('#index_div_code').css('display','block');
+          $('#resource_code').val($('#resources_list').getCell(cell, 'code'));
         }
       }".to_json_var
     }]
