@@ -1,3 +1,7 @@
 $("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
 $('#resource_action').html("<%= escape_javascript(render :partial => 'form_action_asset' ) %>");
 $('#div_code').css('display','none');
+tagCode = '';
+tagResource = unescape($('#hide_asset_tag').val());
+$('#resource_code_a').val(tagCode);
+$('#resource_tag_a').val(tagResource);

@@ -1,2 +1,6 @@
 $('#resource_action').html("<%= escape_javascript(render :partial => 'form_action_money' ) %>");
 $('#div_code').css('display','block');
+tagCode = unescape($('#hide_money_code').val());
+tagResource = unescape($('#hide_money_tag').val());
+$('#resource_code_a').val(tagCode);
+$('#resource_tag_a').val(tagResource);

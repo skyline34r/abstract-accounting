@@ -1,6 +1,6 @@
 <script type="text/javascript">
-  var tagResource = unescape($('#hide_asset_tag').val());
-  $('#resource_tag_a').val(tagResource);
+  var tagCode = '';
+  var tagResource = '';
   function escape(text)
   {
     return text.replace(/&/g, '&amp;')
@@ -35,6 +35,13 @@
       $.ajax({url: '<%= new_asset_resources_path %>'})
     }
   }
+  function onReset()
+  {
+     $('#resource_tag_a').val(tagResource);
+     $('#resource_code_a').val(tagCode);
+     $('#save_resource').attr('disabled','disabled');
+  }
+
 </script>
 
 <table>
@@ -43,7 +50,7 @@
       <input name="cancel" type="button" value="cancel"
         onclick=""/>
       <input name="reset" type="button" value="reset"
-        onclick=""/>
+        onclick="onReset();"/>
     </td>
     <td width="50">
       <div id="resource_action">
