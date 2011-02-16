@@ -1,1 +1,10 @@
- 
+$('#actions').html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+$('#resource_action').html("<%= escape_javascript(render :partial => 'form_action_money' ) %>");
+$('#div_code').css('display','block');
+tagCode = unescape($('#hide_money_code').val());
+tagResource = unescape($('#hide_money_tag').val());
+$('#resource_code_a').val(tagCode);
+$('#resource_tag_a').val(tagResource);
+$('#resource_type_a').attr('checked','checked');
+$('#resource_type_a').attr('disabled','disabled');
+$('#save_resource').parent().attr('action', 'resources/' + selId +'/update_money');
