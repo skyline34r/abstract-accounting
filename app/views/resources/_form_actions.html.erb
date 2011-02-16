@@ -69,7 +69,8 @@
       </div>
       <div id="div_code" style="float: right; display: none">
         code:
-        <input id="resource_code_a" type="text" value="" size="20" />
+        <input id="resource_code_a" type="text" value="" size="20"
+               onkeypress="$('#save_resource').removeAttr('disabled');"/>
       </div>
     </td>
   </tr>
@@ -77,7 +78,7 @@
     <td colspan="2">
       tag:
       <input id="resource_tag_a" type="text" value="" size="83"
-             onkeypress=""/>
+             onkeypress="$('#save_resource').removeAttr('disabled');"/>
     </td>
   </tr>
 </table>
