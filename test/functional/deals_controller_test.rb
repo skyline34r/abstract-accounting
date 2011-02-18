@@ -6,4 +6,10 @@ class DealsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:deals)
   end
+
+  test "should get new deal" do
+    xml_http_request :get, :new
+    assert_response :success
+  end
+
 end
