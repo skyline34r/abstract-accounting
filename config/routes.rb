@@ -14,6 +14,7 @@ Abstract::Application.routes.draw do
       post 'create_money'
     end
   end
+  resources :deals
   get "home/index"
 
   # The priority is based upon order of creation:
