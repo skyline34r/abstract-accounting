@@ -71,4 +71,10 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal @asset.tag, assigns(:resource), 'Get asset tag failed'
   end
+
+  test "should get tag money in resource" do
+    xml_http_request :get, :get_money_tag, :id => @money.to_param
+    assert_response :success
+    assert_equal @money.alpha_code, assigns(:resource), 'Get money tag failed'
+  end
 end

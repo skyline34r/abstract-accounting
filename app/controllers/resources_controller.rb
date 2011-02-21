@@ -78,4 +78,8 @@ class ResourcesController < ApplicationController
   def get_asset_tag
     @resource = Asset.find(params[:id]).tag
   end
+
+  def get_money_tag
+    @resource = Money.find(params[:id]).alpha_code
+  end
 end
