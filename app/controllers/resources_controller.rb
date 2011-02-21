@@ -74,4 +74,8 @@ class ResourcesController < ApplicationController
       render :action => "edit_money"
     end
   end
+
+  def get_asset_tag
+    @resource = Asset.find(params[:id]).tag
+  end
 end

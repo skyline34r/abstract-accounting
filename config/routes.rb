@@ -6,6 +6,7 @@ Abstract::Application.routes.draw do
       get 'edit_money'
       put 'update_asset'
       put 'update_money'
+      get 'get_asset_tag'
     end
     collection do
       get 'new_asset'
