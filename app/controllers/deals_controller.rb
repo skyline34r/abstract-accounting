@@ -9,6 +9,10 @@ class DealsController < ApplicationController
   end
 
   def create
+    @deal = Deal.new(params[:deal])
+    if !@deal.save
+      render :action => "new"
+    end
   end
   
 end
