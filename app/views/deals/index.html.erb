@@ -20,6 +20,26 @@
       $('#deal_rate').val(1/$('#deal_rate').val());
     }
   }
+  function choiseEntity()
+  {
+    $('#deals_div').css('display','none');
+    $('#frame_div').css('display','block');
+    $('#frame').attr('src', 'entities');
+    $('#titleFrame').html('Entities');
+    $('#submit').click(function() {
+      var selRow = $('#frame').contents().find('#entities_list')
+                              .getGridParam('selrow');
+      if (selRow != null)
+      {
+        $('#entity_tag').val(selRow);
+        $('#hide_deal_entity_id').val($('#frame').contents().find('#entities_list')
+                                                 .getCell(selRow, 'id'));
+        $('#deals_div').css('display','block');
+        $('#frame_div').css('display','none');
+        $('#frame').attr('src', '');
+      }
+    });
+  }
 </script>
 
 <div id="deals_div">
@@ -45,7 +65,7 @@
         entity:
         <input id="entity_tag" type="text" disabled="true" value="" size="72" />
         <input id="entity_choose" type="button" value="choose" disabled="true"
-               onclick=""/>
+               onclick="choiseEntity();"/>
       </td>
     </tr>
     <tr>
