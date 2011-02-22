@@ -45,6 +45,30 @@
     $('#deals_div').css('display','block');
     $('#frame_div').css('display','none');
   }
+  function choiseGive()
+  {
+    $('#deals_div').css('display','none');
+    $('#frame_div').css('display','block');
+    $('#frame').attr('src', 'resources');
+    $('#titleFrame').html('Resources');
+    $('#submit').click(function() {
+      var selRow = $('#frame').contents().find('#resources_list')
+                              .getGridParam('selrow');
+      if (selRow != null)
+      {
+        $('#give_tag').val(selRow);
+        $('#hide_deal_give_id').val($('#frame').contents()
+                                               .find('#resources_list')
+                                               .getCell(selRow, 'id'));
+        $('#hide_deal_give_type').val($('#frame').contents()
+                                                 .find('#resources_list')
+                                                 .getCell(selRow, 'type'));
+        $('#deals_div').css('display','block');
+        $('#frame_div').css('display','none');
+        $('#frame').attr('src', '');
+      }
+    });
+  }
 </script>
 
 <div id="deals_div">
@@ -82,7 +106,7 @@
               <br> <input id="give_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
               <br> <input id="give_choose" type="button" value="choose"
-                          disabled="true" onclick=""/> </br>
+                          disabled="true" onclick="choiseGive();"/> </br>
             </td>
             <td align="center">
               <br>rate</br>
