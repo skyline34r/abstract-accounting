@@ -13,6 +13,10 @@
     }
     action.complete(function() { $('#' + direction + '_tag').val(tempTag); });
   }
+  function changeDirRate()
+  {
+    $('#deal_rate').val(1/$('#deal_rate').val());
+  }
 </script>
 
 <table id="deals_list"></table>
@@ -54,9 +58,9 @@
           <td align="center">
             <br>rate</br>
             <br> <input type="radio" id="dir_0" name="direction" checked="true"
-                        disabled="true"/> --> </br>
+                        disabled="true" onchange="changeDirRate();"/> --> </br>
             <br> <input type="radio" id="dir_1" name="direction"
-                        disabled="true"/> <-- </br>
+                        disabled="true" onchange="changeDirRate();"/> <-- </br>
             <br> <input id="deal_rate" type="text" disabled="true" value=""
                         size="20" /> </br>
           </td>
