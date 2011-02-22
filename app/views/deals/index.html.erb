@@ -22,60 +22,83 @@
   }
 </script>
 
-<table id="deals_list"></table>
-<div id="deals_pager"></div>
+<div id="deals_div">
+  <table id="deals_list"></table>
+  <div id="deals_pager"></div>
 
-<% content_for :head do %>
-  <%= raw(deals_jqgrid) %>
-<% end %>
+  <% content_for :head do %>
+    <%= raw(deals_jqgrid) %>
+  <% end %>
 
-<table>
-  <tr id="actions" align="right">
-    <%= render 'form_index' %>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      tag:
-      <input id="deal_tag" type="text" disabled="true" value="" size="83" />
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      entity:
-      <input id="entity_tag" type="text" disabled="true" value="" size="72" />
-      <input id="entity_choose" type="button" value="choose" disabled="true"
-             onclick=""/>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <table>
-        <tr align="left">
-          <td align="left">
-            <br> We GIVE </br>
-            <br> <input id="give_tag" type="text" disabled="true" value=""
-                        size="30" /> </br>
-            <br> <input id="give_choose" type="button" value="choose"
-                        disabled="true" onclick=""/> </br>
-          </td>
-          <td align="center">
-            <br>rate</br>
-            <br> <input type="radio" id="dir_0" name="direction" checked="true"
-                        disabled="true" onchange="changeDirRate();"/> --> </br>
-            <br> <input type="radio" id="dir_1" name="direction"
-                        disabled="true" onchange="changeDirRate();"/> <-- </br>
-            <br> <input id="deal_rate" type="text" disabled="true" value=""
-                        size="20" /> </br>
-          </td>
-          <td align="right">
-            <br> We TAKE </br>
-            <br> <input id="take_tag" type="text" disabled="true" value=""
-                        size="30" /> </br>
-            <br> <input id="take_choose" type="button" value="choose" disabled="true"
-                        onclick=""/> </br>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+  <table>
+    <tr id="actions" align="right">
+      <%= render 'form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        tag:
+        <input id="deal_tag" type="text" disabled="true" value="" size="83" />
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        entity:
+        <input id="entity_tag" type="text" disabled="true" value="" size="72" />
+        <input id="entity_choose" type="button" value="choose" disabled="true"
+               onclick=""/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table>
+          <tr align="left">
+            <td align="left">
+              <br> We GIVE </br>
+              <br> <input id="give_tag" type="text" disabled="true" value=""
+                          size="30" /> </br>
+              <br> <input id="give_choose" type="button" value="choose"
+                          disabled="true" onclick=""/> </br>
+            </td>
+            <td align="center">
+              <br>rate</br>
+              <br> <input type="radio" id="dir_0" name="direction" checked="true"
+                          disabled="true" onchange="changeDirRate();"/> --> </br>
+              <br> <input type="radio" id="dir_1" name="direction"
+                          disabled="true" onchange="changeDirRate();"/> <-- </br>
+              <br> <input id="deal_rate" type="text" disabled="true" value=""
+                          size="20" /> </br>
+            </td>
+            <td align="right">
+              <br> We TAKE </br>
+              <br> <input id="take_tag" type="text" disabled="true" value=""
+                          size="30" /> </br>
+              <br> <input id="take_choose" type="button" value="choose" disabled="true"
+                          onclick=""/> </br>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="frame_div" style="display: none">
+  <table>
+    <tr align="right">
+      <td>
+        <input type="button" id="discard" value="discard" onclick=""/>
+        <input type="button" id="submit" value="submit" onclick=""/>
+      </td>
+    </tr>
+    <tr>
+      <td id="titleFrame">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <iframe id="frame" src="" width=830 height=500 scrolling=no
+                noresize border=0 frameborder=no>
+        </iframe>
+      </td>
+    </tr>
+  </table>
+</div>
