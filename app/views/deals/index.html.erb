@@ -1,3 +1,20 @@
+<script type="text/javascript">
+  var tempTag = "";
+  function getResourceTag(id, type, direction)
+  {
+    var action;
+    if(type == 'Asset')
+    {
+      action = $.ajax({url: 'resources/' + id + '/get_asset_tag'});
+    }
+    else
+    {
+      action = $.ajax({url: 'resources/' + id + '/get_money_tag'});
+    }
+    action.complete(function() { $('#' + direction + '_tag').val(tempTag); });
+  }
+</script>
+
 <table id="deals_list"></table>
 <div id="deals_pager"></div>
 
@@ -36,9 +53,10 @@
           </td>
           <td align="center">
             <br>rate</br>
-            <br> <input type="radio" name="direction" checked="true"
+            <br> <input type="radio" id="dir_0" name="direction" checked="true"
                         disabled="true"/> --> </br>
-            <br> <input type="radio" name="direction" disabled="true"/> <-- </br>
+            <br> <input type="radio" id="dir_1" name="direction"
+                        disabled="true"/> <-- </br>
             <br><input id="entity_tag" type="text" disabled="true" value=""
                        size="20" /> </br>
           </td>
