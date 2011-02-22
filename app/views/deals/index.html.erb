@@ -4,3 +4,53 @@
 <% content_for :head do %>
   <%= raw(deals_jqgrid) %>
 <% end %>
+
+<table>
+  <tr id="actions" align="right">
+    <%= render 'form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      tag:
+      <input id="deal_tag" type="text" disabled="true" value="" size="83" />
+    </td>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      entity:
+      <input id="entity_tag" type="text" disabled="true" value="" size="72" />
+      <input id="entity_choose" type="button" value="choose" disabled="true"
+             onclick=""/>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table>
+        <tr align="left">
+          <td align="left">
+            <br> We GIVE </br>
+            <br> <input id="give_tag" type="text" disabled="true" value=""
+                        size="30" /> </br>
+            <br> <input id="give_choose" type="button" value="choose"
+                        disabled="true" onclick=""/> </br>
+          </td>
+          <td align="center">
+            <br>rate</br>
+            <br> <input type="radio" name="direction" checked="true"
+                        disabled="true"/> --> </br>
+            <br> <input type="radio" name="direction" disabled="true"/> <-- </br>
+            <br><input id="entity_tag" type="text" disabled="true" value=""
+                       size="20" /> </br>
+          </td>
+          <td align="right">
+            <br> We TAKE </br>
+            <br> <input id="take_tag" type="text" disabled="true" value=""
+                        size="30" /> </br>
+            <br> <input id="take_choose" type="button" value="choose" disabled="true"
+                        onclick=""/> </br>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
