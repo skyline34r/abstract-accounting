@@ -93,5 +93,17 @@ class RuleTest < ActiveSupport::TestCase
     assert shipmentDeal.save, "Deal is not saved"
     assert_equal true, Deal.find(shipmentDeal.id).isOffBalance,
       "Wrong saved value for is off balance"
+
+    shipmentDeal.rules.create :tag => "shipment1.rule1",
+      :from => storageX, :to => saleX, :fact_side => false,
+      :change_side => true, :rate => 27.0
+
+    assert_equal 1, Rule.all.count, "Rule count is wrong"
+
+    shipmentDeal.rules.create :tag => "shipment1.rule2",
+      :from => storageY, :to => saleY, :fact_side => false,
+      :change_side => true, :rate => 42.0
+
+    assert_equal 2, Rule.all.count, "Rule count is wrong"
   end
 end

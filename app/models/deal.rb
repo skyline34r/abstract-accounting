@@ -5,6 +5,7 @@ class Deal < ActiveRecord::Base
   belongs_to :take, :polymorphic => true
   has_many :states
   has_many :balances
+  has_many :rules
 
   def Deal.income
     #TODO: deprecate any changes
