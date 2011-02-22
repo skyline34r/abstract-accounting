@@ -15,7 +15,10 @@
   }
   function changeDirRate()
   {
-    $('#deal_rate').val(1/$('#deal_rate').val());
+    if($('#deal_rate').val() != '')
+    {
+      $('#deal_rate').val(1/$('#deal_rate').val());
+    }
   }
 </script>
 
