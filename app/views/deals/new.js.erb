@@ -1,1 +1,13 @@
 $("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+$('#dir_0').removeAttr('disabled');
+$('#dir_1').removeAttr('disabled');
+$('#dir_0').attr('checked', 'checked');
+$('#deal_tag').removeAttr('disabled');
+$('#entity_tag').val('');
+$('#entity_choose').removeAttr('disabled');
+$('#give_tag').val('');
+$('#give_choose').removeAttr('disabled');
+$('#take_tag').val('');
+$('#take_choose').removeAttr('disabled');
+$('#deal_rate').val('');
+$('#deal_rate').removeAttr('disabled');
