@@ -28,7 +28,22 @@ module DealsHelper
       :rowList => [10, 20, 30],
       :sortname => 'tag',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => "function(cell)
+      {
+        $('#dir_0').removeAttr('disabled');
+        $('#dir_1').removeAttr('disabled');
+        $('#deal_tag').val(cell);
+        $('#entity_tag').val($('#deals_list').getCell(cell, 'entity'));
+        getResourceTag($('#deals_list').getCell(cell, 'give_id'),
+                       $('#deals_list').getCell(cell, 'give_type'),
+                       'give');
+        getResourceTag($('#deals_list').getCell(cell, 'take_id'),
+                       $('#deals_list').getCell(cell, 'take_type'),
+                       'take');
+        $('#deal_rate').val($('#deals_list').getCell(cell, 'rate'));
+        $('#dir_0').attr('checked', 'checked');
+      }".to_json_var
     }]
 
     jqgrid_api 'deals_list', grid, options
