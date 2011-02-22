@@ -1,0 +1,19 @@
+<td>
+  <input name="cancel" type="button" value="cancel"
+    onclick=""/>
+  <input name="reset" type="button" value="reset"
+    onclick=""/>
+</td>
+<td width="50">
+  <%= form_for(@deal, :remote => true) do |f| %>
+  <%= f.submit "save", :id => "save_deal", :disabled => "true",
+                       :onclick => "" %>
+  <%= f.hidden_field :tag,       :id => "hide_deal_tag"%>
+  <%= f.hidden_field :rate,      :id => "hide_deal_rate"%>
+  <%= f.hidden_field :entity_id, :id => "hide_deal_entity_id"%>
+  <%= f.hidden_field :give_id,   :id => "hide_deal_give_id"%>
+  <%= f.hidden_field :give_type, :id => "hide_deal_give_type"%>
+  <%= f.hidden_field :take_id,   :id => "hide_deal_take_id"%>
+  <%= f.hidden_field :take_type, :id => "hide_deal_take_type"%>
+  <% end %>
+</td>
