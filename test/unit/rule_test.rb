@@ -86,5 +86,12 @@ class RuleTest < ActiveSupport::TestCase
     assert_equal 50.0, b.amount, "Wrong balance amount"
     assert_equal 7500.0, b.value, "Wrong balance value"
     assert_equal "passive", b.side, "Wrong balance side"
+    #Create shipment flow and rules
+    shipmentDeal = Deal.new :tag => "shipment 1", :rate => 1.0,
+      :entity => supplier, :give => shipment, :take => shipment,
+      :isOffBalance => true
+    assert shipmentDeal.save, "Deal is not saved"
+    assert_equal true, Deal.find(shipmentDeal.id).isOffBalance,
+      "Wrong saved value for is off balance"
   end
 end

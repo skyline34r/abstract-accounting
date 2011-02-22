@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110216105921) do
+ActiveRecord::Schema.define(:version => 20110222105534) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20110216105921) do
     t.string  "give_type"
     t.integer "take_id"
     t.string  "take_type"
+    t.boolean "isOffBalance", :default => false
   end
 
   add_index "deals", ["entity_id", "tag"], :name => "index_deals_on_entity_id_and_tag", :unique => true
