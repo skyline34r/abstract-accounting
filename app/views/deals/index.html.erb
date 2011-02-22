@@ -45,7 +45,7 @@
     $('#deals_div').css('display','block');
     $('#frame_div').css('display','none');
   }
-  function choiseGive()
+  function choiseResource(type)
   {
     $('#deals_div').css('display','none');
     $('#frame_div').css('display','block');
@@ -56,16 +56,17 @@
                               .getGridParam('selrow');
       if (selRow != null)
       {
-        $('#give_tag').val(selRow);
-        $('#hide_deal_give_id').val($('#frame').contents()
-                                               .find('#resources_list')
-                                               .getCell(selRow, 'id'));
-        $('#hide_deal_give_type').val($('#frame').contents()
-                                                 .find('#resources_list')
-                                                 .getCell(selRow, 'type'));
+        $('#' + type + '_tag').val(selRow);
+        $('#hide_deal_' + type + '_id').val($('#frame').contents()
+                                              .find('#resources_list')
+                                              .getCell(selRow, 'id'));
+        $('#hide_deal_' + type + '_type').val($('#frame').contents()
+                                              .find('#resources_list')
+                                              .getCell(selRow, 'type'));
         $('#deals_div').css('display','block');
         $('#frame_div').css('display','none');
         $('#frame').attr('src', '');
+        $("#submit").unbind("click");
       }
     });
   }
@@ -106,7 +107,7 @@
               <br> <input id="give_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
               <br> <input id="give_choose" type="button" value="choose"
-                          disabled="true" onclick="choiseGive();"/> </br>
+                          disabled="true" onclick="choiseResource('give');"/> </br>
             </td>
             <td align="center">
               <br>rate</br>
@@ -121,8 +122,8 @@
               <br> We TAKE </br>
               <br> <input id="take_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
-              <br> <input id="take_choose" type="button" value="choose" disabled="true"
-                          onclick=""/> </br>
+              <br> <input id="take_choose" type="button" value="choose"
+                          disabled="true" onclick="choiseResource('take');"/> </br>
             </td>
           </tr>
         </table>
