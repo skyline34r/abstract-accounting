@@ -1,5 +1,6 @@
 <script type="text/javascript">
   var tempTag = "";
+  var canSelect = true;
   function getResourceTag(id, type, direction)
   {
     var action;
@@ -133,6 +134,7 @@
     $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
     $("#deals_list").trigger("reloadGrid");
     disabledElements();
+    canSelect = true;
   }
   function onReset()
   {

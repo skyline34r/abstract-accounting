@@ -43,6 +43,11 @@ module DealsHelper
                        'take');
         $('#deal_rate').val($('#deals_list').getCell(cell, 'rate'));
         $('#dir_0').attr('checked', 'checked');
+      }".to_json_var,
+      :beforeSelectRow =>	"function()
+      {
+        if (canSelect) return true;
+        return false;
       }".to_json_var
     }]
 
