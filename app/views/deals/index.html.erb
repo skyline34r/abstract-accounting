@@ -3,7 +3,7 @@
   function getResourceTag(id, type, direction)
   {
     var action;
-    if(type == 'Asset')
+    if(type == 'asset')
     {
       action = $.ajax({url: 'resources/' + id + '/get_asset_tag'});
     }
