@@ -141,5 +141,28 @@ class RuleTest < ActiveSupport::TestCase
     s = shipmentDeal.state
     assert !s.nil?, "State is nil"
     assert_equal 1.0, s.amount, "State amount is wrong"
+
+    assert t.save, "Txn is not saved"
+    assert_equal 4, Balance.open.count, "Wrong open balances count"
+    b = purchaseX.balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal 5000.0, b.amount, "Wrong balance amount"
+    assert_equal 5000.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+    b = purchaseY.balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal 7500.0, b.amount, "Wrong balance amount"
+    assert_equal 7500.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+    b = storageX.balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal 50.0, b.amount, "Wrong balance amount"
+    assert_equal 5000.0, b.value, "Wrong balance value"
+    assert_equal "passive", b.side, "Wrong balance side"
+    b = storageY.balance
+    assert !b.nil?, "Balance is nil"
+    assert_equal 50.0, b.amount, "Wrong balance amount"
+    assert_equal 7500.0, b.value, "Wrong balance value"
+    assert_equal "passive", b.side, "Wrong balance side"
   end
 end

@@ -20,23 +20,27 @@ class Txn < ActiveRecord::Base
     self.value = 0.0
     @from_balance = nil
     @to_balance = nil
-    calculate self.fact.from.balance, self.fact.from do |val, balance|
-      @from_balance = balance
-      if !val.nil?
-        self.value = val[0]
-      end
-      if !@from_balance.amount?
-        @from_balance = nil
+    if !self.fact.from.nil?
+      calculate self.fact.from.balance, self.fact.from do |val, balance|
+        @from_balance = balance
+        if !val.nil?
+          self.value = val[0]
+        end
+        if !@from_balance.amount?
+          @from_balance = nil
+        end
       end
     end
-    calculate self.fact.to.balance, self.fact.to do |val, balance|
-      @to_balance = balance
-      if !val.nil?
-        self.earnings = val[0]
-        self.status = (val[1] == true ? 1 : 0)
-      end
-      if !@to_balance.amount?
-        @to_balance = nil
+    if !self.fact.to.isOffBalance
+      calculate self.fact.to.balance, self.fact.to do |val, balance|
+        @to_balance = balance
+        if !val.nil?
+          self.earnings = val[0]
+          self.status = (val[1] == true ? 1 : 0)
+        end
+        if !@to_balance.amount?
+          @to_balance = nil
+        end
       end
     end
     if !self.fact.to.nil? and self.fact.to.income? and self.fact.to.balance.nil?
