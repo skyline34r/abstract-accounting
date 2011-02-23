@@ -121,6 +121,12 @@
     $('#deal_rate').val('');
     $('#deal_rate').removeAttr('disabled');
   }
+  function onCancel()
+  {
+    $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
+    $("#deals_list").trigger("reloadGrid");
+    disabledElements();
+  }
 </script>
 
 <div id="deals_div">
