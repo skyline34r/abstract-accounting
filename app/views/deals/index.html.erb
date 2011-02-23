@@ -77,6 +77,18 @@
                .replace(/>/g, '&gt;')
                .replace(/"/g, '&quot;');
   }
+  function beforeSave()
+  {
+    $('#hide_deal_tag').val(escape($('#deal_tag').val()));
+    if ($('#dir_1').attr('checked') && ($('#deal_rate').val() != ''))
+    {
+      $('#hide_deal_rate').val(1/$('#deal_rate').val());
+    }
+    else
+    {
+      $('#hide_deal_rate').val(escape($('#deal_rate').val()));
+    }
+  }
 </script>
 
 <div id="deals_div">

@@ -7,7 +7,7 @@
 <td width="50">
   <%= form_for(@deal, :remote => true) do |f| %>
   <%= f.submit "save", :id => "save_deal", :disabled => "true",
-                       :onclick => "" %>
+                       :onclick => "beforeSave();" %>
   <%= f.hidden_field :tag,       :id => "hide_deal_tag"%>
   <%= f.hidden_field :rate,      :id => "hide_deal_rate"%>
   <%= f.hidden_field :entity_id, :id => "hide_deal_entity_id"%>
