@@ -127,6 +127,11 @@
     $("#deals_list").trigger("reloadGrid");
     disabledElements();
   }
+  function onReset()
+  {
+    enabledElements();
+    $('#save_deal').attr('disabled','disabled');
+  }
 </script>
 
 <div id="deals_div">
