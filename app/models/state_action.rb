@@ -86,9 +86,7 @@ module StateAction
         amount = @diff0 if !@diff0.accounting_zero? and !rule.change_side
         amount = @diff1 if !@diff1.accounting_zero? and rule.change_side
         if !amount.accounting_zero?
-          f = Fact.new :day => aFact.day, :amount => rule.rate * amount,
-            :resource => rule.from.take, :to => rule.to, :from => rule.from
-          return false unless f.save
+          aFact.use_rule(rule, amount)
         end
       end
     end

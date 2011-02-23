@@ -24,11 +24,24 @@ class Fact < ActiveRecord::Base
     return arr
   end
 
+  def subfacts
+    @subfacts ||= Array.new
+    return @subfacts
+  end
+
+  def use_rule(aRule, aAmount)
+    return false if aRule.nil? or aAmount.nil? or aAmount.accounting_zero?
+    @subfacts ||= Array.new
+    @subfacts << Fact.new(:day => self.day, :amount => aRule.rate * aAmount,
+            :resource => aRule.from.take, :to => aRule.to, :from => aRule.from)
+  end
+
   private
   def do_save
     if changed? or new_record?
       return false unless init_state(self.from.nil? ? nil : self.from.state(nil), self.from)
       return false unless init_state(self.to.state(nil), self.to)
+      subfacts.each { |item| item.save! }
     end
   end
 

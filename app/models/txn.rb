@@ -54,6 +54,9 @@ class Txn < ActiveRecord::Base
         inc.txn = self
       end
     end
+
+    self.fact.subfacts.each { |fact| Txn.new(:fact => fact).save! }
+
     true
   end
 
