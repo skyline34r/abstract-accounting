@@ -89,6 +89,38 @@
       $('#hide_deal_rate').val(escape($('#deal_rate').val()));
     }
   }
+  function disabledElements()
+  {
+    $('#dir_0').attr('checked', 'checked');
+    $('#dir_0').attr('disabled', 'disabled');
+    $('#dir_1').attr('disabled', 'disabled');
+    $('#deal_tag').val('');
+    $('#deal_tag').attr('disabled', 'disabled');
+    $('#entity_tag').val('');
+    $('#entity_choose').attr('disabled', 'disabled');
+    $('#give_tag').val('');
+    $('#give_choose').attr('disabled', 'disabled');
+    $('#take_tag').val('');
+    $('#take_choose').attr('disabled', 'disabled');
+    $('#deal_rate').val('');
+    $('#deal_rate').attr('disabled', 'disabled');
+  }
+  function enabledElements()
+  {
+    $('#dir_0').removeAttr('disabled');
+    $('#dir_1').removeAttr('disabled');
+    $('#dir_0').attr('checked', 'checked');
+    $('#deal_tag').val('');
+    $('#deal_tag').removeAttr('disabled');
+    $('#entity_tag').val('');
+    $('#entity_choose').removeAttr('disabled');
+    $('#give_tag').val('');
+    $('#give_choose').removeAttr('disabled');
+    $('#take_tag').val('');
+    $('#take_choose').removeAttr('disabled');
+    $('#deal_rate').val('');
+    $('#deal_rate').removeAttr('disabled');
+  }
 </script>
 
 <div id="deals_div">
