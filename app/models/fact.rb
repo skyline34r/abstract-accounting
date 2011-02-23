@@ -1,13 +1,14 @@
 class FactValidator
   def validate(record)
     record.errors[:base] << "bad resource" unless
-      (record.resource == record.from.take or record.from.income?) \
+      ((record.from.nil? and !record.to.nil?) or
+          record.resource == record.from.take or record.from.income?) \
         and (record.resource == record.to.give or record.to.income?)
   end
 end
 
 class Fact < ActiveRecord::Base
-  validates :day, :amount, :resource, :from, :to, :presence => true
+  validates :day, :amount, :resource, :to, :presence => true
   validates_with FactValidator
   belongs_to :resource, :polymorphic => true
   belongs_to :from, :class_name => "Deal", :foreign_key => "from_deal_id"
@@ -26,7 +27,7 @@ class Fact < ActiveRecord::Base
   private
   def do_save
     if changed? or new_record?
-      return false unless init_state(self.from.state(nil), self.from)
+      return false unless init_state(self.from.nil? ? nil : self.from.state(nil), self.from)
       return false unless init_state(self.to.state(nil), self.to)
     end
   end
@@ -38,7 +39,6 @@ class Fact < ActiveRecord::Base
   end
   
   def init_state(aState, aDeal)
-    return false if aDeal.nil?
     return true if (aDeal.nil? or aDeal.income?) and aState.nil?
     (if aState.nil?
       State.new

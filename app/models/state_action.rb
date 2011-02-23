@@ -10,7 +10,7 @@ module StateAction
   def fact=(aFact)
     return false if self.deal.nil?
     return false if aFact.nil?
-    self.start = aFact.day if init_from_fact(aFact)
+    self.start = aFact.day if init_from_fact(aFact) and apply_rules(aFact)
     self.start_changed?
   end
 
@@ -26,6 +26,8 @@ module StateAction
 
   def init_from_fact(aFact)
     return false if aFact.nil?
+    @diff0 = 0.0
+    @diff1 = 0.0
     @fact_side =
       if self.deal == aFact.from
         "passive"
@@ -33,15 +35,17 @@ module StateAction
         "active"
       end
 
+    @old_amount = self.amount
     if self.methods.include?(:value_i)
-      @old_amount = self.amount
       @old_value = self.value_i()
     end
 
     if self.side == @fact_side
-      self.amount -= aFact.amount
+      @diff0 = aFact.amount
+      self.amount -= @diff0
     else
-      self.amount += aFact.amount * self.rate
+      @diff1 = aFact.amount * self.rate
+      self.amount += @diff1
     end
 
     if self.amount.accounting_negative?
@@ -52,11 +56,15 @@ module StateAction
           "passive"
         end
       self.amount *= -1 * self.rate
+      @diff0 = @old_amount
+      @diff1 = self.amount
       if self.methods.include?(:value_i)
         @old_value = -@old_value
       end
     end
     self.amount = self.amount.accounting_norm
+    @diff0 = @diff0.accounting_norm
+    @diff1 = @diff1.accounting_norm
     true
   end
 
@@ -67,5 +75,23 @@ module StateAction
     else
       1.0 / self.deal.rate
     end
+  end
+
+  def apply_rules(aFact)
+    return false if aFact.nil? or aFact.amount < 0.0
+    return false if self.deal.nil?
+    self.deal.rules.each do |rule|
+      if rule.fact_side ? @fact_side == "passive" : @fact_side == "active"
+        amount = 0.0
+        amount = @diff0 if !@diff0.accounting_zero? and !rule.change_side
+        amount = @diff1 if !@diff1.accounting_zero? and rule.change_side
+        if !amount.accounting_zero?
+          f = Fact.new :day => aFact.day, :amount => rule.rate * amount,
+            :resource => rule.from.take, :to => rule.to, :from => rule.from
+          return false unless f.save
+        end
+      end
+    end
+    true
   end
 end

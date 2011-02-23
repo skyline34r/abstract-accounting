@@ -105,5 +105,41 @@ class RuleTest < ActiveSupport::TestCase
       :change_side => true, :rate => 42.0
 
     assert_equal 2, Rule.all.count, "Rule count is wrong"
+    #Register the rule invoking transaction
+    t = Txn.new(:fact => Fact.new(:amount => 1.0,
+              :day => DateTime.civil(2008, 9, 22, 12, 0, 0),
+              :from => nil,
+              :to => shipmentDeal,
+              :resource => shipmentDeal.give))
+    assert t.fact.save, "Fact is not saved"
+
+    assert_equal 7, State.open.count, "Wrong open states count"
+    s = purchaseX.state
+    assert !s.nil?, "State is nil"
+    assert_equal 5000.0, s.amount, "State amount is wrong"
+
+    s = purchaseY.state
+    assert !s.nil?, "State is nil"
+    assert_equal 7500.0, s.amount, "State amount is wrong"
+
+    s = storageX.state
+    assert !s.nil?, "State is nil"
+    assert_equal 23.0, s.amount, "State amount is wrong"
+
+    s = storageY.state
+    assert !s.nil?, "State is nil"
+    assert_equal 8.0, s.amount, "State amount is wrong"
+
+    s = saleX.state
+    assert !s.nil?, "State is nil"
+    assert_equal (120.0 * 27.0).accounting_norm, s.amount, "State amount is wrong"
+
+    s = saleY.state
+    assert !s.nil?, "State is nil"
+    assert_equal (160.0 * 42.0).accounting_norm, s.amount, "State amount is wrong"
+
+    s = shipmentDeal.state
+    assert !s.nil?, "State is nil"
+    assert_equal 1.0, s.amount, "State amount is wrong"
   end
 end
