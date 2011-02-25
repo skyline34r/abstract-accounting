@@ -5,6 +5,10 @@ class FactsController < ApplicationController
   end
 
   def create
+    @fact = Fact.new(params[:fact])
+    if !@fact.save
+      render :action => "index"
+    end
   end
   
 end
