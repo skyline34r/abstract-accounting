@@ -17,6 +17,14 @@ function chooseDeals(type)
       $('#fact_' + type + '_btn').val(selRow);
       $('#hide_' + type + '_deal').val($('#frame').contents().find('#deals_list')
                                                   .getCell(selRow, 'id'));
+      if(type == 'to')
+      {
+        $('#hide_resource_id').val($('#frame').contents().find('#deals_list')
+                                              .getCell(selRow, 'take_id'));
+        $('#hide_resource_type').val($('#frame').contents().find('#deals_list')
+                                              .getCell(selRow, 'take_type'));
+
+      }
       $('#fact_main').css('display','block');
       $('#frame_fact_div').css('display','none');
       $('#frame').attr('src', '');
@@ -60,7 +68,8 @@ function chooseDeals(type)
           to flow
         </td>
         <td>
-          <a href="">click to choose</a>
+          <input type="button" id="fact_to_btn" value="click to choose"
+                 onclick="chooseDeals('to');"/>
         </td>
         <td>
           <input type="text" id="fact_to_1" value="-" disabled="true"/>
