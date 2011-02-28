@@ -2,7 +2,7 @@ require 'test_helper'
 
 class EntitiesControllerTest < ActionController::TestCase
   setup do
-    @entity = entities(:acorp)
+    @entity = entities(:abstract)
   end
 
   test "should get index entity" do

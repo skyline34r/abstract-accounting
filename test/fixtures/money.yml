@@ -4,11 +4,11 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-usd:
-  alpha_code: "USD"
-  num_code: 840
+
+rub:
+  alpha_code: RUB
+  num_code: 643
 
 eur:
-  alpha_code: "EUR"
+  alpha_code: EUR
   num_code: 978
-

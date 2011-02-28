@@ -17,10 +17,10 @@ class DealsControllerTest < ActionController::TestCase
        xml_http_request :post, :create,
                         :deal => { :tag => 'purchase tester',
                                    :rate => 30,
-                                   :entity_id => entities(:zinc).id,
-                                   :give_id => money(:eur).id,
+                                   :entity_id => entities(:sergey).id,
+                                   :give_id => money(:rub).id,
                                    :give_type => "Money",
-                                   :take_id => assets(:steel).id,
+                                   :take_id => assets(:aasiishare).id,
                                    :take_type => "Asset" }
     end
     assert_equal 1, Deal.where(:tag =>'purchase tester').count,

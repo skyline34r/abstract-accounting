@@ -1,16 +1,50 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+equityshare1:
+  tag: "equity share 1"
+  rate: 10000.0
+  entity: sergey
+  give: aasiishare (Asset)
+  take: rub (Money)
+
+equityshare2:
+  tag: "equity share 2"
+  rate: 10000.0
+  entity: jdow
+  give: aasiishare (Asset)
+  take: rub (Money)
+
+bankaccount:
+  tag: "bank account 1"
+  rate: 1.0
+  entity: sbrfbank
+  give: rub (Money)
+  take: rub (Money)
+
 purchase:
-  tag: "purchase 1"
-  rate: 100
-  entity: acorp
-  give: usd (Money)
-  take: steel (Asset)
+  tag: "purchase contract 1"
+  rate: 0.0000142857143
+  entity: equipmentsupl
+  give: rub (Money)
+  take: sonyvaio (Asset)
 
-metall:
-  tag: "metall storage"
-  rate: 1
-  entity: smithj
-  give: steel (Asset)
-  take: steel (Asset)
+forex:
+  tag: "forex deal 1"
+  rate: 0.028612303
+  entity: sbrfbank
+  give: rub (Money)
+  take: eur (Money)
 
+bankaccount2:
+  tag: "bank account 2"
+  rate: 1.0
+  entity: sbrfbank
+  give: eur (Money)
+  take: eur (Money)
+
+forex2:
+  tag: "forex deal 2"
+  rate: 35.0
+  entity: sbrfbank
+  give: eur (Money)
+  take: rub (Money)

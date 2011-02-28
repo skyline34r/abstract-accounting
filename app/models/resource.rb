@@ -12,4 +12,11 @@ class Money < ActiveRecord::Base
   validates_uniqueness_of :alpha_code
   has_many :deal_gives, :class_name => "Deal", :as => :give
   has_many :deal_takes, :class_name => "Deal", :as => :take
+  has_many :quotes
+
+  def quote
+    quotes.where(:day =>
+        quotes.maximum("day")
+      ).first
+  end
 end

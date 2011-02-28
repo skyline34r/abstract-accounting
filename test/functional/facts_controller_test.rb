@@ -10,17 +10,17 @@ class FactsControllerTest < ActionController::TestCase
     assert_difference('Fact.count') do
        xml_http_request :post, :create,
                         :fact => { :day => DateTime.civil(2008, 02, 04, 0, 0, 0),
-                                   :amount => 400,
-                                   :from_deal_id => deals(:purchase).id,
-                                   :to_deal_id => deals(:metall).id,
-                                   :resource_id => assets(:steel).id,
-                                   :resource_type => "Asset" }
+                                   :amount => 400.0,
+                                   :from_deal_id => deals(:equityshare1).id,
+                                   :to_deal_id => deals(:bankaccount).id,
+                                   :resource_id => money(:rub).id,
+                                   :resource_type => "Money" }
     end
-    assert_equal 1, Fact.where(:amount => 400,
-                               :from_deal_id => deals(:purchase).id,
-                               :to_deal_id => deals(:metall).id,
-                               :resource_id => assets(:steel).id,
-                               :resource_type => "Asset").count,
+    assert_equal 1, Fact.where(:amount => 400.0,
+                               :from_deal_id => deals(:equityshare1).id,
+                               :to_deal_id => deals(:bankaccount).id,
+                               :resource_id => money(:rub).id,
+                               :resource_type => "Money").count,
       'Fact not saved'
   end
 end

@@ -2,8 +2,8 @@ require 'test_helper'
 
 class ResourcesControllerTest < ActionController::TestCase
   setup do
-    @asset = assets(:iron)
-    @money = money(:eur)
+    @asset = assets(:aasiishare)
+    @money = money(:rub)
   end
 
   test "should get index resource" do
