@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $(function() {
-  $( "#fact_datepicker").datepicker();
+  $("#fact_datepicker").datepicker();
 });
 </script>
 
@@ -11,19 +11,80 @@ $(function() {
     <%= f.hidden_field :to_deal_id,      :id => "hide_to_deal"%>
     <%= f.hidden_field :resource_id, :id => "hide_resource_id"%>
     <%= f.hidden_field :resource_type,   :id => "hide_resource_type"%>
-    <p>date <%= f.text_field :day, :id => "fact_datepicker"%></p>
-    <p>
-      from flow <a href="">click to choose</a>
-      <input type="text" id="fact_from_1" value="-" disabled="true"/>
-      <input type="text" id="fact_from_2" value="-" disabled="true"/>
-    </p>
-    <p>
-      to flow <a href="">click to choose</a>
-      <input type="text" id="fact_to_1" value="-" disabled="true"/>
-      <input type="text" id="fact_to_2" value="-" disabled="true"/>
-    </p>
-    <p>amount <%= f.text_field :amount, :id => "fact_amount"%></p>
-    <%= f.submit "save", :id => "save_fact" %>
+    <table>
+      <tr>
+        <td>
+          date
+        </td>
+        <td>
+          <%= f.text_field :day, :size => 20, :id => "fact_datepicker"%>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          from flow
+        </td>
+        <td>
+          <a href="">click to choose</a>
+        </td>
+        <td>
+          <input type="text" id="fact_from_1" value="-" disabled="true"/>
+          <input type="text" id="fact_from_2" value="-" disabled="true"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          to flow
+        </td>
+        <td>
+          <a href="">click to choose</a>
+        </td>
+        <td>
+          <input type="text" id="fact_to_1" value="-" disabled="true"/>
+          <input type="text" id="fact_to_2" value="-" disabled="true"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          amount
+        </td>
+        <td>
+          <%= f.text_field :amount, :size => 20, :id => "fact_amount"%>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+          <%= f.submit "commit", :id => "save_fact" %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          value
+        </td>
+        <td>
+          <p id="value_text"></p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          earnings
+        </td>
+        <td>
+          <p id="earnings_text"></p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+          <input type="button" id="reset" value="reset" style="visibility: hidden"/>
+        </td>
+      </tr>
+
+    </table>
+    
   <% end %>
 </div>
 <div id="frame_fact_div" style="display: none">
