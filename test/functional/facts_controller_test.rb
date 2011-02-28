@@ -16,11 +16,13 @@ class FactsControllerTest < ActionController::TestCase
                                    :resource_id => money(:rub).id,
                                    :resource_type => "Money" }
     end
-    assert_equal 1, Fact.where(:amount => 400.0,
-                               :from_deal_id => deals(:equityshare1).id,
-                               :to_deal_id => deals(:bankaccount).id,
-                               :resource_id => money(:rub).id,
-                               :resource_type => "Money").count,
-      'Fact not saved'
+    fact = Fact.where(:amount => 400.0,
+                      :from_deal_id => deals(:equityshare1).id,
+                      :to_deal_id => deals(:bankaccount).id,
+                      :resource_id => money(:rub).id,
+                      :resource_type => "Money")
+    assert_equal 1, fact.count, 'Fact not saved'
+    assert_equal 1, Txn.where(:fact_id => fact.first.id).count,
+      'Txn not saved'
   end
 end
