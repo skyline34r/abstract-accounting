@@ -1,7 +1,29 @@
 <script type="text/javascript">
 $(function() {
-  $("#fact_datepicker").datepicker();
+  $('#fact_datepicker').datepicker();
 });
+function chooseDeals(type)
+{
+  $('#fact_main').css('display','none');
+  $('#frame_fact_div').css('display','block');
+  $('#frame').attr('src', 'deals');
+  $('#title_frame').html('Deals');
+
+  $('#submit').click(function() {
+    var selRow = $('#frame').contents().find('#deals_list')
+                                       .getGridParam('selrow');
+    if (selRow != null)
+    {
+      $('#fact_' + type + '_btn').val(selRow);
+      $('#hide_' + type + '_deal').val($('#frame').contents().find('#deals_list')
+                                                  .getCell(selRow, 'id'));
+      $('#fact_main').css('display','block');
+      $('#frame_fact_div').css('display','none');
+      $('#frame').attr('src', '');
+      $("#submit").unbind("click");
+    }
+  });
+}
 </script>
 
 <div id="fact_main">
@@ -25,7 +47,8 @@ $(function() {
           from flow
         </td>
         <td>
-          <a href="">click to choose</a>
+          <input type="button" id="fact_from_btn" value="click to choose"
+                 onclick="chooseDeals('from');"/>
         </td>
         <td>
           <input type="text" id="fact_from_1" value="-" disabled="true"/>
@@ -84,7 +107,7 @@ $(function() {
       </tr>
 
     </table>
-    
+
   <% end %>
 </div>
 <div id="frame_fact_div" style="display: none">
@@ -96,7 +119,7 @@ $(function() {
       </td>
     </tr>
     <tr>
-      <td id="titleFrame">
+      <td id="title_frame">
       </td>
     </tr>
     <tr>
