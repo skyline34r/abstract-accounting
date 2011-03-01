@@ -14,4 +14,10 @@ class FactsController < ApplicationController
     end
   end
 
+  def destroy
+    @txn = Txn.find(params[:id])
+    @txn.destroy
+    @fact = Fact.find(params[:id])
+    @fact.destroy
+  end
 end
