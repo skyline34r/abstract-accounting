@@ -1,3 +1,5 @@
+require 'float_accounting'
+
 class FactsController < ApplicationController
 
   def index
