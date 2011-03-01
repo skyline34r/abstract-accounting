@@ -32,22 +32,28 @@ function chooseDeals(type)
     }
   });
 }
+function commitFact()
+{
+  var d = new Date($('#fact_datepicker').val());
+  $('#hide_fact_datepicker').val(d.toUTCString());
+}
 </script>
 
 <div id="fact_main">
   <p>Transfer</p>
   <%= form_for(@fact, :remote => true) do |f| %>
-    <%= f.hidden_field :from_deal_id,       :id => "hide_from_deal"%>
-    <%= f.hidden_field :to_deal_id,      :id => "hide_to_deal"%>
-    <%= f.hidden_field :resource_id, :id => "hide_resource_id"%>
-    <%= f.hidden_field :resource_type,   :id => "hide_resource_type"%>
+    <%= f.hidden_field :day,           :id => "hide_fact_datepicker"%>
+    <%= f.hidden_field :from_deal_id,  :id => "hide_from_deal"%>
+    <%= f.hidden_field :to_deal_id,    :id => "hide_to_deal"%>
+    <%= f.hidden_field :resource_id,   :id => "hide_resource_id"%>
+    <%= f.hidden_field :resource_type, :id => "hide_resource_type"%>
     <table>
       <tr>
         <td>
           date
         </td>
         <td>
-          <%= f.text_field :day, :size => 20, :id => "fact_datepicker"%>
+          <input type="text" id="fact_datepicker" size="20"/>
         </td>
       </tr>
       <tr>
@@ -88,7 +94,7 @@ function chooseDeals(type)
         <td>
         </td>
         <td>
-          <%= f.submit "commit", :id => "save_fact" %>
+          <%= f.submit "commit", :id => "save_fact", :onclick => "commitFact();" %>
         </td>
       </tr>
       <tr>
