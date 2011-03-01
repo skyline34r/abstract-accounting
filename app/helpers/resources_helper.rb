@@ -28,7 +28,7 @@ module ResourcesHelper
         $('#resource_tag').val(cell);
         $('#change_resource').removeAttr('disabled');
         selId = $('#resources_list').getCell(cell, 'id');
-        if($('#resources_list').getCell(cell, 'type') == 'asset')
+        if($('#resources_list').getCell(cell, 'type') == 'Asset')
         {
           $('#change_resource').parent().parent().attr('action',
             '/resources/' + selId + '/edit_asset');

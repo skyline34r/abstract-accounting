@@ -4,9 +4,9 @@ class ResourcesController < ApplicationController
 
   def index
     @columns = ['tag', 'type', 'id', 'code']
-    @asset = Asset.select('id, tag, "asset" AS type, 0 AS code')
+    @asset = Asset.select('id, tag, "Asset" AS type, 0 AS code')
     @money = Money.select('id, alpha_code AS tag,
-                           num_code AS code, "money" AS type')
+                           num_code AS code, "Money" AS type')
     @resources = @money + @asset
     @resources = @resources.sort do |x,y|
       if params[:sidx] == 'tag'
