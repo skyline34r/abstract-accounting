@@ -17,7 +17,7 @@ function chooseDeals(type)
       $('#fact_' + type + '_btn').val(selRow);
       $('#hide_' + type + '_deal').val($('#frame').contents().find('#deals_list')
                                                   .getCell(selRow, 'id'));
-      if(type == 'to')
+      if(type == 'from')
       {
         $('#hide_resource_id').val($('#frame').contents().find('#deals_list')
                                               .getCell(selRow, 'take_id'));
