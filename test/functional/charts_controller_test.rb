@@ -1,0 +1,8 @@
+require 'test_helper'
+
+class ChartsControllerTest < ActionController::TestCase
+  test "should get index chart" do
+    get :index
+    assert_response :success
+  end
+end
