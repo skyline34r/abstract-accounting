@@ -243,6 +243,7 @@ class AccountTest < ActiveSupport::TestCase
     split_transaction
     gain_transaction
     direct_gains_losses
+    test_txn_list_by_time_frame_and_deal
   end
 
   private
@@ -707,6 +708,26 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1, Income.open.count, "Wrong open incomes count"
     @profit += 400.0 * 34.95
     assert (@profit + Income.open.first.value), "Wrong income value"
+  end
+
+  def test_txn_list_by_time_frame_and_deal
+    txns = deals(:bankaccount).txns(DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal 2, txns.count, "Deal txns count is wrong"
+    txns.each do |item|
+      assert item.instance_of?(Txn), "Wrong txn instance"
+      assert (deals(:bankaccount) == item.fact.from or
+          deals(:bankaccount) == item.fact.to), "Wrong txn value"
+    end
+
+    txns = deals(:bankaccount).txns(DateTime.civil(2007, 8, 30, 12, 0, 0),
+      DateTime.civil(2007, 8, 30, 12, 0, 0))
+    assert_equal 2, txns.count, "Deal txns count is wrong"
+    txns.each do |item|
+      assert item.instance_of?(Txn), "Wrong txn instance"
+      assert (deals(:bankaccount) == item.fact.from or
+          deals(:bankaccount) == item.fact.to), "Wrong txn value"
+    end
   end
 
   def test_balance(b, amount, value, side)

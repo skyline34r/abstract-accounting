@@ -41,4 +41,12 @@ class Deal < ActiveRecord::Base
     return nil if ret_balances.empty?
     ret_balances.first
   end
+
+  def txns(start, stop)
+    Txn.find_all_by_fact_id \
+      Fact.find_all_by_deal_id(self.id).where("day > ? AND day < ?",
+        DateTime.new(start.year, start.month, start.day),
+        DateTime.new(stop.year, stop.month, stop.day) + 1).
+          collect { |item| item.id }
+  end
 end
