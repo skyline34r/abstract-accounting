@@ -33,6 +33,8 @@ function chooseCurrency()
       <td>
         <input type="button" id="chart_curr_btn" value="click to choose"
                              onclick="chooseCurrency();"/>
+        <div id="curr_chart_div" style="display: none">
+        </div>
       </td>
     </tr>
     <tr>
@@ -43,6 +45,9 @@ function chooseCurrency()
         <%= f.submit "commit", :id => "save_chart",
                                :value => "set as 'Functional currency'" %>
         <% end %>
+        <div id="msg_chart_div" style="display: none">
+          Functional currency has already been set
+        </div>
       </td>
     </tr>
   </table>
