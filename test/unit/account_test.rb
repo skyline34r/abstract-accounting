@@ -728,6 +728,15 @@ class AccountTest < ActiveSupport::TestCase
       assert (deals(:bankaccount) == item.fact.from or
           deals(:bankaccount) == item.fact.to), "Wrong txn value"
     end
+
+    balances = deals(:bankaccount).
+      balance_range(DateTime.civil(2007, 8, 29, 12, 0, 0),
+                    DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal 1, balances.count, "Wrong balances count"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.start,
+      "Wrong balance start value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.paid,
+      "Wrong balance paid value"
   end
 
   def test_balance(b, amount, value, side)

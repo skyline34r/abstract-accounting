@@ -41,6 +41,11 @@ class Deal < ActiveRecord::Base
     return nil if ret_balances.empty?
     ret_balances.first
   end
+  def balance_range(start, stop)
+    balances.where("start <= ? AND paid > ?",
+      DateTime.new(start.year, start.month, start.day) + 1,
+      DateTime.new(stop.year, stop.month, stop.day))
+  end
 
   def txns(start, stop)
     Txn.find_all_by_fact_id \
