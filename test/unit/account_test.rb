@@ -737,6 +737,15 @@ class AccountTest < ActiveSupport::TestCase
       "Wrong balance start value"
     assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.paid,
       "Wrong balance paid value"
+
+    tr = Transcript.new(deals(:bankaccount),
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal deals(:bankaccount), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
   end
 
   def test_balance(b, amount, value, side)
