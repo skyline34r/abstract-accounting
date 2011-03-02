@@ -1,3 +1,28 @@
+<script type="text/javascript">
+function chooseCurrency()
+{
+  $('#chart_div').css('display','none');
+  $('#frame_chart_div').css('display','block');
+  $('#frame').attr('src', 'resources');
+  $('#title_frame').html('Resources');
+
+  $('#submit').click(function() {
+    var selRow = $('#frame').contents().find('#resources_list')
+                                       .getGridParam('selrow');
+    if (selRow != null)
+    {
+      $('#chart_curr_btn').val(selRow);
+      $('#hide_chart_curr_id').val($('#frame').contents().find('#resources_list')
+                                              .getCell(selRow, 'id'));
+      $('#chart_div').css('display','block');
+      $('#frame_chart_div').css('display','none');
+      $('#frame').attr('src', '');
+      $("#submit").unbind("click");
+    }
+  });
+}
+</script>
+
 <div id="chart_div">
   <table>
     <tr>
@@ -6,8 +31,8 @@
     <tr>
       <td>resource</td>
       <td>
-        <input type="button" id="chart_curr" value="click to choose"
-                             onclick=""/>
+        <input type="button" id="chart_curr_btn" value="click to choose"
+                             onclick="chooseCurrency();"/>
       </td>
     </tr>
     <tr>
@@ -36,7 +61,7 @@
     </tr>
     <tr>
       <td>
-        <iframe id="frame" src="resources" width=830 height=500 scrolling=no
+        <iframe id="frame" src="" width=830 height=500 scrolling=no
                 noresize border=0 frameborder=no>
         </iframe>
       </td>
