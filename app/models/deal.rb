@@ -42,9 +42,9 @@ class Deal < ActiveRecord::Base
     ret_balances.first
   end
   def balance_range(start, stop)
-    balances.where("start <= ? AND paid > ?",
-      DateTime.new(start.year, start.month, start.day) + 1,
-      DateTime.new(stop.year, stop.month, stop.day))
+    balances.where("start <= ? AND (paid > ? OR paid IS NULL)",
+      DateTime.new(stop.year, stop.month, stop.day) + 1,
+      DateTime.new(start.year, start.month, start.day))
   end
 
   def txns(start, stop)
