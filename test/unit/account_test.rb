@@ -746,6 +746,13 @@ class AccountTest < ActiveSupport::TestCase
       "Wrong transcript start value"
     assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.stop,
       "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 100000.0 + 142000.0, 100000.0 + 142000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
   end
 
   def test_balance(b, amount, value, side)
