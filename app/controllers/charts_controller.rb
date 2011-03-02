@@ -1,6 +1,7 @@
 class ChartsController < ApplicationController
 
   def index
+    @count = Chart.all.count
     @chart = Chart.new
   end
 

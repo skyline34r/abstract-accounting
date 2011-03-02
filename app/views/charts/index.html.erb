@@ -26,7 +26,6 @@ function discardChoose()
   $('#chart_div').css('display','block');
   $('#frame_chart_div').css('display','none');
 }
-
 </script>
 
 <div id="chart_div">
@@ -80,3 +79,14 @@ function discardChoose()
     </tr>
   </table>
 </div>
+
+<script type="text/javascript">
+if(<%=@count%> != 0)
+{
+  $('#save_chart').hide();
+  $('#msg_chart_div').css('display','block');
+  $('#chart_curr_btn').hide();
+  $('#curr_chart_div').html($('#chart_curr_btn').val());
+  $('#curr_chart_div').css('display','block');
+}
+</script>
