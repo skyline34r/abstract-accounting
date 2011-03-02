@@ -753,6 +753,16 @@ class AccountTest < ActiveSupport::TestCase
                  "passive" do |expected, value, msg|
       assert_equal expected, value, msg
     end
+
+    assert_equal 2, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 100000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare2), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[0].fact.to, "Wrong fact to"
+    assert tr[1].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 142000.0, tr[1].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare1), tr[1].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[1].fact.to, "Wrong fact to"
   end
 
   def test_balance(b, amount, value, side)
