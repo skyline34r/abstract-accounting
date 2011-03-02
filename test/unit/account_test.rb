@@ -243,7 +243,7 @@ class AccountTest < ActiveSupport::TestCase
     split_transaction
     gain_transaction
     direct_gains_losses
-    test_txn_list_by_time_frame_and_deal
+    test_transcript
   end
 
   private
@@ -710,7 +710,7 @@ class AccountTest < ActiveSupport::TestCase
     assert (@profit + Income.open.first.value), "Wrong income value"
   end
 
-  def test_txn_list_by_time_frame_and_deal
+  def test_transcript
     txns = deals(:bankaccount).txns(DateTime.civil(2007, 8, 29, 12, 0, 0),
       DateTime.civil(2007, 8, 29, 12, 0, 0))
     assert_equal 2, txns.count, "Deal txns count is wrong"
