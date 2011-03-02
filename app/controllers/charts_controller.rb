@@ -5,6 +5,8 @@ class ChartsController < ApplicationController
   end
 
   def create
+    @chart = Chart.new(params[:chart])
+    @chart.save
   end
 
 end
