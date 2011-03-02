@@ -4,16 +4,21 @@ class Transcript < Array
     @deal = deal
     @start = start
     @stop = stop
+    @total_debits = 0.0
     load_list
     load_diffs
   end
   attr_reader :deal, :start, :stop, :opening, :closing
+  attr_reader :total_debits
 
   private
   def load_list
     if !@deal.nil?
       @deal.txns(@start, @stop).each do |item|
         self << item
+        if item.fact.to == @deal
+          @total_debits += item.fact.amount
+        end
       end
     end
   end
