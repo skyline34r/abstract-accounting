@@ -81,12 +81,18 @@ function discardChoose()
 </div>
 
 <script type="text/javascript">
-if(<%=@count%> != 0)
+if(<%=@count.count%> != 0)
 {
+  var curr_id = <%= if(@count.count != 0)
+                      @count.first.currency_id
+                    end%>;
+  var action;
+  action = $.ajax({url: 'resources/' + curr_id + '/get_money_tag'});
+  action.complete(function() { $('#curr_chart_div').html(tempTag); });
+
   $('#save_chart').hide();
   $('#msg_chart_div').css('display','block');
   $('#chart_curr_btn').hide();
-  $('#curr_chart_div').html($('#chart_curr_btn').val());
   $('#curr_chart_div').css('display','block');
 }
 </script>
