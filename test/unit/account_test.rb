@@ -158,7 +158,7 @@ class AccountTest < ActiveSupport::TestCase
         assert_equal pendingFact.amount, bto.value,
           "To balance value is not equal"
 
-        b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 29, 12, 0, 1)
+        b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 30, 12, 0, 1)
         assert !b.nil?, "Balance is nil"
         assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
         assert_equal deals(:bankaccount).take, b.resource,
@@ -735,7 +735,7 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1, balances.count, "Wrong balances count"
     assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.start,
       "Wrong balance start value"
-    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.paid,
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), balances.first.paid,
       "Wrong balance paid value"
 
     tr = Transcript.new(deals(:bankaccount),
@@ -852,6 +852,27 @@ class AccountTest < ActiveSupport::TestCase
     assert tr.opening.nil?, "Wrong oening value"
     assert tr.closing.nil?, "Wrong closing value"
     assert_equal 0, tr.count, "Wrong transcript txns count"
+
+    tr = Transcript.new(deals(:purchase),
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 30, 12, 0, 0))
+    assert_equal deals(:purchase), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 1.0, 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert_equal 1, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 70000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:purchase), tr[0].fact.to, "Wrong fact to"
   end
 
   def test_balance(b, amount, value, side)

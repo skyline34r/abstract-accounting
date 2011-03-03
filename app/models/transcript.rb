@@ -34,7 +34,7 @@ class Transcript < Array
     if !@deal.nil?
       @deal.balance_range(@start - 1, @stop).each do |balance|
         @opening = balance if balance.start < @start
-        @closing = balance if !balance.paid.nil?
+        @closing = balance if balance.paid.nil? or balance.paid > @stop
       end
     end
   end
