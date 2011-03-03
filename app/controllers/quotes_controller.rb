@@ -10,6 +10,10 @@ class QuotesController < ApplicationController
   end
 
   def create
+    @quote = Quote.new(params[:quote])
+    if !@quote.save
+      render :action => "new"
+    end
   end
-  
+
 end
