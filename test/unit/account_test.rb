@@ -920,6 +920,8 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[6].value,
       "Wrong income value"
     assert_equal "active", bs[6].side, "Wrong income value"
+
+    assert_equal 242300, bs.assets, "Wrong balance sheet assets"
   end
 
   def test_balance(b, amount, value, side)
