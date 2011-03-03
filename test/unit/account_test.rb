@@ -907,12 +907,19 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   def test_balance_sheet
-   bs = Balance.find_all_between_start_and_stop DateTime.now, DateTime.now
-   bs = bs + Income.find_all_between_start_and_stop(DateTime.now, DateTime.now)
-   assert_equal 7, bs.count, "Wrong balance sheet items count"
+    bs = Balance.find_all_between_start_and_stop DateTime.now, DateTime.now
+    bs = bs + Income.find_all_between_start_and_stop(DateTime.now, DateTime.now)
+    assert_equal 7, bs.count, "Wrong balance sheet items count"
 
-   dt = DateTime.now
-   assert_equal dt, BalanceSheet.new(dt).day, "Wrong balance sheet day"
+    dt = DateTime.now
+    assert_equal dt, BalanceSheet.new(dt).day, "Wrong balance sheet day"
+
+    bs = BalanceSheet.new
+    assert_equal 7, bs.count, "Wrong balance sheet count"
+    assert !bs[6].nil?, "Wrong element in balance sheet"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[6].value,
+      "Wrong income value"
+    assert_equal "active", bs[6].side, "Wrong income value"
   end
 
   def test_balance(b, amount, value, side)
