@@ -1,6 +1,7 @@
 class ChartsController < ApplicationController
 
   def index
+    session[:res_type] = 'money'
     @count = Chart.all
     @chart = Chart.new
   end

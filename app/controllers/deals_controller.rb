@@ -1,6 +1,7 @@
 class DealsController < ApplicationController
 
   def index
+    session[:res_type] = ''
     @columns = ['tag', 'entity_tag', 'id', 'rate', 'entity_id', 'give_id',
                 'give_type', 'take_id', 'take_type']
     @deals = Deal.joins('INNER JOIN entities ON entities.id = deals.entity_id')

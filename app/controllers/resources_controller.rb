@@ -7,7 +7,11 @@ class ResourcesController < ApplicationController
     @asset = Asset.select('id, tag, "Asset" AS type, 0 AS code')
     @money = Money.select('id, alpha_code AS tag,
                            num_code AS code, "Money" AS type')
-    @resources = @money + @asset
+    if (session[:res_type] == 'money')
+      @resources = @money
+    else
+      @resources = @money + @asset
+    end
     @resources = @resources.sort do |x,y|
       if params[:sidx] == 'tag'
         if params[:sord] == 'asc'

@@ -3,6 +3,7 @@ require 'float_accounting'
 class FactsController < ApplicationController
 
   def index
+    session[:res_type] = ''
     @fact = Fact.new
   end
 
