@@ -245,6 +245,7 @@ class AccountTest < ActiveSupport::TestCase
     direct_gains_losses
     test_transcript
     test_pnl_transcript
+    test_balance_sheet
   end
 
   private
@@ -903,6 +904,12 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 0.0, tr[7].value, "Wrong txn value"
     assert_equal (400.0 * 34.95).accounting_norm, tr[7].earnings,
       "Wrong txn earnings"
+  end
+
+  def test_balance_sheet
+   bs = Balance.find_all_between_start_and_stop DateTime.now, DateTime.now
+   bs = bs + Income.find_all_between_start_and_stop(DateTime.now, DateTime.now)
+   assert_equal 7, bs.count, "Wrong balance sheet items count"
   end
 
   def test_balance(b, amount, value, side)
