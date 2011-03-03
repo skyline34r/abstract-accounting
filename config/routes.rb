@@ -19,6 +19,7 @@ Abstract::Application.routes.draw do
   resources :deals
   resources :facts
   resources :charts
+  resources :quotes
   get "home/index"
 
   # The priority is based upon order of creation:
