@@ -7,4 +7,9 @@ class QuotesControllerTest < ActionController::TestCase
     assert_not_nil assigns(:quotes)
   end
 
+  test "should get new quote" do
+    xml_http_request :get, :new
+    assert_response :success
+  end
+
 end
