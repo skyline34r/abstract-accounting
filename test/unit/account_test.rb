@@ -244,6 +244,7 @@ class AccountTest < ActiveSupport::TestCase
     gain_transaction
     direct_gains_losses
     test_transcript
+    test_pnl_transcript
   end
 
   private
@@ -873,6 +874,35 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 70000.0, tr[0].fact.amount, "Wrong fact amount"
     assert_equal deals(:bankaccount), tr[0].fact.from, "Wrong fact from"
     assert_equal deals(:purchase), tr[0].fact.to, "Wrong fact to"
+  end
+
+  def test_pnl_transcript
+    tr = Transcript.new(Deal.income,
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 9, 10, 12, 0, 0))
+    assert_equal Deal.income, tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 9, 10, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, tr.closing.value,
+      "Wrong income value"
+    assert_equal "active", tr.closing.side, "Wrong income value"
+
+    assert_equal 8, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 1000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal 1000.0 * 34.95, tr[0].value, "Wrong txn value"
+    assert_equal (1000.0 * (35.0 - 34.95)).accounting_norm, tr[0].earnings,
+      "Wrong txn earnings"
+    assert tr[7].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 400.0, tr[7].fact.amount, "Wrong fact amount"
+    assert_equal 0.0, tr[7].value, "Wrong txn value"
+    assert_equal (400.0 * 34.95).accounting_norm, tr[7].earnings,
+      "Wrong txn earnings"
   end
 
   def test_balance(b, amount, value, side)

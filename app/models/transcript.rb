@@ -32,7 +32,11 @@ class Transcript < Array
   end
   def load_diffs
     if !@deal.nil?
-      @deal.balance_range(@start - 1, @stop).each do |balance|
+      (if @deal.income?
+        Income.find_all_between_start_and_stop(@start - 1, @stop)
+      else
+        @deal.balance_range(@start - 1, @stop)
+      end).each do |balance|
         @opening = balance if balance.start < @start
         @closing = balance if balance.paid.nil? or balance.paid > @stop
       end

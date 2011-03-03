@@ -48,10 +48,19 @@ class Deal < ActiveRecord::Base
   end
 
   def txns(start, stop)
-    Txn.find_all_by_fact_id \
-      Fact.find_all_by_deal_id(self.id).where("day > ? AND day < ?",
-        DateTime.new(start.year, start.month, start.day),
-        DateTime.new(stop.year, stop.month, stop.day) + 1).
-          collect { |item| item.id }
+    facts = (if self.income?
+        Fact
+      else
+        Fact.find_all_by_deal_id(self.id)
+      end).where("day > ? AND day < ?",
+          DateTime.new(start.year, start.month, start.day),
+          DateTime.new(stop.year, stop.month, stop.day) + 1).
+            collect { |item| item.id }
+
+    if self.income?
+      Txn.find_all_by_fact_id_and_status facts, 1
+    else
+      Txn.find_all_by_fact_id facts
+    end
   end
 end
