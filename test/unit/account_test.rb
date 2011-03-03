@@ -910,6 +910,9 @@ class AccountTest < ActiveSupport::TestCase
    bs = Balance.find_all_between_start_and_stop DateTime.now, DateTime.now
    bs = bs + Income.find_all_between_start_and_stop(DateTime.now, DateTime.now)
    assert_equal 7, bs.count, "Wrong balance sheet items count"
+
+   dt = DateTime.now
+   assert_equal dt, BalanceSheet.new(dt).day, "Wrong balance sheet day"
   end
 
   def test_balance(b, amount, value, side)
