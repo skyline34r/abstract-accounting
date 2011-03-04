@@ -7,6 +7,29 @@ function enabledElements() {
   $('#quote_datepicker').removeAttr('disabled');
   $('#quote_rate').removeAttr('disabled');
 }
+function chooseMoney()
+{
+  $('#quotes_div').css('display','none');
+  $('#frame_quote_div').css('display','block');
+  $('#frame').attr('src', 'resources');
+  $('#title_frame').html('Resources');
+
+  $('#submit').click(function() {
+    var selRow = $('#frame').contents().find('#resources_list')
+                                       .getGridParam('selrow');
+    if (selRow != null)
+    {
+      $('#quote_res_btn').val(selRow);
+      $('#hide_quote_money').val($('#frame').contents().find('#resources_list')
+                                            .getCell(selRow, 'id'));
+      $('#quotes_div').css('display','block');
+      $('#frame_quote_div').css('display','none');
+      $('#frame').attr('src', '');
+      $("#submit").unbind("click");
+      $('#save_quote').removeAttr('disabled');
+    }
+  });
+}
 </script>
 
 <div id="quotes_div">
@@ -25,7 +48,7 @@ function enabledElements() {
       <td style="width: 724px">
         resource:
         <input type="button" id="quote_res_btn" value="click to choose"
-               disabled="true" onclick=""/>
+               disabled="true" onclick="chooseMoney();"/>
       </td>
     </tr>
     <tr>
