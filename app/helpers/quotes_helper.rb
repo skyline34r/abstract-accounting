@@ -13,7 +13,11 @@ module QuotesHelper
       :colNames => ['money_tag', 'day', 'rate', 'id', 'money_id'],
       :colModel => [
         { :name => 'money_tag', :index => 'money_tag', :width => 400 },
-        { :name => 'day',       :index => 'day',       :width => 200 },
+        { :name => 'day',       :index => 'day',       :width => 200,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return cellvalue.substr(0,10);
+                         }'.to_json_var
+        },
         { :name => 'rate',      :index => 'rate',      :width => 200 },
         { :name => 'id',        :index => 'id',        :width => 5, :hidden => true },
         { :name => 'money_id',  :index => 'money_id',  :width => 5, :hidden => true }
@@ -36,7 +40,7 @@ module QuotesHelper
         return false;
       }".to_json_var
     }]
-
+    
     jqgrid_api 'quotes_list', grid, options
 
   end
