@@ -7,7 +7,7 @@
 <td width="50">
   <%= form_for(@quote, :remote => true) do |f| %>
   <%= f.submit "save", :id => "save_quote", :disabled => "true",
-                       :onclick => "" %>
+                       :onclick => "beforeSave();" %>
   <%= f.hidden_field :money_id, :id => "hide_quote_money" %>
   <%= f.hidden_field :day,      :id => "hide_quote_day" %>
   <%= f.hidden_field :rate,     :id => "hide_quote_rate" %>

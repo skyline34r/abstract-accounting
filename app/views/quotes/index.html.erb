@@ -35,6 +35,12 @@ function discardChoose()
   $('#quotes_div').css('display','block');
   $('#frame_quote_div').css('display','none');
 }
+function beforeSave()
+{
+  var d = new Date($('#quote_datepicker').val());
+  $('#hide_quote_day').val(d.toUTCString());
+  $('#hide_quote_rate').val($('#quote_rate').val());
+}
 </script>
 
 <div id="quotes_div">
