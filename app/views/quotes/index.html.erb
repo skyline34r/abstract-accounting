@@ -51,6 +51,11 @@ function onCancel()
   $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
   disabledElements();
 }
+function onReset()
+{
+  enabledElements();
+  $('#save_quote').attr('disabled','disabled');
+}
 </script>
 
 <div id="quotes_div">
