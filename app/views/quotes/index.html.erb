@@ -6,6 +6,7 @@ function enabledElements() {
   $('#quote_res_btn').removeAttr('disabled');
   $('#quote_datepicker').removeAttr('disabled');
   $('#quote_rate').removeAttr('disabled');
+  setDefault();
 }
 function chooseMoney()
 {
@@ -55,6 +56,16 @@ function onReset()
 {
   enabledElements();
   $('#save_quote').attr('disabled','disabled');
+  setDefault();
+}
+function setDefault()
+{
+  $('#hide_quote_day').val('');
+  $('#hide_quote_rate').val('');
+  $('#hide_quote_money').val('');
+  $('#quote_res_btn').val('click to choose');
+  $('#quote_datepicker').val('');
+  $('#quote_rate').val('');
 }
 </script>
 
