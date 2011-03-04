@@ -23,7 +23,13 @@ module QuotesHelper
       :rowList => [10, 20, 30],
       :sortname => 'money_tag',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => "function(cell)
+      {
+        $('#quote_res_btn').val(cell);
+        $('#quote_datepicker').val($('#quotes_list').getCell(cell, 'day'));
+        $('#quote_rate').val($('#quotes_list').getCell(cell, 'rate'));
+      }".to_json_var
     }]
 
     jqgrid_api 'quotes_list', grid, options
