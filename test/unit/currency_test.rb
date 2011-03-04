@@ -93,6 +93,8 @@ class CurrencyTest < ActiveSupport::TestCase
     rate_change
     forex_sale_after_rate_change
     transfer_rollback
+
+    test_balance_sheet
   end
 
   private
@@ -330,5 +332,14 @@ class CurrencyTest < ActiveSupport::TestCase
     f.destroy
     assert_equal 6, Fact.all.count, "Wrong fact count"
     assert_equal 8, State.open.count, "Wrong open states count"
+  end
+
+  def test_balance_sheet
+    b = (BalanceSheet.new)[0]
+    assert !b.nil?, "Balance is nil"
+    assert_equal 30000.0, b.amount, "Wrong balance amount"
+    assert_equal 45000.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+    assert_equal @bx1, b.deal, "Wrong balance deal"
   end
 end
