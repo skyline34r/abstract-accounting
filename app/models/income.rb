@@ -12,7 +12,7 @@ class Income < ActiveRecord::Base
   def self.find_all_between_start_and_stop(start, stop)
     Income.where("start <= ? AND (paid > ? OR paid IS NULL)",
       DateTime.new(stop.year, stop.month, stop.day) + 1,
-      DateTime.new(start.year, start.month, start.day))
+      DateTime.new(start.year, start.month, start.day) + 1)
   end
 
   def quote=(aQuote)

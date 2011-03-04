@@ -923,6 +923,48 @@ class AccountTest < ActiveSupport::TestCase
 
     assert_equal 242300, bs.assets, "Wrong balance sheet assets"
     assert_equal 242300, bs.liabilities, "Wrong balance sheet liabilities"
+
+    bs = BalanceSheet.new DateTime.civil(2007, 9, 7, 12, 0, 0)
+    assert_equal 6, bs.count, "Wrong balance sheet count"
+    assert_equal 242000, bs.assets, "Wrong balance sheet assets"
+    assert_equal 242000, bs.liabilities, "Wrong balance sheet liabilities"
+
+    test_balance bs[0],
+                 100000.0 / 10000.0,
+                 100000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[1],
+                 142000.0 / 10000.0,
+                 142000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[2],
+                 1.0,
+                 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[3],
+                 2400,
+                 (2400 * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[4],
+                 1.0,
+                 2000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[5],
+                 87920.0,
+                 87920.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
   end
 
   def test_balance(b, amount, value, side)
