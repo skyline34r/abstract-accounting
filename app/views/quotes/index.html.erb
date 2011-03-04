@@ -46,6 +46,11 @@ function disabledElements() {
   $('#quote_datepicker').attr('disabled','disabled');
   $('#quote_rate').attr('disabled','disabled');
 }
+function onCancel()
+{
+  $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
+  disabledElements();
+}
 </script>
 
 <div id="quotes_div">
