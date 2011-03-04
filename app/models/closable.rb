@@ -12,7 +12,7 @@ module Closable
       end
     else
       state2 = self.clone
-      self.paid = self.start
+      self.paid = aDay
       self.save!
       yield(state2)
       if state2.amount?

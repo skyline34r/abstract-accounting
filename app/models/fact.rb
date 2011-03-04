@@ -36,6 +36,10 @@ class Fact < ActiveRecord::Base
             :resource => aRule.from.take, :to => aRule.to, :from => aRule.from)
   end
 
+  def self.find_all_by_deal_id(id)
+    Fact.where("from_deal_id == :id or to_deal_id == :id", :id => id)
+  end
+
   private
   def do_save
     if changed? or new_record?

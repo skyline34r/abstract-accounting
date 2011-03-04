@@ -41,4 +41,26 @@ class Deal < ActiveRecord::Base
     return nil if ret_balances.empty?
     ret_balances.first
   end
+  def balance_range(start, stop)
+    balances.where("start <= ? AND (paid > ? OR paid IS NULL)",
+      DateTime.new(stop.year, stop.month, stop.day) + 1,
+      DateTime.new(start.year, start.month, start.day))
+  end
+
+  def txns(start, stop)
+    facts = (if self.income?
+        Fact
+      else
+        Fact.find_all_by_deal_id(self.id)
+      end).where("day > ? AND day < ?",
+          DateTime.new(start.year, start.month, start.day),
+          DateTime.new(stop.year, stop.month, stop.day) + 1).
+            collect { |item| item.id }
+
+    if self.income?
+      Txn.find_all_by_fact_id_and_status facts, 1
+    else
+      Txn.find_all_by_fact_id facts
+    end
+  end
 end

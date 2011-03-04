@@ -158,7 +158,7 @@ class AccountTest < ActiveSupport::TestCase
         assert_equal pendingFact.amount, bto.value,
           "To balance value is not equal"
 
-        b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 29, 12, 0, 1)
+        b = deals(:bankaccount).balance nil, DateTime.civil(2007, 8, 30, 12, 0, 1)
         assert !b.nil?, "Balance is nil"
         assert_equal deals(:bankaccount), b.deal, "balance invalid deal"
         assert_equal deals(:bankaccount).take, b.resource,
@@ -243,6 +243,10 @@ class AccountTest < ActiveSupport::TestCase
     split_transaction
     gain_transaction
     direct_gains_losses
+    test_transcript
+    test_pnl_transcript
+    test_balance_sheet
+    test_general_ledger
   end
 
   private
@@ -707,6 +711,267 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1, Income.open.count, "Wrong open incomes count"
     @profit += 400.0 * 34.95
     assert (@profit + Income.open.first.value), "Wrong income value"
+  end
+
+  def test_transcript
+    txns = deals(:bankaccount).txns(DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal 2, txns.count, "Deal txns count is wrong"
+    txns.each do |item|
+      assert item.instance_of?(Txn), "Wrong txn instance"
+      assert (deals(:bankaccount) == item.fact.from or
+          deals(:bankaccount) == item.fact.to), "Wrong txn value"
+    end
+
+    txns = deals(:bankaccount).txns(DateTime.civil(2007, 8, 30, 12, 0, 0),
+      DateTime.civil(2007, 8, 30, 12, 0, 0))
+    assert_equal 2, txns.count, "Deal txns count is wrong"
+    txns.each do |item|
+      assert item.instance_of?(Txn), "Wrong txn instance"
+      assert (deals(:bankaccount) == item.fact.from or
+          deals(:bankaccount) == item.fact.to), "Wrong txn value"
+    end
+
+    balances = deals(:bankaccount).
+      balance_range(DateTime.civil(2007, 8, 29, 12, 0, 0),
+                    DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal 1, balances.count, "Wrong balances count"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), balances.first.start,
+      "Wrong balance start value"
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), balances.first.paid,
+      "Wrong balance paid value"
+
+    tr = Transcript.new(deals(:bankaccount),
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 29, 12, 0, 0))
+    assert_equal deals(:bankaccount), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 100000.0 + 142000.0, 100000.0 + 142000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    assert_equal 2, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 100000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare2), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[0].fact.to, "Wrong fact to"
+    assert tr[1].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 142000.0, tr[1].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare1), tr[1].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[1].fact.to, "Wrong fact to"
+
+    tr = Transcript.new(deals(:bankaccount),
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 30, 12, 0, 0))
+    assert_equal deals(:bankaccount), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 100000.0 + 142000.0 - 70000.0 - 34950.0,
+                 100000.0 + 142000.0 - 70000.0 - 34950.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    assert_equal 4, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 100000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare2), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[0].fact.to, "Wrong fact to"
+    assert tr[1].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 142000.0, tr[1].fact.amount, "Wrong fact amount"
+    assert_equal deals(:equityshare1), tr[1].fact.from, "Wrong fact from"
+    assert_equal deals(:bankaccount), tr[1].fact.to, "Wrong fact to"
+    assert tr[2].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 70000.0, tr[2].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[2].fact.from, "Wrong fact from"
+    assert_equal deals(:purchase), tr[2].fact.to, "Wrong fact to"
+    assert tr[3].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 34950.0, tr[3].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[3].fact.from, "Wrong fact from"
+    assert_equal deals(:forex), tr[3].fact.to, "Wrong fact to"
+
+    assert_equal 100000.0 + 142000.0, tr.total_debits,
+      "Wrong total debits"
+    assert_equal 100000.0 + 142000.0, tr.total_debits_value,
+      "Wrong total debits value"
+
+    assert_equal 70000.0 + 34950.0, tr.total_credits,
+      "Wrong total credits"
+    assert_equal 70000.0 + 34950.0, tr.total_credits_value,
+      "Wrong total credits value"
+
+    tr = Transcript.new(deals(:bankaccount),
+      DateTime.civil(2007, 8, 30, 12, 0, 0),
+      DateTime.civil(2007, 8, 31, 12, 0, 0))
+    assert_equal deals(:bankaccount), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 31, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert !tr.opening.nil?, "Wrong oening value"
+    test_balance tr.opening, 100000.0 + 142000.0, 100000.0 + 142000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 100000.0 + 142000.0 - 70000.0 - 34950.0,
+                 100000.0 + 142000.0 - 70000.0 - 34950.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+
+    assert_equal 2, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 70000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:purchase), tr[0].fact.to, "Wrong fact to"
+    assert tr[1].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 34950.0, tr[1].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[1].fact.from, "Wrong fact from"
+    assert_equal deals(:forex), tr[1].fact.to, "Wrong fact to"
+
+    tr = Transcript.new(deals(:bankaccount),
+      DateTime.civil(2007, 8, 28, 12, 0, 0),
+      DateTime.civil(2007, 8, 28, 12, 0, 0))
+    assert_equal deals(:bankaccount), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 28, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 28, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert tr.closing.nil?, "Wrong closing value"
+    assert_equal 0, tr.count, "Wrong transcript txns count"
+
+    tr = Transcript.new(deals(:purchase),
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 8, 30, 12, 0, 0))
+    assert_equal deals(:purchase), tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 8, 30, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    test_balance tr.closing, 1.0, 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    assert_equal 1, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 70000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal deals(:bankaccount), tr[0].fact.from, "Wrong fact from"
+    assert_equal deals(:purchase), tr[0].fact.to, "Wrong fact to"
+  end
+
+  def test_pnl_transcript
+    tr = Transcript.new(Deal.income,
+      DateTime.civil(2007, 8, 29, 12, 0, 0),
+      DateTime.civil(2007, 9, 10, 12, 0, 0))
+    assert_equal Deal.income, tr.deal, "Wrong transcript deal value"
+    assert_equal DateTime.civil(2007, 8, 29, 12, 0, 0), tr.start,
+      "Wrong transcript start value"
+    assert_equal DateTime.civil(2007, 9, 10, 12, 0, 0), tr.stop,
+      "Wrong transcript stop value"
+
+    assert tr.opening.nil?, "Wrong oening value"
+    assert !tr.closing.nil?, "Wrong closing value"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, tr.closing.value,
+      "Wrong income value"
+    assert_equal "active", tr.closing.side, "Wrong income value"
+
+    assert_equal 8, tr.count, "Wrong transcript txns count"
+    assert tr[0].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 1000.0, tr[0].fact.amount, "Wrong fact amount"
+    assert_equal 1000.0 * 34.95, tr[0].value, "Wrong txn value"
+    assert_equal (1000.0 * (35.0 - 34.95)).accounting_norm, tr[0].earnings,
+      "Wrong txn earnings"
+    assert tr[7].instance_of?(Txn), "Wrong elemnt instance type"
+    assert_equal 400.0, tr[7].fact.amount, "Wrong fact amount"
+    assert_equal 0.0, tr[7].value, "Wrong txn value"
+    assert_equal (400.0 * 34.95).accounting_norm, tr[7].earnings,
+      "Wrong txn earnings"
+  end
+
+  def test_balance_sheet
+    bs = Balance.find_all_between_start_and_stop DateTime.now, DateTime.now
+    bs = bs + Income.find_all_between_start_and_stop(DateTime.now, DateTime.now)
+    assert_equal 7, bs.count, "Wrong balance sheet items count"
+
+    dt = DateTime.now
+    assert_equal dt, BalanceSheet.new(dt).day, "Wrong balance sheet day"
+
+    bs = BalanceSheet.new
+    assert_equal 7, bs.count, "Wrong balance sheet count"
+    assert !bs[6].nil?, "Wrong element in balance sheet"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[6].value,
+      "Wrong income value"
+    assert_equal "active", bs[6].side, "Wrong income value"
+
+    assert_equal 242300, bs.assets, "Wrong balance sheet assets"
+    assert_equal 242300, bs.liabilities, "Wrong balance sheet liabilities"
+
+    bs = BalanceSheet.new DateTime.civil(2007, 9, 7, 12, 0, 0)
+    assert_equal 6, bs.count, "Wrong balance sheet count"
+    assert_equal 242000, bs.assets, "Wrong balance sheet assets"
+    assert_equal 242000, bs.liabilities, "Wrong balance sheet liabilities"
+
+    test_balance bs[0],
+                 100000.0 / 10000.0,
+                 100000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[1],
+                 142000.0 / 10000.0,
+                 142000.0,
+                 "active" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[2],
+                 1.0,
+                 70000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[3],
+                 2400,
+                 (2400 * 34.2).accounting_norm,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[4],
+                 1.0,
+                 2000.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+    test_balance bs[5],
+                 87920.0,
+                 87920.0,
+                 "passive" do |expected, value, msg|
+      assert_equal expected, value, msg
+    end
+  end
+
+  def test_general_ledger
+    assert_equal 20, Txn.all.count, "Wrong count of txns"
+    assert_equal 20, GeneralLedger.new.count,
+      "Wrong count of general ledger items"
   end
 
   def test_balance(b, amount, value, side)
