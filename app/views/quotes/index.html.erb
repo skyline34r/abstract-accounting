@@ -2,6 +2,11 @@
 $(function() {
   $('#quote_datepicker').datepicker();
 });
+function enabledElements() {
+  $('#quote_res_btn').removeAttr('disabled');
+  $('#quote_datepicker').removeAttr('disabled');
+  $('#quote_rate').removeAttr('disabled');
+}
 </script>
 
 <div id="quotes_div">
