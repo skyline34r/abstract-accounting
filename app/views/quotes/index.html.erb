@@ -1,1 +1,8 @@
- 
+<div id="quotes_div">
+  <table id="quotes_list"></table>
+  <div id="quotes_pager"></div>
+
+  <% content_for :head do %>
+    <%= raw(quotes_jqgrid) %>
+  <% end %>
+</div>
