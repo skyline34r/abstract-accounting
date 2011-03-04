@@ -29,6 +29,11 @@ module QuotesHelper
         $('#quote_res_btn').val(cell);
         $('#quote_datepicker').val($('#quotes_list').getCell(cell, 'day'));
         $('#quote_rate').val($('#quotes_list').getCell(cell, 'rate'));
+      }".to_json_var,
+      :beforeSelectRow =>	"function()
+      {
+        if (canSelect) return true;
+        return false;
       }".to_json_var
     }]
 
