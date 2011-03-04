@@ -1,0 +1,15 @@
+<td>
+  <input name="cancel" type="button" value="cancel"
+    onclick=""/>
+  <input name="reset" type="button" value="reset"
+    onclick=""/>
+</td>
+<td width="50">
+  <%= form_for(@quote, :remote => true) do |f| %>
+  <%= f.submit "save", :id => "save_quote", :disabled => "true",
+                       :onclick => "" %>
+  <%= f.hidden_field :money_id, :id => "hide_quote_money" %>
+  <%= f.hidden_field :day,      :id => "hide_quote_day" %>
+  <%= f.hidden_field :rate,     :id => "hide_quote_rate" %>
+  <% end %>
+</td>
