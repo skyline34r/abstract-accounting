@@ -1,3 +1,9 @@
+<script type="text/javascript">
+$(function() {
+  $('#quote_datepicker').datepicker();
+});
+</script>
+
 <div id="quotes_div">
   <table id="quotes_list"></table>
   <div id="quotes_pager"></div>
@@ -5,4 +11,24 @@
   <% content_for :head do %>
     <%= raw(quotes_jqgrid) %>
   <% end %>
+
+  <table>
+    <tr id="actions" align="right">
+      <%= render 'form_index' %>
+    </tr>
+    <tr>
+      <td style="width: 724px">
+        resource:
+        <input type="button" id="quote_res_btn" value="click to choose"
+               disabled="true" onclick=""/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" id="quote_datepicker" size="20" disabled="true"/>
+        rate:
+        <input type="text" id="quote_rate" disabled="true"/>
+      </td>
+    </tr>
+  </table>
 </div>
