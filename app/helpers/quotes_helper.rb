@@ -21,7 +21,7 @@ module QuotesHelper
       :pager => '#quotes_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'resource',
+      :sortname => 'money_tag',
       :sortorder => 'asc',
       :viewrecords => true
     }]
