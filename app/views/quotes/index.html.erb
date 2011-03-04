@@ -41,6 +41,11 @@ function beforeSave()
   $('#hide_quote_day').val(d.toUTCString());
   $('#hide_quote_rate').val($('#quote_rate').val());
 }
+function disabledElements() {
+  $('#quote_res_btn').attr('disabled','disabled');
+  $('#quote_datepicker').attr('disabled','disabled');
+  $('#quote_rate').attr('disabled','disabled');
+}
 </script>
 
 <div id="quotes_div">
