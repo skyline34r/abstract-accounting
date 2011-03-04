@@ -58,9 +58,11 @@ function discardChoose()
     </tr>
     <tr>
       <td>
-        <input type="text" id="quote_datepicker" size="20" disabled="true"/>
+        <input type="text" id="quote_datepicker" size="20" disabled="true"
+               onchange="$('#save_quote').removeAttr('disabled');"/>
         rate:
-        <input type="text" id="quote_rate" disabled="true"/>
+        <input type="text" id="quote_rate" disabled="true"
+               onkeypress="$('#save_quote').removeAttr('disabled');"/>
       </td>
     </tr>
   </table>
