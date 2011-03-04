@@ -246,6 +246,7 @@ class AccountTest < ActiveSupport::TestCase
     test_transcript
     test_pnl_transcript
     test_balance_sheet
+    test_general_ledger
   end
 
   private
@@ -965,6 +966,12 @@ class AccountTest < ActiveSupport::TestCase
                  "passive" do |expected, value, msg|
       assert_equal expected, value, msg
     end
+  end
+
+  def test_general_ledger
+    assert_equal 20, Txn.all.count, "Wrong count of txns"
+    assert_equal 20, GeneralLedger.new.count,
+      "Wrong count of general ledger items"
   end
 
   def test_balance(b, amount, value, side)
