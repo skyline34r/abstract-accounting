@@ -23,7 +23,11 @@ class Balance < ActiveRecord::Base
   end
 
   def credit_diff
-    if self.side == "active" and !self.credit.zero?
+    if self.deal.nil?
+      0.0
+    elsif self.deal.income?
+      self.credit
+    elsif self.side == "active" and !self.credit.zero?
       (self.amount * self.credit).accounting_norm - self.value
     else
       0.0
