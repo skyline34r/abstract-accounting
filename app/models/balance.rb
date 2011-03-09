@@ -22,6 +22,10 @@ class Balance < ActiveRecord::Base
     end
   end
 
+  def credit_diff
+    0.0
+  end
+
   def debit
     if self.deal.take.instance_of?(Money) and !self.deal.take.quote.nil?
       self.deal.take.quote.rate

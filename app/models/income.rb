@@ -19,6 +19,10 @@ class Income < ActiveRecord::Base
     Quote.sum(:diff, :conditions => ["day = ? AND diff > 0.0", self.start])
   end
 
+  def credit_diff
+    0.0
+  end
+
   def quote=(aQuote)
     update_value aQuote.day, aQuote.diff
   end
