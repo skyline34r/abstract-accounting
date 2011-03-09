@@ -10,6 +10,28 @@ class Balance < ActiveRecord::Base
   after_initialize :balance_init
   before_save :balance_save
 
+  def debit_diff
+    if self.deal.nil?
+      0.0
+    elsif self.deal.income?
+      self.debit
+    elsif self.side == "passive" and !self.debit.zero?
+      (self.amount * self.debit).accounting_norm - self.value
+    else
+      0.0
+    end
+  end
+
+  def debit
+    if self.deal.take.instance_of?(Money) and !self.deal.take.quote.nil?
+      self.deal.take.quote.rate
+    elsif !Chart.first.nil? and self.deal.take == Chart.first.currency
+      1.0
+    else
+      0.0
+    end
+  end
+
   def Balance.open
     Balance.find_all_by_paid nil
   end
@@ -35,14 +57,7 @@ class Balance < ActiveRecord::Base
     else
       0.0
     end
-    @debit = if self.deal.take.instance_of?(Money) and
-        !self.deal.take.quote.nil?
-      self.deal.take.quote.rate
-    elsif !Chart.first.nil? and self.deal.take == Chart.first.currency
-      1.0
-    else
-      0.0
-    end
+    @debit = self.debit
 
     if init_from_fact(aTxn.fact)
       self.start = aTxn.fact.day

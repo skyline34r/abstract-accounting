@@ -6,13 +6,14 @@ class Transcript < Array
     @stop = stop
     @total_debits = 0.0
     @total_debits_value = 0.0
+    @total_debits_diff = 0.0
     @total_credits = 0.0
     @total_credits_value = 0.0
     load_list
     load_diffs
   end
   attr_reader :deal, :start, :stop, :opening, :closing
-  attr_reader :total_debits, :total_debits_value
+  attr_reader :total_debits, :total_debits_value, :total_debits_diff
   attr_reader :total_credits, :total_credits_value
 
   private
@@ -37,8 +38,12 @@ class Transcript < Array
       else
         @deal.balance_range(@start - 1, @stop)
       end).each do |balance|
-        @opening = balance if balance.start < @start
-        @closing = balance if balance.paid.nil? or balance.paid > @stop
+        if balance.start < @start
+          @opening = balance
+        else
+          @closing = balance if balance.paid.nil? or balance.paid > @stop
+          @total_debits_diff += balance.debit_diff
+        end
       end
     end
   end

@@ -95,6 +95,7 @@ class CurrencyTest < ActiveSupport::TestCase
     transfer_rollback
 
     test_balance_sheet
+    test_transcript
   end
 
   private
@@ -341,5 +342,13 @@ class CurrencyTest < ActiveSupport::TestCase
     assert_equal 45000.0, b.value, "Wrong balance value"
     assert_equal "active", b.side, "Wrong balance side"
     assert_equal @bx1, b.deal, "Wrong balance deal"
+  end
+
+  def test_transcript
+    tr = Transcript.new(@a2,
+      DateTime.civil(2008, 3, 25, 12, 0, 0),
+      DateTime.civil(2008, 3, 31, 12, 0, 0))
+    assert_equal 3000.0, tr.total_debits_diff,
+      "Wrong total debits diff in transcript"
   end
 end
