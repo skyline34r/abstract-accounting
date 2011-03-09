@@ -22,8 +22,12 @@ class Transcript < Array
     if !@deal.nil?
       @deal.txns(@start, @stop).each do |item|
         self << item
-        if @deal.income? and item.earnings < 0.0
-          @total_debits_value -= item.earnings
+        if @deal.income?
+          if item.earnings < 0.0
+            @total_debits_value -= item.earnings
+          else
+            @total_credits_value += item.earnings
+          end
         else
           if item.fact.to == @deal
             @total_debits += item.fact.amount
