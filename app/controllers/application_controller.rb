@@ -14,7 +14,11 @@ class ApplicationController < ActionController::Base
       :total => records.total_pages,
       :records => records.total_entries,
       :rows => records.map do |r| {
-        :id => r.attributes[options[:id_column]],
+        :id => ( value = r
+                 options[:id_column].each_line('.') do |n|
+                   value = value.send(n.chomp('.'))
+                 end
+                 value),
         :cell => columns.map do |c|
                    value = r
                    c.each_line('.') do |n|
@@ -26,5 +30,4 @@ class ApplicationController < ActionController::Base
     }.to_json
 
   end
-
 end
