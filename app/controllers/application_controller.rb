@@ -1,3 +1,30 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+
+  def abstract_json_for_jqgrid records, columns = nil, options = {}
+
+    return if records.empty?
+
+    columns ||= records.first.attributes.keys
+
+    options[:id_column] ||= columns.first
+    options[:page]      ||= records.current_page
+
+    { :page => options[:page],
+      :total => records.total_pages,
+      :records => records.total_entries,
+      :rows => records.map do |r| {
+        :id => r.attributes[options[:id_column]],
+        :cell => columns.map do |c|
+                   value = r
+                   c.each_line('.') do |n|
+                     value = value.send(n.chomp('.'))
+                   end
+                   value
+                 end}
+      end
+    }.to_json
+
+  end
+
 end
