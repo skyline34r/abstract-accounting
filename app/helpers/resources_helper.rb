@@ -13,9 +13,9 @@ module ResourcesHelper
       :colNames => ['tag', 'type', 'id', 'code'],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 700 },
-        { :name => 'type', :index => 'type',  :width => 100 },
+        { :name => 'type', :index => 'class',  :width => 100 },
         { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
-        { :name => 'code', :index => 'code',  :width => 5, :hidden => true }
+        { :name => 'code', :index => 'num_code',  :width => 5, :hidden => true }
       ],
       :pager => '#resources_pager',
       :rowNum => 10,
@@ -25,7 +25,7 @@ module ResourcesHelper
       :viewrecords => true,
       :onSelectRow => "function(cell)
       {
-        $('#resource_tag').val(cell);
+        $('#resource_tag').val($('#resources_list').getCell(cell, 'tag'));
         $('#change_resource').removeAttr('disabled');
         selId = $('#resources_list').getCell(cell, 'id');
         if($('#resources_list').getCell(cell, 'type') == 'Asset')

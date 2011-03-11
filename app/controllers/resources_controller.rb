@@ -3,13 +3,31 @@ require 'resource'
 class ResourcesController < ApplicationController
 
   def index
-    @columns = ['tag', 'type', 'id', 'code']
-    @asset = Asset.select('id, tag, "Asset" AS type, 0 AS code')
-    @money = Money.select('id, alpha_code AS tag,
-                           num_code AS code, "Money" AS type')
+    @columns = ['tag', 'class.name', 'id', 'num_code']
+
+    Money.class_exec {
+      def uid
+        return self.class.name + self.id.to_s
+      end
+      def tag
+        return alpha_code
+      end
+    }
+
+    Asset.class_exec {
+      def uid
+        return self.class.name + self.id.to_s
+      end
+      def num_code
+        return 0
+      end
+    }
+
+    @money = Money.all
     if (session[:res_type] == 'money')
       @resources = @money
     else
+      @asset = Asset.all
       @resources = @money + @asset
     end
     @resources = @resources.sort do |x,y|
@@ -21,9 +39,9 @@ class ResourcesController < ApplicationController
         end
       else
         if params[:sord] == 'asc'
-          x.type <=> y.type
+          x.class.name <=> y.class.name
         else
-          y.type <=> x.type
+          y.class.name <=> x.class.name
         end
       end
     end
@@ -31,7 +49,7 @@ class ResourcesController < ApplicationController
       :page     => params[:page],
       :per_page => params[:rows])
     if request.xhr?
-      render :json => json_for_jqgrid(@resources, @columns)
+      render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'uid')
     end
   end
 
