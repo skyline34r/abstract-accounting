@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BalancesControllerTest < ActionController::TestCase
-  test "should get index of balance" do
+  test "should get balance" do
     t = Txn.new :fact => Fact.new(
               :amount => 100000.0,
               :day => DateTime.civil(2007, 8, 27, 12, 0, 0),
@@ -27,7 +27,17 @@ class BalancesControllerTest < ActionController::TestCase
     assert t.fact.save, "Fact is not saved"
     assert t.save, "Txn is not saved"
 
+    should_get_index_of_balance
+    should_load_balance
+  end
+
+  def should_get_index_of_balance
     get :index
+    assert_response :success
+  end
+
+  def should_load_balance
+    xml_http_request :get, :load, :date => "09/05/2007"
     assert_response :success
     assert_not_nil assigns(:balances)
   end
