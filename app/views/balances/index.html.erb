@@ -6,6 +6,14 @@
 $(function() {
   $('#balance_datepicker').datepicker();
 });
+
+function loadBalance()
+{
+  var actionUrl = '/balances/load?date=' + $("#balance_datepicker").val()
+  $('#balances_list').setGridParam({url: actionUrl});
+  $('#balances_list').clearGridData(true);
+  $('#balances_list').trigger('reloadGrid');
+}
 </script>
 
 <table>
@@ -13,7 +21,7 @@ $(function() {
     <td align="left">Balances</td>
     <td align="right" style="width: 723px">
       date
-      <input type="text" id="balance_datepicker" size="20" />
+      <input type="text" id="balance_datepicker" size="20" onchange="loadBalance();" />
     </td>
   </tr>
   <tr>
@@ -45,4 +53,3 @@ $(function() {
     </td>
   </tr>
 </table>
-
