@@ -1,19 +1,6 @@
 <script type="text/javascript">
   var tempTag = "";
   var canSelect = true;
-  function getResourceTag(id, type, direction)
-  {
-    var action;
-    if(type == 'Asset')
-    {
-      action = $.ajax({url: 'resources/' + id + '/get_asset_tag'});
-    }
-    else
-    {
-      action = $.ajax({url: 'resources/' + id + '/get_money_tag'});
-    }
-    action.complete(function() { $('#' + direction + '_tag').val(tempTag); });
-  }
   function changeDirRate()
   {
     if($('#deal_rate').val() != '')

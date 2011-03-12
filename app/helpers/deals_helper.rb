@@ -10,18 +10,13 @@ module DealsHelper
       :url => '/deals',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'entity', 'id', 'rate', 'entity_id', 'give_id',
-                    'give_type', 'take_id', 'take_type'],
+      :colNames => ['tag', 'entity', 'rate', 'give', 'take'],
       :colModel => [
         { :name => 'tag',       :index => 'tag',        :width => 400 },
-        { :name => 'entity',    :index => 'entity_tag', :width => 400 },
-        { :name => 'id',        :index => 'id',         :width => 5, :hidden => true },
+        { :name => 'entity',    :index => 'entity.tag', :width => 400 },
         { :name => 'rate',      :index => 'rate',       :width => 5, :hidden => true },
-        { :name => 'entity_id', :index => 'entity_id',  :width => 5, :hidden => true },
-        { :name => 'give_id',   :index => 'give_id',    :width => 5, :hidden => true },
-        { :name => 'give_type', :index => 'give_type',  :width => 5, :hidden => true },
-        { :name => 'take_id',   :index => 'take_id',    :width => 5, :hidden => true },
-        { :name => 'take_type', :index => 'take_type',  :width => 5, :hidden => true }
+        { :name => 'give',      :index => 'give.tag',   :width => 5, :hidden => true },
+        { :name => 'take',      :index => 'take.tag',   :width => 5, :hidden => true }
       ],
       :pager => '#deals_pager',
       :rowNum => 10,
@@ -33,14 +28,10 @@ module DealsHelper
       {
         $('#dir_0').removeAttr('disabled');
         $('#dir_1').removeAttr('disabled');
-        $('#deal_tag').val(cell);
+        $('#deal_tag').val($('#deals_list').getCell(cell, 'tag'));
         $('#entity_tag').val($('#deals_list').getCell(cell, 'entity'));
-        getResourceTag($('#deals_list').getCell(cell, 'give_id'),
-                       $('#deals_list').getCell(cell, 'give_type'),
-                       'give');
-        getResourceTag($('#deals_list').getCell(cell, 'take_id'),
-                       $('#deals_list').getCell(cell, 'take_type'),
-                       'take');
+        $('#give_tag').val($('#deals_list').getCell(cell, 'give'));
+        $('#take_tag').val($('#deals_list').getCell(cell, 'take'));
         $('#deal_rate').val($('#deals_list').getCell(cell, 'rate'));
         $('#dir_0').attr('checked', 'checked');
       }".to_json_var,
