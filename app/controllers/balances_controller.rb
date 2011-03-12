@@ -1,6 +1,12 @@
 class BalancesController < ApplicationController
 
   def index
+    Money.class_exec {
+      def tag
+        return alpha_code
+      end
+    }
+
     session[:res_type] = ''
     @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount',
                 'value', 'side']
@@ -13,5 +19,5 @@ class BalancesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@balances, @columns)
     end
   end
-  
+
 end
