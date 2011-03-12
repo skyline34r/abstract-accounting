@@ -15,12 +15,20 @@ module BalancesHelper
         { :name => 'deal',     :index => 'deal.tag',        :width => 240 },
         { :name => 'entity',   :index => 'deal.entity.tag', :width => 230 },
         { :name => 'resource', :index => 'deal.give.tag',   :width => 230 },
-        { :name => 'debit',    :index => 'debit',           :width => 50,
+        { :name => 'debit',    :index => 'amount',          :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[5] == "active") return "";
                            return cellvalue;
                          }'.to_json_var  },
-        { :name => 'credit',   :index => 'credit',          :width => 50  },
+        { :name => 'credit',   :index => 'value',           :width => 50,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[5] == "passive") return "";
+                           if($("#physical").is(":checked"))
+                           {
+                             return rowObject[3];
+                           }
+                           return cellvalue;
+                         }'.to_json_var    },
         { :name => 'side', :index => 'side', :width => 50, :hidden => true }
       ],
       :pager => '#balances_pager',
