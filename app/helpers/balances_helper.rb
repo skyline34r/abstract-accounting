@@ -7,7 +7,7 @@ module BalancesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/balances',
+      :url => '/balances/load?date=',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['deal', 'entity', 'resource', 'debit', 'credit', 'side'],
