@@ -2,7 +2,8 @@ class BalancesController < ApplicationController
 
   def index
     session[:res_type] = ''
-    @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount', 'value']
+    @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount',
+                'value', 'side']
     @balances = BalanceSheet.new DateTime.now
     @balances = @balances.paginate(
       :page     => params[:page],

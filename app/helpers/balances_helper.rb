@@ -10,13 +10,18 @@ module BalancesHelper
       :url => '/balances',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['deal', 'entity', 'resource', 'debit', 'credit'],
+      :colNames => ['deal', 'entity', 'resource', 'debit', 'credit', 'side'],
       :colModel => [
         { :name => 'deal',     :index => 'deal.tag',        :width => 240 },
         { :name => 'entity',   :index => 'deal.entity.tag', :width => 230 },
         { :name => 'resource', :index => 'deal.give.tag',   :width => 230 },
-        { :name => 'debit',    :index => 'debit',           :width => 50  },
-        { :name => 'credit',   :index => 'credit',          :width => 50  }
+        { :name => 'debit',    :index => 'debit',           :width => 50,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[5] == "active") return "";
+                           return cellvalue;
+                         }'.to_json_var  },
+        { :name => 'credit',   :index => 'credit',          :width => 50  },
+        { :name => 'side', :index => 'side', :width => 50, :hidden => true }
       ],
       :pager => '#balances_pager',
       :rowNum => 10,
