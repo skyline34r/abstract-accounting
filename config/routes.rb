@@ -18,12 +18,7 @@ Abstract::Application.routes.draw do
   resources :facts
   resources :charts
   resources :quotes
-  resources :balances do
-    collection do
-      get 'physical'
-      get 'accounting'
-    end
-  end
+  resources :balances
   get "home/index"
 
   # The priority is based upon order of creation:
