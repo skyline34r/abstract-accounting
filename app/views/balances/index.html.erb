@@ -4,12 +4,14 @@
 
 <script type="text/javascript">
 $(function() {
+  var curr_date = new Date();
   $('#balance_datepicker').datepicker();
+  $("#balance_datepicker").val(curr_date.toLocaleDateString());
 });
 
 function loadBalance()
 {
-  var actionUrl = '/balances/load?date=' + $("#balance_datepicker").val()
+  var actionUrl = '/balances/load?date=' + $("#balance_datepicker").val();
   $('#balances_list').setGridParam({url: actionUrl});
   $('#balances_list').clearGridData(true);
   $('#balances_list').trigger('reloadGrid');
