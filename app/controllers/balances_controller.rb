@@ -1,3 +1,5 @@
+require 'resource.rb'
+
 class BalancesController < ApplicationController
 
   def index
