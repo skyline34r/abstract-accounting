@@ -65,16 +65,4 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal 333, Money.find(@money.id).num_code,
       'Money \'978\' not edited'
   end
-
-  test "should get tag asset in resource" do
-    xml_http_request :get, :get_asset_tag, :id => @asset.to_param
-    assert_response :success
-    assert_equal @asset.tag, assigns(:resource), 'Get asset tag failed'
-  end
-
-  test "should get tag money in resource" do
-    xml_http_request :get, :get_money_tag, :id => @money.to_param
-    assert_response :success
-    assert_equal @money.alpha_code, assigns(:resource), 'Get money tag failed'
-  end
 end
