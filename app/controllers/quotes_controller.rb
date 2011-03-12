@@ -4,15 +4,13 @@ class QuotesController < ApplicationController
 
   def index
     session[:res_type] = 'money'
-    @columns = ['money_tag', 'day', 'rate', 'id', 'money_id']
-    @quotes = Quote.joins('INNER JOIN money ON money.id = quotes.money_id')
-                   .select('"quotes".*, "money".alpha_code AS money_tag');
-    @quotes = @quotes.paginate(
+    @columns = ['money.alpha_code', 'day', 'rate']
+    @quotes = Quote.all.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => json_for_jqgrid(@quotes, @columns)
+      render :json => abstract_json_for_jqgrid(@quotes, @columns, :id_column => 'id')
     end
   end
 
