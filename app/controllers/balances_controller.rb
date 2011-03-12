@@ -4,9 +4,14 @@ class BalancesController < ApplicationController
   
   def index
     session[:res_type] = ''
+    load_grid('')
   end
 
   def load
+    load_grid(params[:date])
+  end
+
+  def load_grid(date)
     Money.class_exec {
       def tag
         return alpha_code
@@ -14,11 +19,13 @@ class BalancesController < ApplicationController
     }
     @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount',
                 'value', 'side']
-    if params[:date] == ''
+    if date == ''
       @balances = BalanceSheet.new DateTime.now
     else
-      @balances = BalanceSheet.new DateTime.strptime(params[:date], '%m/%d/%Y')
+      @balances = BalanceSheet.new DateTime.strptime(date, '%m/%d/%Y')
     end
+    @assets = @balances.assets
+    @liabilities = @balances.liabilities
     @balances = @balances.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
