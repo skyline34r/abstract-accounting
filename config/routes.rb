@@ -23,7 +23,7 @@ Abstract::Application.routes.draw do
       get 'load'
     end
   end
-  resources :general_ledger
+  resources :general_ledgers
   get "home/index"
 
   # The priority is based upon order of creation:
