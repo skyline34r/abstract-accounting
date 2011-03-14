@@ -48,7 +48,9 @@
                               .getGridParam('selrow');
       if (selRow != null)
       {
-        $('#' + type + '_tag').val(selRow);
+        $('#' + type + '_tag').val($('#frame').contents()
+                                              .find('#resources_list')
+                                              .getCell(selRow, 'tag'));
         $('#hide_deal_' + type + '_id').val($('#frame').contents()
                                               .find('#resources_list')
                                               .getCell(selRow, 'id'));

@@ -25,7 +25,8 @@ function chooseMoney()
                                        .getGridParam('selrow');
     if (selRow != null)
     {
-      $('#quote_res_btn').val(selRow);
+      $('#quote_res_btn').val($('#frame').contents().find('#resources_list')
+                                            .getCell(selRow, 'tag'));
       $('#hide_quote_money').val($('#frame').contents().find('#resources_list')
                                             .getCell(selRow, 'id'));
       $('#quotes_div').css('display','block');

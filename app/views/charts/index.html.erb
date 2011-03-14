@@ -15,7 +15,8 @@ function chooseCurrency()
                                        .getGridParam('selrow');
     if (selRow != null)
     {
-      $('#chart_curr_btn').val(selRow);
+      $('#chart_curr_btn').val($('#frame').contents().find('#resources_list')
+                                              .getCell(selRow, 'tag'));
       $('#hide_chart_curr_id').val($('#frame').contents().find('#resources_list')
                                               .getCell(selRow, 'id'));
       $('#chart_div').css('display','block');
