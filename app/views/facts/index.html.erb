@@ -18,15 +18,16 @@ function chooseDeals(type)
                                        .getGridParam('selrow');
     if (selRow != null)
     {
-      $('#fact_' + type + '_btn').val(selRow);
+      $('#fact_' + type + '_btn').val($('#frame').contents().find('#deals_list')
+                                                  .getCell(selRow, 'tag'));
       $('#hide_' + type + '_deal').val($('#frame').contents().find('#deals_list')
                                                   .getCell(selRow, 'id'));
       if(type == 'from')
       {
         $('#hide_resource_id').val($('#frame').contents().find('#deals_list')
-                                              .getCell(selRow, 'take_id'));
+                                              .getCell(selRow, 'take.id'));
         $('#hide_resource_type').val($('#frame').contents().find('#deals_list')
-                                              .getCell(selRow, 'take_type'));
+                                              .getCell(selRow, 'take.type'));
 
       }
       $('#fact_main').css('display','block');

@@ -2,7 +2,8 @@ class DealsController < ApplicationController
 
   def index
     session[:res_type] = ''
-    @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag']
+    @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'id',
+                'take.id', 'take.class.name']
     @deals = Deal.all;
     @deals = @deals.paginate(
       :page     => params[:page],

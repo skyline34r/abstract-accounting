@@ -10,13 +10,17 @@ module DealsHelper
       :url => '/deals',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'entity', 'rate', 'give', 'take'],
+      :colNames => ['tag', 'entity', 'rate', 'give', 'take', 'id', 'take.id',
+                    'take.type'],
       :colModel => [
-        { :name => 'tag',       :index => 'tag',        :width => 400 },
-        { :name => 'entity',    :index => 'entity.tag', :width => 400 },
-        { :name => 'rate',      :index => 'rate',       :width => 5, :hidden => true },
-        { :name => 'give',      :index => 'give.tag',   :width => 5, :hidden => true },
-        { :name => 'take',      :index => 'take.tag',   :width => 5, :hidden => true }
+        { :name => 'tag',       :index => 'tag',             :width => 400 },
+        { :name => 'entity',    :index => 'entity.tag',      :width => 400 },
+        { :name => 'rate',      :index => 'rate',            :width => 5, :hidden => true },
+        { :name => 'give',      :index => 'give.tag',        :width => 5, :hidden => true },
+        { :name => 'take',      :index => 'take.tag',        :width => 5, :hidden => true },
+        { :name => 'id',        :index => 'id',              :width => 5, :hidden => true },
+        { :name => 'take.id',   :index => 'take.id',         :width => 5, :hidden => true },
+        { :name => 'take.type', :index => 'take.class.name', :width => 5, :hidden => true }
       ],
       :pager => '#deals_pager',
       :rowNum => 10,
