@@ -93,6 +93,9 @@ class CurrencyTest < ActiveSupport::TestCase
     rate_change
     forex_sale_after_rate_change
     transfer_rollback
+
+    test_balance_sheet
+    test_transcript
   end
 
   private
@@ -330,5 +333,61 @@ class CurrencyTest < ActiveSupport::TestCase
     f.destroy
     assert_equal 6, Fact.all.count, "Wrong fact count"
     assert_equal 8, State.open.count, "Wrong open states count"
+  end
+
+  def test_balance_sheet
+    b = (BalanceSheet.new)[0]
+    assert !b.nil?, "Balance is nil"
+    assert_equal 30000.0, b.amount, "Wrong balance amount"
+    assert_equal 45000.0, b.value, "Wrong balance value"
+    assert_equal "active", b.side, "Wrong balance side"
+    assert_equal @bx1, b.deal, "Wrong balance deal"
+  end
+
+  def test_transcript
+    tr = Transcript.new(@a2,
+      DateTime.civil(2008, 3, 25, 12, 0, 0),
+      DateTime.civil(2008, 3, 31, 12, 0, 0))
+    assert_equal 3000.0, tr.total_debits_diff,
+      "Wrong total debits diff in transcript"
+    assert_equal 0.0, tr.total_credits_diff,
+      "Wrong total credits diff in transcript"
+    assert_equal 60000.0, tr.total_debits,
+      "Wrong total debits in transcript"
+    assert_equal 40000.0, tr.total_credits,
+      "Wrong total credits in transcript"
+    assert_equal 120000.0, tr.total_debits_value,
+      "Wrong total debits value in transcript"
+    assert_equal 81000.0, tr.total_credits_value,
+      "Wrong total credits value in transcript"
+
+
+    tr = Transcript.new(@bx1,
+      DateTime.civil(2008, 3, 24, 12, 0, 0),
+      DateTime.civil(2008, 3, 31, 12, 0, 0))
+    assert_equal 0.0, tr.total_debits_diff,
+      "Wrong total debits diff in transcript"
+    assert_equal 3000.0, tr.total_credits_diff,
+      "Wrong total credits diff in transcript"
+    assert_equal 0.0, tr.total_debits,
+      "Wrong total debits in transcript"
+    assert_equal 300, tr.total_credits,
+      "Wrong total credits in transcript"
+    assert_equal 0.0, tr.total_debits_value,
+      "Wrong total debits value in transcript"
+    assert_equal 45000.0, tr.total_credits_value,
+      "Wrong total credits value in transcript"
+
+    tr = Transcript.new(Deal.income,
+      DateTime.civil(2008, 3, 24, 12, 0, 0),
+      DateTime.civil(2008, 3, 31, 12, 0, 0))
+    assert_equal 3000.0, tr.total_debits_diff,
+      "Wrong total debits diff in transcript"
+    assert_equal 3000.0, tr.total_credits_diff,
+      "Wrong total credits diff in transcript"
+    assert_equal 500.0, tr.total_debits_value,
+      "Wrong total debits value in transcript"
+    assert_equal 1000.0, tr.total_credits_value,
+      "Wrong total credits value in transcript"
   end
 end

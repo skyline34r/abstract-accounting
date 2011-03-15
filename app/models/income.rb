@@ -15,6 +15,14 @@ class Income < ActiveRecord::Base
       DateTime.new(start.year, start.month, start.day) + 1)
   end
 
+  def debit_diff
+    Quote.sum(:diff, :conditions => ["day = ? AND diff > 0.0", self.start])
+  end
+
+  def credit_diff
+    Quote.sum(:diff, :conditions => ["day = ? AND diff < 0.0", self.start]) * -1
+  end
+
   def quote=(aQuote)
     update_value aQuote.day, aQuote.diff
   end

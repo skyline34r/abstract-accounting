@@ -10,6 +10,50 @@ class Balance < ActiveRecord::Base
   after_initialize :balance_init
   before_save :balance_save
 
+  def debit_diff
+    if self.deal.nil?
+      0.0
+    elsif self.deal.income?
+      self.debit
+    elsif self.side == "passive" and !self.debit.zero?
+      (self.amount * self.debit).accounting_norm - self.value
+    else
+      0.0
+    end
+  end
+
+  def credit_diff
+    if self.deal.nil?
+      0.0
+    elsif self.deal.income?
+      self.credit
+    elsif self.side == "active" and !self.credit.zero?
+      (self.amount * self.credit).accounting_norm - self.value
+    else
+      0.0
+    end
+  end
+
+  def debit
+    if self.deal.take.instance_of?(Money) and !self.deal.take.quote.nil?
+      self.deal.take.quote.rate
+    elsif !Chart.first.nil? and self.deal.take == Chart.first.currency
+      1.0
+    else
+      0.0
+    end
+  end
+
+  def credit
+    if self.deal.give.instance_of?(Money) and !self.deal.give.quote.nil?
+      self.deal.give.quote.rate
+    elsif !Chart.first.nil? and self.deal.give == Chart.first.currency
+      1.0
+    else
+      0.0
+    end
+  end
+
   def Balance.open
     Balance.find_all_by_paid nil
   end
@@ -25,24 +69,8 @@ class Balance < ActiveRecord::Base
     return nil if aTxn.nil?
     return nil if aTxn.fact.nil?
 
-    #TODO: separate quote initialization
-    #TODO: add quote instead of checking currency
-    @credit = if self.deal.give.instance_of?(Money) and
-        !self.deal.give.quote.nil?
-      self.deal.give.quote.rate
-    elsif !Chart.first.nil? and self.deal.give == Chart.first.currency
-      1.0
-    else
-      0.0
-    end
-    @debit = if self.deal.take.instance_of?(Money) and
-        !self.deal.take.quote.nil?
-      self.deal.take.quote.rate
-    elsif !Chart.first.nil? and self.deal.take == Chart.first.currency
-      1.0
-    else
-      0.0
-    end
+    @credit = self.credit
+    @debit = self.debit
 
     if init_from_fact(aTxn.fact)
       self.start = aTxn.fact.day
