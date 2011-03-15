@@ -24,7 +24,15 @@ module TranscriptsHelper
                            return rowObject[2];
                          }'.to_json_var
         },
-        { :name => 'debit',  :index => 'debit',  :width => 100 },
+        { :name => 'debit',  :index => 'debit',  :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[1] == $("#choose_deal").val())
+                           {
+                             return (rowObject[3] * rowObject[4] / rowObject[3]).toFixed(2);
+                           }
+                           return "";
+                         }'.to_json_var
+        },
         { :name => 'credit', :index => 'credit', :width => 100 }
       ],
       :pager => '#transcripts_pager',
