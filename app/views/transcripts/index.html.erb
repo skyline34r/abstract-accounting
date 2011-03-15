@@ -1,3 +1,83 @@
 <% content_for :head do %>
   <title>Abstract::Transcripts</title>
 <% end %>
+
+<script type="text/javascript">
+$(function() {
+  $('#from_datepicker').datepicker();
+  $('#to_datepicker').datepicker();
+});
+</script>
+
+<table>
+  <tr>
+    <td colspan="2" align="right" style="width: 800px">
+      <input type="button" id="cancel" value="cancel" disabled="true"/>
+      <input type="button" id="load" value="load"/>
+    </td>
+  </tr>
+  <tr>
+    <td id="loadData" colspan="2">
+      <div id="beforeLoadData">
+        deal
+        <input type="button" id="change_deal" value="click to choose"
+               onclick=""/>
+        from
+        <input type="text" id="from_datepicker"/>
+        to
+        <input type="text" id="to_datepicker"/>
+      </div>
+      <div id="afterLoadData" style="display: none">
+        <br>
+          deal
+          <a id="loadedDeal"> </a>
+        </br>
+        <br>
+          units
+          physical
+          <input type="radio" id="physical" name="unit" checked="true"
+                 onchange=""/>
+          accounting
+          <input type="radio" id="accounting" name="unit"
+                 onchange=""/>
+        </br>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="transcripts_list"></table>
+      <div id="transcripts_pager"></div>
+      <% content_for :head do %>
+        <%= raw(transcripts_jqgrid) %>
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+      Total turnovers
+    </td>
+    <td align="right">
+      <a id="turnoversDebit"></a>
+      <a id="turnoversRedit"></a>
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+      Exchange differences
+    </td>
+    <td align="right">
+      <a id="exchangeDebit"></a>
+      <a id="exchangeRedit"></a>
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+      <a id="tDate"></a>
+    </td>
+    <td align="right">
+      <a id="tDebit"></a>
+      <a id="tRedit"></a>
+    </td>
+  </tr>
+</table>
