@@ -1,3 +1,5 @@
+require 'float_accounting'
+
 class TranscriptsController < ApplicationController
   
   def index
