@@ -17,7 +17,13 @@ module TranscriptsHelper
                            return cellvalue.substr(0,10);
                          }'.to_json_var
         },
-        { :name => 'deal',   :index => 'deal',   :width => 400 },
+        { :name => 'deal',   :index => 'deal',   :width => 400,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[2] == $("#choose_deal").val())
+                             return rowObject[1];
+                           return rowObject[2];
+                         }'.to_json_var
+        },
         { :name => 'debit',  :index => 'debit',  :width => 100 },
         { :name => 'credit', :index => 'credit', :width => 100 }
       ],

@@ -23,7 +23,7 @@ function chooseDeal()
                             .getGridParam('selrow');
     if (selRow != null)
     {
-      $('#change_deal').val($('#frame').contents().find('#deals_list')
+      $('#choose_deal').val($('#frame').contents().find('#deals_list')
                                        .getCell(selRow, 'tag'));
       $('#deal_id').val($('#frame').contents().find('#deals_list')
                                               .getCell(selRow, 'id'));
@@ -63,7 +63,7 @@ function loadTranscript()
     <td id="loadData" colspan="2">
       <div id="beforeLoadData">
         deal
-        <input type="button" id="change_deal" value="click to choose"
+        <input type="button" id="choose_deal" value="click to choose"
                onclick="chooseDeal();"/>
         <input type="hidden" id="deal_id" value=""/>
         from
