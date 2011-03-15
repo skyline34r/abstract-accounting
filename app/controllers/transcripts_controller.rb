@@ -3,6 +3,7 @@ require 'float_accounting'
 class TranscriptsController < ApplicationController
   
   def index
+    session[:res_type] = ''
     if request.xhr?
       render :json => abstract_json_for_jqgrid('')
     end
