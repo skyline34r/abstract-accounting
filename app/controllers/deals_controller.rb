@@ -1,6 +1,14 @@
+require 'resource'
+
 class DealsController < ApplicationController
 
   def index
+    Money.class_exec {
+      def tag
+        return alpha_code
+      end
+    }
+
     session[:res_type] = ''
     @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'id',
                 'take.id', 'take.class.name']
