@@ -10,8 +10,9 @@ module TranscriptsHelper
       :url => '/transcripts',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'deal', 'debit', 'credit'],
+      :colNames => ['id', 'date', 'deal', 'debit', 'credit'],
       :colModel => [
+        { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
         { :name => 'date',   :index => 'date',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
@@ -19,26 +20,26 @@ module TranscriptsHelper
         },
         { :name => 'deal',   :index => 'deal',   :width => 400,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[2] == $("#choose_deal").val())
-                             return rowObject[1];
-                           return rowObject[2];
+                           if(rowObject[3] == $("#choose_deal").val())
+                             return rowObject[2];
+                           return rowObject[3];
                          }'.to_json_var
         },
         { :name => 'debit',  :index => 'debit',  :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[1] == $("#choose_deal").val())
+                           if(rowObject[2] == $("#choose_deal").val())
                            {
-                             return (rowObject[3] * rowObject[4] / rowObject[3]).toFixed(2);
+                             return (rowObject[4] * rowObject[5] / rowObject[4]).toFixed(2);
                            }
                            return "";
                          }'.to_json_var
         },
         { :name => 'credit', :index => 'credit', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[2] == $("#choose_deal").val())
+                           if(rowObject[3] == $("#choose_deal").val())
                            {
-                             return ((rowObject[4] + rowObject[5]) / rowObject[3]
-                                     * rowObject[3]).toFixed(2);
+                             return ((rowObject[5] + rowObject[6]) / rowObject[4]
+                                     * rowObject[4]).toFixed(2);
                            }
                            return "";
                          }'.to_json_var

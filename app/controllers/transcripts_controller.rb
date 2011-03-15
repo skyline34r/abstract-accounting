@@ -10,7 +10,7 @@ class TranscriptsController < ApplicationController
   end
 
   def load
-    @columns = ['fact.day', 'fact.from.tag', 'fact.to.tag', 'fact.amount',
+    @columns = ['id', 'fact.day', 'fact.from.tag', 'fact.to.tag', 'fact.amount',
                 'value', 'earnings']
     deal = Deal.find(params[:deal_id])
     @transcript = Transcript.new(deal,
