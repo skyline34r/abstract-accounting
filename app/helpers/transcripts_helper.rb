@@ -12,7 +12,11 @@ module TranscriptsHelper
       :mtype => 'GET',
       :colNames => ['date', 'deal', 'debit', 'credit'],
       :colModel => [
-        { :name => 'date',   :index => 'date',   :width => 200 },
+        { :name => 'date',   :index => 'date',   :width => 200,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return cellvalue.substr(0,10);
+                         }'.to_json_var
+        },
         { :name => 'deal',   :index => 'deal',   :width => 400 },
         { :name => 'debit',  :index => 'debit',  :width => 100 },
         { :name => 'credit', :index => 'credit', :width => 100 }
