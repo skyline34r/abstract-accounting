@@ -11,9 +11,32 @@ $(function() {
   curr_date.setFullYear(curr_date.getFullYear()-10);
   $('#from_datepicker').val(curr_date.toLocaleDateString());
 });
+
+function chooseDeal()
+{
+  $('#transcript_table').css('display','none');
+  $('#frame_div').css('display','block');
+  $('#frame').attr('src', 'deals');
+  $('#titleFrame').html('Deals');
+  $('#submit').click(function() {
+    var selRow = $('#frame').contents().find('#deals_list')
+                            .getGridParam('selrow');
+    if (selRow != null)
+    {
+      $('#change_deal').val($('#frame').contents().find('#deals_list')
+                                       .getCell(selRow, 'tag'));
+      $('#deal_id').val($('#frame').contents().find('#deals_list')
+                                              .getCell(selRow, 'id'));
+      $('#transcript_table').css('display','block');
+      $('#frame_div').css('display','none');
+      $('#frame').attr('src', '');
+      $("#submit").unbind("click");
+    }
+  });
+}
 </script>
 
-<table>
+<table id="transcript_table">
   <tr>
     <td colspan="2" align="right" style="width: 800px">
       <input type="button" id="cancel" value="cancel" disabled="true"/>
@@ -25,7 +48,7 @@ $(function() {
       <div id="beforeLoadData">
         deal
         <input type="button" id="change_deal" value="click to choose"
-               onclick=""/>
+               onclick="chooseDeal();"/>
         <input type="hidden" id="deal_id" value=""/>
         from
         <input type="text" id="from_datepicker"/>
