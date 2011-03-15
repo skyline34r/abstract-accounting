@@ -5,4 +5,12 @@ class TranscriptsControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
+
+  test "should show transcripts" do
+    xml_http_request :get, :load, :deal => deals(:bankaccount),
+                                  :start => "09/05/2007",
+                                  :stop => "10/06/2011"
+    assert_response :success
+    assert_not_nil assigns(:transcript)
+  end
 end
