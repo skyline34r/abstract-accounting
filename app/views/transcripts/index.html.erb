@@ -4,8 +4,12 @@
 
 <script type="text/javascript">
 $(function() {
-  $('#from_datepicker').datepicker();
+  var curr_date = new Date();
   $('#to_datepicker').datepicker();
+  $('#to_datepicker').val(curr_date.toLocaleDateString());
+  $('#from_datepicker').datepicker();
+  curr_date.setFullYear(curr_date.getFullYear()-10);
+  $('#from_datepicker').val(curr_date.toLocaleDateString());
 });
 </script>
 
