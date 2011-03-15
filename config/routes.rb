@@ -24,6 +24,7 @@ Abstract::Application.routes.draw do
     end
   end
   resources :general_ledgers
+  resources :transcripts
   get "home/index"
 
   # The priority is based upon order of creation:
