@@ -34,9 +34,9 @@ module GeneralLedgersHelper
         },
         { :name => 'price', :index => 'price',                :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if (rowObject[5] == 0) return "0";
+                           if (rowObject[2] == 0) return "0";
                            if (rowObject.price) return rowObject.price;
-                           return ((rowObject[6] + rowObject[7]) / rowObject[5]).toFixed(2);
+                           return ((rowObject[5] + rowObject[6]) / rowObject[2]).toFixed(2);
                          }'.to_json_var
         },
         { :name => 'debit', :index => 'debit',                :width => 100,
@@ -48,7 +48,7 @@ module GeneralLedgersHelper
         { :name => 'credit', :index => 'credit',              :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.credit) return "";
-                           return ((rowObject[6] + rowObject[7]) / rowObject[5]
+                           return ((rowObject[5] + rowObject[6]) / rowObject[2]
                                    * rowObject[2]).toFixed(2);
                          }'.to_json_var
         }
@@ -60,11 +60,11 @@ module GeneralLedgersHelper
       :afterInsertRow => 'function(rowid, rowdata, rowelem)
       {
          function getPrice() {
-           if (rowelem[5] == 0) return "0";
-           return (rowelem[6] / rowelem[5]).toFixed(2);
+           if (rowelem[2] == 0) return "0";
+           return (rowelem[5] / rowelem[2]).toFixed(2);
          }
          function getDebit() {
-           return (rowelem[2] * rowelem[6] / rowelem[5]).toFixed(2);
+           return (rowelem[2] * rowelem[5] / rowelem[2]).toFixed(2);
          }
          if (rowid != "sub") {
            $("#general_ledgers_list").addRowData("sub", { date: "",

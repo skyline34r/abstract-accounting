@@ -10,7 +10,7 @@ class GeneralLedgersController < ApplicationController
     }
     session[:res_type] = ''
     @columns = ['fact.day', 'fact.resource.tag', 'fact.amount', 'fact.from.tag',
-                'fact.to.tag', 'fact.amount', 'value', 'earnings']
+                'fact.to.tag', 'value', 'earnings']
     @general_ledgers = GeneralLedger.new
     @general_ledgers = @general_ledgers.paginate(
       :page     => params[:page],
