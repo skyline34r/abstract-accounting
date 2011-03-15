@@ -41,13 +41,22 @@ function discardChoose()
   $('#frame').attr('src', '');
   $("#submit").unbind("click");
 }
+function loadTranscript()
+{
+  var actionUrl = '/transcripts/load?deal_id=' + $("#deal_id").val() +
+                                   '&start=' + $("#from_datepicker").val() +
+                                   '&stop=' + $("#to_datepicker").val();
+  $('#transcripts_list').setGridParam({url: actionUrl});
+  $('#transcripts_list').clearGridData(true);
+  $('#transcripts_list').trigger('reloadGrid');
+}
 </script>
 
 <table id="transcript_table">
   <tr>
     <td colspan="2" align="right" style="width: 800px">
       <input type="button" id="cancel" value="cancel" disabled="true"/>
-      <input type="button" id="load" value="load"/>
+      <input type="button" id="load" value="load" onclick="loadTranscript();"/>
     </td>
   </tr>
   <tr>
