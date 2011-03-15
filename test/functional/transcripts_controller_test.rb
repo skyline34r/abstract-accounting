@@ -7,7 +7,7 @@ class TranscriptsControllerTest < ActionController::TestCase
   end
 
   test "should show transcripts" do
-    xml_http_request :get, :load, :deal => deals(:bankaccount),
+    xml_http_request :get, :load, :deal_id => deals(:bankaccount).id,
                                   :start => "09/05/2007",
                                   :stop => "10/06/2011"
     assert_response :success

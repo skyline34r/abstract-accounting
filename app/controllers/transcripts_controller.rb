@@ -7,7 +7,8 @@ class TranscriptsController < ApplicationController
   end
 
   def load
-    @transcript = Transcript.new(params[:deal],
+    deal = Deal.find(params[:deal_id])
+    @transcript = Transcript.new(deal,
                                  DateTime.strptime(params[:start], '%m/%d/%Y'),
                                  DateTime.strptime(params[:stop], '%m/%d/%Y'))
   end
