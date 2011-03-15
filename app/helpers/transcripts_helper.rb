@@ -33,7 +33,16 @@ module TranscriptsHelper
                            return "";
                          }'.to_json_var
         },
-        { :name => 'credit', :index => 'credit', :width => 100 }
+        { :name => 'credit', :index => 'credit', :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[2] == $("#choose_deal").val())
+                           {
+                             return ((rowObject[4] + rowObject[5]) / rowObject[3]
+                                     * rowObject[3]).toFixed(2);
+                           }
+                           return "";
+                         }'.to_json_var
+        }
       ],
       :pager => '#transcripts_pager',
       :rowNum => 10,
