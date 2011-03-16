@@ -1,1 +1,8 @@
- 
+$('#beforeLoadData').css('display','none');
+$('#afterLoadData').css('display','block');
+$('#loadedDeal').html($('#choose_deal').val());
+$('#cancel').val('change');
+$('#cancel').removeAttr('disabled');
+$('#physical').attr('checked','checked');
+$('#accounting').removeAttr('checked');
+$('#fromDate').html($('#from_datepicker').val());
