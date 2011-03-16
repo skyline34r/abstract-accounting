@@ -16,3 +16,13 @@ $('#fromCredit').html('<%= if (@transcript.opening && !@transcript.opening.side)
                           else
                             "0"
                           end %>');
+$('#turnoversDebit').html('<%= if (@transcript.total_debits)
+                            @transcript.total_debits
+                          else
+                            "0"
+                          end %>');
+$('#turnoversCredit').html('<%= if (@transcript.total_credits)
+                            @transcript.total_credits
+                          else
+                            "0"
+                          end %>');
