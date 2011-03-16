@@ -101,12 +101,21 @@ function chooseUnit()
   $('#hToDebit').val(toDebit);
   $('#hToCredit').val(toCredit);
 }
+function changeTranscript()
+{
+  $('#beforeLoadData').css('display','block');
+  $('#afterLoadData').css('display','none');
+  $('#cancel').css('display','inline');
+  $('#change').css('display','none');
+}
 </script>
 
 <table id="transcript_table">
   <tr>
     <td colspan="2" align="right" style="width: 800px">
-      <input type="button" id="cancel" value="cancel" disabled="true"/>
+      <input type="button" id="cancel" value="cancel" disabled="true" />
+      <input type="button" id="change" value="change" style="display: none"
+             onclick="changeTranscript();"/>
       <input type="button" id="load" value="load" onclick="loadTranscript();"/>
     </td>
   </tr>
