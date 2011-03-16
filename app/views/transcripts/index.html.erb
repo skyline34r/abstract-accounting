@@ -56,6 +56,13 @@ function loadTranscript()
     $('#transcripts_list').trigger('reloadGrid');
   });
 }
+function chooseAccounting()
+{
+  $('#transcripts_list').showCol('h_debit');
+  $('#transcripts_list').showCol('h_credit');
+  $('#transcripts_list').hideCol('debit');
+  $('#transcripts_list').hideCol('credit');
+}
 </script>
 
 <table id="transcript_table">
@@ -87,7 +94,7 @@ function loadTranscript()
                  onchange=""/>
           accounting
           <input type="radio" id="accounting" name="unit"
-                 onchange=""/>
+                 onchange="chooseAccounting();"/>
         </br>
       </div>
     </td>
@@ -98,7 +105,9 @@ function loadTranscript()
     </td>
     <td align="right">
       <a id="fromDebit"></a>
+      <input type="hidden" id="hFromDebit" value=""/>
       <a id="fromCredit"></a>
+      <input type="hidden" id="hFromCredit" value=""/>
     </td>
   </tr>
   <tr>
@@ -116,7 +125,9 @@ function loadTranscript()
     </td>
     <td align="right">
       <a id="turnoversDebit"></a>
+      <input type="hidden" id="hTurnoversDebit" value=""/>
       <a id="turnoversCredit"></a>
+      <input type="hidden" id="hTurnoversCredit" value=""/>
     </td>
   </tr>
   <tr>
@@ -125,7 +136,9 @@ function loadTranscript()
     </td>
     <td align="right">
       <a id="exchangeDebit"></a>
+      <input type="hidden" id="hExchangeDebit" value=""/>
       <a id="exchangeCredit"></a>
+      <input type="hidden" id="hExchangeCredit" value=""/>
     </td>
   </tr>
   <tr>
@@ -134,7 +147,9 @@ function loadTranscript()
     </td>
     <td align="right">
       <a id="toDebit"></a>
+      <input type="hidden" id="hToDebit" value=""/>
       <a id="toCredit"></a>
+      <input type="hidden" id="hToCredit" value=""/>
     </td>
   </tr>
 </table>
