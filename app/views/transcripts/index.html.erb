@@ -43,12 +43,18 @@ function discardChoose()
 }
 function loadTranscript()
 {
-  var actionUrl = '/transcripts/load?deal_id=' + $("#deal_id").val() +
+  action = $.ajax({url: '/transcripts/load?deal_id=' + $("#deal_id").val() +
                                    '&start=' + $("#from_datepicker").val() +
-                                   '&stop=' + $("#to_datepicker").val();
-  $('#transcripts_list').setGridParam({url: actionUrl});
-  $('#transcripts_list').clearGridData(true);
-  $('#transcripts_list').trigger('reloadGrid');
+                                   '&stop=' + $("#to_datepicker").val()});
+  action.complete(function() {
+    var actionUrl = '/transcripts/load?deal_id=' + $("#deal_id").val() +
+                                     '&start=' + $("#from_datepicker").val() +
+                                     '&stop=' + $("#to_datepicker").val() +
+                                     '&source=grid';
+    $('#transcripts_list').setGridParam({url: actionUrl});
+    $('#transcripts_list').clearGridData(true);
+    $('#transcripts_list').trigger('reloadGrid');
+  });
 }
 </script>
 
