@@ -28,3 +28,14 @@ $('#turnoversCredit').html('<%= if (@transcript.total_credits)
                           end %>');
 $('#exchangeDebit').html('');
 $('#exchangeCredit').html('');
+$('#toDate').html($('#to_datepicker').val());
+$('#toDebit').html('<%= if (@transcript.closing && @transcript.closing.side)
+                            @transcript.closing.amount
+                          else
+                            "0"
+                          end %>');
+$('#toCredit').html('<%= if (@transcript.closing && !@transcript.closing.side)
+                            @transcript.closing.amount
+                          else
+                            "0"
+                          end %>');
