@@ -27,19 +27,18 @@ module TranscriptsHelper
         },
         { :name => 'debit',  :index => 'debit',  :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[2] == $("#choose_deal").val())
+                           if(rowObject[3] == $("#choose_deal").val())
                            {
-                             return (rowObject[4] * rowObject[5] / rowObject[4]).toFixed(2);
+                             return (rowObject[4]).toFixed(2);
                            }
                            return "";
                          }'.to_json_var
         },
         { :name => 'credit', :index => 'credit', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[3] == $("#choose_deal").val())
+                           if(rowObject[2] == $("#choose_deal").val())
                            {
-                             return ((rowObject[5] + rowObject[6]) / rowObject[4]
-                                     * rowObject[4]).toFixed(2);
+                             return (rowObject[4]).toFixed(2);
                            }
                            return "";
                          }'.to_json_var
