@@ -62,6 +62,33 @@ function chooseAccounting()
   $('#transcripts_list').showCol('h_credit');
   $('#transcripts_list').hideCol('debit');
   $('#transcripts_list').hideCol('credit');
+
+  var fromDebit = $('#fromDebit').html();
+  var fromCredit = $('#fromCredit').html();
+  var turnoversDebit = $('#turnoversDebit').html();
+  var turnoversCredit = $('#turnoversCredit').html();
+  var exchangeDebit = $('#exchangeDebit').html();
+  var exchangeCredit = $('#exchangeCredit').html();
+  var toDebit = $('#toDebit').html();
+  var toCredit = $('#toCredit').html();
+
+  $('#fromDebit').html($('#hFromDebit').val());
+  $('#fromCredit').html($('#hFromCredit').val());
+  $('#turnoversDebit').html($('#hTurnoversDebit').val());
+  $('#turnoversCredit').html($('#hTurnoversCredit').val());
+  $('#exchangeDebit').html($('#hExchangeDebit').val());
+  $('#exchangeCredit').html($('#hExchangeCredit').val());
+  $('#toDebit').html($('#hToDebit').val());
+  $('#toCredit').html($('#hToCredit').val());
+
+  $('#hFromDebit').val(fromDebit);
+  $('#hFromCredit').val(fromCredit);
+  $('#hTurnoversDebit').val(turnoversDebit);
+  $('#hTurnoversCredit').val(turnoversCredit);
+  $('#hExchangeDebit').val(exchangeDebit);
+  $('#hExchangeCredit').val(exchangeCredit);
+  $('#hToDebit').val(toDebit);
+  $('#hToCredit').val(toCredit);
 }
 </script>
 
