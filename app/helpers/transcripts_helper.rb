@@ -10,7 +10,7 @@ module TranscriptsHelper
       :url => '/transcripts',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['id', 'date', 'deal', 'debit', 'credit'],
+      :colNames => ['id', 'date', 'deal', 'debit', 'credit', 'debit', 'credit'],
       :colModel => [
         { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
         { :name => 'date',   :index => 'date',   :width => 200,
@@ -42,12 +42,33 @@ module TranscriptsHelper
                            }
                            return "";
                          }'.to_json_var
+        },
+        { :name => 'h_debit',  :index => 'h_debit',  :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[3] == $("#choose_deal").val())
+                           {
+                             return (rowObject[5] + rowObject[6]).toFixed(2);
+                           }
+                           return "";
+                         }'.to_json_var,
+          :hidden => true
+        },
+        { :name => 'h_credit', :index => 'h_credit', :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject[2] == $("#choose_deal").val())
+                           {
+                             return (rowObject[5]).toFixed(2);
+                           }
+                           return "";
+                         }'.to_json_var,
+          :hidden => true
         }
       ],
       :pager => '#transcripts_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :viewrecords => true
+      :viewrecords => true,
+      :shrinkToFit => false
     }]
 
     jqgrid_api 'transcripts_list', grid, options
