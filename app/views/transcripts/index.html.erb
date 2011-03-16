@@ -62,7 +62,18 @@ function chooseAccounting()
   $('#transcripts_list').showCol('h_credit');
   $('#transcripts_list').hideCol('debit');
   $('#transcripts_list').hideCol('credit');
-
+  chooseUnit();
+}
+function choosePhysical()
+{
+  $('#transcripts_list').showCol('debit');
+  $('#transcripts_list').showCol('credit');
+  $('#transcripts_list').hideCol('h_debit');
+  $('#transcripts_list').hideCol('h_credit');
+  chooseUnit();
+}
+function chooseUnit()
+{
   var fromDebit = $('#fromDebit').html();
   var fromCredit = $('#fromCredit').html();
   var turnoversDebit = $('#turnoversDebit').html();
@@ -118,7 +129,7 @@ function chooseAccounting()
           units
           physical
           <input type="radio" id="physical" name="unit" checked="true"
-                 onchange=""/>
+                 onchange="choosePhysical();"/>
           accounting
           <input type="radio" id="accounting" name="unit"
                  onchange="chooseAccounting();"/>
