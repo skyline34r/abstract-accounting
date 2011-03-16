@@ -24,13 +24,6 @@ class TranscriptsController < ApplicationController
       if request.xhr?
         render :json => abstract_json_for_jqgrid(@transcript, @columns, :id_column => 'id')
       end
-    else
-      @total_credits = @transcript.total_credits
-      @total_credits_diff = @transcript.total_credits_diff
-      @total_credits_value = @transcript.total_credits_value
-      @total_debits = @transcript.total_debits
-      @total_debits_diff = @transcript.total_debits_diff
-      @total_debits_value = @transcript.total_debits_value
     end
   end
 
