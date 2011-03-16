@@ -7,12 +7,12 @@ $('#physical').attr('checked','checked');
 $('#accounting').removeAttr('checked');
 $('#fromDate').html($('#from_datepicker').val());
 $('#fromDebit').html(parseFloat('<%= if (@transcript.opening && @transcript.opening.side)
-                                       @transcript.opening.value
+                                       @transcript.opening.amount
                                      else
                                        "0"
                                      end %>').toFixed(2));
 $('#fromCredit').html(parseFloat('<%= if (@transcript.opening && !@transcript.opening.side)
-                                        @transcript.opening.value
+                                        @transcript.opening.amount
                                       else
                                         "0"
                                       end %>').toFixed(2));
@@ -36,6 +36,47 @@ $('#toDebit').html(parseFloat('<%= if (@transcript.closing && @transcript.closin
                                    end %>').toFixed(2));
 $('#toCredit').html(parseFloat('<%= if (@transcript.closing && !@transcript.closing.side)
                                       @transcript.closing.amount
+                                    else
+                                      "0"
+                                    end %>').toFixed(2));
+
+$('#hFromDebit').val(parseFloat('<%= if (@transcript.opening && @transcript.opening.side)
+                                       @transcript.opening.value
+                                     else
+                                       "0"
+                                     end %>').toFixed(2));
+$('#hFromCredit').val(parseFloat('<%= if (@transcript.opening && !@transcript.opening.side)
+                                        @transcript.opening.value
+                                      else
+                                        "0"
+                                      end %>').toFixed(2));
+$('#hTurnoversDebit').val(parseFloat('<%= if (@transcript.total_debits_value)
+                                            @transcript.total_debits_value
+                                          else
+                                            "0"
+                                          end %>').toFixed(2));
+$('#hTurnoversCredit').val(parseFloat('<%= if (@transcript.total_credits_value)
+                                             @transcript.total_credits_value
+                                           else
+                                             "0"
+                                           end %>').toFixed(2));
+$('#hExchangeDebit').val(parseFloat('<%= if (@transcript.total_debits_value)
+                                           @transcript.total_debits_diff
+                                         else
+                                           "0"
+                                         end %>').toFixed(2));
+$('#hExchangeCredit').val(parseFloat('<%= if (@transcript.total_credits_value)
+                                            @transcript.total_credits_diff
+                                          else
+                                            "0"
+                                          end %>').toFixed(2));
+$('#hToDebit').val(parseFloat('<%= if (@transcript.closing && @transcript.closing.side)
+                                     @transcript.closing.value
+                                   else
+                                     "0"
+                                   end %>').toFixed(2));
+$('#hToCredit').val(parseFloat('<%= if (@transcript.closing && !@transcript.closing.side)
+                                      @transcript.closing.value
                                     else
                                       "0"
                                     end %>').toFixed(2));
