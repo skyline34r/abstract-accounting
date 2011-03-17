@@ -1,6 +1,7 @@
 require 'float_accounting'
 
 class FactsController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     session[:res_type] = ''

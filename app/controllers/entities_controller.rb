@@ -1,5 +1,6 @@
 class EntitiesController < ApplicationController
-  
+  before_filter :authenticate_user!
+
   def index
     session[:res_type] = ''
     @columns = ['tag', 'id']

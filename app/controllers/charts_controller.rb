@@ -1,4 +1,5 @@
 class ChartsController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     session[:res_type] = 'money'

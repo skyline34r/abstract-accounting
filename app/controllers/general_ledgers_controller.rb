@@ -1,6 +1,7 @@
 require 'resource.rb'
 
 class GeneralLedgersController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     Money.class_exec {

@@ -1,6 +1,7 @@
 require 'float_accounting'
 
 class QuotesController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     session[:res_type] = 'money'

@@ -1,7 +1,8 @@
 require 'float_accounting'
 
 class TranscriptsController < ApplicationController
-  
+  before_filter :authenticate_user!
+
   def index
     session[:res_type] = ''
     if request.xhr?

@@ -1,6 +1,7 @@
 require 'resource'
 
 class ResourcesController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     @columns = ['tag', 'class.name', 'id', 'num_code']
