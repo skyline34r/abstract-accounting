@@ -103,6 +103,22 @@ ActiveRecord::Schema.define(:version => 20110317135429) do
     t.datetime "paid"
   end
 
+  create_table "term", :primary_key => "flow_id", :force => true do |t|
+    t.boolean "side",          :null => false
+    t.integer "resource_type", :null => false
+    t.integer "resource_id",   :null => false
+  end
+
+  add_index "term", ["flow_id", "side"], :name => "sqlite_autoindex_term_1", :unique => true
+
+  create_table "transfer", :primary_key => "day", :force => true do |t|
+    t.integer "event_id", :null => false
+    t.integer "id",       :null => false
+    t.float   "amount",   :null => false
+  end
+
+  add_index "transfer", ["day", "event_id", "id"], :name => "sqlite_autoindex_transfer_1", :unique => true
+
   create_table "txns", :force => true do |t|
     t.integer "fact_id"
     t.float   "value"
@@ -113,23 +129,19 @@ ActiveRecord::Schema.define(:version => 20110317135429) do
   add_index "txns", ["fact_id"], :name => "index_txns_on_fact_id", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
-    t.string   "reset_password_token"
+    t.string   "email",                              :default => "", :null => false
+    t.string   "encrypted_password",  :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                      :default => "", :null => false
     t.string   "remember_token"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                       :default => 0
+    t.integer  "sign_in_count",                      :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "username"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end
