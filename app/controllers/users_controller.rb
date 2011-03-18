@@ -1,6 +1,14 @@
 class UsersController < ApplicationController
   def index
-    @users = User.all
+    session[:res_type] = ''
+    @columns = ['email', 'id']
+    @users = User.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows],
+      :order    => order_by_from_params(params))
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@users, @columns)
+    end
   end
 
   def new
