@@ -1,6 +1,8 @@
 <script type="text/javascript">
   var email = unescape($('#hide_email').val());
   $('#user_email').val(email);
+  $('#users_list').resetSelection();
+  canSelect = false;
 
   function escape(text)
   {
@@ -24,6 +26,7 @@
   }
   function onCancel()
   {
+    canSelect = true;
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $('#users_list').resetSelection();
   }

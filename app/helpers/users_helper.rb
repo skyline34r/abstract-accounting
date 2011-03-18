@@ -27,6 +27,11 @@ module UsersHelper
         $('#change_user').removeAttr('disabled');
         $('#change_user').parent().parent().attr('action',
             '/users/' + $('#users_list').getCell(cell, 'id') + '/edit');
+      }".to_json_var,
+      :beforeSelectRow => "function()
+      {
+        if (canSelect) return true;
+        return false;
       }".to_json_var
     }]
 
