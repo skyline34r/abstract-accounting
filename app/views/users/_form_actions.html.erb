@@ -27,6 +27,13 @@
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $('#users_list').resetSelection();
   }
+  function onReset()
+  {
+    $('#user_email').val(email);
+    $('#user_pass').val('');
+    $('#user_pass_c').val('');
+    $('#save_user').attr('disabled','disabled');
+  }
 </script>
 
 <table>
@@ -35,7 +42,7 @@
       <input name="cancel" type="button" value="cancel"
         onclick="onCancel();"/>
       <input name="reset" type="button" value="reset"
-        onclick=""/>
+        onclick="onReset();"/>
     </td>
     <td style="width: 45px">
       <%= form_for(@user, :remote => true) do |f| %>
