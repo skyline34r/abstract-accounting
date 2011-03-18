@@ -22,4 +22,15 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should create user" do
+    assert_difference('User.count') do
+       xml_http_request :post, :create,
+                        :user => { :email => "user@mail.com",
+                                   :password => "user_pass",
+                                   :password_confirmation => "user_pass"}
+    end
+    assert_equal 1, User.where(:email =>'user@mail.com').count,
+      'User not saved'
+  end
+
 end
