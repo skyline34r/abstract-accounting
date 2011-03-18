@@ -20,7 +20,11 @@ module RolesHelper
       :rowList => [10, 20, 30],
       :sortname => 'name',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => "function(cell)
+      {
+        $('#role_name').val(cell);
+      }".to_json_var
     }]
 
     jqgrid_api 'roles_list', grid, options
