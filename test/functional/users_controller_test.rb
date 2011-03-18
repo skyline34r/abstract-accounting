@@ -8,4 +8,9 @@ class UsersControllerTest < ActionController::TestCase
     assert_not_nil assigns(:users)
   end
 
+  test "should get new user" do
+    xml_http_request :get, :new
+    assert_response :success
+  end
+
 end
