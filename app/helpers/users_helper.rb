@@ -20,7 +20,14 @@ module UsersHelper
       :rowList => [10, 20, 30],
       :sortname => 'email',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => "function(cell)
+      {
+        $('#user_email').val(cell);
+        $('#change_user').removeAttr('disabled');
+        $('#change_user').parent().parent().attr('action',
+            '/users/' + $('#users_list').getCell(cell, 'id') + '/edit');
+      }".to_json_var
     }]
 
     jqgrid_api 'users_list', grid, options
