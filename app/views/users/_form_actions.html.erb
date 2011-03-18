@@ -57,19 +57,22 @@
   <tr align="left">
     <td colspan="2">
       email:
-      <input id="user_email" type="text" disabled="true" value="" size="80" />
+      <input id="user_email" type="text" disabled="true" value="" size="80"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
   <tr align="left">
     <td colspan="2">
       password:
-      <input id="user_pass" type="password" value="" size="76" />
+      <input id="user_pass" type="password" value="" size="76"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
   <tr align="left">
     <td colspan="2">
       password confirmation:
-      <input id="user_pass_c" type="password" value="" size="64" />
+      <input id="user_pass_c" type="password" value="" size="64"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
 </table>
