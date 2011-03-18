@@ -18,7 +18,7 @@ class RolesController < ApplicationController
 
   def create
     @role = Role.new(params[:role])
-    if @role.save
+    if !@role.save
       render :action => "new"
     end
   end
