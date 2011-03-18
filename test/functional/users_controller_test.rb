@@ -13,4 +13,13 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get edit user" do
+    u = User.new(:email => "user@mail.com",
+                 :password => "user_pass",
+                 :password_confirmation => "user_pass")
+    assert u.save, "User can't be saved"
+    xml_http_request :get, :edit, :id => u.id
+    assert_response :success
+  end
+
 end
