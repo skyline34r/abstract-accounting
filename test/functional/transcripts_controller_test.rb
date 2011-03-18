@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class TranscriptsControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
+
   test "should get index of transcripts" do
     get :index
     assert_response :success

@@ -4,6 +4,7 @@ class ResourcesControllerTest < ActionController::TestCase
   setup do
     @asset = assets(:aasiishare)
     @money = money(:rub)
+    sign_in_by_user
   end
 
   test "should get index resource" do

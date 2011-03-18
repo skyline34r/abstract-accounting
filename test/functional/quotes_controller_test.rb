@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class QuotesControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
+  
   test "should get index quote" do
     get :index
     assert_response :success

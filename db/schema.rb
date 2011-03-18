@@ -103,22 +103,6 @@ ActiveRecord::Schema.define(:version => 20110317135429) do
     t.datetime "paid"
   end
 
-  create_table "term", :primary_key => "flow_id", :force => true do |t|
-    t.boolean "side",          :null => false
-    t.integer "resource_type", :null => false
-    t.integer "resource_id",   :null => false
-  end
-
-  add_index "term", ["flow_id", "side"], :name => "sqlite_autoindex_term_1", :unique => true
-
-  create_table "transfer", :primary_key => "day", :force => true do |t|
-    t.integer "event_id", :null => false
-    t.integer "id",       :null => false
-    t.float   "amount",   :null => false
-  end
-
-  add_index "transfer", ["day", "event_id", "id"], :name => "sqlite_autoindex_transfer_1", :unique => true
-
   create_table "txns", :force => true do |t|
     t.integer "fact_id"
     t.float   "value"

@@ -3,6 +3,7 @@ require 'test_helper'
 class EntitiesControllerTest < ActionController::TestCase
   setup do
     @entity = entities(:abstract)
+    sign_in_by_user
   end
 
   test "should get index entity" do

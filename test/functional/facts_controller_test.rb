@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class FactsControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
+
   test "should get index fact" do
     get :index
     assert_response :success

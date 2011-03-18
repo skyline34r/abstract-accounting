@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class BalancesControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
+
   test "should get balance" do
     t = Txn.new :fact => Fact.new(
               :amount => 100000.0,
