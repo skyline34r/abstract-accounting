@@ -1,4 +1,7 @@
 <script type="text/javascript">
+  var email = unescape($('#hide_email').val());
+  $('#user_email').val(email);
+
   function escape(text)
   {
     return text.replace(/&/g, '&amp;')
@@ -13,6 +16,12 @@
                .replace(/&gt;/g, '>')
                .replace(/&amp;/g, '&');
   }
+  function sendDataUser()
+  {
+    $('#hide_email').val(escape($('#user_email').val()));
+    $('#hide_pass').val($('#user_pass').val());
+    $('#hide_pass_c').val($('#user_pass_c').val());
+  }
 </script>
 
 <table>
@@ -25,7 +34,8 @@
     </td>
     <td style="width: 45px">
       <%= form_for(@user, :remote => true) do |f| %>
-      <%= f.submit "save", :id => "save_user", :disabled => "true" %>
+      <%= f.submit "save", :id => "save_user", :disabled => "true",
+                           :onclick => "sendDataUser();" %>
       <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
       <%= f.hidden_field :password, :id => "hide_pass", :value => "" %>
       <%= f.hidden_field :password_confirmation, :id => "hide_pass_c", :value => "" %>
