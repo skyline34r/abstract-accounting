@@ -13,4 +13,12 @@ class RolesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should create role" do
+    assert_difference('Role.count') do
+       xml_http_request :post, :create, :role => { :name => "admin" }
+    end
+    assert_equal 1, Role.where(:name =>'admin').count,
+      'Role not saved'
+  end
+  
 end
