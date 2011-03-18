@@ -2,6 +2,7 @@ Abstract::Application.routes.draw do
   devise_for :users
 
   resources :users
+  resources :roles
   resources :entities
   resources :resources do
     member do
