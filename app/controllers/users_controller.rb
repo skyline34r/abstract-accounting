@@ -19,8 +19,9 @@ class UsersController < ApplicationController
   end
 
   def update
-  end
-
-  def destroy
+    @user = User.find(params[:id])
+    if !@user.update_attributes(params[:user])
+      render :action => "edit"
+    end
   end
 end

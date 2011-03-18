@@ -33,4 +33,17 @@ class UsersControllerTest < ActionController::TestCase
       'User not saved'
   end
 
+  test "should update user" do
+    u = User.new(:email => "user@mail.com",
+                 :password => "user_pass",
+                 :password_confirmation => "user_pass")
+    assert u.save, "User can't be saved"
+
+    xml_http_request :put, :update, :id => u.id,
+      :user => { :email => "change@mail.com"}
+    assert_response :success
+    assert_equal 'change@mail.com', User.find(u.id).email,
+      'User not edited'
+  end
+
 end
