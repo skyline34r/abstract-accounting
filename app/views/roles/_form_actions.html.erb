@@ -13,6 +13,10 @@
                .replace(/&gt;/g, '>')
                .replace(/&amp;/g, '&');
   }
+  function sendDataRole()
+  {
+    $('#hide_name').val(escape($('#role_name').val()));
+  }
 </script>
 
 <table>
@@ -26,7 +30,7 @@
     <td style="width: 45px">
       <%= form_for(@role, :remote => true) do |f| %>
       <%= f.submit "save", :id => "save_role", :disabled => "true",
-                           :onclick => "" %>
+                           :onclick => "sendDataRole();" %>
       <%= f.hidden_field :name, :id => "hide_name", :value => @role.name %>
       <% end %>
     </td>
