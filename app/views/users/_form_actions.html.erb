@@ -22,13 +22,18 @@
     $('#hide_pass').val($('#user_pass').val());
     $('#hide_pass_c').val($('#user_pass_c').val());
   }
+  function onCancel()
+  {
+    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
+    $('#users_list').resetSelection();
+  }
 </script>
 
 <table>
   <tr align="right">
     <td>
       <input name="cancel" type="button" value="cancel"
-        onclick=""/>
+        onclick="onCancel();"/>
       <input name="reset" type="button" value="reset"
         onclick=""/>
     </td>
