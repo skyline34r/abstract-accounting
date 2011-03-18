@@ -1,0 +1,16 @@
+<table>
+  <tr align="right">
+    <td>
+      <%= button_to "new", new_role_path, :method => :get, :remote => true %>
+    </td>
+    <td style="width: 70px">
+      <input type="button" disabled="true" value="change"/>
+    </td>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      name:
+      <input id="role_name" type="text" disabled="true" value="" size="80" />
+    </td>
+  </tr>
+</table>
