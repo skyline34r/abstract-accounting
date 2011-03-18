@@ -24,6 +24,11 @@ module RolesHelper
       :onSelectRow => "function(cell)
       {
         $('#role_name').val(cell);
+      }".to_json_var,
+      :beforeSelectRow => "function()
+      {
+        if (canSelect) return true;
+        return false;
       }".to_json_var
     }]
 
