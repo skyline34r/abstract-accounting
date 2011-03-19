@@ -10,9 +10,10 @@ module RolesHelper
       :url => '/roles',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['name', 'id'],
+      :colNames => ['name', 'pages', 'id'],
       :colModel => [
         { :name => 'name',  :index => 'name',   :width => 800 },
+        { :name => 'pages', :index => 'pages',  :width => 5, :hidden => true },
         { :name => 'id',    :index => 'id',     :width => 5, :hidden => true }
       ],
       :pager => '#roles_pager',
@@ -24,6 +25,20 @@ module RolesHelper
       :onSelectRow => "function(cell)
       {
         $('#role_name').val(cell);
+        var pages = $('#roles_list').getCell(cell, 'pages').split(',');
+        var i = 0;
+        while($('#page_' + i).val())
+        {
+          $('#page_' + i).removeAttr('checked');
+          i++;
+        }
+        i = 0;
+        while(pages[i])
+        {
+          $('[name=' + pages[i] + ']').attr('checked', 'checked');
+          i++;
+        }
+        $('#pages').css('display','block');
       }".to_json_var,
       :beforeSelectRow => "function()
       {

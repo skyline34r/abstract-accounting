@@ -3,7 +3,7 @@ class RolesController < ApplicationController
   def index
     session[:res_type] = ''
     @project_pages = project_pages
-    @columns = ['name', 'id']
+    @columns = ['name', 'pages', 'id']
     @roles = Role.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

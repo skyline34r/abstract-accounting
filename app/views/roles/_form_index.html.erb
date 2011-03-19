@@ -1,6 +1,7 @@
 <script type="text/javascript">
   var canSelect = true;
   $("#roles_list").trigger("reloadGrid");
+  $("#pages").css("display","none");
 </script>
 
 <table>
@@ -18,4 +19,20 @@
       <input id="role_name" type="text" disabled="true" value="" size="80" />
     </td>
   </tr>
+  <tr>
+    <td colspan="2">
+      <div id="pages" style="display: none">
+        <p>Permitted pages</p>
+        <% i = 0 %>
+        <% while i < @project_pages.count %>
+          <p>
+            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
+                :disabled => true, :name => @project_pages[i] %>
+            <%= @project_pages[i] %>
+          </p>
+          <% i += 1 %>
+        <% end %>
+      </div>
+    </td>
+  </tr> 
 </table>
