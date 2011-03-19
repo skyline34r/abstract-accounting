@@ -2,6 +2,7 @@
   var email = unescape($('#hide_email').val());
   $('#user_email').val(email);
   $('#users_list').resetSelection();
+  $("#roles").css("display","block");
   canSelect = false;
 
   function escape(text)

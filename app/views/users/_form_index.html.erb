@@ -1,6 +1,7 @@
 <script type="text/javascript">
   var canSelect = true;
   $("#users_list").trigger("reloadGrid");
+  $("#roles").css("display","none");
 </script>
 
 <table>
@@ -21,13 +22,15 @@
   </tr>
   <tr>
     <td colspan="2">
-      <p>Roles</p>
+      <div id="roles" style="display: none">
+        <p>Roles</p>
         <% for role in Role.find(:all) %>
           <div>
             <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false, :disabled => true %>
             <%= role.name %>
           </div>
         <% end %>
+      </div>
     </td>
   </tr>
 </table>
