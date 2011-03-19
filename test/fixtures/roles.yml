@@ -5,7 +5,7 @@
 # below each fixture, per the syntax in the comments below
 #
 user:
- name: "user"
+ name: "User"
 
 operator:
- name: "operator"
+ name: "Operator"

@@ -2,6 +2,7 @@ require 'resource.rb'
 
 class BalancesController < ApplicationController
   before_filter :authenticate_user!
+  load_and_authorize_resource
   
   def index
     session[:res_type] = ''

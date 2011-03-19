@@ -33,7 +33,7 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal 2, User.where(:id => u.id).first.roles.count
       "Rotes in user can't be added"
-    assert_equal "user", User.where(:id => u.id).first.roles.first.name
+    assert_equal "User", User.where(:id => u.id).first.roles.first.name
       "Rotes in user can't be added"
   end
 
