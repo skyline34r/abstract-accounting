@@ -18,6 +18,19 @@
   }
   function sendDataRole()
   {
+    var i = 0;
+    var pages = "";
+    while($('#page_' + i).val())
+    {
+      if($('#page_' + i).attr('checked'))
+      {
+        pages += $('#page_' + i).val();
+        pages += ',';
+      }
+      i++;
+    }
+    pages = pages.substring(0, pages.length-1);
+    $('#hide_pages').val(pages);
     $('#hide_name').val(escape($('#role_name').val()));
   }
   function onCancel()
@@ -43,7 +56,8 @@
       <%= form_for(@role, :remote => true) do |f| %>
       <%= f.submit "save", :id => "save_role", :disabled => "true",
                            :onclick => "sendDataRole();" %>
-      <%= f.hidden_field :name, :id => "hide_name", :value => "" %>
+      <%= f.hidden_field :name,  :id => "hide_name",  :value => "" %>
+      <%= f.hidden_field :pages, :id => "hide_pages", :value => "" %>
       <% end %>
     </td>
   </tr>
@@ -52,6 +66,19 @@
       name:
       <input id="role_name" type="text" value="" size="80"
              onkeypress="$('#save_role').removeAttr('disabled');" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <p>Permitted pages</p>
+      <% i = 0 %>
+      <% while i < @project_pages.count %>
+        <p>
+          <%= check_box_tag "page_" + i.to_s, @project_pages[i], false %>
+          <%= @project_pages[i] %>
+        </p>
+        <% i += 1 %>
+      <% end %>
     </td>
   </tr>
 </table>

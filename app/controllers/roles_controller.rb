@@ -2,6 +2,7 @@ class RolesController < ApplicationController
 
   def index
     session[:res_type] = ''
+    @project_pages = project_pages
     @columns = ['name', 'id']
     @roles = Role.paginate(
       :page     => params[:page],
@@ -13,14 +14,21 @@ class RolesController < ApplicationController
   end
 
   def new
+    @project_pages = project_pages
     @role = Role.new
   end
 
   def create
+    @project_pages = project_pages
     @role = Role.new(params[:role])
     if !@role.save
       render :action => "new"
     end
+  end
+
+  def project_pages
+    [ "Entity" , "Asset", "Money", "Deal", "Fact", "Chart", "Quote", "Balance",
+      "GeneralLedger", "Transcript" ]
   end
 
 end
