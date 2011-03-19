@@ -39,6 +39,7 @@
   }
 </script>
 
+<%= form_for(@user, :remote => true) do |f| %>
 <table>
   <tr align="right">
     <td>
@@ -48,13 +49,11 @@
         onclick="onReset();"/>
     </td>
     <td style="width: 45px">
-      <%= form_for(@user, :remote => true) do |f| %>
       <%= f.submit "save", :id => "save_user", :disabled => "true",
                            :onclick => "sendDataUser();" %>
       <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
       <%= f.hidden_field :password, :id => "hide_pass", :value => "" %>
       <%= f.hidden_field :password_confirmation, :id => "hide_pass_c", :value => "" %>
-      <% end %>
     </td>
   </tr>
   <tr align="left">
@@ -78,4 +77,18 @@
              onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
+  <tr>
+    <td colspan="2">
+      <p>Roles</p>
+      <p>
+        <% for role in Role.find(:all) %>
+          <div>
+            <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>
+            <%= role.name %>
+          </div>
+        <% end %>
+      </p>
+    </td>
+  </tr>
 </table>
+<% end %>
