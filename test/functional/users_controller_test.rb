@@ -46,4 +46,18 @@ class UsersControllerTest < ActionController::TestCase
       'User not edited'
   end
 
+  test "should create user with role" do
+    assert_difference('User.count') do
+       xml_http_request :post, :create,
+                        :user => { :email => "user@mail.com",
+                                   :password => "user_pass",
+                                   :password_confirmation => "user_pass",
+                                   :role_ids => [ roles(:user).id, roles(:operator).id]
+                                 }
+    end
+    assert_equal 1, User.where(:email =>'user@mail.com').count,
+      "User not saved"
+    assert_equal 2, User.where(:email =>'user@mail.com').first.roles.count,
+      "Roles can't be setup"
+  end
 end
