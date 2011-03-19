@@ -6,6 +6,8 @@
 #
 user:
  name: "User"
+ pages: "Entity,Asset,Money"
 
 operator:
  name: "Operator"
+ pages: "Entity,Asset,Money,Deal,Fact,Chart,Quote,Balance,GeneralLedger,Transcript"
