@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   def index
     session[:res_type] = ''
-    @columns = ['email', 'id']
+    @columns = ['email', 'role_ids', 'id']
     @users = User.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

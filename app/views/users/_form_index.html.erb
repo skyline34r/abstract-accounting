@@ -19,4 +19,15 @@
       <input id="user_email" type="text" disabled="true" value="" size="80" />
     </td>
   </tr>
+  <tr>
+    <td colspan="2">
+      <p>Roles</p>
+        <% for role in Role.find(:all) %>
+          <div>
+            <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false, :disabled => true %>
+            <%= role.name %>
+          </div>
+        <% end %>
+    </td>
+  </tr>
 </table>

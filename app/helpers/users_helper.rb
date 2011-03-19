@@ -10,10 +10,11 @@ module UsersHelper
       :url => '/users',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['email', 'id'],
+      :colNames => ['email', 'role_ids', 'id'],
       :colModel => [
-        { :name => 'email',  :index => 'email',   :width => 800 },
-        { :name => 'id',     :index => 'id',      :width => 5, :hidden => true }
+        { :name => 'email',    :index => 'email',    :width => 800 },
+        { :name => 'role_ids', :index => 'role_ids', :width => 5, :hidden => true },
+        { :name => 'id',       :index => 'id',       :width => 5, :hidden => true }
       ],
       :pager => '#users_pager',
       :rowNum => 10,
@@ -27,6 +28,19 @@ module UsersHelper
         $('#change_user').removeAttr('disabled');
         $('#change_user').parent().parent().attr('action',
             '/users/' + $('#users_list').getCell(cell, 'id') + '/edit');
+        var arr_ids = $('#users_list').getCell(cell, 'role_ids').split(',');
+        var i = 1;
+        while($('#user_role_id_' + i).val())
+        {
+          $('#user_role_id_' + i).removeAttr('checked');
+          i++;
+        }
+        i = 0;
+        while(arr_ids[i])
+        {
+          $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
+          i++;
+        }
       }".to_json_var,
       :beforeSelectRow => "function()
       {
