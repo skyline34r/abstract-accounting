@@ -1,3 +1,15 @@
+<script type="text/javascript">
+  function uncheckPages()
+  {
+    var i = 0;
+    while($('#page_' + i).val())
+    {
+      $('#page_' + i).removeAttr('checked');
+      i++;
+    }
+  }
+</script>
+
 <% content_for :head do %>
   <title>Abstract::Roles</title>
 <% end %>

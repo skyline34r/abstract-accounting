@@ -26,13 +26,8 @@ module RolesHelper
       {
         $('#role_name').val(cell);
         var pages = $('#roles_list').getCell(cell, 'pages').split(',');
+        uncheckPages();
         var i = 0;
-        while($('#page_' + i).val())
-        {
-          $('#page_' + i).removeAttr('checked');
-          i++;
-        }
-        i = 0;
         while(pages[i])
         {
           $('[name=' + pages[i] + ']').attr('checked', 'checked');
