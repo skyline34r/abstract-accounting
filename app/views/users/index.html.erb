@@ -1,3 +1,15 @@
+<script type="text/javascript">
+  function uncheckRoles()
+  {
+    var i = 1;
+    while($('#user_role_id_' + i).val())
+    {
+      $('#user_role_id_' + i).removeAttr('checked');
+      i++;
+    }
+  }
+</script>
+
 <% content_for :head do %>
   <title>Abstract::Users</title>
 <% end %>

@@ -37,6 +37,7 @@
     $('#user_pass').val('');
     $('#user_pass_c').val('');
     $('#save_user').attr('disabled','disabled');
+    uncheckRoles();
   }
 </script>
 
@@ -84,7 +85,8 @@
       <p>
         <% for role in Role.find(:all) %>
           <div>
-            <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>
+            <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role),
+                  :id => "user_role_id_" + role.id.to_s %>
             <%= role.name %>
           </div>
         <% end %>

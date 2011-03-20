@@ -30,13 +30,8 @@ module UsersHelper
         $('#change_user').parent().parent().attr('action',
             '/users/' + $('#users_list').getCell(cell, 'id') + '/edit');
         var arr_ids = $('#users_list').getCell(cell, 'role_ids').split(',');
-        var i = 1;
-        while($('#user_role_id_' + i).val())
-        {
-          $('#user_role_id_' + i).removeAttr('checked');
-          i++;
-        }
-        i = 0;
+        uncheckRoles();
+        var i = 0;
         while(arr_ids[i])
         {
           $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
