@@ -24,11 +24,17 @@
     $('#save_role').attr('disabled','disabled');
     uncheckPages();
   }
-  function uncheckPages()
+  function uncheckPages(enabled)
   {
     for(var i=0; i<'<%= @project_pages.count %>'; i++)
     {
       $('#page_' + i).removeAttr('checked');
+      if(enabled)
+      {
+        $('#page_' + i).removeAttr('disabled');
+      } else {
+        $('#page_' + i).attr('disabled', 'disabled');
+      }
     }
   }
 </script>
@@ -36,4 +42,31 @@
 <% content_for :head do %>
   <title>Abstract::Roles</title>
   <%= raw(roles_jqgrid) %>
+<% end %>
+
+<% content_for :table do %>
+  <tr id="actions" align="right">
+    <%= render 'form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      name:
+      <input id="role_name" type="text" value="" size="80" disabled="true"
+             onkeypress="$('#save_role').removeAttr('disabled');"/>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <div id="pages" style="display: none">
+        <p>Permitted pages</p>
+        <% for i in 0..@project_pages.count-1 %>
+          <p>
+            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
+                  :disabled => true, :name => @project_pages[i] %>
+            <%= @project_pages[i] %>
+          </p>
+        <% end %>
+      </div>
+    </td>
+  </tr>
 <% end %>

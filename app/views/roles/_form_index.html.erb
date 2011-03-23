@@ -1,32 +1,6 @@
-<table>
-  <tr align="right">
-    <td>
-      <%= button_to "new", new_role_path, :method => :get, :remote => true %>
-    </td>
-    <td style="width: 70px">
-      <input type="button" disabled="true" value="change"/>
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      name:
-      <input id="role_name" type="text" disabled="true" value="" size="80" />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <div id="pages" style="display: none">
-        <p>Permitted pages</p>
-        <% i = 0 %>
-        <% while i < @project_pages.count %>
-          <p>
-            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
-                :disabled => true, :name => @project_pages[i] %>
-            <%= @project_pages[i] %>
-          </p>
-          <% i += 1 %>
-        <% end %>
-      </div>
-    </td>
-  </tr> 
-</table>
+<td>
+  <%= button_to "new", new_role_path, :method => :get, :remote => true %>
+</td>
+<td style="width: 45px">
+  <input type="button" disabled="true" value="change"/>
+</td>

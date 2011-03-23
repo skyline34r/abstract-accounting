@@ -20,9 +20,9 @@
   <table id="data_list"></table>
   <div id="data_pager"></div>
 
-  <div id="actions">
-    <%= render 'form_index' %>
-  </div>
+  <table>
+    <%= yield(:table) %>
+  </table>
 
   <%= yield %>
 
