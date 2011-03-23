@@ -14,12 +14,10 @@ class RolesController < ApplicationController
   end
 
   def new
-    @project_pages = project_pages
     @role = Role.new
   end
 
   def create
-    @project_pages = project_pages
     @role = Role.new(params[:role])
     if !@role.save
       render :action => "new"

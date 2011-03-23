@@ -2,21 +2,27 @@
   var canSelect = true;
   function sendDataRole()
   {
-    var pages = "";
+    var pages = new Array();
+    var j = 0;
     for(var i=0; i<'<%= @project_pages.count %>'; i++)
     {
       if($('#page_' + i).attr('checked'))
       {
-        pages += $('#page_' + i).val();
-        pages += ',';
+        pages[j] = $('#page_' + i).val();
+        j++;
       }
     }
-    $('#hide_pages').val(pages.substring(0, pages.length-1));
+    $('#hide_pages').val(pages);
     $('#hide_name').val(escape($('#role_name').val()));
   }
-  function onCancel()
+  function viewIndexForm()
   {
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
+    $('#data_list').trigger('reloadGrid');
+    $('#pages').css('display','none');
+    canSelect = true;
+    $('#role_name').attr('disabled','disabled');
+    $('#role_name').val('');
   }
   function onReset()
   {
@@ -55,18 +61,16 @@
              onkeypress="$('#save_role').removeAttr('disabled');"/>
     </td>
   </tr>
-  <tr>
+  <tr id="pages" style="display: none">
     <td colspan="2">
-      <div id="pages" style="display: none">
-        <p>Permitted pages</p>
-        <% for i in 0..@project_pages.count-1 %>
-          <p>
-            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
-                  :disabled => true, :name => @project_pages[i] %>
-            <%= @project_pages[i] %>
-          </p>
-        <% end %>
-      </div>
+      <p>Permitted pages</p>
+      <% for i in 0..@project_pages.count-1 %>
+        <p>
+          <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
+                :disabled => true, :name => @project_pages[i] %>
+          <%= @project_pages[i] %>
+        </p>
+      <% end %>
     </td>
   </tr>
 <% end %>
