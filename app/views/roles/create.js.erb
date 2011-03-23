@@ -1,1 +1,4 @@
 $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
+$("#data_list").trigger("reloadGrid");
+$("#pages").css("display","none");
+canSelect = true;

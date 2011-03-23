@@ -16,7 +16,7 @@ module RolesHelper
         { :name => 'pages', :index => 'pages',  :width => 5, :hidden => true },
         { :name => 'id',    :index => 'id',     :width => 5, :hidden => true }
       ],
-      :pager => '#roles_pager',
+      :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :sortname => 'name',
@@ -25,13 +25,11 @@ module RolesHelper
       :onSelectRow => "function(cell)
       {
         $('#role_name').val(cell);
-        var pages = $('#roles_list').getCell(cell, 'pages').split(',');
         uncheckPages();
-        var i = 0;
-        while(pages[i])
+        var pages = $('#data_list').getCell(cell, 'pages').split(',');
+        for(var i=0; i<pages.length; i++)
         {
           $('[name=' + pages[i] + ']').attr('checked', 'checked');
-          i++;
         }
         $('#pages').css('display','block');
       }".to_json_var,
@@ -42,7 +40,7 @@ module RolesHelper
       }".to_json_var
     }]
 
-    jqgrid_api 'roles_list', grid, options
+    jqgrid_api 'data_list', grid, options
 
   end
 

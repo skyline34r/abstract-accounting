@@ -1,26 +1,39 @@
 <script type="text/javascript">
+  var canSelect = true;
+  function sendDataRole()
+  {
+    var pages = "";
+    for(var i=0; i<'<%= @project_pages.count %>'; i++)
+    {
+      if($('#page_' + i).attr('checked'))
+      {
+        pages += $('#page_' + i).val();
+        pages += ',';
+      }
+    }
+    $('#hide_pages').val(pages.substring(0, pages.length-1));
+    $('#hide_name').val(escape($('#role_name').val()));
+  }
+  function onCancel()
+  {
+    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
+  }
+  function onReset()
+  {
+    $('#role_name').val('');
+    $('#save_role').attr('disabled','disabled');
+    uncheckPages();
+  }
   function uncheckPages()
   {
-    var i = 0;
-    while($('#page_' + i).val())
+    for(var i=0; i<'<%= @project_pages.count %>'; i++)
     {
       $('#page_' + i).removeAttr('checked');
-      i++;
     }
   }
 </script>
 
 <% content_for :head do %>
   <title>Abstract::Roles</title>
-<% end %>
-
-<table id="roles_list"></table>
-<div id="roles_pager"></div>
-
-<% content_for :head do %>
   <%= raw(roles_jqgrid) %>
 <% end %>
-
-<div id="actions">
-  <%= render 'form_index' %>
-</div>
