@@ -1,7 +1,3 @@
-<% content_for :head do %>
-  <title>Abstract::Balances</title>
-<% end %>
-
 <script type="text/javascript">
 $(function() {
   var curr_date = new Date();
@@ -17,6 +13,12 @@ function loadBalance()
   $('#data_list').trigger('reloadGrid');
 }
 </script>
+
+<% content_for :head do %>
+  <title>Abstract::Balances</title>
+  <%= raw(balances_jqgrid) %>
+<% end %>
+
 
 <table>
   <tr>
@@ -42,9 +44,6 @@ function loadBalance()
       <table id="data_list"></table>
       <div id="data_pager"></div>
 
-      <% content_for :head do %>
-        <%= raw(balances_jqgrid) %>
-      <% end %>
     </td>
   </tr>
   <tr>
