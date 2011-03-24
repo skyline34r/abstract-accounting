@@ -44,6 +44,10 @@
     $("#pass").css("display","table-row");
     $("#pass_c").css("display","table-row");
     $("#roles").css("display","block");
+    <% for role in Role.find(:all) %>
+      $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
+        $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
+    <% end %>
   }
   function viewIndexFrom()
   {
