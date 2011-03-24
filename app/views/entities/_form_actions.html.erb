@@ -1,7 +1,7 @@
 <script type="text/javascript">
   var tagEntity = unescape($('#hide_entity_tag').val());
   $('#entity_tag_a').val(tagEntity);
-  $('#entities_list').resetSelection();
+  $('#data_list').resetSelection();
   canSelect = false;
 
   function escape(text)
@@ -26,7 +26,7 @@
   {
    canSelect = true;
    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
-   $('#entities_list').resetSelection();
+   $('#data_list').resetSelection();
   }
   function onReset()
   {

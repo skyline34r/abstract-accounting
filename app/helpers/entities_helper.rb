@@ -14,7 +14,7 @@ module EntitiesHelper
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800 }
       ],
-      :pager => '#entities_pager',
+      :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :sortname => 'tag',
@@ -23,7 +23,7 @@ module EntitiesHelper
       :onSelectRow => "function(cell)
       {
         document.getElementById('entity_tag').value =
-          $('#entities_list').getCell(cell, 'tag');
+          $('#data_list').getCell(cell, 'tag');
         document.getElementById('change_entity').disabled = false;
         document.getElementById('change_entity').parentNode.parentNode.action =
           '/entities/' + cell + '/edit';
@@ -35,7 +35,7 @@ module EntitiesHelper
       }".to_json_var
     }]
 
-    jqgrid_api 'entities_list', grid, options
+    jqgrid_api 'data_list', grid, options
 
   end
 
