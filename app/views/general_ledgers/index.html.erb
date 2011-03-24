@@ -1,12 +1,8 @@
 <% content_for :head do %>
   <title>Abstract::General Ledger</title>
+  <%= raw(general_ledgers_jqgrid) %>
 <% end %>
 
-General Ledger
-
-<table id="general_ledgers_list"></table>
-<div id="general_ledger_pager"></div>
-
 <% content_for :head do %>
-  <%= raw(general_ledgers_jqgrid) %>
+  General Ledger
 <% end %>

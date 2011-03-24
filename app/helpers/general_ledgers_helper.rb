@@ -53,7 +53,7 @@ module GeneralLedgersHelper
                          }'.to_json_var
         }
       ],
-      :pager => '#general_ledger_pager',
+      :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :viewrecords => true,
@@ -67,19 +67,19 @@ module GeneralLedgersHelper
            return (rowelem[2] * rowelem[5] / rowelem[2]).toFixed(2);
          }
          if (rowid != "sub") {
-           $("#general_ledgers_list").addRowData("sub", { date: "",
-                                                          resource: "",
-                                                          quantity: "",
-                                                          DC: "debit",
-                                                          deal: rowelem[4],
-                                                          price: getPrice(),
-                                                          debit: getDebit(),
-                                                          credit: "null" });
+           $("#data_list").addRowData("sub", { date: "",
+                                               resource: "",
+                                               quantity: "",
+                                               DC: "debit",
+                                               deal: rowelem[4],
+                                               price: getPrice(),
+                                               debit: getDebit(),
+                                               credit: "null" });
          }
       }'.to_json_var
     }]
     
-    jqgrid_api 'general_ledgers_list', grid, options
+    jqgrid_api 'data_list', grid, options
 
   end
 
