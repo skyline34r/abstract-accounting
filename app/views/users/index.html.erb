@@ -40,7 +40,7 @@
     uncheckRoles('enabled');
     $("#user_email").removeAttr('disabled');
     $("#user_email").val(email);
-    $("#users_list").resetSelection();
+    $("#data_list").resetSelection();
     $("#pass").css("display","table-row");
     $("#pass_c").css("display","table-row");
     $("#roles").css("display","block");
@@ -55,7 +55,7 @@
     $("#user_email").val("");
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $("#user_email").attr('disabled', 'disabled');
-    $("#users_list").trigger("reloadGrid");
+    $("#data_list").trigger("reloadGrid");
     $("#pass").css("display","none");
     $("#pass_c").css("display","none");
     $("#roles").css("display","none");
