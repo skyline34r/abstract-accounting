@@ -1,26 +1,103 @@
 <script type="text/javascript">
-  function uncheckRoles()
+  var email = '';
+  var canSelect = true;
+  function uncheckRoles(enabled)
   {
-    var i = 1;
-    while($('#user_role_id_' + i).val())
-    {
-      $('#user_role_id_' + i).removeAttr('checked');
-      i++;
-    }
+    <% for role in Role.find(:all) %>
+      if(enabled)
+      {
+        $('#user_role_id_' + '<%= role.id.to_s %>').removeAttr('disabled');
+      }
+      else
+      {
+        $('#user_role_id_' + '<%= role.id.to_s %>').attr('disabled','disabled');
+      }
+      $('#user_role_id_' + '<%= role.id.to_s %>').removeAttr('checked');
+    <% end %>
+  }
+  function sendDataUser()
+  {
+    <% for role in Role.find(:all) %>
+      $('#role_ids_' + <%= role.id.to_s %>).attr('checked',
+        $('#user_role_id_' + '<%= role.id.to_s %>').is(':checked'));
+    <% end %>
+    $('#hide_email').val(escape($('#user_email').val()));
+    $('#hide_pass').val($('#user_pass').val());
+    $('#hide_pass_c').val($('#user_pass_c').val());
+  }
+  function onReset()
+  {
+    $('#user_email').val(email);
+    $('#user_pass').val('');
+    $('#user_pass_c').val('');
+    $('#save_user').attr('disabled','disabled');
+    uncheckRoles('enabled');
+  }
+  function viewActionForm(emailValue)
+  {
+    canSelect = false;
+    email = emailValue;
+    uncheckRoles('enabled');
+    $("#user_email").removeAttr('disabled');
+    $("#user_email").val(email);
+    $("#users_list").resetSelection();
+    $("#pass").css("display","table-row");
+    $("#pass_c").css("display","table-row");
+    $("#roles").css("display","block");
+  }
+  function viewIndexFrom()
+  {
+    canSelect = true;
+    $("#user_email").val("");
+    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
+    $("#user_email").attr('disabled', 'disabled');
+    $("#users_list").trigger("reloadGrid");
+    $("#pass").css("display","none");
+    $("#pass_c").css("display","none");
+    $("#roles").css("display","none");
   }
 </script>
 
 <% content_for :head do %>
   <title>Abstract::Users</title>
-<% end %>
-
-<table id="users_list"></table>
-<div id="users_pager"></div>
-
-<% content_for :head do %>
   <%= raw(users_jqgrid) %>
 <% end %>
 
-<div id="actions">
-  <%= render 'form_index' %>
-</div>
+<% content_for :table do %>
+  <tr id="actions" align="right">
+    <%= render 'form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      email:
+      <input id="user_email" type="text" disabled="true" value="" size="80"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
+    </td>
+  </tr>
+  <tr align="left" id="pass" style="display: none">
+    <td colspan="2">
+      password:
+      <input id="user_pass" type="password" value="" size="76"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
+    </td>
+  </tr>
+  <tr align="left" id="pass_c" style="display: none">
+    <td colspan="2">
+      password confirmation:
+      <input id="user_pass_c" type="password" value="" size="64"
+             onkeypress="$('#save_user').removeAttr('disabled');" />
+    </td>
+  </tr>
+  <tr id="roles" style="display: none">
+    <td colspan="2">
+      <p>Roles</p>
+      <% for role in Role.find(:all) %>
+        <div>
+          <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
+                :disabled => true %>
+          <%= role.name %>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+<% end %>

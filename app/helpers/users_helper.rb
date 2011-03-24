@@ -10,13 +10,12 @@ module UsersHelper
       :url => '/users',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['email', 'role_ids', 'id'],
+      :colNames => ['email', 'role_ids'],
       :colModel => [
         { :name => 'email',    :index => 'email',    :width => 800 },
-        { :name => 'role_ids', :index => 'role_ids', :width => 5, :hidden => true },
-        { :name => 'id',       :index => 'id',       :width => 5, :hidden => true }
+        { :name => 'role_ids', :index => 'role_ids', :width => 5, :hidden => true }
       ],
-      :pager => '#users_pager',
+      :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :sortname => 'email',
@@ -24,12 +23,12 @@ module UsersHelper
       :viewrecords => true,
       :onSelectRow => "function(cell)
       {
-        $('#user_email').val(cell);
+        $('#user_email').val($('#data_list').getCell(cell, 'email'));
         $('#change_user').removeAttr('disabled');
         $('#roles').css('display','block');
         $('#change_user').parent().parent().attr('action',
-            '/users/' + $('#users_list').getCell(cell, 'id') + '/edit');
-        var arr_ids = $('#users_list').getCell(cell, 'role_ids').split(',');
+            '/users/' + cell + '/edit');
+        var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
         uncheckRoles();
         var i = 0;
         while(arr_ids[i])
@@ -45,7 +44,7 @@ module UsersHelper
       }".to_json_var
     }]
 
-    jqgrid_api 'users_list', grid, options
+    jqgrid_api 'data_list', grid, options
 
   end
 

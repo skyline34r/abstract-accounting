@@ -1,97 +1,21 @@
-<script type="text/javascript">
-  var email = unescape($('#hide_email').val());
-  $('#user_email').val(email);
-  $('#users_list').resetSelection();
-  $("#roles").css("display","block");
-  canSelect = false;
-
-  function escape(text)
-  {
-    return text.replace(/&/g, '&amp;')
-               .replace(/</g, '&lt;')
-               .replace(/>/g, '&gt;')
-               .replace(/"/g, '&quot;');
-  }
-  function unescape(text)
-  {
-    return text.replace(/&quot;/g, '"')
-               .replace(/&lt;/g, '<')
-               .replace(/&gt;/g, '>')
-               .replace(/&amp;/g, '&');
-  }
-  function sendDataUser()
-  {
-    $('#hide_email').val(escape($('#user_email').val()));
-    $('#hide_pass').val($('#user_pass').val());
-    $('#hide_pass_c').val($('#user_pass_c').val());
-  }
-  function onCancel()
-  {
-    canSelect = true;
-    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
-    $('#users_list').resetSelection();
-  }
-  function onReset()
-  {
-    $('#user_email').val(email);
-    $('#user_pass').val('');
-    $('#user_pass_c').val('');
-    $('#save_user').attr('disabled','disabled');
-    uncheckRoles();
-  }
-</script>
-
-<%= form_for(@user, :remote => true) do |f| %>
-<table>
-  <tr align="right">
-    <td>
-      <input name="cancel" type="button" value="cancel"
-        onclick="onCancel();"/>
-      <input name="reset" type="button" value="reset"
-        onclick="onReset();"/>
-    </td>
-    <td style="width: 45px">
-      <%= f.submit "save", :id => "save_user", :disabled => "true",
-                           :onclick => "sendDataUser();" %>
-      <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
-      <%= f.hidden_field :password, :id => "hide_pass", :value => "" %>
-      <%= f.hidden_field :password_confirmation, :id => "hide_pass_c", :value => "" %>
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      email:
-      <input id="user_email" type="text" disabled="true" value="" size="80"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      password:
-      <input id="user_pass" type="password" value="" size="76"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      password confirmation:
-      <input id="user_pass_c" type="password" value="" size="64"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <p>Roles</p>
-      <p>
-        <% for role in Role.find(:all) %>
-          <div>
-            <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role),
-                  :id => "user_role_id_" + role.id.to_s %>
-            <%= role.name %>
-          </div>
-        <% end %>
-      </p>
-    </td>
-  </tr>
-</table>
-<% end %>
+<td>
+  <input name="cancel" type="button" value="cancel"
+    onclick="viewIndexFrom();"/>
+  <input name="reset" type="button" value="reset"
+    onclick="onReset();"/>
+</td>
+<td style="width: 45px">
+  <%= form_for(@user, :remote => true) do |f| %>
+    <%= f.submit "save", :id => "save_user", :disabled => "true",
+                         :onclick => "sendDataUser();" %>
+    <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
+    <%= f.hidden_field :password, :id => "hide_pass", :value => "" %>
+    <%= f.hidden_field :password_confirmation, :id => "hide_pass_c", :value => "" %>
+    <div style="display: none">
+      <% for role in Role.find(:all) %>
+          <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role),
+                :id => "role_ids_" + role.id.to_s %>
+      <% end %>
+    </div>
+  <% end %>
+</td>
