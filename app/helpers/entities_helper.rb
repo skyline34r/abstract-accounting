@@ -22,11 +22,10 @@ module EntitiesHelper
       :viewrecords => true,
       :onSelectRow => "function(cell)
       {
-        document.getElementById('entity_tag').value =
-          $('#data_list').getCell(cell, 'tag');
-        document.getElementById('change_entity').disabled = false;
-        document.getElementById('change_entity').parentNode.parentNode.action =
-          '/entities/' + cell + '/edit';
+        $('#entity_tag').val($('#data_list').getCell(cell, 'tag'));
+        $('#change_entity').removeAttr('disabled');
+        $('#change_entity').parent().parent().attr('action',
+            '/entities/' + cell + '/edit');
       }".to_json_var,
       :beforeSelectRow =>	"function()
       {
