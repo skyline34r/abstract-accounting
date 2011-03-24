@@ -12,9 +12,9 @@ $(function() {
 function loadBalance()
 {
   var actionUrl = '/balances/load?date=' + $("#balance_datepicker").val();
-  $('#balances_list').setGridParam({url: actionUrl});
-  $('#balances_list').clearGridData(true);
-  $('#balances_list').trigger('reloadGrid');
+  $('#data_list').setGridParam({url: actionUrl});
+  $('#data_list').clearGridData(true);
+  $('#data_list').trigger('reloadGrid');
 }
 </script>
 
@@ -39,8 +39,8 @@ function loadBalance()
   </tr>
   <tr>
     <td colspan="2">
-      <table id="balances_list"></table>
-      <div id="balances_pager"></div>
+      <table id="data_list"></table>
+      <div id="data_pager"></div>
 
       <% content_for :head do %>
         <%= raw(balances_jqgrid) %>

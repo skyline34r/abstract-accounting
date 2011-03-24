@@ -31,7 +31,7 @@ module BalancesHelper
                          }'.to_json_var    },
         { :name => 'side', :index => 'side', :width => 50, :hidden => true }
       ],
-      :pager => '#balances_pager',
+      :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :sortname => 'flow',
@@ -39,7 +39,7 @@ module BalancesHelper
       :viewrecords => true
     }]
     
-    jqgrid_api 'balances_list', grid, options
+    jqgrid_api 'data_list', grid, options
 
   end
 
