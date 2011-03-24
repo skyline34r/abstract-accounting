@@ -20,15 +20,18 @@
 
 <% content_for :head do %>
   <title>Abstract::Entities</title>
-<% end %>
-
-<table id="data_list"></table>
-<div id="data_pager"></div>
-
-<% content_for :head do %>
   <%= raw(entities_jqgrid) %>
 <% end %>
 
-<div id="actions">
-  <%= render 'form_index' %>
-</div>
+<% content_for :table do %>
+  <tr id="actions" align="right">
+    <%= render 'form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      tag:
+      <input id="entity_tag" type="text" value="" size="83" disabled="true"
+             onkeypress="$('#save_entity').removeAttr('disabled');"/>
+    </td>
+  </tr>
+<% end %>
