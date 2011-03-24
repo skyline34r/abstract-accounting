@@ -19,42 +19,41 @@ function loadBalance()
   <%= raw(balances_jqgrid) %>
 <% end %>
 
+<% content_for :top do %>
+  <table>
+    <tr>
+      <td align="left">Balances</td>
+      <td align="right" style="width: 723px">
+        date
+        <input type="text" id="balance_datepicker" size="20" onchange="loadBalance();" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        units
+        physical
+        <input type="radio" id="physical" name="unit" checked="true"
+               onchange="$('#balances_list').trigger('reloadGrid');"/>
+        accounting
+        <input type="radio" id="accounting" name="unit"
+               onchange="$('#balances_list').trigger('reloadGrid');"/>
+      </td>
+    </tr>
+  </table>
+<% end %>
 
-<table>
-  <tr>
-    <td align="left">Balances</td>
-    <td align="right" style="width: 723px">
-      date
-      <input type="text" id="balance_datepicker" size="20" onchange="loadBalance();" />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      units
-      physical
-      <input type="radio" id="physical" name="unit" checked="true"
-             onchange="$('#balances_list').trigger('reloadGrid');"/>
-      accounting
-      <input type="radio" id="accounting" name="unit"
-             onchange="$('#balances_list').trigger('reloadGrid');"/>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <table id="data_list"></table>
-      <div id="data_pager"></div>
-
-    </td>
-  </tr>
-  <tr>
-    <td align="left">Total</td>
-    <td align="right">
-      <a id="tDebit">
-        <%= @assets %>
-      </a>
-      <a id="tCredit">
-        <%= @liabilities %>
-      </a>
-    </td>
-  </tr>
-</table>
+<% content_for :bottom do %>
+  <table>
+    <tr>
+      <td align="left">Total</td>
+      <td align="right">
+        <a id="tDebit">
+          <%= @assets %>
+        </a>
+        <a id="tCredit">
+          <%= @liabilities %>
+        </a>
+      </td>
+    </tr>
+  </table>
+<% end %>
