@@ -28,13 +28,11 @@ module UsersHelper
         $('#roles').css('display','block');
         $('#change_user').parent().parent().attr('action',
             '/users/' + cell + '/edit');
-        var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
         uncheckRoles();
-        var i = 0;
-        while(arr_ids[i])
+        var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
+        for(var i=0; i<arr_ids.length; i++)
         {
           $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
-          i++;
         }
       }".to_json_var,
       :beforeSelectRow => "function()
