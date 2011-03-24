@@ -68,40 +68,42 @@
 <% end %>
 
 <% content_for :actions do %>
-  <tr id="actions" align="right">
-    <%= render 'form_index' %>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      email:
-      <input id="user_email" type="text" disabled="true" value="" size="80"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left" id="pass" style="display: none">
-    <td colspan="2">
-      password:
-      <input id="user_pass" type="password" value="" size="76"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left" id="pass_c" style="display: none">
-    <td colspan="2">
-      password confirmation:
-      <input id="user_pass_c" type="password" value="" size="64"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr id="roles" style="display: none">
-    <td colspan="2">
-      <p>Roles</p>
-      <% for role in Role.find(:all) %>
-        <div>
-          <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
-                :disabled => true %>
-          <%= role.name %>
-        </div>
-      <% end %>
-    </td>
-  </tr>
+  <table>
+    <tr id="actions" align="right">
+      <%= render 'form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        email:
+        <input id="user_email" type="text" disabled="true" value="" size="80"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr align="left" id="pass" style="display: none">
+      <td colspan="2">
+        password:
+        <input id="user_pass" type="password" value="" size="76"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr align="left" id="pass_c" style="display: none">
+      <td colspan="2">
+        password confirmation:
+        <input id="user_pass_c" type="password" value="" size="64"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr id="roles" style="display: none">
+      <td colspan="2">
+        <p>Roles</p>
+        <% for role in Role.find(:all) %>
+          <div>
+            <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
+                  :disabled => true %>
+            <%= role.name %>
+          </div>
+        <% end %>
+      </td>
+    </tr>
+  </table>
 <% end %>

@@ -33,14 +33,16 @@
 <% end %>
 
 <% content_for :actions do %>
-  <tr id="actions" align="right">
-    <%= render 'form_index' %>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      tag:
-      <input id="entity_tag" type="text" value="" size="83" disabled="true"
-             onkeypress="$('#save_entity').removeAttr('disabled');"/>
-    </td>
-  </tr>
+  <table>
+    <tr id="actions" align="right">
+      <%= render 'form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        tag:
+        <input id="entity_tag" type="text" value="" size="83" disabled="true"
+               onkeypress="$('#save_entity').removeAttr('disabled');"/>
+      </td>
+    </tr>
+  </table>
 <% end %>
