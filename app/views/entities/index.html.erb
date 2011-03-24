@@ -16,6 +16,14 @@
    $('#entity_tag_a').val(tagEntity);
    $('#save_entity').attr('disabled','disabled');
   }
+  function showActionForm(tag)
+  {
+    tagEntity = tag;
+    $('#entity_tag').val(tagEntity);
+    $('#entity_tag').removeAttr('disabled');
+    $('#data_list').resetSelection();
+    canSelect = false;
+  }
 </script>
 
 <% content_for :head do %>
