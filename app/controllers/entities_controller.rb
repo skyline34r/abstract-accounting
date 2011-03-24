@@ -4,13 +4,13 @@ class EntitiesController < ApplicationController
 
   def index
     session[:res_type] = ''
-    @columns = ['tag', 'id']
+    @columns = ['tag']
     @entities = Entity.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@entities, @columns)
+      render :json => abstract_json_for_jqgrid(@entities, @columns, :id_column => 'id')
     end
   end
 

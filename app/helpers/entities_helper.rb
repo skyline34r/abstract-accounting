@@ -10,10 +10,9 @@ module EntitiesHelper
       :url => '/entities',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'id'],
+      :colNames => ['tag'],
       :colModel => [
-        { :name => 'tag',  :index => 'tag',   :width => 800 },
-        { :name => 'id',   :index => 'id',    :width => 5, :hidden => true }
+        { :name => 'tag',  :index => 'tag',   :width => 800 }
       ],
       :pager => '#entities_pager',
       :rowNum => 10,
@@ -23,10 +22,11 @@ module EntitiesHelper
       :viewrecords => true,
       :onSelectRow => "function(cell)
       {
-        document.getElementById('entity_tag').value = cell;
+        document.getElementById('entity_tag').value =
+          $('#entities_list').getCell(cell, 'tag');
         document.getElementById('change_entity').disabled = false;
         document.getElementById('change_entity').parentNode.parentNode.action =
-          '/entities/' + $('#entities_list').getCell(cell, 'id') + '/edit';
+          '/entities/' + cell + '/edit';
       }".to_json_var,
       :beforeSelectRow =>	"function()
       {
