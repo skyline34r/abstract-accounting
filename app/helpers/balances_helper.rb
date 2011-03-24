@@ -34,7 +34,7 @@ module BalancesHelper
       :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'flow',
+      :sortname => 'deal',
       :sortorder => 'asc',
       :viewrecords => true
     }]
