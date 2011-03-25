@@ -36,7 +36,7 @@ class BalancesControllerTest < ActionController::TestCase
   end
 
   def should_get_index_of_balance
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
