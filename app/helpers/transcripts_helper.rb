@@ -7,7 +7,7 @@ module TranscriptsHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/transcripts',
+      :url => '/transcripts/load?empty=true',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['id', 'date', 'deal', 'debit', 'credit', 'debit', 'credit'],
