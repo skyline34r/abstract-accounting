@@ -37,7 +37,11 @@ Abstract::Application.routes.draw do
   end
   resources :facts
   resources :charts
-  resources :quotes
+  resources :quotes do
+    collection do
+      get 'view'
+    end
+  end
   resources :balances do
     collection do
       get 'load'

@@ -8,7 +8,6 @@ class QuotesControllerTest < ActionController::TestCase
   test "should get index quote" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:quotes)
   end
 
   test "should get new quote" do
@@ -27,4 +26,9 @@ class QuotesControllerTest < ActionController::TestCase
       'Quote not saved'
   end
 
+  test "should get view quote" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:quotes)
+  end
 end

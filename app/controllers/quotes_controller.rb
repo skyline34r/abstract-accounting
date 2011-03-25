@@ -6,6 +6,9 @@ class QuotesController < ApplicationController
 
   def index
     session[:res_type] = 'money'
+  end
+
+  def view
     @columns = ['money.alpha_code', 'day', 'rate']
     @quotes = Quote.all.paginate(
       :page     => params[:page],

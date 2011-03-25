@@ -7,7 +7,7 @@ module QuotesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/quotes',
+      :url => '/quotes/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['resource', 'day', 'rate'],
