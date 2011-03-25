@@ -45,34 +45,32 @@
   }
 </script>
 
-<% content_for :head do %>
-  <title>Abstract::Roles</title>
-  <%= raw(roles_jqgrid) %>
-<% end %>
+<%= raw(roles_jqgrid) %>
 
-<% content_for :actions do %>
-  <table>
-    <tr id="actions" align="right">
-      <%= render 'form_index' %>
-    </tr>
-    <tr align="left">
-      <td colspan="2">
-        name:
-        <input id="role_name" type="text" value="" size="80" disabled="true"
-               onkeypress="$('#save_role').removeAttr('disabled');"/>
-      </td>
-    </tr>
-    <tr id="pages" style="display: none">
-      <td colspan="2">
-        <p>Permitted pages</p>
-        <% for i in 0..@project_pages.count-1 %>
-          <p>
-            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
-                  :disabled => true, :name => @project_pages[i] %>
-            <%= @project_pages[i] %>
-          </p>
-        <% end %>
-      </td>
-    </tr>
-  </table>
-<% end %>
+<table id="data_list"></table>
+<div id="data_pager"></div>
+
+<table>
+  <tr id="actions" align="right">
+    <%= render 'form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      name:
+      <input id="role_name" type="text" value="" size="80" disabled="true"
+             onkeypress="$('#save_role').removeAttr('disabled');"/>
+    </td>
+  </tr>
+  <tr id="pages" style="display: none">
+    <td colspan="2">
+      <p>Permitted pages</p>
+      <% for i in 0..@project_pages.count-1 %>
+        <p>
+          <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
+                :disabled => true, :name => @project_pages[i] %>
+          <%= @project_pages[i] %>
+        </p>
+      <% end %>
+    </td>
+  </tr>
+</table>
