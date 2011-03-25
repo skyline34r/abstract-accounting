@@ -6,7 +6,7 @@ class TranscriptsControllerTest < ActionController::TestCase
   end
 
   test "should get index of transcripts" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
