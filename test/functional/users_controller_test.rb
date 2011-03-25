@@ -3,7 +3,7 @@ require 'test_helper'
 class UsersControllerTest < ActionController::TestCase
 
   test "should get index user" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
