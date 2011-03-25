@@ -6,7 +6,7 @@ class FactsControllerTest < ActionController::TestCase
   end
 
   test "should get index fact" do
-    get :index
+    xml_http_request :post, :index
     assert_response :success
   end
 
