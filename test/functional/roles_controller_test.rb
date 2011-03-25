@@ -5,7 +5,6 @@ class RolesControllerTest < ActionController::TestCase
   test "should get index of roles" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:roles)
   end
 
   test "should get new role" do
@@ -20,5 +19,11 @@ class RolesControllerTest < ActionController::TestCase
     assert_equal 1, Role.where(:name =>'admin').count,
       'Role not saved'
   end
-  
+
+  test "should get view of roles" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:roles)
+  end
+
 end

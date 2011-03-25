@@ -3,6 +3,9 @@ class RolesController < ApplicationController
   def index
     session[:res_type] = ''
     @project_pages = project_pages
+  end
+
+  def view
     @columns = ['name', 'pages']
     @roles = Role.paginate(
       :page     => params[:page],
@@ -12,7 +15,7 @@ class RolesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@roles, @columns, :id_column => 'id')
     end
   end
-
+  
   def new
     @role = Role.new
   end

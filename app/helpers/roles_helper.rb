@@ -7,7 +7,7 @@ module RolesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/roles',
+      :url => '/roles/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['name', 'pages'],
