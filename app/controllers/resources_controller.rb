@@ -4,6 +4,9 @@ class ResourcesController < ApplicationController
   before_filter :authenticate_user!
 
   def index
+  end
+
+  def view
     @columns = ['tag', 'class.name', 'id', 'num_code']
 
     Money.class_exec {

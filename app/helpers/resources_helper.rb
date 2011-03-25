@@ -7,7 +7,7 @@ module ResourcesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/resources',
+      :url => '/resources/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['tag', 'type', 'id', 'code'],

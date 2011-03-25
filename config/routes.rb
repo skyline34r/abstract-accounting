@@ -28,6 +28,7 @@ Abstract::Application.routes.draw do
       get 'new_money'
       post 'create_asset'
       post 'create_money'
+      get 'view'
     end
   end
   resources :deals do

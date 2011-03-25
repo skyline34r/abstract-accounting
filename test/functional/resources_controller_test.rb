@@ -10,7 +10,6 @@ class ResourcesControllerTest < ActionController::TestCase
   test "should get index resource" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:resources)
   end
 
   test "should get new asset in resource" do
@@ -65,5 +64,11 @@ class ResourcesControllerTest < ActionController::TestCase
       'Money \'EUR\' not edited'
     assert_equal 333, Money.find(@money.id).num_code,
       'Money \'978\' not edited'
+  end
+
+  test "should get view resource" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:resources)
   end
 end
