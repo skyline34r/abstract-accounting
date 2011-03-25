@@ -6,7 +6,7 @@ class QuotesControllerTest < ActionController::TestCase
   end
   
   test "should get index quote" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 

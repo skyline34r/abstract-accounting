@@ -1,7 +1,3 @@
-<% content_for :head do %>
-  <title>Abstract::Quotes</title>
-<% end %>
-
 <script type="text/javascript">
 var canSelect = true;
 $(function() {
@@ -75,13 +71,11 @@ function setDefault()
 }
 </script>
 
+<%= raw(quotes_jqgrid) %>
+
 <div id="quotes_div">
   <table id="quotes_list"></table>
   <div id="quotes_pager"></div>
-
-  <% content_for :head do %>
-    <%= raw(quotes_jqgrid) %>
-  <% end %>
 
   <table>
     <tr id="actions" align="right">
