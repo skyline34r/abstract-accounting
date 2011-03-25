@@ -30,7 +30,11 @@ Abstract::Application.routes.draw do
       post 'create_money'
     end
   end
-  resources :deals
+  resources :deals do
+    collection do
+      get 'view'
+    end
+  end
   resources :facts
   resources :charts
   resources :quotes

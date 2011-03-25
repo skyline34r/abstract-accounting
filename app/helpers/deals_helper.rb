@@ -7,7 +7,7 @@ module DealsHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/deals',
+      :url => '/deals/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['tag', 'entity', 'rate', 'give', 'take', 'take.id', 'take.type'],

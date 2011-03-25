@@ -5,13 +5,15 @@ class DealsController < ApplicationController
   load_and_authorize_resource
 
   def index
+    session[:res_type] = ''
+  end
+
+  def view
     Money.class_exec {
       def tag
         return alpha_code
       end
     }
-
-    session[:res_type] = ''
     @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name']
     @deals = Deal.all;

@@ -8,7 +8,6 @@ class DealsControllerTest < ActionController::TestCase
   test "should get index deal" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:deals)
   end
 
   test "should get new deal" do
@@ -31,4 +30,9 @@ class DealsControllerTest < ActionController::TestCase
       'Deal \'purchase tester\' not saved'
   end
 
+  test "should get view deal" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:deals)
+  end
 end
