@@ -6,7 +6,7 @@ class ChartsControllerTest < ActionController::TestCase
   end
 
   test "should get index chart" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
