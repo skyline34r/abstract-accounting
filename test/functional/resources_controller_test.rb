@@ -8,7 +8,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   test "should get index resource" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
