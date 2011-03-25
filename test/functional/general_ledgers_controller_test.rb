@@ -6,7 +6,7 @@ class GeneralLedgersControllerTest < ActionController::TestCase
   end
 
   test "should get index general ledgers" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
