@@ -6,7 +6,7 @@ class DealsControllerTest < ActionController::TestCase
   end
 
   test "should get index deal" do
-    get :index
+    xml_http_request :get, :index
     assert_response :success
   end
 
