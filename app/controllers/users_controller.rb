@@ -1,6 +1,9 @@
 class UsersController < ApplicationController
   def index
     session[:res_type] = ''
+  end
+
+  def view
     @columns = ['email', 'role_ids']
     @users = User.paginate(
       :page     => params[:page],

@@ -1,7 +1,11 @@
 Abstract::Application.routes.draw do
   devise_for :users
 
-  resources :users
+  resources :users do
+    collection do
+      get 'view'
+    end
+  end
   resources :roles do
     collection do
       get 'view'

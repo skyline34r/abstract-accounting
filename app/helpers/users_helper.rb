@@ -7,7 +7,7 @@ module UsersHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/users',
+      :url => '/users/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['email', 'role_ids'],
