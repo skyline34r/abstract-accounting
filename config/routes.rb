@@ -3,7 +3,11 @@ Abstract::Application.routes.draw do
 
   resources :users
   resources :roles
-  resources :entities
+  resources :entities do
+    collection do
+      get 'view'
+    end
+  end
   resources :resources do
     member do
       get 'edit_asset'

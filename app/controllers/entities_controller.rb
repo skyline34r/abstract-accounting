@@ -4,6 +4,9 @@ class EntitiesController < ApplicationController
 
   def index
     session[:res_type] = ''
+  end
+
+  def view
     @columns = ['tag']
     @entities = Entity.paginate(
       :page     => params[:page],

@@ -7,7 +7,7 @@ module EntitiesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/entities',
+      :url => '/entities/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['tag'],

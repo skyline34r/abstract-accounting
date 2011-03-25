@@ -9,7 +9,6 @@ class EntitiesControllerTest < ActionController::TestCase
   test "should get index entity" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:entities)
   end
 
   test "should get new entity" do
@@ -36,5 +35,11 @@ class EntitiesControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal 'A Corp. tester update', Entity.find(@entity.id).tag,
       'Entity \'A Corp. tester\' not edited'
+  end
+
+  test "should get view entity" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:entities)
   end
 end
