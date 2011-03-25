@@ -6,7 +6,6 @@ class BalancesController < ApplicationController
   
   def index
     session[:res_type] = ''
-    load_grid('')
   end
 
   def load
