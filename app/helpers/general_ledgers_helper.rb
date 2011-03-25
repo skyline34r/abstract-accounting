@@ -7,7 +7,7 @@ module GeneralLedgersHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/general_ledgers',
+      :url => '/general_ledgers/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['date', 'resource', 'quantity', 'DC', 'deal', 'price',

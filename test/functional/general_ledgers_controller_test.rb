@@ -8,6 +8,11 @@ class GeneralLedgersControllerTest < ActionController::TestCase
   test "should get index general ledgers" do
     get :index
     assert_response :success
+  end
+
+  test "should get view general ledgers" do
+    xml_http_request :get, :view
+    assert_response :success
     assert_not_nil assigns(:general_ledgers)
   end
 

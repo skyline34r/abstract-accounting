@@ -47,7 +47,11 @@ Abstract::Application.routes.draw do
       get 'load'
     end
   end
-  resources :general_ledgers
+  resources :general_ledgers do
+    collection do
+      get 'view'
+    end
+  end
   resources :transcripts do
     collection do
       get 'load'

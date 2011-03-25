@@ -5,12 +5,15 @@ class GeneralLedgersController < ApplicationController
   load_and_authorize_resource
 
   def index
+    session[:res_type] = ''
+  end
+
+  def view
     Money.class_exec {
       def tag
         return alpha_code
       end
     }
-    session[:res_type] = ''
     @columns = ['fact.day', 'fact.resource.tag', 'fact.amount', 'fact.from.tag',
                 'fact.to.tag', 'value', 'earnings']
     @general_ledgers = GeneralLedger.new
@@ -22,5 +25,4 @@ class GeneralLedgersController < ApplicationController
       render :json => abstract_json_for_jqgrid(@general_ledgers, @columns)
     end
   end
-
 end
