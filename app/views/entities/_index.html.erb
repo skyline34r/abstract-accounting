@@ -11,6 +11,7 @@
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $('#entity_tag').attr('disabled', 'disabled');
     $('#data_list').trigger('reloadGrid');
+    $('#entity_tag').val('');
   }
   function onReset()
   {
