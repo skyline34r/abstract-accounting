@@ -34,25 +34,36 @@
     $('#save_user').attr('disabled','disabled');
     uncheckRoles('enabled');
   }
-  function viewActionForm(emailValue, hidePass)
+  function viewActionForm(emailValue, loadType)
   {
     canSelect = false;
     email = emailValue;
-    uncheckRoles('enabled');
-    $("#user_email").removeAttr('disabled');
-    $("#user_email").val(email);
     $("#data_list").resetSelection();
-    if(hidePass)
+    if(loadType == 'edit_pass')
     {
-      $('#hide_pass').attr('name', '');
-      $('#hide_pass_c').attr('name', '');
+      $("#email").css("display","none");
+      $("#pass").css("display","table-row");
+      $("#pass_c").css("display","table-row");
+      $("#roles").css("display","none");
+      $('#hide_email').attr('name', '');
     }
     else
     {
-      $("#pass").css("display","table-row");
-      $("#pass_c").css("display","table-row");
+      uncheckRoles('enabled');
+      $("#user_email").removeAttr('disabled');
+      $("#user_email").val(email);
+      $("#roles").css("display","block");
+      if(loadType == 'new')
+      {
+        $("#pass").css("display","table-row");
+        $("#pass_c").css("display","table-row");
+      }
+      else
+      {
+        $('#hide_pass').attr('name', '');
+        $('#hide_pass_c').attr('name', '');
+      }
     }
-    $("#roles").css("display","block");
     <% for role in Role.find(:all) %>
       $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
         $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
@@ -62,6 +73,7 @@
   {
     canSelect = true;
     changePass = false;
+    $("#email").css("display","table-row");
     $("#user_email").val("");
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $("#user_email").attr('disabled', 'disabled');
@@ -81,29 +93,29 @@
   <tr id="actions" align="right">
     <%= render 'form_index' %>
   </tr>
-  <tr align="left">
-    <td colspan="2">
+  <tr align="left" id="email" style="display: table-row">
+    <td colspan="3">
       email:
       <input id="user_email" type="text" disabled="true" value="" size="80"
              onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
   <tr align="left" id="pass" style="display: none">
-    <td colspan="2">
+    <td colspan="3">
       password:
       <input id="user_pass" type="password" value="" size="76"
              onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
   <tr align="left" id="pass_c" style="display: none">
-    <td colspan="2">
+    <td colspan="3">
       password confirmation:
       <input id="user_pass_c" type="password" value="" size="64"
              onkeypress="$('#save_user').removeAttr('disabled');" />
     </td>
   </tr>
   <tr id="roles" style="display: none">
-    <td colspan="2">
+    <td colspan="3">
       <p>Roles</p>
       <% for role in Role.find(:all) %>
         <div>

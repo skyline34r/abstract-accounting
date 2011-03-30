@@ -25,8 +25,11 @@ module UsersHelper
       {
         $('#user_email').val($('#data_list').getCell(cell, 'email'));
         $('#change_user').removeAttr('disabled');
+        $('#change_user_pass').removeAttr('disabled');
         $('#roles').css('display','block');
         $('#change_user').parent().parent().attr('action',
+            '/users/' + cell + '/edit');
+        $('#change_user_pass').parent().parent().attr('action',
             '/users/' + cell + '/edit');
         uncheckRoles();
         var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
