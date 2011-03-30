@@ -82,7 +82,8 @@
       <% for i in 0..@project_pages.count-1 %>
         <p>
           <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
-                :disabled => true, :name => @project_pages[i] %>
+                :disabled => true, :name => @project_pages[i],
+                :onchange => "$('#save_role').removeAttr('disabled');"%>
           <%= @project_pages[i] %>
         </p>
       <% end %>
