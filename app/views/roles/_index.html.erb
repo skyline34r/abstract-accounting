@@ -1,5 +1,7 @@
 <script type="text/javascript">
   var canSelect = true;
+  var name = '';
+  var rolePages = '';
   function sendDataRole()
   {
     var pages = new Array();
@@ -17,6 +19,8 @@
   }
   function viewIndexForm()
   {
+    name = '';
+    rolePages = '';
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $('#data_list').trigger('reloadGrid');
     $('#pages').css('display','none');
@@ -26,9 +30,20 @@
   }
   function onReset()
   {
-    $('#role_name').val('');
+    $('#role_name').val(name);
     $('#save_role').attr('disabled','disabled');
-    uncheckPages();
+    if(rolePages != '')
+    {
+      uncheckPages('enabled');
+    }
+    else
+    {
+      uncheckPages();
+    }
+    for(var i=0; i<rolePages.length; i++)
+    {
+      $('[name=' + rolePages[i] + ']').attr('checked', 'checked');
+    }
   }
   function uncheckPages(enabled)
   {
@@ -46,8 +61,8 @@
   function viewActionForm(nameValue, pages)
   {
     canSelect = false;
-    var name = nameValue;
-    var rolePages = pages;
+    name = nameValue;
+    rolePages = pages;
     uncheckPages('enabled');
     $('#role_name').removeAttr('disabled');
     $('#role_name').val(name);
