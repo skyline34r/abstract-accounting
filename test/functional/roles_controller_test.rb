@@ -25,6 +25,14 @@ class RolesControllerTest < ActionController::TestCase
       'Role not saved'
   end
 
+  test "should update role" do
+    xml_http_request :put, :update, :id => roles(:operator).id,
+      :role => { :name => "t_oper"}
+    assert_response :success
+    assert_equal 't_oper', Role.find(roles(:operator).id).name,
+      'Role not edited'
+  end
+
   test "should get view of roles" do
     xml_http_request :get, :view
     assert_response :success

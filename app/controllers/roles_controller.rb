@@ -31,6 +31,13 @@ class RolesController < ApplicationController
     end
   end
 
+  def update
+    @role = Role.find(params[:id])
+    if @role.update_attributes(params[:role])
+      render :action => "edit"
+    end
+  end
+
   def project_pages
     [ "Entity" , "Asset", "Money", "Deal", "Fact", "Chart", "Quote", "Balance",
       "GeneralLedger", "Transcript" ]
