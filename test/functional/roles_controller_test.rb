@@ -12,6 +12,11 @@ class RolesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should get edit role" do
+    xml_http_request :get, :edit, :id => roles(:operator).id
+    assert_response :success
+  end
+  
   test "should create role" do
     assert_difference('Role.count') do
        xml_http_request :post, :create, :role => { :name => "admin" }

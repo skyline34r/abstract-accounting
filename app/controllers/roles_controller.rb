@@ -20,6 +20,10 @@ class RolesController < ApplicationController
     @role = Role.new
   end
 
+  def edit
+    @role = Role.find(params[:id])
+  end
+
   def create
     @role = Role.new(params[:role])
     if !@role.save
