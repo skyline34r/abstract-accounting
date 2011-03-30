@@ -1,1 +1,2 @@
- 
+$("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+viewActionForm(unescape($("#hide_name").val()), '<%=@role.pages%>'.split(','));
