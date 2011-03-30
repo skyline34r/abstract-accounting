@@ -33,7 +33,7 @@ class RolesController < ApplicationController
 
   def update
     @role = Role.find(params[:id])
-    if @role.update_attributes(params[:role])
+    if !@role.update_attributes(params[:role])
       render :action => "edit"
     end
   end
