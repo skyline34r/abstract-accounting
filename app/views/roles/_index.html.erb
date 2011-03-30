@@ -43,6 +43,21 @@
       }
     }
   }
+  function viewActionForm(nameValue, pages)
+  {
+    canSelect = false;
+    var name = nameValue;
+    var rolePages = pages;
+    uncheckPages('enabled');
+    $('#role_name').removeAttr('disabled');
+    $('#role_name').val(name);
+    $('#data_list').resetSelection();
+    for(var i=0; i<rolePages.length; i++)
+    {
+      $('[name=' + rolePages[i] + ']').attr('checked', 'checked');
+    }
+    $('#pages').css('display','block');
+  }
 </script>
 
 <%= raw(roles_jqgrid) %>
