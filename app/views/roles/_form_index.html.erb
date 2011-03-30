@@ -2,5 +2,6 @@
   <%= button_to "new", new_role_path, :method => :get, :remote => true %>
 </td>
 <td style="width: 45px">
-  <input type="button" disabled="true" value="change"/>
+  <%= button_to "change", edit_role_path(0), :id => 'change_role',
+      :method => :get, :remote => true, :disabled => true %>
 </td>

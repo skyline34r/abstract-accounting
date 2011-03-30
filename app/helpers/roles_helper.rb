@@ -24,6 +24,9 @@ module RolesHelper
       :onSelectRow => "function(cell)
       {
         $('#role_name').val($('#data_list').getCell(cell, 'name'));
+        $('#change_role').removeAttr('disabled');
+        $('#change_role').parent().parent().attr('action',
+            '/roles/' + cell + '/edit');
         uncheckPages();
         var pages = $('#data_list').getCell(cell, 'pages').split(',');
         for(var i=0; i<pages.length; i++)
