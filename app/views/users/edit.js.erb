@@ -1,2 +1,3 @@
 $("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
-viewActionForm(unescape($("#hide_email").val()));
+if(changePass) viewActionForm(unescape($("#hide_email").val()), true);
+  else viewActionForm(unescape($("#hide_email").val()), false);

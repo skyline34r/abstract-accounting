@@ -1,6 +1,7 @@
 <script type="text/javascript">
   var email = '';
   var canSelect = true;
+  var changePass;
   function uncheckRoles(enabled)
   {
     <% for role in Role.find(:all) %>
@@ -33,7 +34,7 @@
     $('#save_user').attr('disabled','disabled');
     uncheckRoles('enabled');
   }
-  function viewActionForm(emailValue)
+  function viewActionForm(emailValue, hidePass)
   {
     canSelect = false;
     email = emailValue;
@@ -41,8 +42,16 @@
     $("#user_email").removeAttr('disabled');
     $("#user_email").val(email);
     $("#data_list").resetSelection();
-    $("#pass").css("display","table-row");
-    $("#pass_c").css("display","table-row");
+    if(hidePass)
+    {
+      $('#hide_pass').attr('name', '');
+      $('#hide_pass_c').attr('name', '');
+    }
+    else
+    {
+      $("#pass").css("display","table-row");
+      $("#pass_c").css("display","table-row");
+    }
     $("#roles").css("display","block");
     <% for role in Role.find(:all) %>
       $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
@@ -52,6 +61,7 @@
   function viewIndexFrom()
   {
     canSelect = true;
+    changePass = false;
     $("#user_email").val("");
     $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
     $("#user_email").attr('disabled', 'disabled');
