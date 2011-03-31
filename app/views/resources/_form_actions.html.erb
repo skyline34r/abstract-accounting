@@ -30,11 +30,11 @@
   {
     if($('#resource_type_a').attr('checked'))
     {
-      $.ajax({url: '<%= new_money_resources_path %>'})
+      location.hash = '#resources/new_money';
     }
     else
     {
-      $.ajax({url: '<%= new_asset_resources_path %>'})
+      location.hash = '#resources/new_asset';
     }
   }
   function onReset()
@@ -55,7 +55,7 @@
   <tr align="right">
     <td>
       <input name="cancel" type="button" value="cancel"
-        onclick="onCancel();"/>
+        onclick="location.hash = '#resources'"/>
       <input name="reset" type="button" value="reset"
         onclick="onReset();"/>
     </td>
