@@ -4,7 +4,8 @@
   });
 
   $('FORM').live('submit', function() {
-    alert($(this).attr('action'));
+    location.hash = $(this).attr('action').substr(1, $(this).attr('action').length);
+    return false;
   });
 </script>
 
