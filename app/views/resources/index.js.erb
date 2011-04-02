@@ -1,2 +1,7 @@
-$('#body').html('<%= escape_javascript(render :partial => 'resources/index' ) %>');
-document.title = "Abstract::Resource";
+if(!crossPage.length) {
+  $("#body").html("<%= escape_javascript(render :partial => 'resources/index') %>");
+  document.title = "Abstract::Resource";
+} else {
+  $("#" + crossPage + "_page_selection").html("<%= escape_javascript(render :partial =>
+                                                     'resources/index') %>");
+}

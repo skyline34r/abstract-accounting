@@ -1,14 +1,15 @@
 <script type="text/javascript">
   var canSelectResource = true;
-  var selId = 0;
+  var selResId = 0;
   var moneyCode = "";
   var resourceTag = "";
 
-  function showResourceActionForm(resType)
+  function showResourceActionForm(resType, actionType)
   {
     if(resType == "asset") {
       $("#div_money_code").css("display","none");
       moneyCode = "";
+      $("#resource_type").removeAttr("checked");
     } else {
       $("#div_money_code").css("display","block");
       moneyCode = unescape($("#hide_money_code").val());
@@ -17,7 +18,7 @@
     $("#money_code").val(moneyCode);
     $("#resource_tag").val(resourceTag);
     $("#resource_tag").removeAttr("disabled");
-    $("#resource_type").removeAttr("disabled");
+    if(actionType == "new") $("#resource_type").removeAttr("disabled");
     $("#money_code").removeAttr("disabled");
     $("#resources_list").resetSelection();
     canSelectResource = false;
@@ -35,7 +36,6 @@
     $("#money_code").attr("disabled","disabled");
     $("#resources_list").trigger("reloadGrid");
   }
-
   function sendAsset()
   {
     $("#hide_asset_tag").val(escape($("#resource_tag").val()));
@@ -48,14 +48,13 @@
   function onResetResource()
   {
      $("#resource_tag").val(resourceTag);
-     $("#resource_code").val(moneyCode);
+     $("#money_code").val(moneyCode);
      $("#save_resource").attr("disabled","disabled");
   }
   function onCancelResource()
   {
-     canSelectResource = true;
-     $("#resource_actions").html("<%#= escape_javascript(render :partial => 'resources/form_index') %>");
-     $("#resources_list").resetSelection();
+    location.hash = "#resources";
+    if(crossPage.length) showResourceIndexForm();
   }
   function changeResourceType()
   {
