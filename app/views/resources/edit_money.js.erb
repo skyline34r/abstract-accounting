@@ -1,5 +1,5 @@
 $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_actions') %>");
 $("#resource_action").html("<%= escape_javascript(render :partial => 'resources/form_action_money') %>");
-showResourceActionForm("money");
+showResourceActionForm("money", "edit");
 $("#resource_type").attr("checked","checked");
 $("#save_resource").parent().attr("action", "resources/" + selResId + "/update_money");

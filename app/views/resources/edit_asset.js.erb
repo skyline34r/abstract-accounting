@@ -1,4 +1,4 @@
 $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_actions') %>");
 $("#resource_action").html("<%= escape_javascript(render :partial => 'form_action_asset' ) %>");
-showResourceActionForm("asset");
+showResourceActionForm("asset", "edit");
 $("#save_resource").parent().attr("action", "resources/" + selResId + "/update_asset");
