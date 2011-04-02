@@ -8,31 +8,33 @@
       $('#deal_rate').val(1/$('#deal_rate').val());
     }
   }
-  function choiseEntity()
+
+  
+  function dealChoiseEntity()
   {
-    $('#deals_div').css('display','none');
-    $('#frame_div').css('display','block');
-    $('#frame').attr('src', 'entities');
-    $('#titleFrame').html('Entities');
-    $('#submit').click(function() {
-      var selRow = $('#frame').contents().find('#entities_list')
-                              .getGridParam('selrow');
+    crossPage = true;
+    $("#deals_div").css("display","none");
+    $("#deal_p_s_controls").css("display","block");
+    $("#deal_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
+    $("#deal_submit").click(function() {
+      var selRow = $("#entity_list").getGridParam("selrow");
       if (selRow != null)
       {
-        $('#entity_tag').val(selRow);
-        $('#hide_deal_entity_id').val($('#frame').contents().find('#entities_list')
-                                                 .getCell(selRow, 'id'));
-        $('#deals_div').css('display','block');
-        $('#frame_div').css('display','none');
-        $('#frame').attr('src', '');
+        $("#hide_deal_entity_id").val(selRow);
+        $("#deal_entity_tag").val($("#entity_list").getCell(selRow, "tag"));
+        showDealPage();
       }
     });
   }
-  function discardChoise()
+  function showDealPage()
   {
-    $('#deals_div').css('display','block');
-    $('#frame_div').css('display','none');
+    $("#deals_div").css("display","block");
+    $("#deal_p_s_controls").css("display","none");
+    $("#deal_page_selection").html("");
+    crossPage = true;
   }
+
+
   function choiseResource(type)
   {
     $('#deals_div').css('display','none');
@@ -102,12 +104,12 @@
     $('#dir_0').attr('checked', 'checked');
     $('#deal_tag').val('');
     $('#deal_tag').removeAttr('disabled');
-    $('#entity_tag').val('');
-    $('#entity_choose').removeAttr('disabled');
-    $('#give_tag').val('');
-    $('#give_choose').removeAttr('disabled');
-    $('#take_tag').val('');
-    $('#take_choose').removeAttr('disabled');
+    $('#deal_entity_tag').val('');
+    $('#deal_entity_choose').removeAttr('disabled');
+    $('#deal_give_tag').val('');
+    $('#deal_give_choose').removeAttr('disabled');
+    $('#deal_take_tag').val('');
+    $('#deal_take_choose').removeAttr('disabled');
     $('#deal_rate').val('');
     $('#deal_rate').removeAttr('disabled');
     $('#hide_deal_tag').val('');
@@ -118,14 +120,14 @@
     $('#hide_deal_take_id').val('');
     $('#hide_deal_take_type').val('');
   }
-  function onCancel()
+  function onCancelDeal()
   {
     $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
     $("#deals_list").trigger("reloadGrid");
     disabledElements();
     canSelect = true;
   }
-  function onReset()
+  function onResetDeal()
   {
     enabledElements();
     $('#save_deal').attr('disabled','disabled');
@@ -139,7 +141,7 @@
   <div id="deals_pager"></div>
 
   <table>
-    <tr id="actions" align="right">
+    <tr id="deal_actions" align="right">
       <%= render 'form_index' %>
     </tr>
     <tr align="left">
@@ -152,9 +154,9 @@
     <tr align="left">
       <td colspan="2">
         entity:
-        <input id="entity_tag" type="text" disabled="true" value="" size="72" />
-        <input id="entity_choose" type="button" value="choose" disabled="true"
-               onclick="choiseEntity();"/>
+        <input id="deal_entity_tag" type="text" disabled="true" value="" size="72" />
+        <input id="deal_entity_choose" type="button" value="choose" disabled="true"
+               onclick="dealChoiseEntity();"/>
       </td>
     </tr>
     <tr>
@@ -163,9 +165,9 @@
           <tr align="left">
             <td align="left">
               <br> We GIVE </br>
-              <br> <input id="give_tag" type="text" disabled="true" value=""
+              <br> <input id="deal_give_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
-              <br> <input id="give_choose" type="button" value="choose"
+              <br> <input id="deal_give_choose" type="button" value="choose"
                           disabled="true" onclick="choiseResource('give');"/> </br>
             </td>
             <td align="center">
@@ -179,9 +181,9 @@
             </td>
             <td align="right">
               <br> We TAKE </br>
-              <br> <input id="take_tag" type="text" disabled="true" value=""
+              <br> <input id="deal_take_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
-              <br> <input id="take_choose" type="button" value="choose"
+              <br> <input id="deal_take_choose" type="button" value="choose"
                           disabled="true" onclick="choiseResource('take');"/> </br>
             </td>
           </tr>
@@ -190,6 +192,20 @@
     </tr>
   </table>
 </div>
+
+<table id="deal_p_s_controls" style="display: none">
+    <tr align="right">
+      <td>
+        <input type="button" value="discard" onclick="showDealPage();"/>
+        <input type="button" id="deal_submit" value="submit" onclick=""/>
+      </td>
+    </tr>
+    <tr id="deal_page_selection">
+    </tr>
+</table>
+
+
+
 <div id="frame_div" style="display: none">
   <table>
     <tr align="right">

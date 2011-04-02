@@ -1,8 +1,10 @@
 <script type="text/javascript">
-  var crossPage = false;
+  var crossPage = "";
 
   $(window).bind("hashchange", function() {
-    if(!crossPage) $.ajax({url: location.hash.substr(1, location.hash.length)});
+    if(!crossPage.length) {
+      $.ajax({url: location.hash.substr(1, location.hash.length)});
+    }
   });
 
   $('FORM').live('submit', function() {
