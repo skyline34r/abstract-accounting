@@ -26,22 +26,22 @@ module DealsHelper
       :sortname => 'tag',
       :sortorder => 'asc',
       :viewrecords => true,
-      :onSelectRow => "function(cell)
+      :onSelectRow => 'function(cell)
       {
-        $('#dir_0').removeAttr('disabled');
-        $('#dir_1').removeAttr('disabled');
-        $('#deal_tag').val($('#deals_list').getCell(cell, 'tag'));
-        $('#entity_tag').val($('#deals_list').getCell(cell, 'entity'));
-        $('#give_tag').val($('#deals_list').getCell(cell, 'give'));
-        $('#take_tag').val($('#deals_list').getCell(cell, 'take'));
-        $('#deal_rate').val($('#deals_list').getCell(cell, 'rate'));
-        $('#dir_0').attr('checked', 'checked');
-      }".to_json_var,
-      :beforeSelectRow =>	"function()
+        $("#dir_0").removeAttr("disabled");
+        $("#dir_1").removeAttr("disabled");
+        $("#deal_tag").val($("#deals_list").getCell(cell, "tag"));
+        $("#deal_entity_tag").val($("#deals_list").getCell(cell, "entity"));
+        $("#deal_give_tag").val($("#deals_list").getCell(cell, "give"));
+        $("#deal_take_tag").val($("#deals_list").getCell(cell, "take"));
+        $("#deal_rate").val($("#deals_list").getCell(cell, "rate"));
+        $("#dir_0").attr("checked","checked");
+      }'.to_json_var,
+      :beforeSelectRow =>	'function()
       {
-        if (canSelect) return true;
+        if(canSelectDeal) return true;
         return false;
-      }".to_json_var
+      }'.to_json_var
     }]
 
     jqgrid_api 'deals_list', grid, options

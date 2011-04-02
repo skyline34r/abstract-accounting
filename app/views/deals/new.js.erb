@@ -1,4 +1,4 @@
-$("#deal_actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+$("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_actions' ) %>");
 enabledElements();
-canSelect = false;
-$('#deals_list').resetSelection();
+canSelectDeal = false;
+$("#deals_list").resetSelection();

@@ -1,18 +1,16 @@
 <script type="text/javascript">
-  var tempTag = "";
-  var canSelect = true;
-  function changeDirRate()
+  var canSelectDeal = true;
+
+  function changeDealDirRate()
   {
-    if($('#deal_rate').val() != '')
+    if($("#deal_rate").val() != "")
     {
-      $('#deal_rate').val(1/$('#deal_rate').val());
+      $("#deal_rate").val(1/$("#deal_rate").val());
     }
   }
-
-  
   function dealChoiseEntity()
   {
-    crossPage = 'deal';
+    crossPage = "deal";
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
     $("#deal_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
@@ -22,6 +20,7 @@
       {
         $("#hide_deal_entity_id").val(selRow);
         $("#deal_entity_tag").val($("#entity_list").getCell(selRow, "tag"));
+        crossPage = "";
         showDealPage();
       }
     });
@@ -36,7 +35,7 @@
   }
   function dealChoiseResource(type)
   {
-    crossPage = 'deal';
+    crossPage = "deal";
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
     $.ajax({url: "resources"});
@@ -48,82 +47,72 @@
         $("#deal_" + type + "_tag").val($("#resources_list").getCell(selRow, "tag"));
         $("#hide_deal_" + type + "_id").val($("#resources_list")
                                                 .getCell(selRow, "id"));
-        $('#hide_deal_' + type + '_type').val($("#resources_list")
+        $("#hide_deal_" + type + "_type").val($("#resources_list")
                                                 .getCell(selRow, "type"));
+        crossPage = "";
         showDealPage();
       }
     });
   }
-  
-  function escape(text)
+  function beforeDealSave()
   {
-    return text.replace(/&/g, '&amp;')
-               .replace(/</g, '&lt;')
-               .replace(/>/g, '&gt;')
-               .replace(/"/g, '&quot;');
-  }
-  function beforeSave()
-  {
-    $('#hide_deal_tag').val(escape($('#deal_tag').val()));
-    if ($('#dir_1').attr('checked') && ($('#deal_rate').val() != ''))
+    $("#hide_deal_tag").val(escape($("#deal_tag").val()));
+    if ($("#dir_1").attr("checked") && ($("#deal_rate").val() != ""))
     {
-      $('#hide_deal_rate').val(1/$('#deal_rate').val());
+      $("#hide_deal_rate").val(1/$("#deal_rate").val());
     }
     else
     {
-      $('#hide_deal_rate').val(escape($('#deal_rate').val()));
+      $("#hide_deal_rate").val(escape($("#deal_rate").val()));
     }
   }
   function disabledElements()
   {
-    $('#dir_0').attr('checked', 'checked');
-    $('#dir_0').attr('disabled', 'disabled');
-    $('#dir_1').attr('disabled', 'disabled');
-    $('#deal_tag').val('');
-    $('#deal_tag').attr('disabled', 'disabled');
-    $('#entity_tag').val('');
-    $('#entity_choose').attr('disabled', 'disabled');
-    $('#give_tag').val('');
-    $('#give_choose').attr('disabled', 'disabled');
-    $('#take_tag').val('');
-    $('#take_choose').attr('disabled', 'disabled');
-    $('#deal_rate').val('');
-    $('#deal_rate').attr('disabled', 'disabled');
+    $("#dir_0").attr("checked", "checked");
+    $("#dir_0").attr("disabled", "disabled");
+    $("#dir_1").attr("disabled", "disabled");
+    $("#deal_tag").val("");
+    $("#deal_tag").attr("disabled", "disabled");
+    $("#deal_entity_tag").val("");
+    $("#deal_entity_choose").removeAttr("disabled");
+    $("#deal_give_tag").val("");
+    $("#deal_give_choose").attr("disabled","disabled");
+    $("#deal_take_tag").val("");
+    $("#deal_take_choose").attr("disabled","disabled");
+    $("#deal_rate").val("");
+    $("#deal_rate").attr("disabled","disabled");
   }
   function enabledElements()
   {
-    $('#dir_0').removeAttr('disabled');
-    $('#dir_1').removeAttr('disabled');
-    $('#dir_0').attr('checked', 'checked');
-    $('#deal_tag').val('');
-    $('#deal_tag').removeAttr('disabled');
-    $('#deal_entity_tag').val('');
-    $('#deal_entity_choose').removeAttr('disabled');
-    $('#deal_give_tag').val('');
-    $('#deal_give_choose').removeAttr('disabled');
-    $('#deal_take_tag').val('');
-    $('#deal_take_choose').removeAttr('disabled');
-    $('#deal_rate').val('');
-    $('#deal_rate').removeAttr('disabled');
-    $('#hide_deal_tag').val('');
-    $('#hide_deal_rate').val('');
-    $('#hide_deal_entity_id').val('');
-    $('#hide_deal_give_id').val('');
-    $('#hide_deal_give_type').val('');
-    $('#hide_deal_take_id').val('');
-    $('#hide_deal_take_type').val('');
+    $("#dir_0").removeAttr("disabled");
+    $("#dir_1").removeAttr("disabled");
+    $("#dir_0").attr("checked","checked");
+    $("#deal_tag").val("");
+    $("#deal_tag").removeAttr("disabled");
+    $("#deal_entity_tag").val("");
+    $("#deal_entity_choose").removeAttr("disabled");
+    $("#deal_give_tag").val("");
+    $("#deal_give_choose").removeAttr("disabled");
+    $("#deal_take_tag").val("");
+    $("#deal_take_choose").removeAttr("disabled");
+    $("#deal_rate").val("");
+    $("#deal_rate").removeAttr("disabled");
+    $("#hide_deal_tag").val("");
+    $("#hide_deal_rate").val("");
+    $("#hide_deal_entity_id").val("");
+    $("#hide_deal_give_id").val("");
+    $("#hide_deal_give_type").val("");
+    $("#hide_deal_take_id").val("");
+    $("#hide_deal_take_type").val("");
   }
   function onCancelDeal()
   {
-    $("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
-    $("#deals_list").trigger("reloadGrid");
-    disabledElements();
-    canSelect = true;
+    location.hash = "#deals";
   }
   function onResetDeal()
   {
     enabledElements();
-    $('#save_deal').attr('disabled','disabled');
+    $("#save_deal").attr("disabled","disabled");
   }
 </script>
 
@@ -166,9 +155,9 @@
             <td align="center">
               <br>rate</br>
               <br> <input type="radio" id="dir_0" name="direction" checked="true"
-                          disabled="true" onchange="changeDirRate();"/> --> </br>
+                          disabled="true" onchange="changeDealDirRate();"/> --> </br>
               <br> <input type="radio" id="dir_1" name="direction"
-                          disabled="true" onchange="changeDirRate();"/> <-- </br>
+                          disabled="true" onchange="changeDealDirRate();"/> <-- </br>
               <br> <input id="deal_rate" type="text" disabled="true" value=""
                           size="20" /> </br>
             </td>
@@ -196,27 +185,3 @@
     <tr id="deal_page_selection">
     </tr>
 </table>
-
-
-
-<div id="frame_div" style="display: none">
-  <table>
-    <tr align="right">
-      <td>
-        <input type="button" id="discard" value="discard" onclick="discardChoise();"/>
-        <input type="button" id="submit" value="submit" onclick=""/>
-      </td>
-    </tr>
-    <tr>
-      <td id="titleFrame">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <iframe id="frame" src="" width=830 height=500 scrolling=no
-                noresize border=0 frameborder=no>
-        </iframe>
-      </td>
-    </tr>
-  </table>
-</div>
