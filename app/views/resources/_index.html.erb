@@ -1,8 +1,46 @@
+<script type="text/javascript">
+  var selId = 0;
+  function changeResourceType()
+  {
+    if($("#resource_type").attr("checked"))
+    {
+      location.hash = "#resources/new_money";
+    }
+    else
+    {
+      location.hash = "#resources/new_asset";
+    }
+  }
+</script>
+
 <%= raw(resources_jqgrid) %>
 
 <table id="resources_list"></table>
 <div id="resources_pager"></div>
 
-<div id="actions">
-  <%= render 'form_index' %>
-</div>
+<table>
+  <tr id="resource_actions" align="right">
+    <%= render 'resources/form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      <div style="float:left">
+        monetary:
+        <input id="resource_type" type="checkbox" onchange="changeResourceType();"
+               disabled="true"/>
+      </div>
+      <div id="div_money_code" style="float:right; display:none">
+        code:
+        <input id="money_code" type="text" value="" size="20"
+               onkeypress="$('#save_resource').removeAttr('disabled');"/>
+      </div>
+    </td>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      tag:
+      <input id="resource_tag" type="text" value="" size="83" disabled="true"
+             onkeypress="$('#save_resource').removeAttr('disabled');"/>
+    </td>
+  </tr>
+</table>

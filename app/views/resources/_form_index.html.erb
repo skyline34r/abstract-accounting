@@ -1,37 +1,9 @@
-<script type="text/javascript">
-  var canSelect = true;
-  var selId = 0;
-  $("#resources_list").trigger("reloadGrid");
-</script>
-
-<table>
-  <tr align="right">
-    <td>
-      <%= button_to "new", new_asset_resources_path, :method => :get,
-          :remote => true %>
-    </td>
-    <td width="70">
-      <%= button_to "change", edit_asset_resource_path(0),
-          :id => 'change_resource', :method => :get, :remote => true,
-          :disabled => true %>
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      <div style="float: left">
-        monetary:
-        <input id="resource_type" type="checkbox" disabled="true"/>
-      </div>
-      <div id="index_div_code" style="float: right; display: none">
-        code:
-        <input id="resource_code" type="text" value="" size="20" disabled="true" />
-      </div>
-    </td>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      tag:
-      <input id="resource_tag" type="text" disabled="true" value="" size="83" />
-    </td>
-  </tr>
-</table>
+<td>
+  <%= button_to "new", new_asset_resources_path, :method => :get,
+      :remote => true %>
+</td>
+<td style="width: 45px">
+  <%= button_to "change", edit_asset_resource_path(0),
+      :id => "change_resource", :method => :get, :remote => true,
+      :disabled => true %>
+</td>
