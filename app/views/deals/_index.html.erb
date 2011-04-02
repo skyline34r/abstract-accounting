@@ -12,7 +12,7 @@
   
   function dealChoiseEntity()
   {
-    crossPage = true;
+    crossPage = 'deal';
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
     $("#deal_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
@@ -31,37 +31,30 @@
     $("#deals_div").css("display","block");
     $("#deal_p_s_controls").css("display","none");
     $("#deal_page_selection").html("");
+    $("#deal_submit").unbind("click");
     crossPage = true;
   }
-
-
-  function choiseResource(type)
+  function dealChoiseResource(type)
   {
-    $('#deals_div').css('display','none');
-    $('#frame_div').css('display','block');
-    $('#frame').attr('src', 'resources');
-    $('#titleFrame').html('Resources');
-    $('#submit').click(function() {
-      var selRow = $('#frame').contents().find('#resources_list')
-                              .getGridParam('selrow');
+    crossPage = 'deal';
+    $("#deals_div").css("display","none");
+    $("#deal_p_s_controls").css("display","block");
+    $.ajax({url: "resources"});
+    
+    $("#deal_submit").click(function() {
+      var selRow = $("#resources_list").getGridParam("selrow");
       if (selRow != null)
       {
-        $('#' + type + '_tag').val($('#frame').contents()
-                                              .find('#resources_list')
-                                              .getCell(selRow, 'tag'));
-        $('#hide_deal_' + type + '_id').val($('#frame').contents()
-                                              .find('#resources_list')
-                                              .getCell(selRow, 'id'));
-        $('#hide_deal_' + type + '_type').val($('#frame').contents()
-                                              .find('#resources_list')
-                                              .getCell(selRow, 'type'));
-        $('#deals_div').css('display','block');
-        $('#frame_div').css('display','none');
-        $('#frame').attr('src', '');
-        $("#submit").unbind("click");
+        $("#deal_" + type + "_tag").val($("#resources_list").getCell(selRow, "tag"));
+        $("#hide_deal_" + type + "_id").val($("#resources_list")
+                                                .getCell(selRow, "id"));
+        $('#hide_deal_' + type + '_type').val($("#resources_list")
+                                                .getCell(selRow, "type"));
+        showDealPage();
       }
     });
   }
+  
   function escape(text)
   {
     return text.replace(/&/g, '&amp;')
@@ -168,7 +161,7 @@
               <br> <input id="deal_give_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
               <br> <input id="deal_give_choose" type="button" value="choose"
-                          disabled="true" onclick="choiseResource('give');"/> </br>
+                          disabled="true" onclick="dealChoiseResource('give');"/> </br>
             </td>
             <td align="center">
               <br>rate</br>
@@ -184,7 +177,7 @@
               <br> <input id="deal_take_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
               <br> <input id="deal_take_choose" type="button" value="choose"
-                          disabled="true" onclick="choiseResource('take');"/> </br>
+                          disabled="true" onclick="dealChoiseResource('take');"/> </br>
             </td>
           </tr>
         </table>
