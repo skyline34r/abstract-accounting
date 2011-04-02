@@ -18,10 +18,24 @@
     $("#resource_tag").val(resourceTag);
     $("#resource_tag").removeAttr("disabled");
     $("#resource_type").removeAttr("disabled");
+    $("#money_code").removeAttr("disabled");
     $("#resources_list").resetSelection();
     canSelectResource = false;
   }
-  
+  function showResourceIndexForm()
+  {
+    canSelectResource = true;
+    $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");
+    moneyCode = "";
+    resourceTag = "";
+    $("#money_code").val("");
+    $("#resource_tag").val("");
+    $("#resource_tag").attr("disabled","disabled");
+    $("#resource_type").attr("disabled","disabled");
+    $("#money_code").attr("disabled","disabled");
+    $("#resources_list").trigger("reloadGrid");
+  }
+
   function sendAsset()
   {
     $("#hide_asset_tag").val(escape($("#resource_tag").val()));
@@ -74,7 +88,7 @@
       </div>
       <div id="div_money_code" style="float:right; display:none">
         code:
-        <input id="money_code" type="text" value="" size="20"
+        <input id="money_code" type="text" value="" size="20" disabled="true"
                onkeypress="$('#save_resource').removeAttr('disabled');"/>
       </div>
     </td>
