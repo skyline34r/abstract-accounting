@@ -1,41 +1,46 @@
 <script type="text/javascript">
-  var canSelect = true;
+  var canSelectEntity = true;
   var tagEntity = "";
   function sendTagEntity()
   {
-    $('#hide_entity_tag').val(escape($('#entity_tag').val()));
+    $("#hide_entity_tag").val(escape($("#entity_tag").val()));
   }
-  function showIndexForm()
+  function showEntityIndexForm()
   {
-    canSelect = true;
-    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
-    $('#entity_tag').attr('disabled', 'disabled');
-    $('#data_list').trigger('reloadGrid');
-    $('#entity_tag').val('');
+    canSelectEntity = true;
+    $("#entity_actions").html("<%= escape_javascript(render :partial => 'entities/form_index') %>");
+    $("#entity_tag").attr("disabled","disabled");
+    $("#entity_list").trigger("reloadGrid");
+    $("#entity_tag").val("");
   }
-  function onReset()
+  function onCancelEntity()
   {
-    $('#entity_tag').val(tagEntity);
-    $('#save_entity').attr('disabled','disabled');
+    location.hash = "#entities";
+    if(crossPage) showEntityIndexForm();
   }
-  function showActionForm(tag)
+  function onResetEntity()
+  {
+    $("#entity_tag").val(tagEntity);
+    $("#save_entity").attr("disabled","disabled");
+  }
+  function showEntityActionForm(tag)
   {
     tagEntity = tag;
-    $('#entity_tag').val(tagEntity);
-    $('#entity_tag').removeAttr('disabled');
-    $('#data_list').resetSelection();
-    canSelect = false;
+    $("#entity_tag").val(tagEntity);
+    $("#entity_tag").removeAttr("disabled");
+    $("#entity_list").resetSelection();
+    canSelectEntity = false;
   }
 </script>
 
 <%= raw(entities_jqgrid) %>
 
-<table id="data_list"></table>
-<div id="data_pager"></div>
+<table id="entity_list"></table>
+<div id="entity_pager"></div>
 
 <table>
-  <tr id="actions" align="right">
-    <%= render 'form_index' %>
+  <tr id="entity_actions" align="right">
+    <%= render 'entities/form_index' %>
   </tr>
   <tr align="left">
     <td colspan="2">

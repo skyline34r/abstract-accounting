@@ -1,8 +1,8 @@
 <td>
   <input name="cancel" type="button" value="cancel"
-    onclick="location.hash = '#entities'"/>
+    onclick="onCancelEntity();"/>
   <input name="reset" type="button" value="reset"
-    onclick="onReset();"/>
+    onclick="onResetEntity();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@entity, :remote => true) do |f| %>

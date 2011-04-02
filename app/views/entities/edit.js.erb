@@ -1,2 +1,2 @@
-$('#actions').html('<%= escape_javascript(render :partial => 'form_actions' ) %>');
-showActionForm(unescape($('#hide_entity_tag').val()));
+$("#entity_actions").html("<%= escape_javascript(render :partial => 'entities/form_actions') %>");
+showEntityActionForm(unescape($("#hide_entity_tag").val()));
