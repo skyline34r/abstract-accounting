@@ -1,5 +1,30 @@
 <script type="text/javascript">
+  var canSelectResource = true;
   var selId = 0;
+  var moneyCode = "";
+  var resourceTag = "";
+  
+  function sendAsset()
+  {
+    $("#hide_asset_tag").val(escape($("#resource_tag").val()));
+  }
+  function sendMoney()
+  {
+    $("#hide_money_code").val(escape($("#money_code").val()));
+    $("#hide_money_tag").val(escape($("#resource_tag").val()));
+  }
+  function onResetResource()
+  {
+     $("#resource_tag").val(resourceTag);
+     $("#resource_code").val(moneyCode);
+     $("#save_resource").attr("disabled","disabled");
+  }
+  function onCancelResource()
+  {
+     canSelectResource = true;
+     $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");
+     $("#resources_list").resetSelection();
+  }
   function changeResourceType()
   {
     if($("#resource_type").attr("checked"))
