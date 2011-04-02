@@ -3,6 +3,24 @@
   var selId = 0;
   var moneyCode = "";
   var resourceTag = "";
+
+  function showResourceActionForm(resType)
+  {
+    if(resType == "asset") {
+      $("#div_money_code").css("display","none");
+      moneyCode = "";
+    } else {
+      $("#div_money_code").css("display","block");
+      moneyCode = unescape($("#hide_money_code").val());
+    }
+    resourceTag = unescape($("#hide_" + resType + "_tag").val());
+    $("#money_code").val(moneyCode);
+    $("#resource_tag").val(resourceTag);
+    $("#resource_tag").removeAttr("disabled");
+    $("#resource_type").removeAttr("disabled");
+    $("#resources_list").resetSelection();
+    canSelectResource = false;
+  }
   
   function sendAsset()
   {
@@ -22,7 +40,7 @@
   function onCancelResource()
   {
      canSelectResource = true;
-     $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");
+     $("#resource_actions").html("<%#= escape_javascript(render :partial => 'resources/form_index') %>");
      $("#resources_list").resetSelection();
   }
   function changeResourceType()
