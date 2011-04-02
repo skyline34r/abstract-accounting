@@ -23,32 +23,32 @@ module ResourcesHelper
       :sortname => 'tag',
       :sortorder => 'asc',
       :viewrecords => true,
-      :onSelectRow => "function(cell)
+      :onSelectRow => 'function(cell)
       {
-        $('#resource_tag').val($('#resources_list').getCell(cell, 'tag'));
-        $('#change_resource').removeAttr('disabled');
-        selId = $('#resources_list').getCell(cell, 'id');
-        if($('#resources_list').getCell(cell, 'type') == 'Asset')
+        $("#resource_tag").val($("#resources_list").getCell(cell, "tag"));
+        $("#change_resource").removeAttr("disabled");
+        selResId = $("#resources_list").getCell(cell, "id");
+        if($("#resources_list").getCell(cell, "type") == "Asset")
         {
-          $('#change_resource').parent().parent().attr('action',
-            '/resources/' + selId + '/edit_asset');
-          $('#resource_type').removeAttr('checked');
-          $('#index_div_code').css('display','none');
+          $("#change_resource").parent().parent().attr("action",
+            "/resources/" + selResId + "/edit_asset");
+          $("#resource_type").removeAttr("checked");
+          $("#div_money_code").css("display","none");
         }
         else
         {
-          $('#change_resource').parent().parent().attr('action',
-            '/resources/' + selId + '/edit_money');
-          $('#resource_type').attr('checked','checked');
-          $('#index_div_code').css('display','block');
-          $('#resource_code').val($('#resources_list').getCell(cell, 'code'));
+          $("#change_resource").parent().parent().attr("action",
+            "/resources/" + selResId + "/edit_money");
+          $("#resource_type").attr("checked","checked");
+          $("#div_money_code").css("display","block");
+          $("#money_code").val($("#resources_list").getCell(cell, "code"));
         }
-      }".to_json_var,
-      :beforeSelectRow =>	"function()
+      }'.to_json_var,
+      :beforeSelectRow =>	'function()
       {
-        if (canSelect) return true;
+        if(canSelectResource) return true;
         return false;
-      }".to_json_var
+      }'.to_json_var
     }]
 
     jqgrid_api 'resources_list', grid, options
