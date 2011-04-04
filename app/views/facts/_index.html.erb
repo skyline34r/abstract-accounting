@@ -1,58 +1,51 @@
 <script type="text/javascript">
 $(function() {
-  $('#fact_datepicker').datepicker();
+  $("#fact_datepicker").datepicker();
 });
-function chooseDeals(type)
+function factChooseDeal(type)
 {
-  $('#fact_main').css('display','none');
-  $('#frame_fact_div').css('display','block');
-  $('#frame').attr('src', 'deals');
-  $('#title_frame').html('Deals');
+  crossPage = "fact";
+  $("#fact_div").css("display","none");
+  $("#fact_p_s_controls").css("display","block");
+  $("#fact_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");
 
-  $('#submit').click(function() {
-    var selRow = $('#frame').contents().find('#deals_list')
-                                       .getGridParam('selrow');
+  $("#fact_submit").click(function() {
+    var selRow = $("#deals_list").getGridParam("selrow");
     if (selRow != null)
     {
-      $('#fact_' + type + '_btn').val($('#frame').contents().find('#deals_list')
-                                                  .getCell(selRow, 'tag'));
-      $('#hide_' + type + '_deal').val($('#frame').contents().find('#deals_list')
-                                                  .getCell(selRow, 'id'));
-      if(type == 'from')
-      {
-        $('#hide_resource_id').val($('#frame').contents().find('#deals_list')
-                                              .getCell(selRow, 'take.id'));
-        $('#hide_resource_type').val($('#frame').contents().find('#deals_list')
-                                              .getCell(selRow, 'take.type'));
-
+      $("#fact_" + type + "_btn").val($("#deals_list").getCell(selRow, "tag"));
+      $("#hide_fact_" + type + "_deal").val(selRow);
+      if(type == "from") {
+        $("#hide_fact_resource_id").val($("#deals_list").getCell(selRow, "take.id"));
+        $("#hide_fact_resource_type").val($("#deals_list").getCell(selRow, "take.type"));
       }
-      $('#fact_main').css('display','block');
-      $('#frame_fact_div').css('display','none');
-      $('#frame').attr('src', '');
-      $("#submit").unbind("click");
+      showFactPage();
     }
   });
 }
 function commitFact()
 {
-  var d = new Date($('#fact_datepicker').val());
-  $('#hide_fact_datepicker').val(d.toUTCString());
+  var d = new Date($("#fact_datepicker").val());
+  $("#hide_fact_datepicker").val(d.toUTCString());
 }
-function discardChoise()
+function showFactPage()
 {
-  $('#fact_main').css('display','block');
-  $('#frame_fact_div').css('display','none');
+  $("#fact_div").css("display","block");
+  $("#fact_p_s_controls").css("display","none");
+  $("#fact_page_selection").html("");
+  $("#fact_submit").unbind("click");
+  crossPage = "";
 }
 </script>
 
-<div id="fact_main">
+<div id="fact_div">
   <p>Transfer</p>
   <%= form_for(@fact, :remote => true) do |f| %>
     <%= f.hidden_field :day,           :id => "hide_fact_datepicker"%>
-    <%= f.hidden_field :from_deal_id,  :id => "hide_from_deal"%>
-    <%= f.hidden_field :to_deal_id,    :id => "hide_to_deal"%>
-    <%= f.hidden_field :resource_id,   :id => "hide_resource_id"%>
-    <%= f.hidden_field :resource_type, :id => "hide_resource_type"%>
+    <%= f.hidden_field :from_deal_id,  :id => "hide_fact_from_deal"%>
+    <%= f.hidden_field :to_deal_id,    :id => "hide_fact_to_deal"%>
+    <%= f.hidden_field :resource_id,   :id => "hide_fact_resource_id"%>
+    <%= f.hidden_field :resource_type, :id => "hide_fact_resource_type"%>
     <table>
       <tr>
         <td>
@@ -68,7 +61,7 @@ function discardChoise()
         </td>
         <td>
           <input type="button" id="fact_from_btn" value="click to choose"
-                 onclick="chooseDeals('from');"/>
+                 onclick="factChooseDeal('from');"/>
         </td>
         <td>
           <input type="text" id="fact_from_1" value="-" disabled="true"/>
@@ -81,7 +74,7 @@ function discardChoise()
         </td>
         <td>
           <input type="button" id="fact_to_btn" value="click to choose"
-                 onclick="chooseDeals('to');"/>
+                 onclick="factChooseDeal('to');"/>
         </td>
         <td>
           <input type="text" id="fact_to_1" value="-" disabled="true"/>
@@ -108,7 +101,7 @@ function discardChoise()
           value
         </td>
         <td>
-          <p id="value_text"></p>
+          <p id="fact_value_text"></p>
         </td>
       </tr>
       <tr>
@@ -116,14 +109,14 @@ function discardChoise()
           earnings
         </td>
         <td>
-          <p id="earnings_text"></p>
+          <p id="fact_earnings_text"></p>
         </td>
       </tr>
       <tr>
         <td>
         </td>
         <td>
-          <input type="button" id="reset" value="reset" style="visibility: hidden"/>
+          <input type="button" id="fact_reset" value="reset" style="visibility: hidden"/>
         </td>
       </tr>
 
@@ -131,24 +124,14 @@ function discardChoise()
 
   <% end %>
 </div>
-<div id="frame_fact_div" style="display: none">
-  <table>
+
+<table id="fact_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" id="discard" value="discard" onclick="discardChoise();"/>
-        <input type="button" id="submit" value="submit" onclick=""/>
+        <input type="button" value="discard" onclick="showFactPage();"/>
+        <input type="button" id="fact_submit" value="submit" onclick=""/>
       </td>
     </tr>
-    <tr>
-      <td id="title_frame">
-      </td>
+    <tr id="fact_page_selection">
     </tr>
-    <tr>
-      <td>
-        <iframe id="frame" src="" width=830 height=500 scrolling=no
-                noresize border=0 frameborder=no>
-        </iframe>
-      </td>
-    </tr>
-  </table>
-</div>
+</table>
