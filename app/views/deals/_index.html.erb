@@ -108,6 +108,12 @@
   function onCancelDeal()
   {
     location.hash = "#deals";
+    if(crossPage.length) {
+      $("#actions").html("<%= escape_javascript(render :partial => 'deals/form_index' ) %>");
+      $("#deals_list").trigger("reloadGrid");
+      disabledElements();
+      canSelectDeal = true;
+    }
   }
   function onResetDeal()
   {
@@ -124,7 +130,7 @@
 
   <table>
     <tr id="deal_actions" align="right">
-      <%= render 'form_index' %>
+      <%= render 'deals/form_index' %>
     </tr>
     <tr align="left">
       <td colspan="2">
