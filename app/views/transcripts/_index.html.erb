@@ -1,116 +1,112 @@
 <script type="text/javascript">
-$(function() {
-  var curr_date = new Date();
-  $('#to_datepicker').datepicker();
-  $('#to_datepicker').val(curr_date.toLocaleDateString());
-  $('#from_datepicker').datepicker();
-  curr_date.setFullYear(curr_date.getFullYear()-10);
-  $('#from_datepicker').val(curr_date.toLocaleDateString());
-});
-
-function chooseDeal()
-{
-  $('#transcript_table').css('display','none');
-  $('#frame_div').css('display','block');
-  $('#frame').attr('src', 'deals');
-  $('#titleFrame').html('Deals');
-  $('#submit').click(function() {
-    var selRow = $('#frame').contents().find('#deals_list')
-                            .getGridParam('selrow');
-    if (selRow != null)
-    {
-      $('#choose_deal').val($('#frame').contents().find('#deals_list')
-                                       .getCell(selRow, 'tag'));
-      $('#deal_id').val($('#frame').contents().find('#deals_list')
-                                              .getCell(selRow, 'id'));
-      $('#transcript_table').css('display','block');
-      $('#frame_div').css('display','none');
-      $('#frame').attr('src', '');
-      $("#submit").unbind("click");
-    }
+  $(function() {
+    var curr_date = new Date();
+    $('#to_datepicker').datepicker();
+    $('#to_datepicker').val(curr_date.toLocaleDateString());
+    $('#from_datepicker').datepicker();
+    curr_date.setFullYear(curr_date.getFullYear()-10);
+    $('#from_datepicker').val(curr_date.toLocaleDateString());
   });
-}
-function discardChoose()
-{
-  $('#transcript_table').css('display','block');
-  $('#frame_div').css('display','none');
-  $('#frame').attr('src', '');
-  $("#submit").unbind("click");
-}
-function loadTranscript()
-{
-  action = $.ajax({url: '/transcripts/load?deal_id=' + $("#deal_id").val() +
-                                   '&start=' + $("#from_datepicker").val() +
-                                   '&stop=' + $("#to_datepicker").val()});
-  action.complete(function() {
-    var actionUrl = '/transcripts/load?deal_id=' + $("#deal_id").val() +
+  function transcriptChooseDeal()
+  {
+    crossPage = "transcript";
+    $("#transcript_table").css("display","none");
+    $("#transcript_p_s_controls").css("display","block");
+    $("#transcript_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");
+
+    $("#transcript_submit").click(function() {
+      var selRow = $("#deals_list").getGridParam("selrow");
+      if (selRow != null)
+      {
+        $("#transcript_choose_deal").val($("#deals_list").getCell(selRow, "tag"));
+        $("#transcript_deal_id").val(selRow);
+        showTranscriptPage();
+      }
+    });
+  }
+  function showTranscriptPage()
+  {
+    $("#transcript_table").css("display","block");
+    $("#transcript_p_s_controls").css("display","none");
+    $("#transcript_page_selection").html("");
+    $("#transcript_submit").unbind("click");
+    crossPage = "";
+  }
+  function loadTranscript()
+  {
+    action = $.ajax({url: '/transcripts/load?deal_id=' +
+                                     $("#transcript_deal_id").val() +
                                      '&start=' + $("#from_datepicker").val() +
-                                     '&stop=' + $("#to_datepicker").val() +
-                                     '&source=grid';
-    $('#transcripts_list').setGridParam({url: actionUrl});
-    $('#transcripts_list').clearGridData(true);
-    $('#transcripts_list').trigger('reloadGrid');
-  });
-}
-function chooseAccounting()
-{
-  $('#transcripts_list').showCol('h_debit');
-  $('#transcripts_list').showCol('h_credit');
-  $('#transcripts_list').hideCol('debit');
-  $('#transcripts_list').hideCol('credit');
-  chooseUnit();
-}
-function choosePhysical()
-{
-  $('#transcripts_list').showCol('debit');
-  $('#transcripts_list').showCol('credit');
-  $('#transcripts_list').hideCol('h_debit');
-  $('#transcripts_list').hideCol('h_credit');
-  chooseUnit();
-}
-function chooseUnit()
-{
-  var fromDebit = $('#fromDebit').html();
-  var fromCredit = $('#fromCredit').html();
-  var turnoversDebit = $('#turnoversDebit').html();
-  var turnoversCredit = $('#turnoversCredit').html();
-  var exchangeDebit = $('#exchangeDebit').html();
-  var exchangeCredit = $('#exchangeCredit').html();
-  var toDebit = $('#toDebit').html();
-  var toCredit = $('#toCredit').html();
+                                     '&stop=' + $("#to_datepicker").val()});
+    action.complete(function() {
+      var actionUrl = '/transcripts/load?deal_id=' + $("#transcript_deal_id").val() +
+                                       '&start=' + $("#from_datepicker").val() +
+                                       '&stop=' + $("#to_datepicker").val() +
+                                       '&source=grid';
+      $('#transcripts_list').setGridParam({url: actionUrl});
+      $('#transcripts_list').clearGridData(true);
+      $('#transcripts_list').trigger('reloadGrid');
+    });
+  }
+  function chooseAccounting()
+  {
+    $('#transcripts_list').showCol('h_debit');
+    $('#transcripts_list').showCol('h_credit');
+    $('#transcripts_list').hideCol('debit');
+    $('#transcripts_list').hideCol('credit');
+    chooseUnit();
+  }
+  function choosePhysical()
+  {
+    $('#transcripts_list').showCol('debit');
+    $('#transcripts_list').showCol('credit');
+    $('#transcripts_list').hideCol('h_debit');
+    $('#transcripts_list').hideCol('h_credit');
+    chooseUnit();
+  }
+  function chooseUnit()
+  {
+    var fromDebit = $('#fromDebit').html();
+    var fromCredit = $('#fromCredit').html();
+    var turnoversDebit = $('#turnoversDebit').html();
+    var turnoversCredit = $('#turnoversCredit').html();
+    var exchangeDebit = $('#exchangeDebit').html();
+    var exchangeCredit = $('#exchangeCredit').html();
+    var toDebit = $('#toDebit').html();
+    var toCredit = $('#toCredit').html();
 
-  $('#fromDebit').html($('#hFromDebit').val());
-  $('#fromCredit').html($('#hFromCredit').val());
-  $('#turnoversDebit').html($('#hTurnoversDebit').val());
-  $('#turnoversCredit').html($('#hTurnoversCredit').val());
-  $('#exchangeDebit').html($('#hExchangeDebit').val());
-  $('#exchangeCredit').html($('#hExchangeCredit').val());
-  $('#toDebit').html($('#hToDebit').val());
-  $('#toCredit').html($('#hToCredit').val());
+    $('#fromDebit').html($('#hFromDebit').val());
+    $('#fromCredit').html($('#hFromCredit').val());
+    $('#turnoversDebit').html($('#hTurnoversDebit').val());
+    $('#turnoversCredit').html($('#hTurnoversCredit').val());
+    $('#exchangeDebit').html($('#hExchangeDebit').val());
+    $('#exchangeCredit').html($('#hExchangeCredit').val());
+    $('#toDebit').html($('#hToDebit').val());
+    $('#toCredit').html($('#hToCredit').val());
 
-  $('#hFromDebit').val(fromDebit);
-  $('#hFromCredit').val(fromCredit);
-  $('#hTurnoversDebit').val(turnoversDebit);
-  $('#hTurnoversCredit').val(turnoversCredit);
-  $('#hExchangeDebit').val(exchangeDebit);
-  $('#hExchangeCredit').val(exchangeCredit);
-  $('#hToDebit').val(toDebit);
-  $('#hToCredit').val(toCredit);
-}
-function changeTranscript()
-{
-  $('#beforeLoadData').css('display','block');
-  $('#afterLoadData').css('display','none');
-  $('#cancel').css('display','inline');
-  $('#change').css('display','none');
-}
-function cancelTranscript()
-{
-  $('#beforeLoadData').css('display','none');
-  $('#afterLoadData').css('display','block');
-  $('#cancel').css('display','none');
-  $('#change').css('display','inline');
-}
+    $('#hFromDebit').val(fromDebit);
+    $('#hFromCredit').val(fromCredit);
+    $('#hTurnoversDebit').val(turnoversDebit);
+    $('#hTurnoversCredit').val(turnoversCredit);
+    $('#hExchangeDebit').val(exchangeDebit);
+    $('#hExchangeCredit').val(exchangeCredit);
+    $('#hToDebit').val(toDebit);
+    $('#hToCredit').val(toCredit);
+  }
+  function changeTranscript()
+  {
+    $('#beforeLoadData').css('display','block');
+    $('#afterLoadData').css('display','none');
+    $('#cancel').css('display','inline');
+    $('#change').css('display','none');
+  }
+  function cancelTranscript()
+  {
+    $('#beforeLoadData').css('display','none');
+    $('#afterLoadData').css('display','block');
+    $('#cancel').css('display','none');
+    $('#change').css('display','inline');
+  }
 </script>
 
 <%= raw(transcripts_jqgrid) %>
@@ -129,9 +125,9 @@ function cancelTranscript()
     <td id="loadData" colspan="2">
       <div id="beforeLoadData">
         deal
-        <input type="button" id="choose_deal" value="click to choose"
-               onclick="chooseDeal();"/>
-        <input type="hidden" id="deal_id" value=""/>
+        <input type="button" id="transcript_choose_deal" value="click to choose"
+               onclick="transcriptChooseDeal();"/>
+        <input type="hidden" id="transcript_deal_id" value=""/>
         from
         <input type="text" id="from_datepicker"/>
         to
@@ -204,24 +200,13 @@ function cancelTranscript()
   </tr>
 </table>
 
-<div id="frame_div" style="display: none">
-  <table>
+<table id="transcript_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" id="discard" value="discard" onclick="discardChoose();"/>
-        <input type="button" id="submit" value="submit" onclick=""/>
+        <input type="button" value="discard" onclick="showTranscriptPage();"/>
+        <input type="button" id="transcript_submit" value="submit" onclick=""/>
       </td>
     </tr>
-    <tr>
-      <td id="titleFrame">
-      </td>
+    <tr id="transcript_page_selection">
     </tr>
-    <tr>
-      <td>
-        <iframe id="frame" src="" width=830 height=500 scrolling=no
-                noresize border=0 frameborder=no>
-        </iframe>
-      </td>
-    </tr>
-  </table>
-</div>
+</table>
