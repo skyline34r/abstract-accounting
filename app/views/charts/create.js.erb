@@ -1,5 +1,7 @@
-$('#save_chart').hide();
-$('#msg_chart_div').css('display','block');
-$('#chart_curr_btn').hide();
-$('#curr_chart_div').html($('#chart_curr_btn').val());
-$('#curr_chart_div').css('display','block');
+if("<%= @chart.errors.count %>" == "0") {
+  $("#save_chart").hide();
+  $("#msg_chart_div").css("display","block");
+  $("#chart_curr_btn").hide();
+  $("#curr_chart_div").html($("#chart_curr_btn").val());
+  $("#curr_chart_div").css("display","block");
+}
