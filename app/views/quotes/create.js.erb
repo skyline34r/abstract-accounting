@@ -1,4 +1,2 @@
-$("#actions").html("<%= escape_javascript(render :partial => 'form_index' ) %>");
-disabledElements();
-canSelect = true;
-$("#quotes_list").trigger("reloadGrid");
+$("#actions").html("<%= escape_javascript(render :partial => 'quotes/form_index') %>");
+showQuoteIndexForm();

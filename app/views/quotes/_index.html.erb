@@ -1,14 +1,8 @@
 <script type="text/javascript">
-  var canSelect = true;
+  var canSelectQuote = true;
   $(function() {
     $("#quote_datepicker").datepicker();
   });
-  function enabledElements() {
-    $('#quote_res_btn').removeAttr('disabled');
-    $('#quote_datepicker').removeAttr('disabled');
-    $('#quote_rate').removeAttr('disabled');
-    setDefault();
-  }
   function quoteChooseMoney()
   {
     crossPage = "quote";
@@ -34,42 +28,45 @@
     $("#quote_submit").unbind("click");
     crossPage = "";
   }
-
-  function discardChoose()
+  function showQuoteActionForm()
   {
-    $('#quotes_div').css('display','block');
-    $('#frame_quote_div').css('display','none');
+    $("#quote_res_btn").removeAttr("disabled");
+    $("#quote_datepicker").removeAttr("disabled");
+    $("#quote_rate").removeAttr("disabled");
+    setQuoteDefault();
+    canSelectQuote = false;
+    $("#quotes_list").resetSelection();
   }
-  function beforeSave()
+  function showQuoteIndexForm() {
+    $("#quote_res_btn").attr("disabled","disabled");
+    $("#quote_datepicker").attr("disabled","disabled");
+    $("#quote_rate").attr("disabled","disabled");
+    canSelectQuote = true;
+    $("#quotes_list").trigger("reloadGrid");
+  }
+  function beforeQuoteSave()
   {
-    var d = new Date($('#quote_datepicker').val());
-    $('#hide_quote_day').val(d.toUTCString());
-    $('#hide_quote_rate').val($('#quote_rate').val());
+    var d = new Date($("#quote_datepicker").val());
+    $("#hide_quote_day").val(d.toUTCString());
+    $("#hide_quote_rate").val($("#quote_rate").val());
   }
-  function disabledElements() {
-    $('#quote_res_btn').attr('disabled','disabled');
-    $('#quote_datepicker').attr('disabled','disabled');
-    $('#quote_rate').attr('disabled','disabled');
-  }
-  function onCancel()
+  function onCancelQuote()
   {
-    $("#actions").html("<%= escape_javascript(render :partial => 'quotes/form_index' ) %>");
-    disabledElements();
+    location.hash = "#quotes";
   }
-  function onReset()
+  function onResetQuote()
   {
-    enabledElements();
-    $('#save_quote').attr('disabled','disabled');
-    setDefault();
+    $("#save_quote").attr("disabled","disabled");
+    setQuoteDefault();
   }
-  function setDefault()
+  function setQuoteDefault()
   {
-    $('#hide_quote_day').val('');
-    $('#hide_quote_rate').val('');
-    $('#hide_quote_money').val('');
-    $('#quote_res_btn').val('click to choose');
-    $('#quote_datepicker').val('');
-    $('#quote_rate').val('');
+    $("#hide_quote_day").val("");
+    $("#hide_quote_rate").val("");
+    $("#hide_quote_money").val("");
+    $("#quote_res_btn").val("click to choose");
+    $("#quote_datepicker").val("");
+    $("#quote_rate").val("");
   }
 </script>
 
@@ -81,7 +78,7 @@
 
   <table>
     <tr id="actions" align="right">
-      <%= render 'quotes/form_index' %>
+      <%= render "quotes/form_index" %>
     </tr>
     <tr>
       <td style="width: 724px">

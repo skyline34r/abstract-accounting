@@ -1,4 +1,2 @@
-$("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
-enabledElements();
-canSelect = false;
-$('#quotes_list').resetSelection();
+$("#actions").html("<%= escape_javascript(render :partial => 'quotes/form_actions') %>");
+showQuoteActionForm();

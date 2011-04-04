@@ -26,17 +26,17 @@ module QuotesHelper
       :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
-      :onSelectRow => "function(cell)
+      :onSelectRow => 'function(cell)
       {
-        $('#quote_res_btn').val($('#quotes_list').getCell(cell, 'resource'));
-        $('#quote_datepicker').val($('#quotes_list').getCell(cell, 'day'));
-        $('#quote_rate').val($('#quotes_list').getCell(cell, 'rate'));
-      }".to_json_var,
-      :beforeSelectRow =>	"function()
+        $("#quote_res_btn").val($("#quotes_list").getCell(cell, "resource"));
+        $("#quote_datepicker").val($("#quotes_list").getCell(cell, "day"));
+        $("#quote_rate").val($("#quotes_list").getCell(cell, "rate"));
+      }'.to_json_var,
+      :beforeSelectRow =>	'function()
       {
-        if (canSelect) return true;
+        if (canSelectQuote) return true;
         return false;
-      }".to_json_var
+      }'.to_json_var
     }]
     
     jqgrid_api 'quotes_list', grid, options
