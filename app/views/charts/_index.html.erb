@@ -82,10 +82,10 @@ function discardChoose()
 </div>
 
 <script type="text/javascript">
-if(<%=@count.count%> != 0)
+if(<%= @charts.count %> != 0)
 {
-  var curr_id = <%= if(@count.count != 0)
-                      @count.first.currency_id
+  var curr_id = <%= if(@charts.count != 0)
+                      @charts.first.currency_id
                     end%>;
   var action;
   action = $.ajax({url: 'resources/' + curr_id + '/get_money_tag'});
