@@ -1,16 +1,16 @@
 <script type="text/javascript">
 $(function() {
   var curr_date = new Date();
-  $('#balance_datepicker').datepicker();
+  $("#balance_datepicker").datepicker();
   $("#balance_datepicker").val(curr_date.toLocaleDateString());
 });
 
 function loadBalance()
 {
-  var actionUrl = '/balances/load?date=' + $("#balance_datepicker").val();
-  $('#data_list').setGridParam({url: actionUrl});
-  $('#data_list').clearGridData(true);
-  $('#data_list').trigger('reloadGrid');
+  var actionUrl = "/balances/load?date=" + $("#balance_datepicker").val();
+  $("#data_list").setGridParam({url: actionUrl});
+  $("#data_list").clearGridData(true);
+  $("#data_list").trigger("reloadGrid");
 }
 </script>
 
