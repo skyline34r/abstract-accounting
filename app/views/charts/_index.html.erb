@@ -1,32 +1,29 @@
 <script type="text/javascript">
-function chooseCurrency()
-{
-  $('#chart_div').css('display','none');
-  $('#frame_chart_div').css('display','block');
-  $('#frame').attr('src', 'resources');
-  $('#title_frame').html('Resources');
+  function chartChoiseResource()
+  {
+    crossPage = "chart";
+    $("#chart_div").css("display","none");
+    $("#chart_p_s_controls").css("display","block");
+    $.ajax({url: "resources"});
 
-  $('#submit').click(function() {
-    var selRow = $('#frame').contents().find('#resources_list')
-                                       .getGridParam('selrow');
-    if (selRow != null)
-    {
-      $('#chart_curr_btn').val($('#frame').contents().find('#resources_list')
-                                              .getCell(selRow, 'tag'));
-      $('#hide_chart_curr_id').val($('#frame').contents().find('#resources_list')
-                                              .getCell(selRow, 'id'));
-      $('#chart_div').css('display','block');
-      $('#frame_chart_div').css('display','none');
-      $('#frame').attr('src', '');
-      $("#submit").unbind("click");
-    }
-  });
-}
-function discardChoose()
-{
-  $('#chart_div').css('display','block');
-  $('#frame_chart_div').css('display','none');
-}
+    $("#chart_submit").click(function() {
+      var selRow = $("#resources_list").getGridParam("selrow");
+      if (selRow != null)
+      {
+        $("#chart_curr_btn").val($("#resources_list").getCell(selRow, "tag"));
+        $("#hide_chart_curr_id").val($("#resources_list").getCell(selRow, "id"));
+        showChartPage();
+      }
+    });
+  }
+  function showChartPage()
+  {
+    $("#chart_div").css("display","block");
+    $("#chart_p_s_controls").css("display","none");
+    $("#chart_page_selection").html("");
+    $("#chart_submit").unbind("click");
+    crossPage = "";
+  }
 </script>
 
 <div id="chart_div">
@@ -38,7 +35,7 @@ function discardChoose()
       <td>resource</td>
       <td>
         <input type="button" id="chart_curr_btn" value="click to choose"
-                             onclick="chooseCurrency();"/>
+                             onclick="chartChoiseResource();"/>
         <div id="curr_chart_div" style="display: none">
         </div>
       </td>
@@ -47,7 +44,7 @@ function discardChoose()
       <td></td>
       <td>
         <%= form_for(@chart, :remote => true) do |f| %>
-        <%= f.hidden_field :currency_id, :id => "hide_chart_curr_id"%>
+        <%= f.hidden_field :currency_id, :id => "hide_chart_curr_id" %>
         <%= f.submit "commit", :id => "save_chart",
                                :value => "set as 'Functional currency'" %>
         <% end %>
@@ -58,33 +55,22 @@ function discardChoose()
     </tr>
   </table>
 </div>
-<div id="frame_chart_div" style="display: none">
-  <table>
-    <tr align="right">
-      <td>
-        <input type="button" id="discard" value="discard"
-                             onclick="discardChoose();"/>
-        <input type="button" id="submit" value="submit" onclick=""/>
-      </td>
-    </tr>
-    <tr>
-      <td id="title_frame">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <iframe id="frame" src="" width=830 height=500 scrolling=no
-                noresize border=0 frameborder=no>
-        </iframe>
-      </td>
-    </tr>
-  </table>
-</div>
+
+<table id="chart_p_s_controls" style="display: none">
+  <tr align="right">
+    <td>
+      <input type="button" value="discard" onclick="showChartPage();"/>
+      <input type="button" id="chart_submit" value="submit" onclick=""/>
+    </td>
+  </tr>
+  <tr id="chart_page_selection">
+  </tr>
+</table>
 
 <script type="text/javascript">
 if(<%= @charts.count %> != 0)
 {
-  var curr_id = <%= if(@charts.count != 0)
+  var curr_id = <%= if(@charts.count != 0) then
                       @charts.first.currency_id
                     end%>;
   var action;
