@@ -20,7 +20,6 @@
       {
         $("#hide_deal_entity_id").val(selRow);
         $("#deal_entity_tag").val($("#entity_list").getCell(selRow, "tag"));
-        crossPage = "";
         showDealPage();
       }
     });
@@ -31,7 +30,7 @@
     $("#deal_p_s_controls").css("display","none");
     $("#deal_page_selection").html("");
     $("#deal_submit").unbind("click");
-    crossPage = true;
+    crossPage = "";
   }
   function dealChoiseResource(type)
   {
@@ -49,7 +48,6 @@
                                                 .getCell(selRow, "id"));
         $("#hide_deal_" + type + "_type").val($("#resources_list")
                                                 .getCell(selRow, "type"));
-        crossPage = "";
         showDealPage();
       }
     });
