@@ -1,4 +1,12 @@
 <script type="text/javascript">
+  if("<%= @money_tag %>" != "")
+  {
+    $("#curr_chart_div").html("<%= @money_tag %>");
+    $("#save_chart").hide();
+    $("#msg_chart_div").css("display","block");
+    $("#chart_curr_btn").hide();
+    $("#curr_chart_div").css("display","block");
+  }
   function chartChoiseResource()
   {
     crossPage = "chart";
@@ -66,20 +74,3 @@
   <tr id="chart_page_selection">
   </tr>
 </table>
-
-<script type="text/javascript">
-if(<%= @charts.count %> != 0)
-{
-  var curr_id = <%= if(@charts.count != 0) then
-                      @charts.first.currency_id
-                    end%>;
-  var action;
-  action = $.ajax({url: 'resources/' + curr_id + '/get_money_tag'});
-  action.complete(function() { $('#curr_chart_div').html(tempTag); });
-
-  $('#save_chart').hide();
-  $('#msg_chart_div').css('display','block');
-  $('#chart_curr_btn').hide();
-  $('#curr_chart_div').css('display','block');
-}
-</script>
