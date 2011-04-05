@@ -24,18 +24,24 @@ module UsersHelper
       :onSelectRow => "function(cell)
       {
         $('#user_email').val($('#data_list').getCell(cell, 'email'));
-        $('#change_user').removeAttr('disabled');
-        $('#change_user_pass').removeAttr('disabled');
-        $('#roles').css('display','block');
-        $('#change_user').parent().parent().attr('action',
-            '/users/' + cell + '/edit');
-        $('#change_user_pass').parent().parent().attr('action',
-            '/users/' + cell + '/edit');
-        uncheckRoles();
-        var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
-        for(var i=0; i<arr_ids.length; i++)
-        {
-          $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
+        if($('#data_list').getCell(cell, 'email') == 'root@mail.com') {
+          $('#change_user').attr('disabled','disabled');
+          $('#change_user_pass').attr('disabled','disabled');
+          $('#roles').css('display','none');
+        } else {
+          $('#change_user').removeAttr('disabled');
+          $('#change_user_pass').removeAttr('disabled');
+          $('#roles').css('display','block');
+          $('#change_user').parent().parent().attr('action',
+              '/users/' + cell + '/edit');
+          $('#change_user_pass').parent().parent().attr('action',
+              '/users/' + cell + '/edit');
+          uncheckRoles();
+          var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
+          for(var i=0; i<arr_ids.length; i++)
+          {
+            $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
+          }
         }
       }".to_json_var,
       :beforeSelectRow => "function()

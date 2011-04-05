@@ -24,16 +24,21 @@ module RolesHelper
       :onSelectRow => "function(cell)
       {
         $('#role_name').val($('#data_list').getCell(cell, 'name'));
-        $('#change_role').removeAttr('disabled');
-        $('#change_role').parent().parent().attr('action',
-            '/roles/' + cell + '/edit');
-        uncheckPages();
-        var pages = $('#data_list').getCell(cell, 'pages').split(',');
-        for(var i=0; i<pages.length; i++)
-        {
-          $('[name=' + pages[i] + ']').attr('checked', 'checked');
+        if($('#data_list').getCell(cell, 'name') == 'admin') {
+          $('#change_role').attr('disabled','disabled');
+          $('#pages').css('display','none');
+        } else {
+          $('#change_role').removeAttr('disabled');
+          $('#change_role').parent().parent().attr('action',
+              '/roles/' + cell + '/edit');
+          uncheckPages();
+          var pages = $('#data_list').getCell(cell, 'pages').split(',');
+          for(var i=0; i<pages.length; i++)
+          {
+            $('[name=' + pages[i] + ']').attr('checked', 'checked');
+          }
+          $('#pages').css('display','block');
         }
-        $('#pages').css('display','block');
       }".to_json_var,
       :beforeSelectRow => "function()
       {
