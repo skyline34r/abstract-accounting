@@ -1,8 +1,20 @@
 <script type="text/javascript">
   var crossPage = "";
+  var crossPageLink = "";
+  var cancelRequest = false;
 
   $(window).bind("hashchange", function() {
-    if(!crossPage.length) {
+    if(!cancelRequest) {
+      $.ajax({url: location.hash.substr(1, location.hash.length)});
+    } else {
+      cancelRequest = false;
+    }
+  });
+
+  $(".page_link").live("click", function() {
+    crossPage = "";
+    crossPageLink = "";
+    if($(this).attr("href") == location.hash) {
       $.ajax({url: location.hash.substr(1, location.hash.length)});
     }
   });
@@ -12,7 +24,7 @@
       $.ajax({url: location.hash.substr(1, location.hash.length)});
     }
   });
-  
+
   $('FORM').live('submit', function() {
     location.hash = $(this).attr('action').substr(1, $(this).attr('action').length);
     return false;
@@ -36,55 +48,55 @@
 <p>
 
   <% if current_user != nil and can? :manage, Entity %>
-    <a href="#entities">Entity</a>
+    <a href="#entities" class="page_link">Entity</a>
   <% else %>
-    <a href="#" onclick="return false" style="color: buttonshadow" >Entity</a>
+    <a href="#" onclick="return false;" style="color: buttonshadow" >Entity</a>
   <% end %>
 
   <% if current_user != nil and can? :manage, Asset, Money %>
-    <a href="#resources">Resource</a>
+    <a href="#resources" class="page_link">Resource</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Resource</a>
   <% end %>
  
   <% if current_user != nil and can? :manage, Deal %>
-    <a href="#deals">Deal</a>
+    <a href="#deals" class="page_link">Deal</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Deal</a>
   <% end %>
   
   <% if current_user != nil and can? :manage, Fact %>
-    <a href="#facts">Fact</a>
+    <a href="#facts" class="page_link">Fact</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Fact</a>
   <% end %>
     
   <% if current_user != nil and can? :manage, Chart %>
-    <a href="#charts">Chart</a>
+    <a href="#charts" class="page_link">Chart</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Chart</a>
   <% end %>
   
   <% if current_user != nil and can? :manage, Quote %>
-    <a href="#quotes">Quote</a>
+    <a href="#quotes" class="page_link">Quote</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Quote</a>
   <% end %>
   
   <% if current_user != nil and can? :manage, Balance %>
-    <a href="#balances">Balance</a>
+    <a href="#balances" class="page_link">Balance</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Balance</a>
   <% end %>
   
   <% if current_user != nil and can? :manage, GeneralLedger %>
-    <a href="#general_ledgers">GeneralLedger</a>
+    <a href="#general_ledgers" class="page_link">GeneralLedger</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >GeneralLedger</a>
   <% end %>
   
   <% if current_user != nil and can? :manage, Transcript %>
-    <a href="#transcripts">Transcript</a>
+    <a href="#transcripts" class="page_link">Transcript</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Transcript</a>
   <% end %>
@@ -93,17 +105,17 @@
 <p>
 
   <% if current_user != nil and current_user.email == "root@mail.com" %>
-    <a href="#users">User</a>
+    <a href="#users" class="page_link">User</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >User</a>
   <% end %>
   
   <% if current_user != nil and current_user.email == "root@mail.com" %>
-    <a href="#roles">Role</a>
+    <a href="#roles" class="page_link">Role</a>
   <% else %>
     <a href="#" onclick="return false" style="color: buttonshadow" >Role</a>
   <% end %>
-  
+
 </p>
 
 <div id="body">

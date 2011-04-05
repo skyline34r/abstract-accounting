@@ -11,6 +11,7 @@
   function dealChoiseEntity()
   {
     crossPage = "deal";
+    crossPageLink = "deals/new";
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
     $("#deal_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
@@ -35,6 +36,7 @@
   function dealChoiseResource(type)
   {
     crossPage = "deal";
+    crossPageLink = "deals/new";
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
     $.ajax({url: "resources"});
@@ -105,12 +107,15 @@
   }
   function onCancelDeal()
   {
-    location.hash = "#deals";
     if(crossPage.length) {
-      $("#actions").html("<%= escape_javascript(render :partial => 'deals/form_index' ) %>");
+      $("#actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
       $("#deals_list").trigger("reloadGrid");
       disabledElements();
       canSelectDeal = true;
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#deals";
     }
   }
   function onResetDeal()

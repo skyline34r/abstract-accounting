@@ -5,6 +5,7 @@ $(function() {
 function factChooseDeal(type)
 {
   crossPage = "fact";
+  crossPageLink = "facts";
   $("#fact_div").css("display","none");
   $("#fact_p_s_controls").css("display","block");
   $("#fact_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");

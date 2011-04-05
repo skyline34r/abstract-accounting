@@ -10,6 +10,7 @@
   function transcriptChooseDeal()
   {
     crossPage = "transcript";
+    crossPageLink = "transcripts";
     $("#transcript_table").css("display","none");
     $("#transcript_p_s_controls").css("display","block");
     $("#transcript_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");

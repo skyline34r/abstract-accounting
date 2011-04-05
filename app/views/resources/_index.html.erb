@@ -53,8 +53,13 @@
   }
   function onCancelResource()
   {
-    location.hash = "#resources";
-    if(crossPage.length) showResourceIndexForm();
+    if(crossPage.length) {
+      showResourceIndexForm();
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#resources";
+    }
   }
   function changeResourceType()
   {

@@ -15,8 +15,13 @@
   }
   function onCancelEntity()
   {
-    location.hash = "#entities";
-    if(crossPage.length) showEntityIndexForm();
+    if(crossPage.length) {
+      showEntityIndexForm();
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#entities";
+    }
   }
   function onResetEntity()
   {
