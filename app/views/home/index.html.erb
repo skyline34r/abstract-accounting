@@ -7,6 +7,12 @@
     }
   });
 
+  $(document).ready(function () {
+    if(location.hash.length > 0) {
+      $.ajax({url: location.hash.substr(1, location.hash.length)});
+    }
+  });
+  
   $('FORM').live('submit', function() {
     location.hash = $(this).attr('action').substr(1, $(this).attr('action').length);
     return false;
