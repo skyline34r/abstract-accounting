@@ -17,10 +17,12 @@ class RolesController < ApplicationController
   end
   
   def new
+    @project_pages = project_pages
     @role = Role.new
   end
 
   def edit
+    @project_pages = project_pages
     @role = Role.find(params[:id])
   end
 

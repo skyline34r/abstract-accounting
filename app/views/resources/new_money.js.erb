@@ -1,2 +1,5 @@
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'resources/index') %>");
+}
 $("#resource_action").html("<%= escape_javascript(render :partial => 'resources/form_action_money') %>");
 showResourceActionForm("money", "new");

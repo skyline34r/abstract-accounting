@@ -1,2 +1,5 @@
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'entities/index') %>");
+}
 $("#entity_actions").html("<%= escape_javascript(render :partial => 'entities/form_actions') %>");
 showEntityActionForm("");

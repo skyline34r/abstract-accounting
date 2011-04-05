@@ -1,2 +1,5 @@
-$("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'users/index') %>");
+}
+$("#actions").html("<%= escape_javascript(render :partial => 'users/form_actions' ) %>");
 viewActionForm("", "new");

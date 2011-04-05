@@ -1,2 +1,5 @@
-$("#actions").html("<%= escape_javascript(render :partial => 'form_actions' ) %>");
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'roles/index') %>");
+}
+$("#actions").html("<%= escape_javascript(render :partial => 'roles/form_actions' ) %>");
 viewActionForm('','');
