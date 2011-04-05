@@ -115,7 +115,8 @@
       <% for role in Role.find(:all) %>
         <div>
           <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
-                :disabled => true %>
+                :disabled => true,
+                :onchange => "$('#save_user').removeAttr('disabled');"%>
           <%= role.name %>
         </div>
       <% end %>
