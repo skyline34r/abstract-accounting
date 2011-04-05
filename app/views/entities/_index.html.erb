@@ -7,21 +7,21 @@
   }
   function showEntityIndexForm()
   {
-    canSelectEntity = true;
-    $("#entity_actions").html("<%= escape_javascript(render :partial => 'entities/form_index') %>");
-    $("#entity_tag").attr("disabled","disabled");
-    $("#entity_list").trigger("reloadGrid");
-    $("#entity_tag").val("");
-  }
-  function onCancelEntity()
-  {
     if(crossPage.length) {
-      showEntityIndexForm();
+      canSelectEntity = true;
+      $("#entity_actions").html("<%= escape_javascript(render :partial => 'entities/form_index') %>");
+      $("#entity_tag").attr("disabled","disabled");
+      $("#entity_list").trigger("reloadGrid");
+      $("#entity_tag").val("");
       cancelRequest = true;
       location.hash = crossPageLink;
     } else {
       location.hash = "#entities";
     }
+  }
+  function onCancelEntity()
+  {
+    showEntityIndexForm();
   }
   function onResetEntity()
   {

@@ -39,11 +39,7 @@
     $("#quotes_list").resetSelection();
   }
   function showQuoteIndexForm() {
-    $("#quote_res_btn").attr("disabled","disabled");
-    $("#quote_datepicker").attr("disabled","disabled");
-    $("#quote_rate").attr("disabled","disabled");
-    canSelectQuote = true;
-    $("#quotes_list").trigger("reloadGrid");
+    location.hash = "#quotes";
   }
   function beforeQuoteSave()
   {
@@ -53,7 +49,7 @@
   }
   function onCancelQuote()
   {
-    location.hash = "#quotes";
+    showQuoteIndexForm();
   }
   function onResetQuote()
   {

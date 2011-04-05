@@ -71,16 +71,11 @@
   }
   function viewIndexFrom()
   {
-    canSelect = true;
-    changePass = false;
-    $("#email").css("display","table-row");
-    $("#user_email").val("");
-    $('#actions').html('<%= escape_javascript(render :partial => 'form_index') %>');
-    $("#user_email").attr('disabled', 'disabled');
-    $("#data_list").trigger("reloadGrid");
-    $("#pass").css("display","none");
-    $("#pass_c").css("display","none");
-    $("#roles").css("display","none");
+    location.hash = '#users'
+  }
+  function onCancel()
+  {
+    viewIndexFrom();
   }
 </script>
 

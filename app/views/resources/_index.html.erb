@@ -25,16 +25,22 @@
   }
   function showResourceIndexForm()
   {
-    canSelectResource = true;
-    $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");
-    moneyCode = "";
-    resourceTag = "";
-    $("#money_code").val("");
-    $("#resource_tag").val("");
-    $("#resource_tag").attr("disabled","disabled");
-    $("#resource_type").attr("disabled","disabled");
-    $("#money_code").attr("disabled","disabled");
-    $("#resources_list").trigger("reloadGrid");
+    if(crossPage.length) {
+      canSelectResource = true;
+      $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");
+      moneyCode = "";
+      resourceTag = "";
+      $("#money_code").val("");
+      $("#resource_tag").val("");
+      $("#resource_tag").attr("disabled","disabled");
+      $("#resource_type").attr("disabled","disabled");
+      $("#money_code").attr("disabled","disabled");
+      $("#resources_list").trigger("reloadGrid");
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#resources";
+    }
   }
   function sendAsset()
   {
@@ -47,19 +53,13 @@
   }
   function onResetResource()
   {
-     $("#resource_tag").val(resourceTag);
-     $("#money_code").val(moneyCode);
-     $("#save_resource").attr("disabled","disabled");
+    $("#resource_tag").val(resourceTag);
+    $("#money_code").val(moneyCode);
+    $("#save_resource").attr("disabled","disabled");
   }
   function onCancelResource()
   {
-    if(crossPage.length) {
-      showResourceIndexForm();
-      cancelRequest = true;
-      location.hash = crossPageLink;
-    } else {
-      location.hash = "#resources";
-    }
+    showResourceIndexForm
   }
   function changeResourceType()
   {
