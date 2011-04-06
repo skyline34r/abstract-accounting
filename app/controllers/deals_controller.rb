@@ -15,7 +15,7 @@ class DealsController < ApplicationController
       end
     }
     @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
-                'take.class.name']
+                'take.class.name', 'isOffBalance']
     @deals = Deal.all;
     @deals = @deals.paginate(
       :page     => params[:page],

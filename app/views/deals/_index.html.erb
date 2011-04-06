@@ -57,13 +57,15 @@
   function beforeDealSave()
   {
     $("#hide_deal_tag").val(escape($("#deal_tag").val()));
-    if ($("#dir_1").attr("checked") && ($("#deal_rate").val() != ""))
-    {
+    if($("#dir_1").attr("checked") && ($("#deal_rate").val() != "")) {
       $("#hide_deal_rate").val(1/$("#deal_rate").val());
-    }
-    else
-    {
+    } else {
       $("#hide_deal_rate").val(escape($("#deal_rate").val()));
+    }
+    if($("#isOfBalance").attr("checked")) {
+      $("#hide_is_off_balance").val("1");
+    } else {
+      $("#hide_is_off_balance").val("0");
     }
   }
   function disabledElements()
@@ -81,6 +83,7 @@
     $("#deal_take_choose").attr("disabled","disabled");
     $("#deal_rate").val("");
     $("#deal_rate").attr("disabled","disabled");
+    $("#isOfBalance").attr("disabled","disabled");
   }
   function enabledElements()
   {
@@ -104,6 +107,9 @@
     $("#hide_deal_give_type").val("");
     $("#hide_deal_take_id").val("");
     $("#hide_deal_take_type").val("");
+    $("#hide_is_off_balance").val("");
+    $("#isOfBalance").removeAttr("disabled");
+    $("#isOfBalance").removeAttr("checked");
   }
   function showDealIndexForm()
   {
@@ -138,6 +144,13 @@
   <table>
     <tr id="deal_actions" align="right">
       <%= render 'deals/form_index' %>
+    </tr>
+    <tr align="right">
+      <td colspan="2">
+        <input type="checkbox" id="isOfBalance" disabled="true">
+          is off balance
+        </input>
+      </td>
     </tr>
     <tr align="left">
       <td colspan="2">

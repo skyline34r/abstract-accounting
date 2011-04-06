@@ -24,7 +24,8 @@ class DealsControllerTest < ActionController::TestCase
                                    :give_id => money(:rub).id,
                                    :give_type => "Money",
                                    :take_id => assets(:aasiishare).id,
-                                   :take_type => "Asset" }
+                                   :take_type => "Asset",
+                                   :isOffBalance => false }
     end
     assert_equal 1, Deal.where(:tag =>'purchase tester').count,
       'Deal \'purchase tester\' not saved'
