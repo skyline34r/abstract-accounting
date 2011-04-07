@@ -34,6 +34,19 @@ class DealsController < ApplicationController
     @deal = Deal.new(params[:deal])
     if !@deal.save
       render :action => "new"
+    else
+      if params[:rules] != nil then
+        idx = 0;
+        while(params[:rules][idx] != nil) do
+          @deal.rules.create :tag => params[:rules][idx]["tag"],
+            :from_id => params[:rules][idx]["from_id"],
+            :to_id => params[:rules][idx]["to_id"],
+            :fact_side => params[:rules][idx]["fact_side"],
+            :change_side => params[:rules][idx]["change_side"],
+            :rate => params[:rules][idx]["rate"]
+          idx += 1
+        end
+      end
     end
   end
   
