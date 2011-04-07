@@ -58,6 +58,7 @@ Abstract::Application.routes.draw do
       get 'load'
     end
   end
+  resources :rules
   get "home/index"
 
   # The priority is based upon order of creation:
