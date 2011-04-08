@@ -16,6 +16,40 @@
                           , pager: '#rules_pager'
                           , viewrecords: true
                           });
+  function newRule()
+  {
+    enableRuleElements();
+    clearRuleElements();
+  }
+  function enableRuleElements()
+  {
+    $("#rule_index_buttons").css("display","none");
+    $("#rule_action_buttons").css("display","block");
+    $("#rule_tag").removeAttr("disabled");
+    $("#rule_rate").removeAttr("disabled");
+    $("#to_tag").removeAttr("disabled");
+    $("#to_select").removeAttr("disabled");
+    $("#from_tag").removeAttr("disabled");
+    $("#from_select").removeAttr("disabled");
+    $("#rule_on_off").removeAttr("disabled");
+    $("#rule_on_on").removeAttr("disabled");
+    $("#rule_off_off").removeAttr("disabled");
+    $("#rule_off_on").removeAttr("disabled");
+    $("#save_rule").attr("disabled","disabled");
+  }
+  function clearRuleElements()
+  {
+    $("#rule_tag").val("");
+    $("#rule_rate").val("");
+    $("#to_id").val("");
+    $("#to_tag").val("");
+    $("#from_id").val("");
+    $("#from_tag").val("");
+    $("#rule_on_off").attr("checked","checked");
+    $("#rule_on_on").removeAttr("checked");
+    $("#rule_off_off").removeAttr("checked");
+    $("#rule_off_on").removeAttr("checked");
+  }
 </script>
 
 <div id="rules_div">
@@ -25,7 +59,7 @@
   <table>
     <tr id="rule_actions" align="right">
       <td id="rule_index_buttons">
-        <input type="button" id="new_rule" value="new" onclick=""/>
+        <input type="button" id="new_rule" value="new" onclick="newRule();"/>
         <input type="button" id="change_rule" value="change" disabled="true"
                onclick=""/>
       </td>
