@@ -74,7 +74,7 @@
   {
     crossPage = "rule";
     crossPageLink = "rules";
-    $("#rules_div").css("display","none");
+    $("#rule_table").css("display","none");
     $("#rule_p_s_controls").css("display","block");
     $("#rule_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");
 
@@ -90,7 +90,7 @@
   }
   function showRulePage()
   {
-    $("#rules_div").css("display","block");
+    $("#rule_table").css("display","block");
     $("#rule_p_s_controls").css("display","none");
     $("#rule_page_selection").html("");
     $("#rule_submit").unbind("click");
@@ -98,15 +98,15 @@
   }
 </script>
 
-<table id="rule_table">
+<table>
   <tr align="right">
     <td>
-      <input type="button" value="discard" onclick=""/>
-      <input type="button" id="rule_submit" value="submit" onclick=""/>
+      <input type="button" value="discard" onclick="" disabled="true"/>
+      <input type="button" id="global_submit" value="submit" onclick=""/>
     </td>
   </tr>
   <tr>
-    <td>
+    <td id="rule_table">
       <table id="rules_list"></table>
       <div id="rules_pager"></div>
 
@@ -172,16 +172,17 @@
         </tr>
       </table>
     </td>
+    <td id="rule_p_s_controls" style="display: none">
+      <table>
+        <tr align="right">
+          <td>
+            <input type="button" value="discard" onclick=""/>
+            <input type="button" id="rule_submit" value="submit" onclick=""/>
+          </td>
+        </tr>
+        <tr id="rule_page_selection">
+        </tr>
+      </table>
+    </td>
   </tr>
-</table>
-
-<table id="rule_p_s_controls" style="display: none">
-    <tr align="right">
-      <td>
-        <input type="button" value="discard" onclick=""/>
-        <input type="button" id="rule_submit" value="submit" onclick=""/>
-      </td>
-    </tr>
-    <tr id="rule_page_selection">
-    </tr>
 </table>
