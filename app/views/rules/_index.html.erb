@@ -1,21 +1,4 @@
 <script type="text/javascript">
-  $("#rules_list").jqGrid({ datatype: "local"
-                          , colNames:['id', 'tag', 'to_id', 'to_tag', 'from_id',
-                                      'from_tag', 'rate']
-                          , colModel:[{ name:'id',       index:'id',       hidden:true },
-                                      { name:'tag',      index:'tag',      width:300 },
-                                      { name:'to_id',    index:'to_id',    hidden:true },
-                                      { name:'to_tag',   index:'to_tag',   width:200 },
-                                      { name:'from_id',  index:'from_id',  hidden:true },
-                                      { name:'from_tag', index:'from_tag', width:200 },
-                                      { name:'rate',     index:'rate',     width:100 }]
-                          , sortname: 'tag'
-                          , sortorder: 'asc'
-                          , rowNum: 10
-                          , rowList: [10,20,30]
-                          , pager: '#rules_pager'
-                          , viewrecords: true
-                          });
   function newRule()
   {
     enableRuleElements();
@@ -97,6 +80,8 @@
     crossPage = "";
   }
 </script>
+
+<%= raw(rules_jqgrid) %>
 
 <table>
   <tr align="right">
