@@ -27,10 +27,10 @@
     $("#rule_action_buttons").css("display","block");
     $("#rule_tag").removeAttr("disabled");
     $("#rule_rate").removeAttr("disabled");
-    $("#to_tag").removeAttr("disabled");
-    $("#to_select").removeAttr("disabled");
-    $("#from_tag").removeAttr("disabled");
-    $("#from_select").removeAttr("disabled");
+    $("#rule_to_tag").removeAttr("disabled");
+    $("#rule_to_select").removeAttr("disabled");
+    $("#rule_from_tag").removeAttr("disabled");
+    $("#rule_from_select").removeAttr("disabled");
     $("#rule_on_off").removeAttr("disabled");
     $("#rule_on_on").removeAttr("disabled");
     $("#rule_off_off").removeAttr("disabled");
@@ -41,10 +41,10 @@
   {
     $("#rule_tag").val("");
     $("#rule_rate").val("");
-    $("#to_id").val("");
-    $("#to_tag").val("");
-    $("#from_id").val("");
-    $("#from_tag").val("");
+    $("#rule_to_id").val("");
+    $("#rule_to_tag").val("");
+    $("#rule_from_id").val("");
+    $("#rule_from_tag").val("");
     $("#rule_on_off").attr("checked","checked");
     $("#rule_on_on").removeAttr("checked");
     $("#rule_off_off").removeAttr("checked");
@@ -61,80 +61,127 @@
     $("#rule_action_buttons").css("display","none");
     $("#rule_tag").attr("disabled","disabled");
     $("#rule_rate").attr("disabled","disabled");
-    $("#to_tag").attr("disabled","disabled");
-    $("#to_select").attr("disabled","disabled");
-    $("#from_tag").attr("disabled","disabled");
-    $("#from_select").attr("disabled","disabled");
+    $("#rule_to_tag").attr("disabled","disabled");
+    $("#rule_to_select").attr("disabled","disabled");
+    $("#rule_from_tag").attr("disabled","disabled");
+    $("#rule_from_select").attr("disabled","disabled");
     $("#rule_on_off").attr("disabled","disabled");
     $("#rule_on_on").attr("disabled","disabled");
     $("#rule_off_off").attr("disabled","disabled");
     $("#rule_off_on").attr("disabled","disabled");
   }
+  function ruleChooseDeal(type)
+  {
+    crossPage = "rule";
+    crossPageLink = "rules";
+    $("#rules_div").css("display","none");
+    $("#rule_p_s_controls").css("display","block");
+    $("#rule_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");
+
+    $("#rule_submit").click(function() {
+      var selRow = $("#deals_list").getGridParam("selrow");
+      if (selRow != null)
+      {
+        $("#rule_" + type + "_id").val($("#deals_list").getCell(selRow));
+        $("#rule_" + type + "_tag").val($("#deals_list").getCell(selRow, "tag"));
+        showRulePage();
+      }
+    });
+  }
+  function showRulePage()
+  {
+    $("#rules_div").css("display","block");
+    $("#rule_p_s_controls").css("display","none");
+    $("#rule_page_selection").html("");
+    $("#rule_submit").unbind("click");
+    crossPage = "";
+  }
 </script>
 
-<div id="rules_div">
-  <table id="rules_list"></table>
-  <div id="rules_pager"></div>
+<table id="rule_table">
+  <tr align="right">
+    <td>
+      <input type="button" value="discard" onclick=""/>
+      <input type="button" id="rule_submit" value="submit" onclick=""/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table id="rules_list"></table>
+      <div id="rules_pager"></div>
 
-  <table>
-    <tr id="rule_actions" align="right">
-      <td id="rule_index_buttons">
-        <input type="button" id="new_rule" value="new" onclick="newRule();"/>
-        <input type="button" id="change_rule" value="change" disabled="true"
-               onclick=""/>
-      </td>
-      <td id="rule_action_buttons" style="display: none">
-        <input type="button" id="cancel_rule" value="cancel" onclick="cancelRule();"/>
-        <input type="button" id="reset_rule" value="reset" onclick=""/>
-        <input type="button" id="save_rule" value="save" disabled="true"
-               onclick=""/>
-      </td>
-    </tr>
-    <tr>
+      <table>
+        <tr id="rule_actions" align="right">
+          <td id="rule_index_buttons">
+            <input type="button" id="new_rule" value="new" onclick="newRule();"/>
+            <input type="button" id="change_rule" value="change" disabled="true"
+                   onclick=""/>
+          </td>
+          <td id="rule_action_buttons" style="display: none">
+            <input type="button" id="cancel_rule" value="cancel" onclick="cancelRule();"/>
+            <input type="button" id="reset_rule" value="reset" onclick=""/>
+            <input type="button" id="save_rule" value="save" disabled="true"
+                   onclick=""/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tag
+            <input type="text" id="rule_tag" style="width: 570px" disabled="true"
+                   value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
+            <input type="radio" id="rule_on_off" name="rule_side" checked="true"
+                   disabled="true" onchange="$('#save_rule').removeAttr('disabled');">
+                   Change On/Fact Off </input>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Rate
+            <input type="text" id="rule_rate" style="width: 563px" disabled="true"
+                   value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
+            <input type="radio" id="rule_on_on" name="rule_side" disabled="true"
+                   onchange="$('#save_rule').removeAttr('disabled');">
+                   Change On/Fact On </input>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Give To
+            <input type="hidden" id="rule_to_id" value=""/>
+            <input type="text" id="rule_to_tag" style="width: 470px" disabled="true"
+                   value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
+            <input type="button" id="rule_to_select" value="select" disabled="true"
+                   onclick="ruleChooseDeal('to');"/>
+            <input type="radio" id="rule_off_off" name="rule_side" disabled="true"
+                   onchange="$('#save_rule').removeAttr('disabled');">
+                   Change Off/Fact Off </input>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Take From
+            <input type="hidden" id="rule_from_id" value=""/>
+            <input type="text" id="rule_from_tag" style="width: 443px" disabled="true"
+                   value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
+            <input type="button" id="rule_from_select" value="select" disabled="true"
+                   onclick="ruleChooseDeal('from');"/>
+            <input type="radio" id="rule_off_on" name="rule_side" disabled="true"
+                   onchange="$('#save_rule').removeAttr('disabled');">
+                   Change Off/Fact On </input>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table id="rule_p_s_controls" style="display: none">
+    <tr align="right">
       <td>
-        Tag
-        <input type="text" id="rule_tag" style="width: 570px" disabled="true"
-               value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
-        <input type="radio" id="rule_on_off" name="rule_side" checked="true"
-               disabled="true" onchange="$('#save_rule').removeAttr('disabled');">
-               Change On/Fact Off </input>
+        <input type="button" value="discard" onclick=""/>
+        <input type="button" id="rule_submit" value="submit" onclick=""/>
       </td>
     </tr>
-    <tr>
-      <td>
-        Rate
-        <input type="text" id="rule_rate" style="width: 563px" disabled="true"
-               value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
-        <input type="radio" id="rule_on_on" name="rule_side" disabled="true"
-               onchange="$('#save_rule').removeAttr('disabled');">
-               Change On/Fact On </input>
-      </td>
+    <tr id="rule_page_selection">
     </tr>
-    <tr>
-      <td>
-        Give To
-        <input type="hidden" id="to_id" value=""/>
-        <input type="text" id="to_tag" style="width: 470px" disabled="true"
-               value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
-        <input type="button" id="to_select" value="select" disabled="true"
-               onclick="" />
-        <input type="radio" id="rule_off_off" name="rule_side" disabled="true"
-               onchange="$('#save_rule').removeAttr('disabled');">
-               Change Off/Fact Off </input>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        Take From
-        <input type="hidden" id="from_id" value=""/>
-        <input type="text" id="from_tag" style="width: 443px" disabled="true"
-               value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
-        <input type="button" id="from_select" value="select" disabled="true"
-               onclick=""/>
-        <input type="radio" id="rule_off_on" name="rule_side" disabled="true"
-               onchange="$('#save_rule').removeAttr('disabled');">
-               Change Off/Fact On </input>
-      </td>
-    </tr>
-  </table>
-</div>
+</table>
