@@ -1,0 +1,86 @@
+<script type="text/javascript">
+  $("#rules_list").jqGrid({ datatype: "local"
+                          , colNames:['id', 'tag', 'to_id', 'to_tag', 'from_id',
+                                      'from_tag', 'rate']
+                          , colModel:[{ name:'id',       index:'id',       hidden:true },
+                                      { name:'tag',      index:'tag',      width:300 },
+                                      { name:'to_id',    index:'to_id',    hidden:true },
+                                      { name:'to_tag',   index:'to_tag',   width:200 },
+                                      { name:'from_id',  index:'from_id',  hidden:true },
+                                      { name:'from_tag', index:'from_tag', width:200 },
+                                      { name:'rate',     index:'rate',     width:100 }]
+                          , sortname: 'tag'
+                          , sortorder: 'asc'
+                          , rowNum: 10
+                          , rowList: [10,20,30]
+                          , pager: '#rules_pager'
+                          , viewrecords: true
+                          });
+</script>
+
+<div id="rules_div">
+  <table id="rules_list"></table>
+  <div id="rules_pager"></div>
+
+  <table>
+    <tr id="rule_actions" align="right">
+      <td id="rule_index_buttons">
+        <input type="button" id="new_rule" value="new" onclick=""/>
+        <input type="button" id="change_rule" value="change" disabled="true"
+               onclick=""/>
+      </td>
+      <td id="rule_action_buttons" style="display: none">
+        <input type="button" id="cancel_rule" value="cancel" onclick=""/>
+        <input type="button" id="reset_rule" value="reset" onclick=""/>
+        <input type="button" id="save_rule" value="save" disabled="true"
+               onclick=""/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Tag
+        <input type="text" id="rule_tag" style="width: 570px" disabled="true"
+               value="" onkeypress=""/>
+        <input type="radio" id="rule_on_off" name="rule_side" checked="true"
+               disabled="true" onchange="">
+               Change On/Fact Off </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Rate
+        <input type="text" id="rule_rate" style="width: 563px" disabled="true"
+               value="" onkeypress=""/>
+        <input type="radio" id="rule_on_on" name="rule_side" disabled="true"
+               onchange="">
+               Change On/Fact On </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Give To
+        <input type="hidden" id="to_id" value=""/>
+        <input type="text" id="to_tag" style="width: 470px" disabled="true"
+               value="" onkeypress=""/>
+        <input type="button" id="to_select" value="select" disabled="true"
+               onclick="" />
+        <input type="radio" id="rule_off_off" name="rule_side" disabled="true"
+               onchange="">
+               Change Off/Fact Off </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Take From
+        <input type="hidden" id="from_id" value=""/>
+        <input type="text" id="from_tag" style="width: 443px" disabled="true"
+               value="" onkeypress=""/>
+        <input type="button" id="from_select" value="select" disabled="true"
+               onclick=""/>
+        <input type="radio" id="rule_off_on" name="rule_side" disabled="true"
+               onchange="">
+               Change Off/Fact On </input>
+      </td>
+    </tr>
+  </table>
+</div>
