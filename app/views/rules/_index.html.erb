@@ -144,6 +144,41 @@
     if($("#rule_off_off").attr("checked")) { changeSide = false; factSide = false; }
     if($("#rule_off_on").attr("checked")) { changeSide = false; factSide = true; }
   }
+  function resetRuleElements()
+  {
+    $("#rule_tag").val(ruleTag);
+    $("#rule_rate").val(ruleRate);
+    $("#rule_to_id").val(ruleToId);
+    $("#rule_to_tag").val(ruleToTag);
+    $("#rule_from_id").val(ruleFromId);
+    $("#rule_from_tag").val(ruleFromTag);
+    $("#rule_on_off").removeAttr("checked");
+    $("#rule_on_on").removeAttr("checked");
+    $("#rule_off_off").removeAttr("checked");
+    $("#rule_off_on").removeAttr("checked");
+
+    if(changeSide && !factSide) {
+      $("#rule_on_off").attr("checked","checked");
+    }
+    if(changeSide && factSide) {
+      $("#rule_on_on").attr("checked","checked");
+    }
+    if(!changeSide && !factSide) {
+      $("#rule_off_off").attr("checked","checked");
+    }
+    if(!changeSide && factSide) {
+      $("#rule_off_on").attr("checked","checked");
+    }
+  }
+  function resetRule()
+  {
+    if(ruleCellId < 0) {
+      clearRuleElements();
+      $("#rule_on_off").attr("checked","checked");
+    } else {
+      resetRuleElements();
+    }
+  }
 </script>
 
 <%= raw(rules_jqgrid) %>
@@ -169,7 +204,7 @@
           </td>
           <td id="rule_action_buttons" style="display: none">
             <input type="button" id="cancel_rule" value="cancel" onclick="cancelRule();"/>
-            <input type="button" id="reset_rule" value="reset" onclick=""/>
+            <input type="button" id="reset_rule" value="reset" onclick="resetRule();"/>
             <input type="button" id="save_rule" value="save" disabled="true"
                    onclick="saveRule();"/>
           </td>
