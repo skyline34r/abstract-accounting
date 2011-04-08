@@ -135,16 +135,35 @@
   }
   function showRules()
   {
+    rememberDealElements();
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
+  }
+  function rememberDealElements()
+  {
+    dataPage = new Object();
+    dataPage["url"] = location.hash;
+    dataPage["isOffBalance"] = $("#isOfBalance").attr("checked");
+    dataPage["tag"] = $("#deal_tag").val();
+    dataPage["entity_id"] = $("#hide_deal_entity_id").val();
+    dataPage["entity_tag"] = $("#deal_entity_tag").val();
+    dataPage["give_id"] = $("#hide_deal_give_id").val();
+    dataPage["give_type"] = $("#hide_deal_give_type").val();
+    dataPage["give_tag"] = $("#deal_give_tag").val();
+    dataPage["take_id"] = $("#hide_deal_take_id").val();
+    dataPage["take_type"] = $("#hide_deal_take_type").val();
+    dataPage["take_tag"] = $("#deal_take_tag").val();
+    dataPage["dir_0"] = $("#dir_0").attr("checked");
+    dataPage["dir_1"] = $("#dir_1").attr("checked");
   }
 </script>
 
 <%= raw(deals_jqgrid) %>
 
-<div id="deals_div">
   <table id="deals_list"></table>
   <div id="deals_pager"></div>
+
+<div id="deals_div">
 
   <table>
     <tr id="deal_actions" align="right">
