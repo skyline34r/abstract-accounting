@@ -136,8 +136,6 @@
   function showRules()
   {
     rememberDealElements();
-    $("#deals_div").css("display","none");
-    $("#deal_p_s_controls").css("display","block");
   }
   function rememberDealElements()
   {
@@ -224,8 +222,7 @@
     </tr>
     <tr>
       <td align="left">
-        <%= link_to 'linked operations', {:controller=>'rules',  :action => 'index'},
-              :remote => true, :onclick => "showRules();"%>
+        <a href="#rules" onclick="showRules();">linked operations</a>
       </td>
     </tr>
   </table>
