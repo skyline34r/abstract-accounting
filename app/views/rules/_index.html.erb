@@ -79,7 +79,7 @@
       var selRow = $("#deals_list").getGridParam("selrow");
       if (selRow != null)
       {
-        $("#rule_" + type + "_id").val($("#deals_list").getCell(selRow));
+        $("#rule_" + type + "_id").val(selRow);
         $("#rule_" + type + "_tag").val($("#deals_list").getCell(selRow, "tag"));
         showRulePage();
       }

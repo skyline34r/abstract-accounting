@@ -56,6 +56,23 @@
   }
   function beforeDealSave()
   {
+    if((dataPage != null) && (dataPage["rules"].length > 0)) {
+      var url = "";
+      for(var i = 0; i < dataPage["rules"].length; i++) {
+        if(i == 0) {
+          url += "?";
+        } else {
+          url += "&";
+        }
+        url += "rules[][tag]=" + dataPage["rules"][i]["tag"];
+        url += "&rules[][from_id]=" + dataPage["rules"][i]["from_id"];
+        url += "&rules[][to_id]=" + dataPage["rules"][i]["to_id"];
+        url += "&rules[][fact_side]=" + dataPage["rules"][i]["fact_side"];
+        url += "&rules[][change_side]=" + dataPage["rules"][i]["change_side"];
+        url += "&rules[][rate]=" + dataPage["rules"][i]["rate"];
+      }
+      $("#new_deal").attr("action", $("#new_deal").attr("action") + url);
+    }
     $("#hide_deal_tag").val(escape($("#deal_tag").val()));
     if($("#dir_1").attr("checked") && ($("#deal_rate").val() != "")) {
       $("#hide_deal_rate").val(1/$("#deal_rate").val());
