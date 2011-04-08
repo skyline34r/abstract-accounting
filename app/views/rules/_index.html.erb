@@ -1,9 +1,19 @@
 <script type="text/javascript">
-  var ruleCellId;
+  var ruleCellId = -1;
+  var ruleTag;
+  var ruleRate;
+  var ruleToId;
+  var ruleToTag;
+  var ruleFromId;
+  var ruleFromTag;
+  var changeSide;
+  var factSide;
+
   function newRule()
   {
     clearRuleElements();
     enableRuleElements();
+    $("#rule_on_off").attr("checked","checked");
   }
   function enableRuleElements()
   {
@@ -17,7 +27,6 @@
     $("#rule_on_on").removeAttr("disabled");
     $("#rule_off_off").removeAttr("disabled");
     $("#rule_off_on").removeAttr("disabled");
-    $("#rule_on_off").attr("checked","checked");
     $("#save_rule").attr("disabled","disabled");
   }
   function clearRuleElements()
@@ -37,6 +46,7 @@
   {
     clearRuleElements();
     disableRuleElements();
+    ruleCellId = -1;
   }
   function disableRuleElements()
   {
@@ -57,6 +67,7 @@
     crossPageLink = "rules";
     $("#rule_table").css("display","none");
     $("#rule_p_s_controls").css("display","block");
+    $("#save_rule").removeAttr("disabled");
     $("#rule_page_selection").html("<%= escape_javascript(render :partial => 'deals/index') %>");
 
     $("#rule_submit").click(function() {
@@ -91,18 +102,47 @@
       if($("#rule_on_on").attr("checked")) { change_side = true; fact_side = true; }
       if($("#rule_off_off").attr("checked")) { change_side = false; fact_side = false; }
       if($("#rule_off_on").attr("checked")) { change_side = false; fact_side = true; }
-      $('#rules_list').addRowData($('#rules_list').getDataIDs().length,
-                                    { tag: $("#rule_tag").val()
-                                    , to_id: $("#rule_to_id").val()
-                                    , to_tag: $("#rule_to_tag").val()
-                                    , from_id: $("#rule_from_id").val()
-                                    , from_tag: $("#rule_from_tag").val()
-                                    , rate: $("#rule_rate").val()
-                                    , change_side: change_side
-                                    , fact_side: fact_side });
-      clearRuleElements();
-      disableRuleElements();
+      if(ruleCellId < 0) {
+        $('#rules_list').addRowData($('#rules_list').getDataIDs().length,
+                                      { tag: $("#rule_tag").val()
+                                      , to_id: $("#rule_to_id").val()
+                                      , to_tag: $("#rule_to_tag").val()
+                                      , from_id: $("#rule_from_id").val()
+                                      , from_tag: $("#rule_from_tag").val()
+                                      , rate: $("#rule_rate").val()
+                                      , change_side: change_side
+                                      , fact_side: fact_side });
+      } else {
+        $('#rules_list').setRowData(ruleCellId,
+                                      { tag: $("#rule_tag").val()
+                                      , to_id: $("#rule_to_id").val()
+                                      , to_tag: $("#rule_to_tag").val()
+                                      , from_id: $("#rule_from_id").val()
+                                      , from_tag: $("#rule_from_tag").val()
+                                      , rate: $("#rule_rate").val()
+                                      , change_side: change_side
+                                      , fact_side: fact_side });
+      }
+      cancelRule();
     }
+  }
+  function changeRule()
+  {
+    enableRuleElements();
+    setChangeElements();
+  }
+  function setChangeElements()
+  {
+    ruleTag = $("#rule_tag").val();
+    ruleRate = $("#rule_rate").val();
+    ruleToId = $("#rule_to_id").val();
+    ruleToTag = $("#rule_to_tag").val();
+    ruleFromId = $("#rule_from_id").val();
+    ruleFromTag = $("#rule_from_tag").val();
+    if($("#rule_on_off").attr("checked")) { changeSide = true; factSide = false; }
+    if($("#rule_on_on").attr("checked")) { changeSide = true; factSide = true; }
+    if($("#rule_off_off").attr("checked")) { changeSide = false; factSide = false; }
+    if($("#rule_off_on").attr("checked")) { changeSide = false; factSide = true; }
   }
 </script>
 
@@ -125,7 +165,7 @@
           <td id="rule_index_buttons">
             <input type="button" id="new_rule" value="new" onclick="newRule();"/>
             <input type="button" id="change_rule" value="change" disabled="true"
-                   onclick=""/>
+                   onclick="changeRule();"/>
           </td>
           <td id="rule_action_buttons" style="display: none">
             <input type="button" id="cancel_rule" value="cancel" onclick="cancelRule();"/>
