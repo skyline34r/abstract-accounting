@@ -101,6 +101,7 @@
     $("#deal_rate").val("");
     $("#deal_rate").attr("disabled","disabled");
     $("#isOfBalance").attr("disabled","disabled");
+    $("#deal_rules").attr("disabled","disabled");
   }
   function enabledElements()
   {
@@ -127,6 +128,7 @@
     $("#hide_is_off_balance").val("");
     $("#isOfBalance").removeAttr("disabled");
     $("#isOfBalance").removeAttr("checked");
+    $("#deal_rules").removeAttr("disabled");
   }
   function showDealIndexForm()
   {
@@ -155,6 +157,7 @@
   function showRules()
   {
     rememberDealElements();
+    location.hash = "rules";
   }
   function rememberDealElements()
   {
@@ -258,7 +261,8 @@
     </tr>
     <tr>
       <td align="left">
-        <a href="#rules" onclick="showRules();">linked operations</a>
+        <input type="button" id="deal_rules" value="linked operations"
+               onclick="showRules();" disabled="true"/>
       </td>
     </tr>
   </table>
