@@ -1,8 +1,9 @@
 <script type="text/javascript">
+  var ruleCellId;
   function newRule()
   {
-    enableRuleElements();
     clearRuleElements();
+    enableRuleElements();
   }
   function enableRuleElements()
   {
@@ -16,6 +17,7 @@
     $("#rule_on_on").removeAttr("disabled");
     $("#rule_off_off").removeAttr("disabled");
     $("#rule_off_on").removeAttr("disabled");
+    $("#rule_on_off").attr("checked","checked");
     $("#save_rule").attr("disabled","disabled");
   }
   function clearRuleElements()
@@ -26,15 +28,15 @@
     $("#rule_to_tag").val("");
     $("#rule_from_id").val("");
     $("#rule_from_tag").val("");
-    $("#rule_on_off").attr("checked","checked");
+    $("#rule_on_off").removeAttr("checked");
     $("#rule_on_on").removeAttr("checked");
     $("#rule_off_off").removeAttr("checked");
     $("#rule_off_on").removeAttr("checked");
   }
   function cancelRule()
   {
-    disableRuleElements();
     clearRuleElements();
+    disableRuleElements();
   }
   function disableRuleElements()
   {
@@ -89,17 +91,17 @@
       if($("#rule_on_on").attr("checked")) { change_side = true; fact_side = true; }
       if($("#rule_off_off").attr("checked")) { change_side = false; fact_side = false; }
       if($("#rule_off_on").attr("checked")) { change_side = false; fact_side = true; }
-      $('#rules_list').addRowData('sub', { id: $('#rules_list').getDataIDs().length
-                                         , tag: $("#rule_tag").val()
-                                         , to_id: $("#rule_to_id").val()
-                                         , to_tag: $("#rule_to_tag").val()
-                                         , from_id: $("#rule_from_id").val()
-                                         , from_tag: $("#rule_from_tag").val()
-                                         , rate: $("#rule_rate").val()
-                                         , change_side: change_side
-                                         , fact_side: fact_side });
-      disableRuleElements();
+      $('#rules_list').addRowData($('#rules_list').getDataIDs().length,
+                                    { tag: $("#rule_tag").val()
+                                    , to_id: $("#rule_to_id").val()
+                                    , to_tag: $("#rule_to_tag").val()
+                                    , from_id: $("#rule_from_id").val()
+                                    , from_tag: $("#rule_from_tag").val()
+                                    , rate: $("#rule_rate").val()
+                                    , change_side: change_side
+                                    , fact_side: fact_side });
       clearRuleElements();
+      disableRuleElements();
     }
   }
 </script>
@@ -137,8 +139,8 @@
             Tag
             <input type="text" id="rule_tag" style="width: 570px" disabled="true"
                    value="" onkeypress="$('#save_rule').removeAttr('disabled');"/>
-            <input type="radio" id="rule_on_off" name="rule_side" checked="true"
-                   disabled="true" onchange="$('#save_rule').removeAttr('disabled');">
+            <input type="radio" id="rule_on_off" name="rule_side" disabled="true"
+                   onchange="$('#save_rule').removeAttr('disabled');">
                    Change On/Fact Off </input>
           </td>
         </tr>
