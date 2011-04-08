@@ -1,7 +1,8 @@
-if($("#body").html().length <= 1) {
+if(($("#body").html().length <= 1) || (dataPage != null)) {
   $("#body").html("<%= escape_javascript(render :partial => 'deals/index') %>");
 }
 $("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_actions' ) %>");
 enabledElements();
 canSelectDeal = false;
 $("#deals_list").resetSelection();
+if(dataPage != null) loadDealElements();

@@ -184,6 +184,11 @@
       resetRuleElements();
     }
   }
+  function submitRule()
+  {
+    dataPage["rules"] = $('#rules_list').getRowData();
+    location.hash = "deals/new";
+  }
 </script>
 
 <%= raw(rules_jqgrid) %>
@@ -192,7 +197,7 @@
   <tr align="right">
     <td>
       <input type="button" value="discard" onclick="" disabled="true"/>
-      <input type="button" id="global_submit" value="submit" onclick=""/>
+      <input type="button" value="submit" onclick="submitRule();"/>
     </td>
   </tr>
   <tr>

@@ -153,6 +153,23 @@
     dataPage["take_tag"] = $("#deal_take_tag").val();
     dataPage["dir_0"] = $("#dir_0").attr("checked");
     dataPage["dir_1"] = $("#dir_1").attr("checked");
+    dataPage["rate"] = $("#deal_rate").val();
+  }
+  function loadDealElements()
+  {
+    if(dataPage["isOffBalance"]) $("#isOfBalance").attr("checked","checked");
+    $("#deal_tag").val(dataPage["tag"]);
+    $("#hide_deal_entity_id").val(dataPage["entity_id"]);
+    $("#deal_entity_tag").val(dataPage["entity_tag"]);
+    $("#hide_deal_give_id").val(dataPage["give_id"]);
+    $("#hide_deal_give_type").val(dataPage["give_type"]);
+    $("#deal_give_tag").val(dataPage["give_tag"]);
+    $("#hide_deal_take_id").val(dataPage["take_id"]);
+    $("#hide_deal_take_type").val(dataPage["take_type"]);
+    $("#deal_take_tag").val(dataPage["take_tag"]);
+    if(dataPage["dir_0"]) $("#dir_0").attr("checked","checked");
+      else $("#dir_1").attr("checked","checked");
+    $("#deal_rate").val(dataPage["rate"]);
   }
 </script>
 
