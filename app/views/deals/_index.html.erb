@@ -130,6 +130,7 @@
   }
   function showDealIndexForm()
   {
+    dataPage = null;
     if(crossPage.length) {
       $("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
       $("#deals_list").trigger("reloadGrid");
@@ -149,6 +150,7 @@
   {
     enabledElements();
     $("#save_deal").attr("disabled","disabled");
+    dataPage = null;
   }
   function showRules()
   {
