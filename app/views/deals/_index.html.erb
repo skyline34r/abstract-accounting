@@ -133,6 +133,11 @@
     enabledElements();
     $("#save_deal").attr("disabled","disabled");
   }
+  function showRules()
+  {
+    $("#deals_div").css("display","none");
+    $("#deal_p_s_controls").css("display","block");
+  }
 </script>
 
 <%= raw(deals_jqgrid) %>
@@ -196,6 +201,12 @@
             </td>
           </tr>
         </table>
+      </td>
+    </tr>
+    <tr>
+      <td align="left">
+        <%= link_to 'linked operations', {:controller=>'rules',  :action => 'index'},
+              :remote => true, :onclick => "showRules();"%>
       </td>
     </tr>
   </table>
