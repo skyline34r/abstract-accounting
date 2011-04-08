@@ -55,6 +55,11 @@ module RulesHelper
           $("#rule_off_on").attr("checked","checked");
         }
         $("#change_rule").removeAttr("disabled");
+      }'.to_json_var,
+      :beforeSelectRow => 'function()
+      {
+        if (canSelectRule) return true;
+        return false;
       }'.to_json_var
     }]
 

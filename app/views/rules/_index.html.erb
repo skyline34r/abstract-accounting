@@ -8,12 +8,14 @@
   var ruleFromTag;
   var changeSide;
   var factSide;
+  var canSelectRule = true;
 
   function newRule()
   {
     clearRuleElements();
     enableRuleElements();
     $("#rule_on_off").attr("checked","checked");
+    ruleCellId = -1;
   }
   function enableRuleElements()
   {
@@ -28,6 +30,8 @@
     $("#rule_off_off").removeAttr("disabled");
     $("#rule_off_on").removeAttr("disabled");
     $("#save_rule").attr("disabled","disabled");
+    canSelectRule = false;
+    $("#rules_list").resetSelection();
   }
   function clearRuleElements()
   {
@@ -47,6 +51,7 @@
     clearRuleElements();
     disableRuleElements();
     ruleCellId = -1;
+    canSelectRule = true;
   }
   function disableRuleElements()
   {
