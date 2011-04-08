@@ -50,6 +50,26 @@
     $("#rule_off_off").removeAttr("checked");
     $("#rule_off_on").removeAttr("checked");
   }
+  function cancelRule()
+  {
+    desableRuleElements();
+    clearRuleElements();
+  }
+  function desableRuleElements()
+  {
+    $("#rule_index_buttons").css("display","block");
+    $("#rule_action_buttons").css("display","none");
+    $("#rule_tag").attr("disabled","disabled");
+    $("#rule_rate").attr("disabled","disabled");
+    $("#to_tag").attr("disabled","disabled");
+    $("#to_select").attr("disabled","disabled");
+    $("#from_tag").attr("disabled","disabled");
+    $("#from_select").attr("disabled","disabled");
+    $("#rule_on_off").attr("disabled","disabled");
+    $("#rule_on_on").attr("disabled","disabled");
+    $("#rule_off_off").attr("disabled","disabled");
+    $("#rule_off_on").attr("disabled","disabled");
+  }
 </script>
 
 <div id="rules_div">
@@ -64,7 +84,7 @@
                onclick=""/>
       </td>
       <td id="rule_action_buttons" style="display: none">
-        <input type="button" id="cancel_rule" value="cancel" onclick=""/>
+        <input type="button" id="cancel_rule" value="cancel" onclick="cancelRule();"/>
         <input type="button" id="reset_rule" value="reset" onclick=""/>
         <input type="button" id="save_rule" value="save" disabled="true"
                onclick=""/>
