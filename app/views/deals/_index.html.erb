@@ -114,7 +114,7 @@
   function showDealIndexForm()
   {
     if(crossPage.length) {
-      $("#actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
+      $("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
       $("#deals_list").trigger("reloadGrid");
       disabledElements();
       canSelectDeal = true;
@@ -158,10 +158,9 @@
 
 <%= raw(deals_jqgrid) %>
 
+<div id="deals_div">
   <table id="deals_list"></table>
   <div id="deals_pager"></div>
-
-<div id="deals_div">
 
   <table>
     <tr id="deal_actions" align="right">
