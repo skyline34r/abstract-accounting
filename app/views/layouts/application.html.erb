@@ -4,11 +4,13 @@
 
   <%= stylesheet_link_tag 'jquery/ui-lightness/jquery-ui.css' %>
   <%= stylesheet_link_tag 'jquery/ui.jqgrid.css' %>
+  <%= stylesheet_link_tag 'main_menu.css' %>
 
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'locale/grid.locale-en.js' %>
   <%= javascript_include_tag 'jquery.grid.base.js' %>
   <%= javascript_include_tag 'utils.js' %>
+  <%= javascript_include_tag 'menu.js' %>
 
   <%= csrf_meta_tag %>
 
@@ -16,6 +18,103 @@
 
 </head>
 <body>
+
+  <ul id="nav">
+    <li><a href="#">Account</a>
+      <ul>
+        <li>
+          <% if user_signed_in? %>
+            <%= link_to('Logout', destroy_user_session_path) %>
+          <% else %>
+            <%= link_to('Login', new_user_session_path)  %>
+          <% end %>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#">Manage</a>
+      <ul>
+        <li>
+          <% if current_user != nil and can? :manage, Entity %>
+            <a href="#entities" class="page_link">Entity</a>
+          <% else %>
+            <a href="#" onclick="return false;" style="color: buttonshadow" >Entity</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Asset, Money %>
+            <a href="#resources" class="page_link">Resource</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Resource</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Chart %>
+            <a href="#charts" class="page_link">Chart</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Chart</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Quote %>
+            <a href="#quotes" class="page_link">Quote</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Quote</a>
+          <% end %>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#">Process</a>
+      <ul>
+        <li>
+          <% if current_user != nil and can? :manage, Deal %>
+            <a href="#deals" class="page_link">Deal</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Deal</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Fact %>
+            <a href="#facts" class="page_link">Fact</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Fact</a>
+          <% end %>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#">Report</a>
+      <ul>
+        <li>
+          <% if current_user != nil and can? :manage, GeneralLedger %>
+            <a href="#general_ledgers" class="page_link">GeneralLedger</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >GeneralLedger</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Balance %>
+            <a href="#balances" class="page_link">Balance</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Balance</a>
+          <% end %>
+        </li>
+        <li>
+          <% if current_user != nil and can? :manage, Transcript %>
+            <a href="#transcripts" class="page_link">Transcript</a>
+          <% else %>
+            <a href="#" onclick="return false" style="color: buttonshadow" >Transcript</a>
+          <% end %>
+        </li>
+      </ul>
+    </li>
+    <% if current_user != nil and current_user.email == "root@mail.com" then %>
+    <li><a href="#">Administration</a>
+      <ul>
+        <li><a href="#users" class="page_link">User</a></li>
+        <li><a href="#roles" class="page_link">Role</a></li>
+      </ul>
+    </li>
+    <% end %>
+  </ul>
 
   <%= yield %>
 
