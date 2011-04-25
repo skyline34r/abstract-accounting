@@ -6,9 +6,12 @@ class CreateTasks < ActiveRecord::Migration
       t.references :reporter
       t.references :assignee
     end
+
+    add_index :tasks, :summary, :unique => true
   end
 
   def self.down
+    remove_index :tasks, :summary
     drop_table :tasks
   end
 end

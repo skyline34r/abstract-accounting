@@ -22,4 +22,18 @@ class TaskTest < ActiveSupport::TestCase
       :status => 1, :reporter => u).invalid?,
       "Wrong task invalid state"
   end
+
+  test "summary must be unique" do
+    u = User.new(:email => "test@mail.com",
+             :password => "sasasasa",
+             :password_confirmation => "sasasasa",
+             :username => "test_root")
+    assert u.save, "user is not saved"
+    assert Task.new(:summary => "Summary",
+      :status => 1, :reporter => u, :assignee => u).save,
+      "Task is not saved"
+    assert Task.new(:summary => "Summary",
+      :status => 1, :reporter => u, :assignee => u).invalid?,
+      "Task is valid"
+  end
 end

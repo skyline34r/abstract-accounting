@@ -120,6 +120,8 @@ ActiveRecord::Schema.define(:version => 20110425095028) do
     t.integer "assignee_id"
   end
 
+  add_index "tasks", ["summary"], :name => "index_tasks_on_summary", :unique => true
+
   create_table "txns", :force => true do |t|
     t.integer "fact_id"
     t.float   "value"
