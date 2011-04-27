@@ -10,9 +10,10 @@ module UsersHelper
       :url => '/users/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['email', 'role_ids'],
+      :colNames => ['email', 'entity', 'role_ids'],
       :colModel => [
-        { :name => 'email',    :index => 'email',    :width => 800 },
+        { :name => 'email',    :index => 'email',      :width => 400 },
+        { :name => 'entity',   :index => 'entity.tag', :width => 400 },
         { :name => 'role_ids', :index => 'role_ids', :width => 5, :hidden => true }
       ],
       :pager => '#data_pager',

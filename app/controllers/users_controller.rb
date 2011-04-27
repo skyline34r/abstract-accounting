@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   end
 
   def view
-    @columns = ['email', 'role_ids']
+    @columns = ['email', 'entity.tag', 'role_ids']
     @users = User.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
