@@ -27,7 +27,9 @@ class ApplicationController < ActionController::Base
         :cell => columns.map do |c|
                    value = r
                    c.each_line('.') do |n|
-                     value = value.send(n.chomp('.'))
+                     if(value != nil) then
+                       value = value.send(n.chomp('.'))
+                     end
                    end
                    value
                  end}
