@@ -25,6 +25,7 @@ module UsersHelper
       :onSelectRow => "function(cell)
       {
         $('#user_email').val($('#data_list').getCell(cell, 'email'));
+        $('#user_entity_tag').val($('#data_list').getCell(cell, 'entity'));
         if($('#data_list').getCell(cell, 'email') == 'root@mail.com') {
           $('#change_user').attr('disabled','disabled');
           $('#change_user_pass').attr('disabled','disabled');
