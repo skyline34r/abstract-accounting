@@ -15,7 +15,8 @@ class UsersControllerTest < ActionController::TestCase
   test "should get edit user" do
     u = User.new(:email => "user@mail.com",
                  :password => "user_pass",
-                 :password_confirmation => "user_pass")
+                 :password_confirmation => "user_pass",
+                 :entity_id => 1)
     assert u.save, "User can't be saved"
     xml_http_request :get, :edit, :id => u.id
     assert_response :success
@@ -26,7 +27,8 @@ class UsersControllerTest < ActionController::TestCase
        xml_http_request :post, :create,
                         :user => { :email => "user@mail.com",
                                    :password => "user_pass",
-                                   :password_confirmation => "user_pass"}
+                                   :password_confirmation => "user_pass",
+                                   :entity_id => 1 }
     end
     assert_equal 1, User.where(:email =>'user@mail.com').count,
       'User not saved'
@@ -35,11 +37,13 @@ class UsersControllerTest < ActionController::TestCase
   test "should update user" do
     u = User.new(:email => "user@mail.com",
                  :password => "user_pass",
-                 :password_confirmation => "user_pass")
+                 :password_confirmation => "user_pass",
+                 :entity_id => 1)
     assert u.save, "User can't be saved"
 
     xml_http_request :put, :update, :id => u.id,
-      :user => { :email => "change@mail.com"}
+      :user => { :email => "change@mail.com",
+                 :entity_id => 2 }
     assert_response :success
     assert_equal 'change@mail.com', User.find(u.id).email,
       'User not edited'
@@ -51,6 +55,7 @@ class UsersControllerTest < ActionController::TestCase
                         :user => { :email => "user@mail.com",
                                    :password => "user_pass",
                                    :password_confirmation => "user_pass",
+                                   :entity_id => 1,
                                    :role_ids => [ roles(:user).id, roles(:operator).id]
                                  }
     end

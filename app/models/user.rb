@@ -6,8 +6,9 @@ class User < ActiveRecord::Base
          :validatable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :username, :password, :password_confirmation,
+  attr_accessible :email, :password, :password_confirmation,
                   :remember_me, :role_ids
+  belongs_to :entity
 
   def role?(role)
     return !!self.roles.find_by_name(role.to_s)
