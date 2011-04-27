@@ -81,45 +81,66 @@
 
 <%= raw(users_jqgrid) %>
 
-<table id="data_list"></table>
-<div id="data_pager"></div>
+<div id="users_div">
+  <table id="data_list"></table>
+  <div id="data_pager"></div>
 
-<table>
-  <tr id="actions" align="right">
-    <%= render 'form_index' %>
-  </tr>
-  <tr align="left" id="email" style="display: table-row">
-    <td colspan="3">
-      email:
-      <input id="user_email" type="text" disabled="true" value="" size="80"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left" id="pass" style="display: none">
-    <td colspan="3">
-      password:
-      <input id="user_pass" type="password" value="" size="76"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr align="left" id="pass_c" style="display: none">
-    <td colspan="3">
-      password confirmation:
-      <input id="user_pass_c" type="password" value="" size="64"
-             onkeypress="$('#save_user').removeAttr('disabled');" />
-    </td>
-  </tr>
-  <tr id="roles" style="display: none">
-    <td colspan="3">
-      <p>Roles</p>
-      <% for role in Role.find(:all) %>
-        <div>
-          <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
-                :disabled => true,
-                :onchange => "$('#save_user').removeAttr('disabled');"%>
-          <%= role.name %>
-        </div>
-      <% end %>
-    </td>
-  </tr>
+  <table>
+    <tr id="actions" align="right">
+      <%= render 'form_index' %>
+    </tr>
+    <tr align="left" id="email" style="display: table-row">
+      <td colspan="3">
+        email:
+        <input id="user_email" type="text" disabled="true" value="" size="80"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="3">
+        entity:
+        <input id="user_entity_tag" type="text" disabled="true" value="" size="71" />
+        <input id="user_entity_choose" type="button" value="choose" disabled="true"
+               onclick=""/>
+      </td>
+    </tr>
+    <tr align="left" id="pass" style="display: none">
+      <td colspan="3">
+        password:
+        <input id="user_pass" type="password" value="" size="76"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr align="left" id="pass_c" style="display: none">
+      <td colspan="3">
+        password confirmation:
+        <input id="user_pass_c" type="password" value="" size="64"
+               onkeypress="$('#save_user').removeAttr('disabled');" />
+      </td>
+    </tr>
+    <tr id="roles" style="display: none">
+      <td colspan="3">
+        <p>Roles</p>
+        <% for role in Role.find(:all) %>
+          <div>
+            <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
+                  :disabled => true,
+                  :onchange => "$('#save_user').removeAttr('disabled');"%>
+            <%= role.name %>
+          </div>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<table id="user_p_s_controls" style="display: none">
+    <tr align="right">
+      <td>
+        <input type="button" value="discard" onclick=""/>
+        <input type="button" id="user_submit" value="submit" onclick=""/>
+      </td>
+    </tr>
+    <tr id="user_page_selection">
+    </tr>
 </table>
