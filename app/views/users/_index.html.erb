@@ -52,6 +52,7 @@
       uncheckRoles('enabled');
       $("#user_email").removeAttr('disabled');
       $("#user_email").val(email);
+      $("#user_entity_choose").removeAttr("disabled");
       $("#roles").css("display","block");
       if(loadType == 'new')
       {
@@ -77,6 +78,31 @@
   {
     viewIndexFrom();
   }
+  function userChoiseEntity()
+  {
+    crossPage = "user";
+    crossPageLink = "users/new";
+    $("#users_div").css("display","none");
+    $("#user_p_s_controls").css("display","block");
+    $("#user_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
+    $("#user_submit").click(function() {
+      var selRow = $("#entity_list").getGridParam("selrow");
+      if (selRow != null)
+      {
+        $("#hide_user_entity_id").val(selRow);
+        $("#user_entity_tag").val($("#entity_list").getCell(selRow, "tag"));
+        showUserPage();
+      }
+    });
+  }
+  function showUserPage()
+  {
+    $("#users_div").css("display","block");
+    $("#user_p_s_controls").css("display","none");
+    $("#user_page_selection").html("");
+    $("#user_submit").unbind("click");
+    crossPage = "";
+  }
 </script>
 
 <%= raw(users_jqgrid) %>
@@ -101,7 +127,7 @@
         entity:
         <input id="user_entity_tag" type="text" disabled="true" value="" size="71" />
         <input id="user_entity_choose" type="button" value="choose" disabled="true"
-               onclick=""/>
+               onclick="userChoiseEntity();"/>
       </td>
     </tr>
     <tr align="left" id="pass" style="display: none">
@@ -137,7 +163,7 @@
 <table id="user_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" value="discard" onclick=""/>
+        <input type="button" value="discard" onclick="showUserPage();"/>
         <input type="button" id="user_submit" value="submit" onclick=""/>
       </td>
     </tr>
