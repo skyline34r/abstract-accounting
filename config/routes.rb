@@ -59,6 +59,7 @@ Abstract::Application.routes.draw do
     end
   end
   resources :rules
+  resources :waybills
   get "home/index"
 
   # The priority is based upon order of creation:
