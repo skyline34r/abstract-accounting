@@ -106,7 +106,7 @@
         </li>
       </ul>
     </li>
-    <% if current_user != nil and current_user.email == "root@mail.com" then %>
+    <% if current_user != nil and current_user.entity_id == 0 then %>
     <li><a href="#">Administration</a>
       <ul>
         <li><a href="#users" class="page_link">User</a></li>
