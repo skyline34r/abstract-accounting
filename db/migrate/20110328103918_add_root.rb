@@ -10,5 +10,6 @@ class AddRoot < ActiveRecord::Migration
   end
 
   def self.down
+    User.where(:email => "root@mail.com").first.delete
   end
 end

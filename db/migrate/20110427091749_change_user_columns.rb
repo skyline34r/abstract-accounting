@@ -5,5 +5,7 @@ class ChangeUserColumns < ActiveRecord::Migration
   end
 
   def self.down
+    remove_column :users, :entity_id
+    add_column :users, :username, :string
   end
 end
