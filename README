@@ -42,3 +42,5 @@ Prior to the development, you must do the following:
 Run "bundle install"
 Run "rails generate jquery:install --ui --jqgrid"
 Write in environment.rb gmail username and password
+Write in config.yml super admin email and password
+Run "rake db:seed"
