@@ -1,5 +1,8 @@
 <script type="text/javascript">
-  var email = '';
+  var email = "";
+  var roles = "";
+  var entity_id = "";
+  var entity_tag = "";
   var canSelect = true;
   var changePass;
   function uncheckRoles(enabled)
@@ -28,18 +31,22 @@
   }
   function onReset()
   {
-    $('#user_email').val(email);
-    $('#user_pass').val('');
-    $('#user_pass_c').val('');
-    $('#user_entity_tag').val('');
-    $('#hide_user_entity_id').val('');
-    $('#save_user').attr('disabled','disabled');
-    uncheckRoles('enabled');
+    $("#user_email").val(email);
+    $("#user_pass").val("");
+    $("#user_pass_c").val("");
+    $("#user_entity_tag").val(entity_tag);
+    $("#hide_user_entity_id").val(entity_id);
+    $("#save_user").attr("disabled","disabled");
+    uncheckRoles("enabled");
+    if(roles != "") {
+      checkRoles(roles);
+    }
   }
-  function viewActionForm(emailValue, loadType)
+  function viewActionForm(emailValue, entityId, loadType)
   {
     canSelect = false;
     email = emailValue;
+    entity_id = entityId;
     $("#data_list").resetSelection();
     if(loadType == 'edit_pass')
     {
@@ -47,11 +54,11 @@
       $("#pass").css("display","table-row");
       $("#pass_c").css("display","table-row");
       $("#roles").css("display","none");
-      $('#hide_email').attr('name', '');
+      $("#hide_email").attr("name", "");
     }
     else
     {
-      uncheckRoles('enabled');
+      uncheckRoles("enabled");
       $("#user_email").removeAttr('disabled');
       $("#user_email").val(email);
       $("#user_entity_choose").removeAttr("disabled");
@@ -60,6 +67,7 @@
       {
         $("#pass").css("display","table-row");
         $("#pass_c").css("display","table-row");
+        roles = "";
       }
       else
       {
@@ -74,7 +82,7 @@
   }
   function viewIndexFrom()
   {
-    location.hash = '#users'
+    location.hash = "#users";
   }
   function onCancel()
   {
@@ -105,6 +113,13 @@
     $("#user_page_selection").html("");
     $("#user_submit").unbind("click");
     crossPage = "";
+  }
+  function checkRoles(ids)
+  {
+    for(var i=0; i<ids.length; i++)
+    {
+      $("#user_role_id_" + ids[i]).attr("checked", "checked");
+    }
   }
 </script>
 
