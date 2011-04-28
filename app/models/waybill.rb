@@ -44,6 +44,7 @@ end
 class Waybill < ActiveRecord::Base
   validates :date, :owner, :organization, :presence => true
   validates_with WaybillValidator, :if => "!vatin.nil? && !vatin.empty?"
+  validates_uniqueness_of :vatin, :if => "!vatin.nil? && !vatin.empty?"
   belongs_to :owner, :class_name => 'Entity'
   belongs_to :organization, :class_name => 'Entity'
 end
