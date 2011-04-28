@@ -31,6 +31,8 @@
     $('#user_email').val(email);
     $('#user_pass').val('');
     $('#user_pass_c').val('');
+    $('#user_entity_tag').val('');
+    $('#hide_user_entity_id').val('');
     $('#save_user').attr('disabled','disabled');
     uncheckRoles('enabled');
   }
@@ -92,6 +94,7 @@
         $("#hide_user_entity_id").val(selRow);
         $("#user_entity_tag").val($("#entity_list").getCell(selRow, "tag"));
         showUserPage();
+        $("#save_user").removeAttr('disabled');
       }
     });
   }
@@ -125,7 +128,8 @@
     <tr align="left">
       <td colspan="3">
         entity:
-        <input id="user_entity_tag" type="text" disabled="true" value="" size="71" />
+        <input id="user_entity_tag" type="text" disabled="true" value=""
+               size="71"/>
         <input id="user_entity_choose" type="button" value="choose" disabled="true"
                onclick="userChoiseEntity();"/>
       </td>

@@ -1,7 +1,19 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
-#   Mayor.create(:name => 'Daley', :city => cities.first)
+APP_CONFIG = YAML.load_file("#{Rails.root}/config/config.yml")
+
+if Role.where(:name => "admin").count < 1 then
+  Role.new(:name => "admin").save
+end
+
+User.where(:entity_id => 0).map do |c|
+  if c.email != APP_CONFIG['email'] then
+    c.delete
+  end
+end
+
+if User.where(:entity_id => 0).count < 1 then
+  User.new(:email => APP_CONFIG['email'],
+           :password => APP_CONFIG['password'],
+           :password_confirmation => APP_CONFIG['password'],
+           :entity_id => 0,
+           :role_ids => [Role.where(:name => "admin").first.id]).save
+end
