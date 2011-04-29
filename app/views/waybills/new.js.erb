@@ -1,2 +1,11 @@
 $("#body").html("<%= escape_javascript(render :partial => 'waybills/form_actions') %>");
 document.title = "Abstract::Waybills";
+if("<%= if(current_user != nil && current_user.entity != nil) then
+        'true'
+       else
+         'false'
+       end %>" == "true") {
+  $("#save_waybill").removeAttr("disabled");
+} else {
+  $("#save_waybill").attr("disabled", "disabled");
+}
