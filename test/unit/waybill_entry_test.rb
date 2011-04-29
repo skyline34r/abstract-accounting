@@ -36,4 +36,20 @@ class WaybillEntryTest < ActiveSupport::TestCase
       :unit => "th", :amount => 20).save, "Save waybill entry"
     assert_equal 3, WaybillEntry.all.length, "Waybill entries count is equal to 3"
   end
+
+  test "assign text for resource" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :organization => entities(:abstract))
+    assert wb.save, "Save waybill with entries"
+
+    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 20)
+    we.assign_resource_text("edge")
+    assert we.save, "Save waybill entry"
+    assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
+
+    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 10)
+    we.assign_resource_text("sonyvaio")
+    assert we.save, "Save waybill entry"
+    assert_equal 1, Asset.where(:tag => "sonyvaio").length, "Check asset is not created"
+  end
 end
