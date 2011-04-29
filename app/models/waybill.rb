@@ -47,4 +47,14 @@ class Waybill < ActiveRecord::Base
   validates_uniqueness_of :vatin, :if => "!vatin.nil? && !vatin.empty?"
   belongs_to :owner, :class_name => 'Entity'
   belongs_to :organization, :class_name => 'Entity'
+  #temp functionality
+  def assign_organization_text(entity)
+    return false unless self.organization.nil?
+    if Entity.where(:tag => entity).length > 0
+      self.organization = Entity.where(:tag => entity).first
+    else
+      self.organization = Entity.new(:tag => entity)
+    end
+  end
+  #end temp
 end

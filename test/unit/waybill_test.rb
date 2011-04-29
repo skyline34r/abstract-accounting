@@ -53,4 +53,20 @@ class WaybillTest < ActiveSupport::TestCase
               :vatin => "500100732259").invalid?,
               "Waybill vatin is not unique"
   end
+  test "save waybill with organization text" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :vatin => "7830002293")
+    wb.assign_organization_text("abstract")
+    if wb.invalid?
+      pp wb.errors
+    end
+    assert wb.save, "Waybill not saved"
+
+
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :vatin => "7930002297")
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+    assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
+  end
 end
