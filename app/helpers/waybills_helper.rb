@@ -66,6 +66,7 @@ module WaybillsHelper
     pager_button_del = [:navButtonAdd, '#waybills_pager', {:caption => 'Del',
       :buttonicon => 'ui-icon-trash', :onClickButton =>
       'function() {
+         $("#waybills_list").delRowData($("#waybills_list").getGridParam("selrow"));
        }'.to_json_var }]
 
     jqgrid_api 'waybills_list', grid, pager, pager_button_add, pager_button_edit,
