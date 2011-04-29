@@ -2,6 +2,14 @@
   $(function() {
     $("#waybill_date").datepicker();
   });
+
+  function sendWaybill() {
+    var d = new Date($("#waybill_date").val());
+    $("#hide_waybill_date").val(d.toUTCString());
+    $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
+    $("#new_waybill").attr("action", "/waybills?organization_text="
+      + escape($("#waybill_organization").val()));
+  }
 </script>
 
 <table id="waybill_add_list">
@@ -38,12 +46,14 @@
     <tr align="right">
       <td colspan="2" style="width: 45px">
         <%= form_for(@waybill, :remote => true) do |f| %>
-        <%= f.submit "save", :id => "save_waybill", :onclick => "" %>
+        <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
         <%= f.hidden_field :date, :id => "hide_waybill_date" %>
         <%= f.hidden_field :owner_id, :id => "hide_waybill_owner",
-                           :value => "" %>
+                           :value => if(current_user != nil &&
+                                        current_user.entity != nil) then
+                                       current_user.entity.id
+                                     end %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
-        <%= hidden_field :organization_text, :id => "hide_waybill_org" %>
         <% end %>
       </td>
     </tr>
