@@ -7,8 +7,8 @@ class WaybillEntry < ActiveRecord::Base
 
   def assign_resource_text(resource)
     return false unless self.resource.nil?
-    if Asset.where(:tag => resource).length > 0
-      self.resource = Asset.where(:tag => resource).first
+    if !Asset.find(:first, :conditions => ["lower(tag) = lower(?)", resource]).nil?
+      self.resource = Asset.find(:first, :conditions => ["lower(tag) = lower(?)", resource])
     else
       self.resource = Asset.new(:tag => resource)
     end

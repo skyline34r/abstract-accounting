@@ -52,4 +52,21 @@ class WaybillEntryTest < ActiveSupport::TestCase
     assert we.save, "Save waybill entry"
     assert_equal 1, Asset.where(:tag => "sonyvaio").length, "Check asset is not created"
   end
+
+  test "case insensitive comparison" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :organization => entities(:abstract))
+    assert wb.save, "Save waybill with entries"
+
+    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 20)
+    we.assign_resource_text("edge")
+    assert we.save, "Save waybill entry"
+    assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
+
+    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 10)
+    we.assign_resource_text("eDgE")
+    assert we.save, "Save waybill entry"
+    assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
+    assert_equal 0, Asset.where(:tag => "eDgE").length, "Check asset is not created"
+  end
 end
