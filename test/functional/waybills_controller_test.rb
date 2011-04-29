@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class WaybillsControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
 
   test "should get new waybills" do
     xml_http_request :get, :new
