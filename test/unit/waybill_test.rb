@@ -69,4 +69,11 @@ class WaybillTest < ActiveSupport::TestCase
     assert wb.save, "Waybill not saved"
     assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
   end
+
+  test "save two bills without vatin" do
+    assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :organization => entities(:abstract)).save, "Save first waybill"
+    assert Waybill.new(:date => DateTime.now, :owner => entities(:jdow),
+              :organization => entities(:abstract)).save, "Save first waybill"
+  end
 end
