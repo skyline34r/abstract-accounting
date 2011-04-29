@@ -21,9 +21,29 @@ module WaybillsHelper
       :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
-      :onSelectRow => "function(id) {
-              $('#waybills_list').editRow(id,true);
-            }".to_json_var
+      :onSelectRow => 'function(id) {
+        if(editSelId >= 0) {
+          $("#waybills_list").saveRow(editSelId, false, "clientArray");
+          $("#waybills_list").restoreRow(editSelId);
+          editSelId = -1;
+        }
+      }'.to_json_var,
+      :ondblClickRow => 'function(id) {
+        if(editSelId >= 0) {
+          $("#waybills_list").saveRow(editSelId, false, "clientArray");
+          $("#waybills_list").restoreRow(editSelId);
+        }
+        editSelId = id;
+        $("#waybills_list").editRow(id,true);
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        uin = 0;
+        $("#waybills_list").addRowData(uin, { resource: ""
+                                            , amount: ""
+                                            , unit: "" });
+        uin++;
+      }'.to_json_var
     }]
 
     pager = [:navGrid, '#waybills_pager', {:refresh => false, :add => false,
@@ -34,10 +54,10 @@ module WaybillsHelper
     pager_button_add = [:navButtonAdd, '#waybills_pager', {:caption => 'Add',
       :buttonicon => 'ui-icon-plus', :onClickButton =>
       'function() {
-         $("#waybills_list").addRowData($("#waybills_list").getDataIDs().length,
-                                        { resource: ""
-                                        , amount: ""
-                                        , unit: "" });
+        $("#waybills_list").addRowData(uin, { resource: ""
+                                            , amount: ""
+                                            , unit: "" });
+        uin++;
        }'.to_json_var }]
     pager_button_edit = [:navButtonAdd, '#waybills_pager', {:caption => 'Edit',
       :buttonicon => 'ui-icon-pencil', :onClickButton =>
