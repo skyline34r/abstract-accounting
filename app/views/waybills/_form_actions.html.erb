@@ -35,5 +35,16 @@
         <input type="text" id="waybill_vatin" value="" size="30"/>
       </td>
     </tr>
+    <tr align="right">
+      <td colspan="2" style="width: 45px">
+        <%= form_for(@waybill, :remote => true) do |f| %>
+        <%= f.submit "save", :id => "save_waybill", :onclick => "" %>
+        <%= f.hidden_field :date, :id => "hide_waybill_date" %>
+        <%= f.hidden_field :owner_id, :id => "hide_waybill_owner",
+                           :value => "" %>
+        <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
+        <% end %>
+      </td>
+    </tr>
   </tbody>
 </table>
