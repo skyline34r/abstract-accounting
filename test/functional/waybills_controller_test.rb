@@ -24,8 +24,8 @@ class WaybillsControllerTest < ActionController::TestCase
        xml_http_request :post, :create,
                         :waybill => { :date => DateTime.now,
                                       :owner => entities(:sergey),
-                                      :vatin => '500100732259',
-                                      :organization_text => 'abstract' }
+                                      :vatin => '500100732259' },
+                        :organization_text => 'abstract'
     end
     assert_equal 1, Entity.where(:tag =>'abstract').count,
       'Entity not saved'
