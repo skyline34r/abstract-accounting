@@ -4,8 +4,14 @@ class WaybillsController < ApplicationController
   end
 
   def create
-    @waybill = Waybill.new(params[:waybill])
+    @waybill = Waybill.new(:date => params[:waybill][:date],
+                           :owner => params[:waybill][:owner],
+                           :organization => params[:waybill][:organization],
+                           :vatin => params[:waybill][:vatin])
+    if params[:waybill][:organization_text] != '' then
+      @waybill.assign_organization_text(params[:waybill][:organization_text])
+    end
     @waybill.save
-    render :action => "new"
+    render :action => 'new'
   end
 end

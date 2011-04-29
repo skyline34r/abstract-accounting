@@ -18,4 +18,18 @@ class WaybillsControllerTest < ActionController::TestCase
     assert_equal 1, Waybill.where(:vatin =>'500100732259').count,
       'Waybill not saved'
   end
+
+  test "should create waybills with text entity" do
+    assert_difference('Waybill.count') do
+       xml_http_request :post, :create,
+                        :waybill => { :date => DateTime.now,
+                                      :owner => entities(:sergey),
+                                      :vatin => '500100732259',
+                                      :organization_text => 'abstract' }
+    end
+    assert_equal 1, Entity.where(:tag =>'abstract').count,
+      'Entity not saved'
+    assert_equal 1, Waybill.where(:vatin =>'500100732259').count,
+      'Waybill not saved'
+  end
 end
