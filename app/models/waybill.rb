@@ -51,8 +51,8 @@ class Waybill < ActiveRecord::Base
   #temp functionality
   def assign_organization_text(entity)
     return false unless self.organization.nil?
-    if Entity.where(:tag => entity).length > 0
-      self.organization = Entity.where(:tag => entity).first
+    if !Entity.find(:first, :conditions => ["lower(tag) = lower(?)", entity]).nil?
+      self.organization = Entity.find(:first, :conditions => ["lower(tag) = lower(?)", entity])
     else
       self.organization = Entity.new(:tag => entity)
     end

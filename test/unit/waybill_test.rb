@@ -76,4 +76,18 @@ class WaybillTest < ActiveSupport::TestCase
     assert Waybill.new(:date => DateTime.now, :owner => entities(:jdow),
               :organization => entities(:abstract)).save, "Save first waybill"
   end
+
+  test "save case insensitive" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :vatin => "7930002297")
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+    assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :vatin => "7830002293")
+    wb.assign_organization_text("AbsTract1")
+    assert wb.save, "Waybill not saved"
+    assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
+    assert_equal 0,Entity.where(:tag => "AbsTract1").length, "AbsTract1 entity saved"
+  end
 end
