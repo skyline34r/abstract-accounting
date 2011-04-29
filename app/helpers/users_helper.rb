@@ -39,11 +39,9 @@ module UsersHelper
           $('#change_user_pass').parent().parent().attr('action',
               '/users/' + cell + '/edit');
           uncheckRoles();
-          var arr_ids = $('#data_list').getCell(cell, 'role_ids').split(',');
-          for(var i=0; i<arr_ids.length; i++)
-          {
-            $('#user_role_id_' + arr_ids[i]).attr('checked', 'checked');
-          }
+          checkRoles($('#data_list').getCell(cell, 'role_ids').split(','));
+          roles = $('#data_list').getCell(cell, 'role_ids').split(',');
+          entity_tag = $('#data_list').getCell(cell, 'entity');
         }
       }".to_json_var,
       :beforeSelectRow => "function()
