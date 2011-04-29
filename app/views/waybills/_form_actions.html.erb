@@ -12,6 +12,8 @@
   }
 </script>
 
+<%= raw(waybills_jqgrid) %>
+
 <table id="waybill_add_list">
   <tbody>
     <tr align="right">
@@ -41,6 +43,12 @@
       </td>
       <td>
         <input type="text" id="waybill_vatin" value="" size="30"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id=waybills_list></table>
+        <div id=waybills_pager></div>
       </td>
     </tr>
     <tr align="right">
