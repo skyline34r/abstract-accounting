@@ -9,3 +9,8 @@ if("<%= if(current_user != nil && current_user.entity != nil) then
 } else {
   $("#save_waybill").attr("disabled", "disabled");
 }
+uin = 0;
+$("#waybills_list").addRowData(uin, { resource: ""
+                                    , amount: ""
+                                    , unit: "" });
+uin++;
