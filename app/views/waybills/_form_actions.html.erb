@@ -3,7 +3,6 @@
   var editCellId = -1;
   var uin;
 
-  
   $(function() {
     $("#waybill_date").datepicker();
   });
@@ -14,13 +13,23 @@
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#new_waybill").attr("action", "/waybills?organization_text="
       + escape($("#waybill_organization").val()));
+    $("#new_waybill").attr("method", "post");
+    var data = $("#waybills_list").getRowData();
+    for(var i=0; i<data.length; i++) {
+      if((data[i]["resource"] == "")||(data[i]["amount"] == "")||
+        (data[i]["amount"] == "NaN")||(data[i]["unit"] == "")) {
+        $("#new_waybill").attr("method", "");
+        alert("Entered data not correctly");
+        break;
+      }
+    }
   }
 
   function saveEdittedRow() {
     if(editRowId >= 0 && editCellId >= 0) {
       $("#waybills_list").saveCell(editRowId,editCellId);
     }
-}
+  }
 </script>
 
 <%= raw(waybills_jqgrid) %>
