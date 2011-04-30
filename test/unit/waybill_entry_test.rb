@@ -4,33 +4,23 @@ class WaybillEntryTest < ActiveSupport::TestCase
   # Replace this with your real tests.
   test "all data must present" do
     assert WaybillEntry.new(:resource => assets(:sonyvaio),
-      :waybill => Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract)),
       :unit => "th", :amount => 10).valid?, "Valid waybill entry"
-    assert WaybillEntry.new(
-      :waybill => Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract)),
-      :unit => "th", :amount => 10).invalid?, "Invalid waybill entry"
+    assert WaybillEntry.new(:unit => "th", :amount => 10).invalid?,
+      "Invalid waybill entry"
     assert WaybillEntry.new(:resource => assets(:sonyvaio),
-      :unit => "th", :amount => 10).invalid?, "Invalid waybill entry"
-    assert WaybillEntry.new(:resource => assets(:sonyvaio),
-      :waybill => Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract)),
       :amount => 10).invalid?, "Invalid waybill entry"
     assert WaybillEntry.new(:resource => assets(:sonyvaio),
-      :waybill => Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract)),
       :unit => "th").invalid?, "Invalid waybill entry"
   end
 
   test "relations between waybill and waybill_entries" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
                   :organization => entities(:abstract))
-    assert wb.save, "Save waybill with entries"
-    wb.waybill_entries.create(:resource => assets(:sonyvaio),
+    wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
-    wb.waybill_entries.create(:resource => Asset.new(:tag => "wire"),
+    wb.waybill_entries << WaybillEntry.new(:resource => Asset.new(:tag => "wire"),
       :unit => "m", :amount => 25)
+    assert wb.save, "Save waybill with entries"
     assert_equal 2, WaybillEntry.all.length, "Waybill entries count is equal to 2"
     assert WaybillEntry.new(:waybill => wb, :resource => Asset.new(:tag => "edger"),
       :unit => "th", :amount => 20).save, "Save waybill entry"
@@ -40,11 +30,10 @@ class WaybillEntryTest < ActiveSupport::TestCase
   test "assign text for resource" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
                   :organization => entities(:abstract))
-    assert wb.save, "Save waybill with entries"
-
-    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 20)
+    we = WaybillEntry.new(:unit => "th", :amount => 20)
     we.assign_resource_text("edge")
-    assert we.save, "Save waybill entry"
+    wb.waybill_entries << we
+    assert wb.save, "Save waybill with entries"
     assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
 
     we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 10)
@@ -56,11 +45,11 @@ class WaybillEntryTest < ActiveSupport::TestCase
   test "case insensitive comparison" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
                   :organization => entities(:abstract))
-    assert wb.save, "Save waybill with entries"
 
-    we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 20)
+    we = WaybillEntry.new(:unit => "th", :amount => 20)
     we.assign_resource_text("edge")
-    assert we.save, "Save waybill entry"
+    wb.waybill_entries << we
+    assert wb.save, "Save waybill with entries"
     assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
 
     we = WaybillEntry.new(:waybill => wb, :unit => "th", :amount => 10)

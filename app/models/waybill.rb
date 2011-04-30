@@ -1,7 +1,7 @@
 
 
 #validate vatin only for Russian Federation
-class WaybillValidator < ActiveModel::Validator
+class VatinValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:vatin] <<
       "Vatin is invalid. Valid count of numbers is 10 or 12" if
@@ -41,10 +41,18 @@ class WaybillValidator < ActiveModel::Validator
   end
 end
 
+class EntryExistValidator < ActiveModel::Validator
+  def validate(record)
+    record.errors[:waybill_entries] << "Waybill must contain one or more entries" if
+      record.waybill_entries.empty?
+  end
+end
+
 class Waybill < ActiveRecord::Base
   validates :date, :owner, :organization, :presence => true
-  validates_with WaybillValidator, :if => "!vatin.nil? && !vatin.empty?"
+  validates_with VatinValidator, :if => "!vatin.nil? && !vatin.empty?"
   validates_uniqueness_of :vatin, :if => "!vatin.nil? && !vatin.empty?"
+  validates_with EntryExistValidator
   belongs_to :owner, :class_name => 'Entity'
   belongs_to :organization, :class_name => 'Entity'
   has_many :waybill_entries
