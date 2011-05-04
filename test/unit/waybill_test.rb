@@ -148,7 +148,6 @@ class WaybillTest < ActiveSupport::TestCase
   end
 
   test "save storehouse deals for every entry in waybill" do
-
     deals_count = Deal.all.count
 
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
@@ -176,5 +175,63 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(rf, rf, entities(:sergey)).count, "Owner deals is not created"
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(rf, rf, wb.organization).count, "Owner deals is not created"
+  end
+
+  test "save fact for waybill entries" do
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 4, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 10)])
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+
+    dOwner = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).first;
+    sOwner = dOwner.state
+    assert !sOwner.nil?, "Owner state is nil"
+    assert_equal "passive", sOwner.side, "Owner state side is invalid"
+    assert_equal 10, sOwner.amount, "Owner state amount is invalid"
+    assert_equal wb.date, sOwner.start, "Owner state date is invalid"
+
+    dOrganization = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).first;
+    sOrganization = dOrganization.state
+    assert !sOrganization.nil?, "Organization state is nil"
+    assert_equal "active", sOrganization.side, "Organization state side is invalid"
+    assert_equal 10, sOrganization.amount, "Organization state amount is invalid"
+    assert_equal wb.date, sOrganization.start, "Organization state date is invalid"
+
+    rf = Asset.new(:tag => "roofing felt")
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 5),WaybillEntry.new(:resource => rf,
+                :unit => "m", :amount => 250)])
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+
+    dOwner = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).first;
+    sOwner = dOwner.state
+    assert !sOwner.nil?, "Owner state is nil"
+    assert_equal "passive", sOwner.side, "Owner state side is invalid"
+    assert_equal 15, sOwner.amount, "Owner state amount is invalid"
+    assert_equal wb.date, sOwner.start, "Owner state date is invalid"
+
+    dOrganization = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).first;
+    sOrganization = dOrganization.state
+    assert !sOrganization.nil?, "Organization state is nil"
+    assert_equal "active", sOrganization.side, "Organization state side is invalid"
+    assert_equal 15, sOrganization.amount, "Organization state amount is invalid"
+    assert_equal wb.date, sOrganization.start, "Organization state date is invalid"
+
+    dOwner = Deal.find_all_by_give_and_take_and_entity(rf, rf, entities(:sergey)).first;
+    sOwner = dOwner.state
+    assert !sOwner.nil?, "Owner state is nil"
+    assert_equal "passive", sOwner.side, "Owner state side is invalid"
+    assert_equal 250.0, sOwner.amount, "Owner state amount is invalid"
+    assert_equal wb.date, sOwner.start, "Owner state date is invalid"
+
+    dOrganization = Deal.find_all_by_give_and_take_and_entity(rf, rf, wb.organization).first;
+    sOrganization = dOrganization.state
+    assert !sOrganization.nil?, "Organization state is nil"
+    assert_equal "active", sOrganization.side, "Organization state side is invalid"
+    assert_equal 250.0, sOrganization.amount, "Organization state amount is invalid"
+    assert_equal wb.date, sOrganization.start, "Organization state date is invalid"
   end
 end

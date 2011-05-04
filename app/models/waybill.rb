@@ -79,6 +79,9 @@ class Waybill < ActiveRecord::Base
       raise "Failed to create organization storehouse deal" if dOrganization.nil?
       dOwner.save!
       dOrganization.save!
+      #do save fact
+      Fact.new(:amount => item.amount, :day => self.date, :resource => item.resource,
+        :from => dOrganization, :to => dOwner).save!
     end
   end
 end
