@@ -75,7 +75,10 @@ module WaybillsHelper
       :mtype => 'GET',
       :colNames => ['date', 'organization', 'owner', 'vatin'],
       :colModel => [
-        { :name => 'date',          :index => 'date',           :width => 100 },
+        { :name => 'date', :index => 'date', :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return cellvalue.substr(0,10);
+                         }'.to_json_var },
         { :name => 'organization',  :index => 'organization',   :width => 290 },
         { :name => 'owner',         :index => 'owner',          :width => 290 },
         { :name => 'vatin',         :index => 'vatin',          :width => 100 }
