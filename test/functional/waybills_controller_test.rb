@@ -16,7 +16,10 @@ class WaybillsControllerTest < ActionController::TestCase
                         :waybill => { :date => DateTime.now,
                                       :owner => entities(:sergey),
                                       :organization => entities(:abstract),
-                                      :vatin => '500100732259' }
+                                      :vatin => '500100732259' },
+                        :entry_resource => ['test1'],
+                        :entry_amount => ['5'],
+                        :entry_unit => ['kg']
     end
     assert_equal 1, Waybill.where(:vatin =>'500100732259').count,
       'Waybill not saved'
@@ -28,7 +31,10 @@ class WaybillsControllerTest < ActionController::TestCase
                         :waybill => { :date => DateTime.now,
                                       :owner => entities(:sergey),
                                       :vatin => '500100732259' },
-                        :organization_text => 'abstract'
+                        :organization_text => 'abstract',
+                        :entry_resource => ['test1'],
+                        :entry_amount => ['5'],
+                        :entry_unit => ['kg']
     end
     assert_equal 1, Entity.where(:tag =>'abstract').count,
       'Entity not saved'
