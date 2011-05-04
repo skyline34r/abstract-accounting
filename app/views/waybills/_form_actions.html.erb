@@ -1,6 +1,7 @@
 <script type="text/javascript">
+  var canSave = true;
   var editRowId = -1;
-  var editCellId = -1;
+  var editColId = -1;
   var uin;
 
   $(function() {
@@ -8,34 +9,40 @@
   });
 
   function sendWaybill() {
+    canSave = true;
+    saveEdittedRow();
+    var data = $("#waybills_list").getRowData();
+    var entries = "";
+    for(var i=0; i<data.length; i++) {
+      if((data[i]["resource"] == "")||(data[i]["amount"] == "")||
+        (data[i]["amount"] == "NaN")||(data[i]["unit"] == "")) {
+        $("#new_waybill").submit(function() {
+          return false;
+        });
+        alert("Entered data not correctly");
+        return;
+      } else {
+        entries += "&entry_resource[]=" + data[i]["resource"] +
+                   "&entry_amount[]=" + data[i]["amount"] +
+                   "&entry_unit[]=" + data[i]["unit"];
+      }
+    }
+    $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
     $("#hide_waybill_date").val(d.toUTCString());
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#new_waybill").attr("action", "/waybills?organization_text="
-      + escape($("#waybill_organization").val()));
-    $("#new_waybill").attr("method", "post");
-    var data = $("#waybills_list").getRowData();
-    for(var i=0; i<data.length; i++) {
-      if((data[i]["resource"] == "")||(data[i]["amount"] == "")||
-        (data[i]["amount"] == "NaN")||(data[i]["unit"] == "")) {
-        $("#new_waybill").attr("method", "");
-        alert("Entered data not correctly");
-        break;
-      }
-    }
+      + escape($("#waybill_organization").val()) + entries);
   }
 
   function saveEdittedRow() {
-    if(editRowId >= 0 && editCellId >= 0) {
-      $("#waybills_list").saveCell(editRowId,editCellId);
+    if(editRowId >= 0 && editColId >= 0) {
+      if(canSave) $("#waybills_list").saveCell(editRowId,editColId);
     }
   }
 </script>
 
 <%= raw(waybills_jqgrid) %>
-
-<input type="button" value="restore" onclick='alert(editRowId);'/>
-
 
 <table id="waybill_add_list">
   <tbody>
@@ -74,8 +81,8 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2" onmouseup="saveEdittedRow();">
-        <table id=waybills_list></table>
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedRow();">
+        <table id=waybills_list onmouseup="canSave = false;"></table>
         <div id=waybills_pager></div>
       </td>
     </tr>

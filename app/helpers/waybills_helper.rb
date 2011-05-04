@@ -29,7 +29,7 @@ module WaybillsHelper
       :beforeEditCell => 'function(rowid, cellname, value, iRow, iCol)
       {
         editRowId = iRow;
-        editCellId = iCol;
+        editColId = iCol;
       }'.to_json_var
     }]
 
