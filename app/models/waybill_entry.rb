@@ -16,6 +16,17 @@ class WaybillEntry < ActiveRecord::Base
 
   before_save :check_before_save #check bill is exist, do not save without bill
 
+  def storehouse_deal(entity)
+    return nil if self.resource.id.nil? or entity.nil? or entity.id.nil?
+    storehouses = Deal.find_all_by_give_and_take_and_entity(self.resource, self.resource, entity)
+    if storehouses.length == 1
+      storehouses.first
+    else
+      Deal.new :entity => entity, :give => self.resource, :take => self.resource,
+        :rate => 1.0, :tag => "storehouse entity: " + entity.tag + "; resource: " + self.resource.tag + ";"
+    end
+  end
+
   private
   def check_before_save
     return false if self.waybill.nil?

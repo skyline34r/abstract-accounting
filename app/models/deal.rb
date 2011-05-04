@@ -63,4 +63,8 @@ class Deal < ActiveRecord::Base
       Txn.find_all_by_fact_id facts
     end
   end
+
+  def Deal.find_all_by_give_and_take_and_entity(give, take, entity)
+    Deal.find_all_by_give_id_and_give_type_and_take_id_and_take_type_and_entity_id(give, give.class, take, take.class, entity)
+  end
 end

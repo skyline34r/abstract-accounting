@@ -58,4 +58,36 @@ class WaybillEntryTest < ActiveSupport::TestCase
     assert_equal 1, Asset.where(:tag => "edge").length, "Check asset is created"
     assert_equal 0, Asset.where(:tag => "eDgE").length, "Check asset is not created"
   end
+
+  test "create or get deal" do
+    we = WaybillEntry.new(:unit => "th", :amount => 20)
+    we.assign_resource_text("edge")
+
+    d = we.storehouse_deal(entities(:sergey))
+    assert_equal nil, d, "Deal is not nil for ntry with new resource"
+    assert we.resource.save, "Save resource in waybill entry"
+
+    d = we.storehouse_deal(entities(:sergey))
+    assert !d.nil?, "Deal is nil"
+    assert d.id.nil?, "Deal is new object"
+    assert d.valid?, "Deal is valid object"
+    assert_equal entities(:sergey), d.entity, "Deal entity is wrong"
+    assert_equal we.resource, d.give, "Deal give is wrong"
+    assert_equal we.resource, d.take, "Deal take is wrong"
+    assert_equal 1.0, d.rate, "Deal rate is wrong"
+    assert_equal "storehouse entity: " + entities(:sergey).tag + "; resource: " + we.resource.tag + ";", d.tag, "Deal tag is wrong"
+    assert d.save, "Deal is not saved"
+
+    we = WaybillEntry.new(:unit => "th", :amount => 10)
+    we.assign_resource_text("edge")
+
+    d = we.storehouse_deal(entities(:sergey))
+    assert !d.nil?, "Deal is nil"
+    assert !d.id.nil?, "Deal is not new object"
+    assert_equal entities(:sergey), d.entity, "Deal entity is wrong"
+    assert_equal we.resource, d.give, "Deal give is wrong"
+    assert_equal we.resource, d.take, "Deal take is wrong"
+    assert_equal 1.0, d.rate, "Deal rate is wrong"
+    assert_equal "storehouse entity: " + entities(:sergey).tag + "; resource: " + we.resource.tag + ";", d.tag, "Deal tag is wrong"
+  end
 end
