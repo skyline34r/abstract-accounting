@@ -64,4 +64,44 @@ module WaybillsHelper
 
   end
 
+
+  def waybills_jqgrid_tree
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/waybills/view',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['date', 'organization', 'owner', 'vatin'],
+      :colModel => [
+        { :name => 'date',          :index => 'date',           :width => 100 },
+        { :name => 'organization',  :index => 'organization',   :width => 290 },
+        { :name => 'owner',         :index => 'owner',          :width => 290 },
+        { :name => 'vatin',         :index => 'vatin',          :width => 100 }
+      ],
+      :pager => '#waybills_tree_pager',
+      :rowNum => 10,
+      :rowList => [10, 20, 30],
+      :sortname => 'id',
+      :sortorder => 'asc',
+      :viewrecords => true,
+      :subGrid => true,
+      :subGridUrl => '/waybills/7',
+      :subGridModel => [
+        { :name => ['resource', 'amount', 'unit'],
+          :width => [300, 100, 100],
+          :params => [
+            { :name => 'resource', :index => 'resource' },
+            { :name => 'amount',   :index => 'amount' },
+            { :name => 'unit', :index => 'unit' }
+          ]
+        }
+      ]
+    }]
+
+    jqgrid_api 'waybills_tree', grid, options
+
+  end
+
 end
