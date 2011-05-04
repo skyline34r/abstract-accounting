@@ -87,7 +87,7 @@ module WaybillsHelper
       :sortorder => 'asc',
       :viewrecords => true,
       :subGrid => true,
-      :subGridUrl => '/waybills/7',
+      :subGridUrl => '/waybills/',
       :subGridModel => [
         { :name => ['resource', 'amount', 'unit'],
           :width => [300, 100, 100],
@@ -97,7 +97,11 @@ module WaybillsHelper
             { :name => 'unit', :index => 'unit' }
           ]
         }
-      ]
+      ],
+      :subGridBeforeExpand => 'function(pId, id)
+      {
+        $("#waybills_tree").setGridParam({subGridUrl: "/waybills/" + id });
+      }'.to_json_var
     }]
 
     jqgrid_api 'waybills_tree', grid, options

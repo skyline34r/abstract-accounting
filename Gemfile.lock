@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/AlexeyShepelev/jquery-rails.git
-  revision: 4c9e3f2855274ac815a20ebac1d49f96fe39d141
+  revision: 5fb826b7ef168d02849c941f03f8222992f0e794
   specs:
     jquery-rails (0.2.7)
       rails (~> 3.0)
@@ -85,8 +85,8 @@ GEM
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.27)
-    warden (1.0.3)
-      rack (>= 1.0.0)
+    warden (1.0.4)
+      rack (>= 1.0)
     will_paginate (3.0.pre2)
 
 PLATFORMS
