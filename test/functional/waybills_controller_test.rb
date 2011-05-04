@@ -47,4 +47,18 @@ class WaybillsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:waybills)
   end
+
+  test "should get show waybills entries" do
+    xml_http_request :post, :create,
+                     :waybill => { :date => DateTime.now,
+                                   :owner => entities(:sergey),
+                                   :vatin => '500100732259' },
+                     :organization_text => 'abstract',
+                      :entry_resource => ['test1', 'test2'],
+                     :entry_amount => ['5', '8'],
+                     :entry_unit => ['kg', 'm']
+    xml_http_request :get, :show, :id => 1
+    assert_response :success
+    assert_not_nil assigns(:entries)
+  end
 end
