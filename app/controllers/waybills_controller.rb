@@ -18,8 +18,9 @@ class WaybillsController < ApplicationController
     if params[:organization_text] != '' then
       @waybill.assign_organization_text(params[:organization_text])
     end
-    @waybill.save
-    render :action => 'new'
+    if @waybill.save then
+      render :action => 'new'
+    end
   end
 
   def view
