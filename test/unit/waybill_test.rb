@@ -146,4 +146,35 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).count, "Owner deals is not created"
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
   end
+
+  test "save storehouse deals for every entry in waybill" do
+
+    deals_count = Deal.all.count
+
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 10)])
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+
+    deals_count += 2
+    assert_equal deals_count, Deal.all.count, "Deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
+
+    rf = Asset.new(:tag => "roofing felt")
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 5),WaybillEntry.new(:resource => rf,
+                :unit => "m", :amount => 250)])
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+
+    deals_count += 2
+    assert_equal deals_count, Deal.all.count, "Deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(rf, rf, entities(:sergey)).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(rf, rf, wb.organization).count, "Owner deals is not created"
+  end
 end
