@@ -41,4 +41,10 @@ class WaybillsControllerTest < ActionController::TestCase
     assert_equal 1, Waybill.where(:vatin =>'500100732259').count,
       'Waybill not saved'
   end
+
+  test "should get view waybills" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:waybills)
+  end
 end
