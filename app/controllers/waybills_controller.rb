@@ -20,6 +20,9 @@ class WaybillsController < ApplicationController
     end
     if @waybill.save then
       render :action => 'new'
+    else
+      #render :js => 'alert("jkj");'
+      puts @waybill.errors
     end
   end
 
