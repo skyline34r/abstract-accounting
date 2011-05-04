@@ -121,4 +121,29 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
     assert_equal 0,Entity.where(:tag => "AbsTract1").length, "AbsTract1 entity saved"
   end
+
+  test "save deals after save waybill" do
+    deals_count = Deal.all.count
+
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 10)])
+    wb.assign_organization_text("abstract1")
+    assert wb.save, "Waybill not saved"
+
+    deals_count += 2
+    assert_equal deals_count, Deal.all.count, "Deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
+
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+                :unit => "th", :amount => 5)])
+    wb.assign_organization_text("abstract1")
+
+    assert wb.save, "Waybill not saved"
+    assert_equal deals_count, Deal.all.count, "Deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), entities(:sergey)).count, "Owner deals is not created"
+    assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
+  end
 end
