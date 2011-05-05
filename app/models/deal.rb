@@ -18,14 +18,12 @@ class Deal < ActiveRecord::Base
     self.id == 0
   end
   def state(day = nil)
-    states.where(:start =>
-        if !day.nil?
-          states.where("start <= ?", day)
-            .maximum("start")
-        else
-          states.maximum("start")
-        end
-      ).where("paid is NULL").first
+    st = states.where("paid is NULL")
+    st.where(:start => (if !day.nil?
+      st.where("start <= ?", day).maximum("start")
+    else
+      st.maximum("start")
+    end)).first
   end
   def balance(day = nil, paid = nil)
     ret_balances = (if day.nil?

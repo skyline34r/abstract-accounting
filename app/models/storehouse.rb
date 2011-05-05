@@ -1,3 +1,4 @@
+require "resource"
 
 class StoreHouseEntry
   attr_reader :deal, :amount, :resource
