@@ -2,6 +2,10 @@ class WaybillsController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  def index
+    session[:res_type] = ''
+  end
+
   def new
     @waybill = Waybill.new
   end
