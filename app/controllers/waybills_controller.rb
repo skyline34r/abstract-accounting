@@ -23,10 +23,9 @@ class WaybillsController < ApplicationController
       @waybill.assign_organization_text(params[:organization_text])
     end
     if @waybill.save then
-      render :action => 'new'
+      render :action => 'index'
     else
-      #render :js => 'alert("jkj");'
-      puts @waybill.errors
+      render :action => 'new'
     end
   end
 
