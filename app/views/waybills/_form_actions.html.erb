@@ -14,18 +14,9 @@
     var data = $("#waybills_list").getRowData();
     var entries = "";
     for(var i=0; i<data.length; i++) {
-      if((data[i]["resource"] == "")||(data[i]["amount"] == "")||
-        (data[i]["amount"] == "NaN")||(data[i]["unit"] == "")) {
-        $("#new_waybill").submit(function() {
-          return false;
-        });
-        alert("Entered data not correctly");
-        return;
-      } else {
-        entries += "&entry_resource[]=" + data[i]["resource"] +
-                   "&entry_amount[]=" + data[i]["amount"] +
-                   "&entry_unit[]=" + data[i]["unit"];
-      }
+      entries += "&entry_resource[]=" + data[i]["resource"] +
+                 "&entry_amount[]=" + data[i]["amount"] +
+                 "&entry_unit[]=" + data[i]["unit"];
     }
     $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
@@ -33,6 +24,7 @@
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#new_waybill").attr("action", "/waybills?organization_text="
       + escape($("#waybill_organization").val()) + entries);
+    saveWaybillElements();
   }
 
   function saveEdittedRow() {
@@ -61,6 +53,8 @@
 
 <%= raw(waybills_jqgrid) %>
 
+<%= form_for(@waybill, :remote => true) do |f| %>
+<%= f.error_messages %>
 <table id="waybill_add_list">
   <tbody>
     <tr align="right">
@@ -105,8 +99,6 @@
     </tr>
     <tr align="right">
       <td colspan="2" style="width: 45px">
-        <%= form_for(@waybill, :remote => true) do |f| %>
-        <%= f.error_messages %>
         <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
         <%= f.hidden_field :date, :id => "hide_waybill_date" %>
         <%= f.hidden_field :owner_id, :id => "hide_waybill_owner",
@@ -115,8 +107,8 @@
                                        current_user.entity.id
                                      end %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
-        <% end %>
       </td>
     </tr>
   </tbody>
 </table>
+<% end %>
