@@ -66,4 +66,22 @@ class Waybill < ActiveRecord::Base
     end
   end
   #end temp
+
+  after_save :waybill_after_save
+
+  private
+  def waybill_after_save()
+    #create deals and events
+    self.waybill_entries.each do |item|
+      dOwner = item.storehouse_deal(self.owner)
+      raise "Failed to create owner storehouse deal" if dOwner.nil?
+      dOrganization = item.storehouse_deal(self.organization)
+      raise "Failed to create organization storehouse deal" if dOrganization.nil?
+      dOwner.save!
+      dOrganization.save!
+      #do save fact
+      Fact.new(:amount => item.amount, :day => self.date, :resource => item.resource,
+        :from => dOrganization, :to => dOwner).save!
+    end
+  end
 end
