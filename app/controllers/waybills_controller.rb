@@ -12,6 +12,9 @@ class WaybillsController < ApplicationController
 
   def create
     @waybill = Waybill.new(params[:waybill])
+    if current_user != nil && current_user.entity != nil then
+      @waybill.owner = current_user.entity
+    end
     if params[:entry_resource] != nil then
       entry = Array.new(params[:entry_resource].length);
       for i in 0..params[:entry_resource].length-1

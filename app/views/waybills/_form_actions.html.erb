@@ -102,11 +102,6 @@
       <td colspan="2" style="width: 45px">
         <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
         <%= f.hidden_field :date, :id => "hide_waybill_date" %>
-        <%= f.hidden_field :owner_id, :id => "hide_waybill_owner",
-                           :value => if(current_user != nil &&
-                                        current_user.entity != nil) then
-                                       current_user.entity.id
-                                     end %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
       </td>
     </tr>
