@@ -20,7 +20,7 @@ class StoreHouse < Array
     if !entity.nil? and entity.instance_of?(Entity)
       @entity = entity
       Deal.where("entity_id = ? AND give_type = ? AND give_id = take_id AND give_type = take_type", entity.id, Asset)
-          .each { |item| self << StoreHouseEntry.new(item) }
+          .each { |item| if !item.state.nil?; self << StoreHouseEntry.new(item); end; }
     end
   end
 end
