@@ -64,6 +64,7 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
+  resources :storehouses
   get "home/index"
 
   # The priority is based upon order of creation:
