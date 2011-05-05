@@ -40,6 +40,14 @@
       if(canSave) $("#waybills_list").saveCell(editRowId,editColId);
     }
   }
+
+  function saveWaybillElements() {
+    dataPage = new Object();
+    dataPage["date"] = $("#waybill_date").val();
+    dataPage["organization"] = $("#waybill_organization").val();
+    dataPage["vatin"] = $("#waybill_vatin").val();
+    dataPage["dataGrid"] = $("#waybills_list").getRowData();
+  }
 </script>
 
 <%= raw(waybills_jqgrid) %>
