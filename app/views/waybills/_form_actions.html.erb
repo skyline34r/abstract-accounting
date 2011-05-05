@@ -20,6 +20,7 @@
     }
     $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
+    d.setUTCHours(12);
     $("#hide_waybill_date").val(d.toUTCString());
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#new_waybill").attr("action", "/waybills?organization_text="
