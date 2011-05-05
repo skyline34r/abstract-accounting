@@ -1,3 +1,11 @@
+<script type="text/javascript">
+  function getOwnerId() {
+    return <%= if current_user != nil && current_user.entity != nil then
+      current_user.entity.id
+    end %>;
+  }
+</script>
+
 Storehouse
 <%= raw(storehouse_jqgrid) %>
 <table id=storehouse_list></table>
