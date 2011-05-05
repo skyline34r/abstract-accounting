@@ -7,4 +7,9 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should_view_storehouse" do
+    xml_http_request :get, :view, :entity_id => entities(:sergey).id
+    assert_response :success
+    assert_not_nil assigns(:storehouse)
+  end
 end

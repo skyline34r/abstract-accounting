@@ -64,7 +64,11 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
-  resources :storehouses
+  resources :storehouses do
+    collection do
+      get 'view'
+    end
+  end
   get "home/index"
 
   # The priority is based upon order of creation:
