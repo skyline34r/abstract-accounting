@@ -48,6 +48,15 @@
     dataPage["vatin"] = $("#waybill_vatin").val();
     dataPage["dataGrid"] = $("#waybills_list").getRowData();
   }
+
+  function loadWaybillElements() {
+    $("#waybill_date").val(dataPage["date"]);
+    $("#waybill_organization").val(dataPage["organization"]);
+    $("#waybill_vatin").val(dataPage["vatin"]);
+    for(uin=0; uin<dataPage["dataGrid"].length; uin++) {
+      $("#waybills_list").addRowData(uin, dataPage["dataGrid"][uin]);
+    }
+  }
 </script>
 
 <%= raw(waybills_jqgrid) %>
