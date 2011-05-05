@@ -62,7 +62,7 @@ class WaybillsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:entries)
   end
 
-  def should_get_index_of_waybills
+  test "should_get_index_of_waybills" do
     xml_http_request :get, :index
     assert_response :success
   end
