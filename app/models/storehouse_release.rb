@@ -1,15 +1,31 @@
+require "resource"
+
+class StorehouseReleaseEntry
+  attr_reader :resource, :amount
+  def initialize(resource, amount)
+    @resource = resource
+    @amount = amount
+  end
+end
+
+class StorehouseReleaseValidator < ActiveModel::Validator
+  def validate(record)
+    record.errors[:resources] = "must be not empty" if record.resources.empty?
+  end
+end
 
 class StorehouseRelease < ActiveRecord::Base
-  attr_accessor :owner, :to
-  validates :created, :presence => true
-  validates :owner, :to, :presence => true, :if => "self.state == UNKNOWN"
-  belongs_to :deal
 
   #States
   INWORK = 1
   CANCELED = 2
   APPLIED = 3
   UNKNOWN = 0
+
+  attr_accessor :owner, :to
+  validates :created, :owner, :to, :state, :presence => true
+  validates_with StorehouseReleaseValidator
+  belongs_to :deal
 
   after_initialize :sv_after_initialize
   before_save :sv_before_save
@@ -30,10 +46,11 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def add_resource(resource, amount)
+    @entries << StorehouseReleaseEntry.new(resource, amount)
   end
 
-  def entries
-    Array.new
+  def resources
+    @entries
   end
 
   def cancel
@@ -55,6 +72,7 @@ class StorehouseRelease < ActiveRecord::Base
   private
   def sv_after_initialize
     self.state = UNKNOWN if self.id.nil?
+    @entries = Array.new
   end
 
   def sv_before_save
