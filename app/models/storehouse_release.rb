@@ -29,6 +29,13 @@ class StorehouseRelease < ActiveRecord::Base
     end
   end
 
+  def add_resource(resource, amount)
+  end
+
+  def entries
+    Array.new
+  end
+
   def cancel
     if self.state == INWORK
       self.state = CANCELED
