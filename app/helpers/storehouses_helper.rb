@@ -45,9 +45,14 @@ module StorehousesHelper
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(storeHouseData[options.rowId] == undefined) {
+                             return "<input type=\'checkbox\' id=\'check_"
+                               + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                               + options.rowId + "\"); \'>";
+                           }
                            return "<input type=\'checkbox\' id=\'check_"
                              + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
-                             + options.rowId + "\"); \'>";
+                             + options.rowId + "\"); \' checked>";
                          }'.to_json_var },
         { :name => 'resource',  :index => 'resource',   :width => 380,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -59,9 +64,19 @@ module StorehousesHelper
                          }'.to_json_var },
         { :name => 'release',  :index => 'release',   :width => 200, :editable => true,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if((cellvalue == undefined) || (cellvalue == " ")) {
+                           if(cellvalue == undefined) {
+                             if(storeHouseData[options.rowId] == undefined) {
+                               return "";
+                             }
+                             return storeHouseData[options.rowId];
+                           }
+                           if(isNaN(cellvalue) || (cellvalue == "") ||
+                               (parseInt(cellvalue) <= "0")) {
+                             $("#check_" + options.rowId).removeAttr("checked");
+                             delete storeHouseData[options.rowId];
                              return "";
                            }
+                           storeHouseData[options.rowId] = cellvalue;
                            return cellvalue;
                          }'.to_json_var }
       ],
@@ -87,6 +102,10 @@ module StorehousesHelper
         if($("#check_" + id).is(":checked")) {
           $("#storehouse_release_list").editRow(id, true);
         }
+      }'.to_json_var,
+      :onPaging => 'function()
+      {
+        $("#storehouse_release_list").saveRow(lastSelId);
       }'.to_json_var
     }]
 
