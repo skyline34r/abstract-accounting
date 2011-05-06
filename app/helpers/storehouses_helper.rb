@@ -57,7 +57,13 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
-        { :name => 'release',  :index => 'release',   :width => 200, :editable => true }
+        { :name => 'release',  :index => 'release',   :width => 200, :editable => true,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if((cellvalue == undefined) || (cellvalue == " ")) {
+                             return "";
+                           }
+                           return cellvalue;
+                         }'.to_json_var }
       ],
       :pager => '#storehouse_release_pager',
       :rowNum => 10,

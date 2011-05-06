@@ -1,7 +1,10 @@
 <script type="text/javascript">
   var lastSelId = "";
   function check_storehouse_waybill(id) {
-    $("#storehouse_release_list").setSelection(id);
+   if(!$("#check_" + id).is(":checked")) {
+     $("#storehouse_release_list").setCell(id, 'release',' ');
+   }
+   $("#storehouse_release_list").setSelection(id);
   }
   function setReleaseValue() {
     $("#div_aaa").html("asdasd");
