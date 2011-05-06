@@ -12,4 +12,9 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:storehouse)
   end
+
+  test "should_get_view_issue_of_storehouse" do
+    xml_http_request :get, :view_issue
+    assert_response :success
+  end
 end

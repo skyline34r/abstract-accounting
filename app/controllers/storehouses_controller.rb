@@ -17,4 +17,8 @@ class StorehousesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@storehouse, @columns)
     end
   end
+
+  def view_issue
+    session[:res_type] = ''
+  end
 end

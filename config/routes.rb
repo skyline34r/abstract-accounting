@@ -67,6 +67,7 @@ Abstract::Application.routes.draw do
   resources :storehouses do
     collection do
       get 'view'
+      get 'view_issue'
     end
   end
   get "home/index"
