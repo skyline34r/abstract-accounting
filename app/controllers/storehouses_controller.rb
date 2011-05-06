@@ -18,7 +18,7 @@ class StorehousesController < ApplicationController
     end
   end
 
-  def view_issue
+  def realise
     session[:res_type] = ''
   end
 end
