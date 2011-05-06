@@ -13,7 +13,29 @@
   }
 </script>
 
-Storehouse release
 <%= raw(storehouse_release_jqgrid) %>
-<table id=storehouse_release_list></table>
-<div id=storehouse_release_pager></div>
+Storehouse release
+
+<table>
+  <tbody>
+    <tr align="right">
+      <td colspan="2">
+        * - required fields
+      </td>
+    </tr>
+    <tr>
+      <td align="left">
+        To*:
+      </td>
+      <td align="right">
+        <input type="text" id="storehouse_to" value="" size="50"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id=storehouse_release_list></table>
+        <div id=storehouse_release_pager></div>
+      </td>
+    </tr>
+  </tbody>
+</table>
