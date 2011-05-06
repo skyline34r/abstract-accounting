@@ -44,8 +44,10 @@ module StorehousesHelper
       :colNames => ['', 'resource', 'amount', 'realise'],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
-          :formatter => 'function(cellvalue, options, rowObject) {
-                           return "";
+          :formatter => 'function(cellvalue, options, rowObject) { //alert(rowObject.toSource());
+                           return "<input type=\'checkbox\' id=\'check_"
+                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                             + options.rowId + "\"); \'>";
                          }'.to_json_var },
         { :name => 'resource',  :index => 'resource',   :width => 380,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -55,10 +57,7 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
-        { :name => 'realise',  :index => 'realise',   :width => 200,
-          :formatter => 'function(cellvalue, options, rowObject) {
-                           return "";
-                         }'.to_json_var }
+        { :name => 'realise',  :index => 'realise',   :width => 200, :editable => true }
       ],
       :pager => '#storehouse_realise_pager',
       :rowNum => 10,
@@ -66,10 +65,22 @@ module StorehousesHelper
       :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
+      :editurl => 'clientArray',
+      :cellsubmit => 'clientArray',
       :beforeRequest => 'function()
       {
         $("#storehouse_realise_list").setGridParam({url: "/storehouses/view?entity_id="
                                                           + getOwnerId()});
+      }'.to_json_var,
+      :onSelectRow => 'function(id)
+      {
+        if(lastSelId != "") {
+          $("#storehouse_realise_list").saveRow(lastSelId);
+        }
+        lastSelId = id;
+        if($("#check_" + id).is(":checked")) {
+          $("#storehouse_realise_list").editRow(id, true);
+        }
       }'.to_json_var
     }]
 

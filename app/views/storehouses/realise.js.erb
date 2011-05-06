@@ -1,1 +1,4 @@
- 
+$("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
+$("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/realise') %>");
+document.title = "Abstract::Storehouse";
+load_storehouse_jqgrid();

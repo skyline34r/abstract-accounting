@@ -1,1 +1,14 @@
- 
+<script type="text/javascript">
+  var lastSelId = "";
+  function check_storehouse_waybill(id) {
+    $("#storehouse_realise_list").setSelection(id);
+  }
+  function setReleaseValue() {
+    $("#div_aaa").html("asdasd");
+  }
+</script>
+
+Storehouse realise
+<%= raw(storehouse_realise_jqgrid) %>
+<table id=storehouse_realise_list></table>
+<div id=storehouse_realise_pager></div>
