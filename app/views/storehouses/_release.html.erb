@@ -1,0 +1,14 @@
+<script type="text/javascript">
+  var lastSelId = "";
+  function check_storehouse_waybill(id) {
+    $("#storehouse_release_list").setSelection(id);
+  }
+  function setReleaseValue() {
+    $("#div_aaa").html("asdasd");
+  }
+</script>
+
+Storehouse release
+<%= raw(storehouse_release_jqgrid) %>
+<table id=storehouse_release_list></table>
+<div id=storehouse_release_pager></div>

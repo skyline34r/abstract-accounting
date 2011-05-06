@@ -33,7 +33,7 @@ module StorehousesHelper
   end
 
 
-  def storehouse_realise_jqgrid
+  def storehouse_release_jqgrid
 
     options = {:on_document_ready => true}
 
@@ -41,10 +41,10 @@ module StorehousesHelper
       :url => '/storehouses/view?entity_id=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['', 'resource', 'amount', 'realise'],
+      :colNames => ['', 'resource', 'amount', 'release'],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
-          :formatter => 'function(cellvalue, options, rowObject) { //alert(rowObject.toSource());
+          :formatter => 'function(cellvalue, options, rowObject) {
                            return "<input type=\'checkbox\' id=\'check_"
                              + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                              + options.rowId + "\"); \'>";
@@ -57,9 +57,9 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
-        { :name => 'realise',  :index => 'realise',   :width => 200, :editable => true }
+        { :name => 'release',  :index => 'release',   :width => 200, :editable => true }
       ],
-      :pager => '#storehouse_realise_pager',
+      :pager => '#storehouse_release_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :sortname => 'resource',
@@ -69,22 +69,22 @@ module StorehousesHelper
       :cellsubmit => 'clientArray',
       :beforeRequest => 'function()
       {
-        $("#storehouse_realise_list").setGridParam({url: "/storehouses/view?entity_id="
+        $("#storehouse_release_list").setGridParam({url: "/storehouses/view?entity_id="
                                                           + getOwnerId()});
       }'.to_json_var,
       :onSelectRow => 'function(id)
       {
         if(lastSelId != "") {
-          $("#storehouse_realise_list").saveRow(lastSelId);
+          $("#storehouse_release_list").saveRow(lastSelId);
         }
         lastSelId = id;
         if($("#check_" + id).is(":checked")) {
-          $("#storehouse_realise_list").editRow(id, true);
+          $("#storehouse_release_list").editRow(id, true);
         }
       }'.to_json_var
     }]
 
-    jqgrid_api 'storehouse_realise_list', grid, options
+    jqgrid_api 'storehouse_release_list', grid, options
 
   end
 
