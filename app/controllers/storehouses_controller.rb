@@ -14,7 +14,7 @@ class StorehousesController < ApplicationController
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@storehouse, @columns)
+      render :json => abstract_json_for_jqgrid(@storehouse, @columns, :id_column => 'resource.id')
     end
   end
 
