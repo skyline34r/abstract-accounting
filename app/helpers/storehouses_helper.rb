@@ -140,7 +140,11 @@ module StorehousesHelper
       :rowList => [10, 20, 30],
       :sortname => 'date',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :onSelectRow => 'function(cell)
+      {
+        $("#view_release").removeAttr("disabled");
+      }'.to_json_var
     }]
 
     jqgrid_api 'releases_list', grid, options
