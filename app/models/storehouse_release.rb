@@ -6,11 +6,21 @@ class StorehouseReleaseEntry
     @resource = resource
     @amount = amount
   end
+
+  def deal(entity)
+    Deal.find_by_entity_id_and_take_id_and_give_id_and_take_type_and_give_type(entity, @resource, @resource, Asset, Asset)
+  end
 end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:resources] = "must be not empty" if record.resources.empty?
+    record.resources.each do |item|
+      d = item.deal(record.owner)
+      record.errors[:resources] = "invalid resource" if d.nil?
+      #TODO: check other not applied releases for state
+      record.errors[:resources] = "invalid amount" if !d.nil? and (d.state.nil? or item.amount > d.state.amount or item.amount <= 0)
+    end
   end
 end
 
