@@ -111,12 +111,11 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal 39, sr.resources[1].amount, "Wrong amount"
   end
 
-  test "deal is created" do
+  test "deals is created" do
     deals_count = Deal.all.count
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
-    a = assets(:sonyvaio)
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
 
@@ -149,15 +148,10 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
     deals_count += 2
     assert_equal deals_count, Deal.all.count, "Deal is not created"
-    d = Deal.find(sr.deal.id)
-    assert !d.nil?, "Deal not found"
-    assert_equal entities(:sergey), d.entity, "Entity is not valid"
-    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     d = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
       Asset.find_by_tag("roof"), Entity.find_by_tag("Test2Entity")).first
     assert !d.nil?, "Deal not found"
-    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
       :to => Entity.new(:tag => "Test3Entity"))
@@ -167,19 +161,54 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
     deals_count += 3
     assert_equal deals_count, Deal.all.count, "Deal is not created"
-    d = Deal.find(sr.deal.id)
-    assert !d.nil?, "Deal not found"
-    assert_equal entities(:sergey), d.entity, "Entity is not valid"
-    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     d = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio),
       assets(:sonyvaio), Entity.find_by_tag("Test3Entity")).first
     assert !d.nil?, "Deal not found"
-    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     d = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
       Asset.find_by_tag("roof"), Entity.find_by_tag("Test3Entity")).first
     assert !d.nil?, "Deal not found"
-    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+  end
+
+  test "rules is created" do
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 3)
+    assert sr.save, "StorehouseRelease not saved"
+
+    assert_equal 1, sr.deal.rules.count, "Wrong deal rules count"
+    ownerDeal = sr.resources[0].storehouse_deal(sr.owner)
+    toDeal = sr.resources[0].storehouse_deal(sr.to)
+    rule = sr.deal.rules[0]
+    assert_equal 3, rule.rate, "Wrong rule rate"
+    assert_equal ownerDeal, rule.from, "Wrong rule from"
+    assert_equal toDeal, rule.to, "Wrong rule to"
+
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    assert_equal 2, sr.deal.rules.count, "Wrong deal rules count"
+    ownerDeal = sr.resources[0].storehouse_deal(sr.owner)
+    toDeal = sr.resources[0].storehouse_deal(sr.to)
+    rule = sr.deal.rules[0]
+    assert_equal 1, rule.rate, "Wrong rule rate"
+    assert_equal ownerDeal, rule.from, "Wrong rule from"
+    assert_equal toDeal, rule.to, "Wrong rule to"
+    ownerDeal = sr.resources[1].storehouse_deal(sr.owner)
+    toDeal = sr.resources[1].storehouse_deal(sr.to)
+    rule = sr.deal.rules[1]
+    assert_equal 100, rule.rate, "Wrong rule rate"
+    assert_equal ownerDeal, rule.from, "Wrong rule from"
+    assert_equal toDeal, rule.to, "Wrong rule to"
   end
 end

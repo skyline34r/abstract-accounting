@@ -109,9 +109,13 @@ class StorehouseRelease < ActiveRecord::Base
         :rate => 1.0, :entity => @owner, :give => a,
         :take => a, :isOffBalance => true
       return false if !self.deal.save
-      @entries.each do |item|
+      @entries.each_with_index do |item, idx|
         dItem = item.storehouse_deal self.to
         return false if dItem.nil? or !dItem.save
+        #create rules
+        self.deal.rules.create :tag => self.deal.tag + "; rule" + idx.to_s,
+          :from => item.deal(self.owner), :to => dItem, :fact_side => false,
+          :change_side => false, :rate => item.amount
       end
     end
     self.state = INWORK if self.state == UNKNOWN
