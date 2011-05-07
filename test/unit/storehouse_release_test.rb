@@ -1,7 +1,14 @@
 require 'test_helper'
 
 class StorehouseReleaseTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
+  def setup
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 4, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
+              :unit => "th", :amount => 10)])
+    wb.assign_organization_text("Test Organization Store")
+    wb.save
+  end
+
   test "validate neccessary fields" do
     assert StorehouseRelease.new.invalid?, "Invalid storehaouse release"
     assert StorehouseRelease.new(:created => DateTime.now).invalid?,
@@ -10,6 +17,34 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
       :to => Entity.new(:tag => "Test2Entity"))
     assert sr.invalid?, "StorehouseRelease is invalid"
     sr.add_resource(Asset.new(:tag => "Resource1"), 2)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 11)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 0)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+
+    assert Asset.new(:tag => "Test resource").save, "Asset is not saved"
+    assert Deal.new(:tag => "test deal for check validation", :entity => entities(:sergey),
+      :give => Asset.find_by_tag("Test resource"), :take => Asset.find_by_tag("Test resource"),
+      :rate => 1.0).save, "Deal is not saved"
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(Asset.find_by_tag("Test resource"), 3)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 9)
+    sr.add_resource(Asset.new(:tag => "some unknown resource"), 1)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 9)
     assert sr.valid?, "StorehouseRelease is valid"
     assert sr.save, "StorehouseRelease is not saved"
 
@@ -18,9 +53,9 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
   end
 
   test "to as text" do
-    sh = StorehouseRelease.new :created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity")
+    sh = StorehouseRelease.new :created => DateTime.now, :owner => entities(:sergey)
     sh.to = Entity.new(:tag => "HelloWorld1")
-    sh.add_resource(Asset.new(:tag => "Resource1"), 2)
+    sh.add_resource(assets(:sonyvaio), 9)
     assert sh.to.instance_of?(Entity), "To field is not entity"
     assert sh.valid?, "Release is not valid"
 
@@ -38,9 +73,9 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
   end
 
   test "cancel" do
-    sr = StorehouseRelease.new(:created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity"),
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
       :to => Entity.new(:tag => "Test2Entity"))
-    sr.add_resource(Asset.new(:tag => "Resource1"), 2)
+    sr.add_resource(assets(:sonyvaio), 9)
     assert sr.save, "StorehouseRelease is not saved"
     
     assert sr.cancel, "StorehouseRelease is not canceled"
@@ -48,9 +83,9 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
   end
 
   test "apply" do
-    sr = StorehouseRelease.new(:created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity"),
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
       :to => Entity.new(:tag => "Test2Entity"))
-    sr.add_resource(Asset.new(:tag => "Resource1"), 2)
+    sr.add_resource(assets(:sonyvaio), 9)
     assert sr.save, "StorehouseRelease is not saved"
 
     assert sr.apply, "StorehouseRelease is not applied"
@@ -74,5 +109,77 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert sr.resources[1].instance_of?(StorehouseReleaseEntry), "Unknown entry instance"
     assert_equal a, sr.resources[1].resource, "Wrong resource"
     assert_equal 39, sr.resources[1].amount, "Wrong amount"
+  end
+
+  test "deal is created" do
+    deals_count = Deal.all.count
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    a = assets(:sonyvaio)
+    sr.add_resource(assets(:sonyvaio), 3)
+    assert sr.save, "StorehouseRelease not saved"
+
+    deals_count += 2
+    assert_equal deals_count, Deal.all.count, "Deal is not created"
+    d = Deal.find(sr.deal.id)
+    assert !d.nil?, "Deal not found"
+    assert_equal entities(:sergey), d.entity, "Entity is not valid"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    d = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio),
+      assets(:sonyvaio), Entity.find_by_tag("Test2Entity")).first
+    assert !d.nil?, "Deal not found"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    #recalculate count of deals
+    deals_count = Deal.all.count
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    deals_count += 2
+    assert_equal deals_count, Deal.all.count, "Deal is not created"
+    d = Deal.find(sr.deal.id)
+    assert !d.nil?, "Deal not found"
+    assert_equal entities(:sergey), d.entity, "Entity is not valid"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    d = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
+      Asset.find_by_tag("roof"), Entity.find_by_tag("Test2Entity")).first
+    assert !d.nil?, "Deal not found"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :to => Entity.new(:tag => "Test3Entity"))
+    sr.add_resource(assets(:sonyvaio), 3)
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    deals_count += 3
+    assert_equal deals_count, Deal.all.count, "Deal is not created"
+    d = Deal.find(sr.deal.id)
+    assert !d.nil?, "Deal not found"
+    assert_equal entities(:sergey), d.entity, "Entity is not valid"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    d = Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio),
+      assets(:sonyvaio), Entity.find_by_tag("Test3Entity")).first
+    assert !d.nil?, "Deal not found"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+
+    d = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
+      Asset.find_by_tag("roof"), Entity.find_by_tag("Test3Entity")).first
+    assert !d.nil?, "Deal not found"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
   end
 end
