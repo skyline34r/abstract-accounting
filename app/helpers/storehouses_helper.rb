@@ -117,4 +117,33 @@ module StorehousesHelper
 
   end
 
+
+  def releases_jqgrid
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/releases/list',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['date', 'owner', 'to'],
+      :colModel => [
+        { :name => 'date',  :index => 'date', :width => 200,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return cellvalue;
+                         }'.to_json_var },
+        { :name => 'owner',  :index => 'owner',   :width => 300 },
+        { :name => 'to',  :index => 'to',   :width => 300 }
+      ],
+      :pager => '#releases_pager',
+      :rowNum => 10,
+      :rowList => [10, 20, 30],
+      :sortname => 'date',
+      :sortorder => 'asc',
+      :viewrecords => true
+    }]
+
+    jqgrid_api 'releases_list', grid, options
+
+  end
 end
