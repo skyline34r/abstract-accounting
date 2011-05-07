@@ -101,6 +101,10 @@ class StorehouseRelease < ActiveRecord::Base
     false
   end
 
+  def StorehouseRelease.inwork
+    StorehouseRelease.find_all_by_state INWORK
+  end
+
   private
   def sv_after_initialize
     self.state = UNKNOWN if self.id.nil?
