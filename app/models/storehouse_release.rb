@@ -77,6 +77,11 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def resources
+    if @entries.empty? and !self.deal.nil?
+      self.deal.rules.each do |item|
+        @entries << StorehouseReleaseEntry.new(item.from.take, item.rate)
+      end
+    end
     @entries
   end
 
@@ -117,6 +122,7 @@ class StorehouseRelease < ActiveRecord::Base
           :from => item.deal(self.owner), :to => dItem, :fact_side => false,
           :change_side => false, :rate => item.amount
       end
+      self.deal_id = self.deal.id
     end
     self.state = INWORK if self.state == UNKNOWN
     true
@@ -131,3 +137,5 @@ class StorehouseRelease < ActiveRecord::Base
     a
   end
 end
+
+#TODO: apply

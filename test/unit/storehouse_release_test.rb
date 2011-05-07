@@ -211,4 +211,32 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal ownerDeal, rule.from, "Wrong rule from"
     assert_equal toDeal, rule.to, "Wrong rule to"
   end
+
+  test "entries is loaded" do
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    assert_equal 1, StorehouseRelease.all.count, "Wrong releases count"
+    sr = StorehouseRelease.first
+    assert !sr.nil?, "Release is nil"
+    assert_equal 2, sr.resources.length, "Wrong release resources count"
+    sr.resources.each do |item|
+      if assets(:sonyvaio) == item.resource
+        assert_equal 1, item.amount, "Wrong resource amount"
+      elsif Asset.find_by_tag("roof") == item.resource
+        assert_equal 100, item.amount, "Wrong resource amount"
+      else
+        assert false, "Unknown resource type"
+      end
+    end
+  end
 end
