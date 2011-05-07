@@ -90,6 +90,10 @@ module StorehousesHelper
       :cellsubmit => 'clientArray',
       :beforeRequest => 'function()
       {
+        if(dataPage != null) {
+          storeHouseData = dataPage;
+          dataPage = null;
+        }
         $("#storehouse_release_list").setGridParam({url: "/storehouses/view?entity_id="
                                                           + getOwnerId()});
       }'.to_json_var,

@@ -10,6 +10,7 @@
   }
   function sendRelease() {
     $("#storehouse_release_list").saveRow(lastSelId);
+    dataPage = storeHouseData;
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
