@@ -18,11 +18,11 @@ class StorehousesController < ApplicationController
     end
   end
 
-  def release
+  def new
     session[:res_type] = ''
   end
 
-  def create_release
+  def create
     @release = StorehouseRelease.new(:created => DateTime.now,
                                      :owner => current_user.entity)
     if params[:to] != nil and params[:to].length > 0 then
@@ -37,7 +37,7 @@ class StorehousesController < ApplicationController
     if @release.save then
       render :action => 'index'
     else
-      render :action => 'release'
+      render :action => 'new'
     end
   end
 

@@ -17,7 +17,7 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_get_release_of_storehouse" do
-    xml_http_request :get, :release
+    xml_http_request :get, :new
     assert_response :success
   end
 
@@ -28,7 +28,7 @@ class StorehousesControllerTest < ActionController::TestCase
       :unit => "th", :amount => 10)
     assert wb.save, "Save waybill with entries"
     assert_difference('StorehouseRelease.count') do
-       xml_http_request :post, :create_release,
+       xml_http_request :post, :create,
                         :to => 'TestTo',
                         :resource_id => [assets(:sonyvaio).id],
                         :release_amount => [3]

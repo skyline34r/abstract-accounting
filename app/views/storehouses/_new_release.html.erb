@@ -15,7 +15,7 @@
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
     }
-    $.ajax({url: "/storehouses/create_release?to=" + $("#storehouse_to").val() + entries});
+    $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() + entries});
   }
 </script>
 
