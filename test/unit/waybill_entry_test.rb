@@ -75,6 +75,7 @@ class WaybillEntryTest < ActiveSupport::TestCase
     assert_equal we.resource, d.give, "Deal give is wrong"
     assert_equal we.resource, d.take, "Deal take is wrong"
     assert_equal 1.0, d.rate, "Deal rate is wrong"
+    assert_equal true, d.isOffBalance, "Deal isOffBalance is wrong"
     assert_equal "storehouse entity: " + entities(:sergey).tag + "; resource: " + we.resource.tag + ";", d.tag, "Deal tag is wrong"
     assert d.save, "Deal is not saved"
 
@@ -88,6 +89,7 @@ class WaybillEntryTest < ActiveSupport::TestCase
     assert_equal we.resource, d.give, "Deal give is wrong"
     assert_equal we.resource, d.take, "Deal take is wrong"
     assert_equal 1.0, d.rate, "Deal rate is wrong"
+    assert_equal true, d.isOffBalance, "Deal isOffBalance is wrong"
     assert_equal "storehouse entity: " + entities(:sergey).tag + "; resource: " + we.resource.tag + ";", d.tag, "Deal tag is wrong"
   end
 end

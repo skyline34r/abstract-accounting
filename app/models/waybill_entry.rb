@@ -23,7 +23,8 @@ class WaybillEntry < ActiveRecord::Base
       storehouses.first
     else
       Deal.new :entity => entity, :give => self.resource, :take => self.resource,
-        :rate => 1.0, :tag => "storehouse entity: " + entity.tag + "; resource: " + self.resource.tag + ";"
+        :rate => 1.0, :isOffBalance => true,
+        :tag => "storehouse entity: " + entity.tag + "; resource: " + self.resource.tag + ";"
     end
   end
 
