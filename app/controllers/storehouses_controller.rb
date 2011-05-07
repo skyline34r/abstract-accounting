@@ -46,7 +46,7 @@ class StorehousesController < ApplicationController
   end
 
   def list
-    @columns = ['created', 'owner', 'to']
+    @columns = ['created', 'owner.tag', 'to.tag']
     @releases = StorehouseRelease.inwork.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
