@@ -10,6 +10,23 @@ class StorehouseReleaseEntry
   def deal(entity)
     Deal.find_by_entity_id_and_take_id_and_give_id_and_take_type_and_give_type(entity, @resource, @resource, Asset, Asset)
   end
+
+  def storehouse_deal(entity)
+    return nil if entity.nil?
+    storehouses =
+      if self.resource.id.nil? or entity.id.nil?
+        Array.new
+      else
+        Deal.find_all_by_give_and_take_and_entity(self.resource, self.resource, entity)
+      end
+    if storehouses.length == 1
+      storehouses.first
+    else
+      Deal.new :entity => entity, :give => self.resource, :take => self.resource,
+        :rate => 1.0, :isOffBalance => true,
+        :tag => "storehouse entity: " + entity.tag + "; resource: " + self.resource.tag + ";"
+    end
+  end
 end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
@@ -88,10 +105,14 @@ class StorehouseRelease < ActiveRecord::Base
   def sv_before_save
     if self.deal.nil? or self.deal.id.nil?
       a = self.sr_asset
-      self.deal = Deal.new :tag => "StorehouseRelease created: " + DateTime.now.to_s + "; owner: " + @owner.tag,
+      self.deal = Deal.new :tag => "StorehouseRelease created: " + self.created.to_s + "; owner: " + @owner.tag,
         :rate => 1.0, :entity => @owner, :give => a,
         :take => a, :isOffBalance => true
       return false if !self.deal.save
+      @entries.each do |item|
+        dItem = item.storehouse_deal self.to
+        return false if dItem.nil? or !dItem.save
+      end
     end
     self.state = INWORK if self.state == UNKNOWN
     true
