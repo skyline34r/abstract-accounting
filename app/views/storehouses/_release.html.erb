@@ -21,6 +21,9 @@
 <%= raw(storehouse_release_jqgrid) %>
 Storehouse release
 
+<%= form_for(:release, :remote => true) do |f| %>
+<%= f.error_messages %>
+<% end %>
 <table>
   <tbody>
     <tr align="right">
