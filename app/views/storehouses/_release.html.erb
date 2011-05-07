@@ -8,8 +8,13 @@
    }
    $("#storehouse_release_list").setSelection(id);
   }
-  function setReleaseValue() {
-    $("#div_aaa").html("asdasd");
+  function sendRelease() {
+    $("#storehouse_release_list").saveRow(lastSelId);
+    var entries = "";
+    for (var i in storeHouseData) {
+      entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
+    }
+    $.ajax({url: "/storehouses/create_release?to=" + $("#storehouse_to").val() + entries});
   }
 </script>
 
@@ -35,6 +40,11 @@ Storehouse release
       <td colspan="2">
         <table id=storehouse_release_list></table>
         <div id=storehouse_release_pager></div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="button" value="save" onclick="sendRelease();"/>
       </td>
     </tr>
   </tbody>
