@@ -21,4 +21,22 @@ class StorehousesController < ApplicationController
   def release
     session[:res_type] = ''
   end
+
+  def create_release
+    @release = StorehouseRelease.new(:created => DateTime.now,
+                                     :owner => current_user.entity)
+    @release.to = params[:to]
+    if params[:resource_id] != nil then
+      for i in 0..params[:resource_id].length-1
+        @release.add_resource(Asset.where(:id => params[:resource_id][i]).first,
+                                          params[:release_amount][i])
+      end
+    end
+    if @release.save then
+      render :action => 'index'
+    else
+      render :action => 'release'
+    end
+  end
+
 end

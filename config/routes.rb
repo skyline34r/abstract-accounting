@@ -68,6 +68,7 @@ Abstract::Application.routes.draw do
     collection do
       get 'view'
       get 'release'
+      get 'create_release'
     end
   end
   get "home/index"
