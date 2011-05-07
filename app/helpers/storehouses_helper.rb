@@ -130,7 +130,7 @@ module StorehousesHelper
       :colModel => [
         { :name => 'date',  :index => 'date', :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           return cellvalue;
+                           return cellvalue.substr(0,10);
                          }'.to_json_var },
         { :name => 'owner',  :index => 'owner',   :width => 300 },
         { :name => 'to',  :index => 'to',   :width => 300 }
