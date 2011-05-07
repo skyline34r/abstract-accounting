@@ -211,4 +211,75 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal ownerDeal, rule.from, "Wrong rule from"
     assert_equal toDeal, rule.to, "Wrong rule to"
   end
+
+  test "entries is loaded" do
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    assert_equal 1, StorehouseRelease.all.count, "Wrong releases count"
+    sr = StorehouseRelease.first
+    assert !sr.nil?, "Release is nil"
+    assert_equal 2, sr.resources.length, "Wrong release resources count"
+    sr.resources.each do |item|
+      if assets(:sonyvaio) == item.resource
+        assert_equal 1, item.amount, "Wrong resource amount"
+      elsif Asset.find_by_tag("roof") == item.resource
+        assert_equal 100, item.amount, "Wrong resource amount"
+      else
+        assert false, "Unknown resource type"
+      end
+    end
+  end
+
+  test "get all inwork releases" do
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    srs = StorehouseRelease.inwork
+    assert_equal 0, srs.length, "Wrong inwork releases count"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    assert sr.save, "StorehouseRelease not saved"
+
+    sr1 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 2, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr1.add_resource(assets(:sonyvaio), 1)
+    sr1.add_resource(Asset.find_by_tag("roof"), 50)
+    assert sr1.save, "StorehouseRelease not saved"
+
+    sr2 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr2.add_resource(assets(:sonyvaio), 4)
+    sr2.add_resource(Asset.find_by_tag("roof"), 50)
+    assert sr2.save, "StorehouseRelease not saved"
+
+    sr3 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr3.add_resource(assets(:sonyvaio), 1)
+    sr3.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr3.save, "StorehouseRelease not saved"
+
+    srs = StorehouseRelease.inwork
+    assert_equal 4, srs.length, "Wrong inwork releases count"
+
+    assert sr1.apply, "Release is not applied"
+    assert sr3.cancel, "Release is not canceled"
+
+    srs = StorehouseRelease.inwork
+    assert_equal 2, srs.length, "Wrong inwork releases count"
+  end
 end
