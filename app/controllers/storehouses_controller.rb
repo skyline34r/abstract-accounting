@@ -25,7 +25,7 @@ class StorehousesController < ApplicationController
   def create_release
     @release = StorehouseRelease.new(:created => DateTime.now,
                                      :owner => current_user.entity)
-    if params[:to] != nil then
+    if params[:to] != nil and params[:to].length > 0 then
       @release.to = params[:to]
     end
     if params[:resource_id] != nil then
