@@ -36,4 +36,15 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_equal 1, assigns(:release).resources.length,
       "Resources count is not equal to 1"
   end
+
+  test "should_get_releases_of_storehouse" do
+    xml_http_request :get, :releases
+    assert_response :success
+  end
+
+  test "should_get_list_of_releases" do
+    xml_http_request :get, :list
+    assert_response :success
+    assert_not_nil assigns(:releases)
+  end
 end

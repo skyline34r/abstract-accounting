@@ -41,4 +41,18 @@ class StorehousesController < ApplicationController
     end
   end
 
+  def releases
+    session[:res_type] = ''
+  end
+
+  def list
+    @columns = ['created', 'owner', 'to']
+    @releases = StorehouseRelease.inwork.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows],
+      :order    => order_by_from_params(params))
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@releases, @columns)
+    end
+  end
 end

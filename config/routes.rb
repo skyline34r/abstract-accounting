@@ -67,6 +67,8 @@ Abstract::Application.routes.draw do
   resources :storehouses do
     collection do
       get 'view'
+      get 'releases'
+      get 'list'
     end
   end
   get "home/index"
@@ -130,4 +132,5 @@ Abstract::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
   match ':controller/releases/:action', :to => 'storehouses#create'
   match ':controller/releases/:action', :to => 'storehouses#new'
+  match ':controller/releases/:action', :to => 'storehouses#list'
 end
