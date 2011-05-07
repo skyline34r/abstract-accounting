@@ -22,11 +22,16 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_create_release_storehouse" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :organization => entities(:abstract))
+    wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
+      :unit => "th", :amount => 10)
+    assert wb.save, "Save waybill with entries"
     assert_difference('StorehouseRelease.count') do
        xml_http_request :post, :create_release,
                         :to => 'TestTo',
-                        :resource_id => ['5'],
-                        :release_amount => ['3']
+                        :resource_id => [assets(:sonyvaio).id],
+                        :release_amount => [3]
     end
     assert_equal 1, assigns(:release).resources.length,
       "Resources count is not equal to 1"

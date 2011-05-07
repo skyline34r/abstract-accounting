@@ -25,11 +25,13 @@ class StorehousesController < ApplicationController
   def create_release
     @release = StorehouseRelease.new(:created => DateTime.now,
                                      :owner => current_user.entity)
-    @release.to = params[:to]
+    if params[:to] != nil then
+      @release.to = params[:to]
+    end
     if params[:resource_id] != nil then
       for i in 0..params[:resource_id].length-1
         @release.add_resource(Asset.where(:id => params[:resource_id][i]).first,
-                                          params[:release_amount][i])
+                                          params[:release_amount][i].to_f)
       end
     end
     if @release.save then
