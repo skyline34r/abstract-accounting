@@ -76,7 +76,23 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def sv_before_save
+    if self.deal.nil? or self.deal.id.nil?
+      a = self.sr_asset
+      self.deal = Deal.new :tag => "StorehouseRelease created: " + DateTime.now.to_s + "; owner: " + @owner.tag,
+        :rate => 1.0, :entity => @owner, :give => a,
+        :take => a, :isOffBalance => true
+      return false if !self.deal.save
+    end
     self.state = INWORK if self.state == UNKNOWN
     true
+  end
+
+  protected
+  def sr_asset
+    a = Asset.find_by_tag("Storehouse Release")
+    if a.nil?
+      a = Asset.new :tag => "Storehouse Release"
+    end
+    a
   end
 end

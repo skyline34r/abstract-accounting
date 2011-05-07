@@ -75,4 +75,21 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal a, sr.resources[1].resource, "Wrong resource"
     assert_equal 39, sr.resources[1].amount, "Wrong amount"
   end
+
+  test "deal is created" do
+    deals_count = Deal.all.count
+
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity"),
+      :to => Entity.new(:tag => "Test2Entity"))
+    a = Asset.new(:tag => "hello")
+    sr.add_resource(a, 28)
+    assert sr.save, "StorehouseRelease not saved"
+
+    deals_count += 1
+    assert_equal deals_count, Deal.all.count, "Deal is not created"
+    d = Deal.find(sr.deal.id)
+    assert !d.nil?, "Deal not found"
+    assert_equal Entity.find_by_tag("Test1Entity"), d.entity, "Entity is not valid"
+    assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
+  end
 end
