@@ -307,4 +307,15 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal 9, ownerSVDeal.state.amount, "Wrong resource amount"
     assert_equal 150, ownerRoofDeal.state.amount, "Wrong resource amount"
   end
+
+  test "to and owner retrieved when release loaded" do
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 1)
+    assert sr.save, "Release is not saved"
+
+    sr = StorehouseRelease.first
+    assert_equal entities(:sergey), sr.owner, "Wrong release owner"
+    assert_equal Entity.find_by_tag("Test2Entity"), sr.to, "wrong release to"
+  end
 end
