@@ -39,81 +39,77 @@
         </li>
       </ul>
     </li>
-    <li><a href="#">Manage</a>
-      <ul>
-        <li>
-          <% if current_user != nil and can? :manage, Entity %>
-            <a href="#entities" class="page_link">Entity</a>
-          <% else %>
-            <a href="#" onclick="return false;" style="color: buttonshadow" >Entity</a>
+    <% if current_user != nil and
+        (can?(:read, Entity) or can?(:read, [Asset, Money]) or
+        can?(:read, Chart) or can?(:read, Quote)) %>
+      <li>
+        <a href="#">Manage</a>
+        <ul>
+          <% if current_user != nil and can? :read, Entity %>
+            <li>
+              <a href="#entities" class="page_link">Entity</a>
+            </li>
           <% end %>
-        </li>
-        <li>
-          <% if current_user != nil and can? :manage, Asset, Money %>
-            <a href="#resources" class="page_link">Resource</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Resource</a>
+          <% if current_user != nil and can? :read, Asset, Money %>
+            <li>
+              <a href="#resources" class="page_link">Resource</a>
+            </li>
           <% end %>
-        </li>
-        <li>
-          <% if current_user != nil and can? :manage, Chart %>
-            <a href="#charts" class="page_link">Chart</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Chart</a>
+          <% if current_user != nil and can? :read, Chart %>
+            <li>
+              <a href="#charts" class="page_link">Chart</a>
+            </li>
           <% end %>
-        </li>
-        <li>
-          <% if current_user != nil and can? :manage, Quote %>
-            <a href="#quotes" class="page_link">Quote</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Quote</a>
+          <% if current_user != nil and can? :read, Quote %>
+            <li>
+              <a href="#quotes" class="page_link">Quote</a>
+            </li>
           <% end %>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#">Process</a>
-      <ul>
-        <li>
-          <% if current_user != nil and can? :manage, Deal %>
-            <a href="#deals" class="page_link">Deal</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Deal</a>
+        </ul>
+      </li>
+    <% end %>
+    <% if current_user != nil and
+        (can?(:read, Deal) or can?(:manage, Fact)) %>
+      <li>
+        <a href="#">Process</a>
+        <ul>
+          <% if current_user != nil and can?(:read, Deal) %>
+            <li>
+              <a href="#deals" class="page_link">Deal</a>
+            </li>
           <% end %>
-        </li>
-        <li>
-          <% if current_user != nil and can? :manage, Fact %>
-            <a href="#facts" class="page_link">Fact</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Fact</a>
+          <% if current_user != nil and can?(:manage, Fact) %>
+            <li>
+              <a href="#facts" class="page_link">Fact</a>
+            </li>
           <% end %>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#">Report</a>
-      <ul>
-        <li>
+        </ul>
+      </li>
+    <% end %>
+    <% if current_user != nil and
+        (can?(:manage, GeneralLedger) or can?(:manage, Balance) or
+         can?(:manage, Transcript)) %>
+      <li>
+        <a href="#">Report</a>
+        <ul>
           <% if current_user != nil and can? :manage, GeneralLedger %>
-            <a href="#general_ledgers" class="page_link">GeneralLedger</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >GeneralLedger</a>
+            <li>
+              <a href="#general_ledgers" class="page_link">GeneralLedger</a>
+            </li>
           <% end %>
-        </li>
-        <li>
           <% if current_user != nil and can? :manage, Balance %>
-            <a href="#balances" class="page_link">Balance</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Balance</a>
+            <li>
+              <a href="#balances" class="page_link">Balance</a>
+            </li>
           <% end %>
-        </li>
-        <li>
           <% if current_user != nil and can? :manage, Transcript %>
-            <a href="#transcripts" class="page_link">Transcript</a>
-          <% else %>
-            <a href="#" onclick="return false" style="color: buttonshadow" >Transcript</a>
+            <li>
+              <a href="#transcripts" class="page_link">Transcript</a>
+            </li>
           <% end %>
-        </li>
-      </ul>
-    </li>
+        </ul>
+      </li>
+    <% end %>
     <% if current_user != nil and current_user.entity_id == 0 then %>
     <li><a href="#">Administration</a>
       <ul>
