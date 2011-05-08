@@ -23,8 +23,14 @@ module StorehousesHelper
       :viewrecords => true,
       :beforeRequest => 'function()
       {
-        $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
-                                                   + getOwnerId()});
+        if(location.hash.indexOf("#storehouses/view") == 0) {
+          $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
+                                                     + getOwnerId()});
+        }
+        if(location.hash.indexOf("#storehouses/releases/show") == 0) {
+          $("#storehouse_list").setGridParam({url: "/storehouses/view_release?id="
+                                                     + location.hash.substr(30)});
+        }
       }'.to_json_var
     }]
 
