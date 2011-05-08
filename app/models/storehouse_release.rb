@@ -7,6 +7,21 @@ class StorehouseReleaseEntry
     @amount = amount
   end
 
+  def state(entity)
+    storage_deal = self.deal(entity)
+    return 0 if storage_deal.nil? or storage_deal.state.nil?
+    start_state = storage_deal.state.amount
+    releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
+    releases.each do |item|
+      item.deal.rules.each do |rule|
+        if rule.from == storage_deal
+          start_state -= rule.rate
+        end
+      end
+    end
+    start_state
+  end
+
   def deal(entity)
     Deal.find_by_entity_id_and_take_id_and_give_id_and_take_type_and_give_type(entity, @resource, @resource, Asset, Asset)
   end
@@ -31,12 +46,18 @@ end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
   def validate(record)
-    record.errors[:resources] = "must be not empty" if record.resources.empty?
-    record.resources.each do |item|
-      d = item.deal(record.owner)
-      record.errors[:resources] = "invalid resource" if d.nil?
-      #TODO: check other not applied releases for state
-      record.errors[:resources] = "invalid amount" if !d.nil? and (d.state.nil? or item.amount > d.state.amount or item.amount <= 0)
+    if record.state == StorehouseRelease::UNKNOWN
+      record.errors[:resources] = "must be not empty" if record.resources.empty?
+      record.resources.each do |item|
+        d = item.deal(record.owner)
+        record.errors[:resources] = "invalid resource" if d.nil?
+        #TODO: check other not applied releases for state
+        record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner) or item.amount <= 0)
+      end
+    else
+      record.errors[:release] = "cann't change release after save" \
+        if record.changed? and (record.changed.length != 1 or
+           !record.state_changed?)
     end
   end
 end
@@ -94,7 +115,12 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def apply
-    if self.state == INWORK
+    if self.state == INWORK and !self.deal.nil?
+      return false if !Fact.new(:amount => 1.0,
+              :day => self.created,
+              :from => nil,
+              :to => self.deal,
+              :resource => self.deal.give).save
       self.state = APPLIED
       return self.save
     end
@@ -109,11 +135,21 @@ class StorehouseRelease < ActiveRecord::Base
   def sv_after_initialize
     self.state = UNKNOWN if self.id.nil?
     @entries = Array.new
+    if !self.new_record?
+      if @owner.nil?
+        @owner = self.deal.entity
+      end
+      if @to.nil?
+        @to = self.deal.rules.first.to.entity
+      end
+    end
   end
 
   def sv_before_save
     if self.deal.nil? or self.deal.id.nil?
+      return false if !self.to.save
       a = self.sr_asset
+      return false if !a.save
       self.deal = Deal.new :tag => "StorehouseRelease created: " + self.created.to_s + "; owner: " + @owner.tag,
         :rate => 1.0, :entity => @owner, :give => a,
         :take => a, :isOffBalance => true
@@ -124,7 +160,7 @@ class StorehouseRelease < ActiveRecord::Base
         #create rules
         self.deal.rules.create :tag => self.deal.tag + "; rule" + idx.to_s,
           :from => item.deal(self.owner), :to => dItem, :fact_side => false,
-          :change_side => false, :rate => item.amount
+          :change_side => true, :rate => item.amount
       end
       self.deal_id = self.deal.id
     end

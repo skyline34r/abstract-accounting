@@ -75,4 +75,48 @@ class StoreHouseTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "check amounts" do
+    wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
+              :unit => "m2", :amount => 200)])
+    wb.assign_organization_text("Test Organization Store")
+    assert wb.save, "Waybill is not saved"
+
+    sh = StoreHouse.new(entities(:sergey))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 200, sh[0].amount, "Wrong roof amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 2, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(Asset.find_by_tag("roof"), 50)
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = StoreHouse.new(entities(:sergey))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 150, sh[0].amount, "Wrong roof amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
+    sr.add_resource(Asset.find_by_tag("roof"), 50)
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = StoreHouse.new(entities(:sergey))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 100, sh[0].amount, "Wrong roof amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
+    sr.add_resource(Asset.find_by_tag("roof"), 100)
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = StoreHouse.new(entities(:sergey))
+    assert_equal 0, sh.length, "Wrong storehouse length"
+
+    assert sr.cancel, "Storehouse release is not closed"
+
+    sh = StoreHouse.new(entities(:sergey))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 100, sh[0].amount, "Wrong roof amount"
+  end
 end
