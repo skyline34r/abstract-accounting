@@ -34,9 +34,7 @@ class StorehousesController < ApplicationController
                                           params[:release_amount][i].to_f)
       end
     end
-    if @release.save then
-      render :action => 'index'
-    else
+    if !@release.save then
       render :action => 'new'
     end
   end
