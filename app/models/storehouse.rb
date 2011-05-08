@@ -18,9 +18,11 @@ class StoreHouseEntry
     start_state = deal.state.amount
     releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
     releases.each do |item|
-      item.deal.rules.each do |rule|
-        if rule.from == deal
-          start_state -= rule.rate
+      if !item.deal.nil?
+        item.deal.rules.each do |rule|
+          if rule.from == deal
+            start_state -= rule.rate
+          end
         end
       end
     end
