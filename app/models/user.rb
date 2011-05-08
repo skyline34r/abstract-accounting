@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation,
                   :remember_me, :role_ids, :entity_id
   belongs_to :entity
+  belongs_to :place
   validates :entity_id, :presence => true
 
   def role?(role)
