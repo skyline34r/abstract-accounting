@@ -31,12 +31,18 @@ end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
   def validate(record)
-    record.errors[:resources] = "must be not empty" if record.resources.empty?
-    record.resources.each do |item|
-      d = item.deal(record.owner)
-      record.errors[:resources] = "invalid resource" if d.nil?
-      #TODO: check other not applied releases for state
-      record.errors[:resources] = "invalid amount" if !d.nil? and (d.state.nil? or item.amount > d.state.amount or item.amount <= 0)
+    if record.state == StorehouseRelease::UNKNOWN
+      record.errors[:resources] = "must be not empty" if record.resources.empty?
+      record.resources.each do |item|
+        d = item.deal(record.owner)
+        record.errors[:resources] = "invalid resource" if d.nil?
+        #TODO: check other not applied releases for state
+        record.errors[:resources] = "invalid amount" if !d.nil? and (d.state.nil? or item.amount > d.state.amount or item.amount <= 0)
+      end
+    else
+      record.errors[:release] = "cann't change release after save" \
+        if record.changed? and (record.changed.length != 1 or
+           !record.state_changed?)
     end
   end
 end
