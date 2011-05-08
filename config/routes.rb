@@ -71,6 +71,7 @@ Abstract::Application.routes.draw do
       get 'list'
       get 'view_release'
       post 'cancel'
+      post 'apply'
     end
   end
   get "home/index"
@@ -137,4 +138,5 @@ Abstract::Application.routes.draw do
   match ':controller/releases/:action', :to => 'storehouses#list'
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#show'
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#cancel'
+  match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#apply'
 end

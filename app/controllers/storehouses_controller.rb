@@ -79,4 +79,9 @@ class StorehousesController < ApplicationController
     StorehouseRelease.find(params[:id]).cancel
     render :action => 'releases'
   end
+
+  def apply
+    StorehouseRelease.find(params[:id]).apply
+    render :action => 'releases'
+  end
 end

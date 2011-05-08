@@ -93,4 +93,18 @@ class StorehousesControllerTest < ActionController::TestCase
     xml_http_request :post, :cancel, :id => sr.id
     assert_response :success
   end
+
+  test "should_apply_release" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :organization => entities(:abstract))
+    wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
+      :unit => "th", :amount => 10)
+    assert wb.save, "Save waybill with entries"
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 3)
+    assert sr.save, "StorehouseRelease not saved"
+    xml_http_request :post, :apply, :id => sr.id
+    assert_response :success
+  end
 end
