@@ -1,1 +1,3 @@
- 
+$("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
+$("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/show') %>");
+document.title = "Abstract::Storehouse:Release:Show";
