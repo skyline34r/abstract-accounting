@@ -41,6 +41,8 @@
         <input type="button" value="back" onclick="location.hash = '#storehouses/releases';"/>
         <input type="button" value="cancel"
                onclick="$.ajax({url: 'storehouses/releases/cancel/' + location.hash.substr(30)});"/>
+        <input type="button" value="apply"
+               onclick="$.ajax({url: 'storehouses/releases/apply/' + location.hash.substr(30)});"/>
       </td>
     </tr>
   </tbody>
