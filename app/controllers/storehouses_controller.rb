@@ -63,4 +63,15 @@ class StorehousesController < ApplicationController
     @to = release.to.tag
   end
 
+  def view_release
+    @columns = ['resource.tag', 'amount']
+    release = StorehouseRelease.find(params[:id])
+    @resources = release.resources.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows],
+      :order    => order_by_from_params(params))
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@resources, @columns)
+    end
+  end
 end
