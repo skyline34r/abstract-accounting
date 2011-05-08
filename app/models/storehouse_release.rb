@@ -94,7 +94,12 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def apply
-    if self.state == INWORK
+    if self.state == INWORK and !self.deal.nil?
+      return false if !Fact.new(:amount => 1.0,
+              :day => self.created,
+              :from => nil,
+              :to => self.deal,
+              :resource => self.deal.give).save
       self.state = APPLIED
       return self.save
     end
@@ -113,7 +118,9 @@ class StorehouseRelease < ActiveRecord::Base
 
   def sv_before_save
     if self.deal.nil? or self.deal.id.nil?
+      return false if !self.to.save
       a = self.sr_asset
+      return false if !a.save
       self.deal = Deal.new :tag => "StorehouseRelease created: " + self.created.to_s + "; owner: " + @owner.tag,
         :rate => 1.0, :entity => @owner, :give => a,
         :take => a, :isOffBalance => true
@@ -124,7 +131,7 @@ class StorehouseRelease < ActiveRecord::Base
         #create rules
         self.deal.rules.create :tag => self.deal.tag + "; rule" + idx.to_s,
           :from => item.deal(self.owner), :to => dItem, :fact_side => false,
-          :change_side => false, :rate => item.amount
+          :change_side => true, :rate => item.amount
       end
       self.deal_id = self.deal.id
     end
