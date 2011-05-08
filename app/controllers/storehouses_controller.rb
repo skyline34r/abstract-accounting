@@ -74,4 +74,9 @@ class StorehousesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@resources, @columns)
     end
   end
+
+  def cancel
+    StorehouseRelease.find(params[:id]).cancel
+    render :action => 'releases'
+  end
 end
