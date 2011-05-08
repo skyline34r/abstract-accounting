@@ -1,3 +1,7 @@
+require "storehouse"
+require "storehouse_release"
+require "waybill"
+
 class Ability
   include CanCan::Ability
 
@@ -11,11 +15,9 @@ class Ability
           Role.all[i].pages.each_line(',') do |p|
             if p == "Storehouse"
               if user.place.nil?
-                can :read, [StoreHouse, StorehouseRelease, Waybill,
-                  StoreHouseEntry, StorehouseReleaseEntry, WaybillEntry]
+                can :read, [StoreHouse, Waybill, StorehouseRelease]
               else
-                can :manage, [StoreHouse, StorehouseRelease, Waybill,
-                  StoreHouseEntry, StorehouseReleaseEntry, WaybillEntry]
+                can :manage, [StoreHouse, Waybill, StorehouseRelease]
               end
             else
               can :manage, eval(p.chomp(','))
