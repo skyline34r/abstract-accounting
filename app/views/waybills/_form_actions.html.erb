@@ -1,17 +1,61 @@
 <script type="text/javascript">
+  var canSave = true;
+  var editRowId = -1;
+  var editColId = -1;
+  var uin;
+
   $(function() {
     $("#waybill_date").datepicker();
   });
 
   function sendWaybill() {
+    canSave = true;
+    saveEdittedRow();
+    var data = $("#waybills_list").getRowData();
+    var entries = "";
+    for(var i=0; i<data.length; i++) {
+      entries += "&entry_resource[]=" + data[i]["resource"] +
+                 "&entry_amount[]=" + data[i]["amount"] +
+                 "&entry_unit[]=" + data[i]["unit"];
+    }
+    $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
+    d.setUTCHours(12);
     $("#hide_waybill_date").val(d.toUTCString());
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#new_waybill").attr("action", "/waybills?organization_text="
-      + escape($("#waybill_organization").val()));
+      + escape($("#waybill_organization").val()) + entries);
+    saveWaybillElements();
+  }
+
+  function saveEdittedRow() {
+    if(editRowId >= 0 && editColId >= 0) {
+      if(canSave) $("#waybills_list").saveCell(editRowId,editColId);
+    }
+  }
+
+  function saveWaybillElements() {
+    dataPage = new Object();
+    dataPage["date"] = $("#waybill_date").val();
+    dataPage["organization"] = $("#waybill_organization").val();
+    dataPage["vatin"] = $("#waybill_vatin").val();
+    dataPage["dataGrid"] = $("#waybills_list").getRowData();
+  }
+
+  function loadWaybillElements() {
+    $("#waybill_date").val(dataPage["date"]);
+    $("#waybill_organization").val(dataPage["organization"]);
+    $("#waybill_vatin").val(dataPage["vatin"]);
+    for(uin=0; uin<dataPage["dataGrid"].length; uin++) {
+      $("#waybills_list").addRowData(uin, dataPage["dataGrid"][uin]);
+    }
   }
 </script>
 
+<%= raw(waybills_jqgrid) %>
+
+<%= form_for(@waybill, :remote => true) do |f| %>
+<%= f.error_messages %>
 <table id="waybill_add_list">
   <tbody>
     <tr align="right">
@@ -23,39 +67,44 @@
       <td>
         Date*:
       </td>
-      <td>
-        <input type="text" id="waybill_date" value="" size="30"/>
+      <td align="right">
+        <input type="text" id="waybill_date" value="" size="35"/>
       </td>
     </tr>
     <tr align="left">
       <td>
         Organization*:
       </td>
-      <td>
-        <input type="text" id="waybill_organization" value="" size="30"/>
+      <td align="right">
+        <input type="text" id="waybill_organization" value="" size="35"/>
       </td>
     </tr>
     <tr align="left">
       <td>
         Vatin:
       </td>
-      <td>
-        <input type="text" id="waybill_vatin" value="" size="30"/>
+      <td align="right">
+        <input type="text" id="waybill_vatin" value="" size="35"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        Entry*:
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedRow();">
+        <table id=waybills_list onmouseup="canSave = false;"></table>
+        <div id=waybills_pager></div>
       </td>
     </tr>
     <tr align="right">
       <td colspan="2" style="width: 45px">
-        <%= form_for(@waybill, :remote => true) do |f| %>
         <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
         <%= f.hidden_field :date, :id => "hide_waybill_date" %>
-        <%= f.hidden_field :owner_id, :id => "hide_waybill_owner",
-                           :value => if(current_user != nil &&
-                                        current_user.entity != nil) then
-                                       current_user.entity.id
-                                     end %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
-        <% end %>
       </td>
     </tr>
   </tbody>
 </table>
+<% end %>

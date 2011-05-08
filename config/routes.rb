@@ -59,7 +59,18 @@ Abstract::Application.routes.draw do
     end
   end
   resources :rules
-  resources :waybills
+  resources :waybills do
+    collection do
+      get 'view'
+    end
+  end
+  resources :storehouses do
+    collection do
+      get 'view'
+      get 'releases'
+      get 'list'
+    end
+  end
   get "home/index"
 
   # The priority is based upon order of creation:
@@ -119,4 +130,7 @@ Abstract::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
+  match ':controller/releases/:action', :to => 'storehouses#create'
+  match ':controller/releases/:action', :to => 'storehouses#new'
+  match ':controller/releases/:action', :to => 'storehouses#list'
 end

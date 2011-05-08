@@ -20,7 +20,7 @@ def sign_in_by_user
   u = User.new(:email => "user@mail.com",
                :password => "user_pass",
                :password_confirmation => "user_pass",
-               :entity_id => 0,
+               :entity_id => entities(:sergey).id,
                :role_ids => [roles(:operator).id])
   assert u.save, "User can't be saved"
   sign_in u

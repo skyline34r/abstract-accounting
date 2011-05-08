@@ -11,6 +11,7 @@ gem 'jqgrid_for_rails'
 gem 'jquery-rails', :git => 'git://github.com/AlexeyShepelev/jquery-rails.git'
 gem 'devise'
 gem 'cancan'
+gem 'dynamic_form'
 
 # Use unicorn as the web server
 # gem 'unicorn'

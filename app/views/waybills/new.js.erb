@@ -1,11 +1,12 @@
 $("#body").html("<%= escape_javascript(render :partial => 'waybills/form_actions') %>");
 document.title = "Abstract::Waybills";
-if("<%= if(current_user != nil && current_user.entity != nil) then
-        'true'
-       else
-         'false'
-       end %>" == "true") {
-  $("#save_waybill").removeAttr("disabled");
+if(dataPage != null) {
+  loadWaybillElements();
+  dataPage = null;
 } else {
-  $("#save_waybill").attr("disabled", "disabled");
+  uin = 0;
+  $("#waybills_list").addRowData(uin, { resource: ""
+                                      , amount: ""
+                                      , unit: "" });
+  uin++;
 }

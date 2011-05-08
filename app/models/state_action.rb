@@ -1,3 +1,4 @@
+require 'float_accounting'
 
 module StateAction
   

@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  var lastSelId = "";
+  var storeHouseData = new Object();
+
+  function check_storehouse_waybill(id) {
+   if(!$("#check_" + id).is(":checked")) {
+     $("#storehouse_release_list").setCell(id, 'release',' ');
+   }
+   $("#storehouse_release_list").setSelection(id);
+  }
+  function sendRelease() {
+    $("#storehouse_release_list").saveRow(lastSelId);
+    dataPage = storeHouseData;
+    var entries = "";
+    for (var i in storeHouseData) {
+      entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
+    }
+    $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() + entries});
+  }
+</script>
+
+<%= raw(storehouse_release_jqgrid) %>
+Storehouse release
+
+<%= form_for(:release, :remote => true) do |f| %>
+<%= f.error_messages %>
+<% end %>
+<table>
+  <tbody>
+    <tr align="right">
+      <td colspan="2">
+        * - required fields
+      </td>
+    </tr>
+    <tr>
+      <td align="left">
+        To*:
+      </td>
+      <td align="right">
+        <input type="text" id="storehouse_to" value="" size="50"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id=storehouse_release_list></table>
+        <div id=storehouse_release_pager></div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="button" value="save" onclick="sendRelease();"/>
+      </td>
+    </tr>
+  </tbody>
+</table>
