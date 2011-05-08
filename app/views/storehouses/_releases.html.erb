@@ -7,6 +7,9 @@
 Releases
 <%= raw(releases_jqgrid) %>
 
+<%= form_for(:release, :remote => true) do |f| %>
+<%= f.error_messages %>
+<% end %>
 <table>
   <tbody>
     <tr>
@@ -23,4 +26,3 @@ Releases
     </tr>
   </tbody>
 </table>
-
