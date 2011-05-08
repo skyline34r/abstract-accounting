@@ -135,11 +135,11 @@ class StorehouseRelease < ActiveRecord::Base
   def sv_after_initialize
     self.state = UNKNOWN if self.id.nil?
     @entries = Array.new
-    if !self.new_record?
+    if !self.new_record? && !self.deal.nil?
       if @owner.nil?
         @owner = self.deal.entity
       end
-      if @to.nil?
+      if @to.nil? && self.deal.rules.length > 0 && !self.deal.rules.first.to.nil?
         @to = self.deal.rules.first.to.entity
       end
     end
