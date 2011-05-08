@@ -59,7 +59,7 @@ class StorehousesController < ApplicationController
   def show
     release = StorehouseRelease.find(params[:id])
     @owner = release.owner.tag
-    @date = release.created
+    @date = release.created.strftime("%x")
     @to = release.to.tag
   end
 
