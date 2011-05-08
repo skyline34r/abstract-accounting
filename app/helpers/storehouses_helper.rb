@@ -23,7 +23,7 @@ module StorehousesHelper
       :viewrecords => true,
       :beforeRequest => 'function()
       {
-        if(location.hash.indexOf("#storehouses/view") == 0) {
+        if(location.hash == "#storehouses") {
           $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
                                                      + getOwnerId()});
         }
