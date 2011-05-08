@@ -1,3 +1,9 @@
+<script type="text/javascript">
+  function viewRelease() {
+    location.hash = "#storehouses/releases/show?id=" +
+                      $("#releases_list").getGridParam('selrow');
+  }
+</script>
 Releases
 <%= raw(releases_jqgrid) %>
 
@@ -11,7 +17,8 @@ Releases
     </tr>
     <tr>
       <td align="right">
-        <input type="button" id="view_release" value="view" disabled="true"/>
+        <input type="button" id="view_release" value="view" disabled="true"
+               onclick="viewRelease();"/>
       </td>
     </tr>
   </tbody>
