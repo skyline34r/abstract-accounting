@@ -55,4 +55,12 @@ class StorehousesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@releases, @columns)
     end
   end
+
+  def show
+    release = StorehouseRelease.find(params[:id])
+    @owner = release.owner.tag
+    @date = release.created
+    @to = release.to.tag
+  end
+
 end

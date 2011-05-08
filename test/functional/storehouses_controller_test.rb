@@ -47,4 +47,21 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:releases)
   end
+
+  test "should_show_release" do
+    wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :organization => entities(:abstract))
+    wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
+      :unit => "th", :amount => 10)
+    assert wb.save, "Save waybill with entries"
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 3)
+    assert sr.save, "StorehouseRelease not saved"
+    xml_http_request :get, :show, :id => sr.id
+    assert_response :success
+    assert_not_nil assigns(:owner)
+    assert_not_nil assigns(:date)
+    assert_not_nil assigns(:to)
+  end
 end

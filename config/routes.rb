@@ -133,4 +133,5 @@ Abstract::Application.routes.draw do
   match ':controller/releases/:action', :to => 'storehouses#create'
   match ':controller/releases/:action', :to => 'storehouses#new'
   match ':controller/releases/:action', :to => 'storehouses#list'
+  match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#show'
 end
