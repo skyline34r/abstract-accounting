@@ -9,7 +9,17 @@ class Ability
       while i < Role.count
         if user.role? Role.all[i].name
           Role.all[i].pages.each_line(',') do |p|
-            can :manage, eval(p.chomp(','))
+            if p == "Storehouse"
+              if user.place.nil?
+                can :read, [StoreHouse, StorehouseRelease, Waybill,
+                  StoreHouseEntry, StorehouseReleaseEntry, WaybillEntry]
+              else
+                can :manage, [StoreHouse, StorehouseRelease, Waybill,
+                  StoreHouseEntry, StorehouseReleaseEntry, WaybillEntry]
+              end
+            else
+              can :manage, eval(p.chomp(','))
+            end
           end
         end
         i += 1
