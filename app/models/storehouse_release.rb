@@ -7,6 +7,21 @@ class StorehouseReleaseEntry
     @amount = amount
   end
 
+  def state(entity)
+    storage_deal = self.deal(entity)
+    return 0 if storage_deal.nil? or storage_deal.state.nil?
+    start_state = storage_deal.state.amount
+    releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
+    releases.each do |item|
+      item.deal.rules.each do |rule|
+        if rule.from == storage_deal
+          start_state -= rule.rate
+        end
+      end
+    end
+    start_state
+  end
+
   def deal(entity)
     Deal.find_by_entity_id_and_take_id_and_give_id_and_take_type_and_give_type(entity, @resource, @resource, Asset, Asset)
   end
@@ -37,7 +52,7 @@ class StorehouseReleaseValidator < ActiveModel::Validator
         d = item.deal(record.owner)
         record.errors[:resources] = "invalid resource" if d.nil?
         #TODO: check other not applied releases for state
-        record.errors[:resources] = "invalid amount" if !d.nil? and (d.state.nil? or item.amount > d.state.amount or item.amount <= 0)
+        record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner) or item.amount <= 0)
       end
     else
       record.errors[:release] = "cann't change release after save" \
