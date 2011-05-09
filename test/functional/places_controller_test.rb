@@ -16,7 +16,7 @@ class PlacesControllerTest < ActionController::TestCase
   end
 
   test "should get edit place" do
-    xml_http_request :get, :edit, :id => places(:minsk).id
+    xml_http_request :get, :edit, :id => places(:orsha).id
     assert_response :success
   end
 
@@ -29,10 +29,10 @@ class PlacesControllerTest < ActionController::TestCase
   end
 
   test "should update place" do
-    xml_http_request :put, :update, :id => places(:minsk).id,
+    xml_http_request :put, :update, :id => places(:orsha).id,
       :place => { :tag => 'Vitebsk' }
     assert_response :success
-    assert_equal 'Vitebsk', Place.find(places(:minsk).id).tag,
+    assert_equal 'Vitebsk', Place.find(places(:orsha).id).tag,
       'Place \'Vitebsk\' not edited'
   end
 

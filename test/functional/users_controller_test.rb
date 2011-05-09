@@ -78,13 +78,13 @@ class UsersControllerTest < ActionController::TestCase
                                    :password => "user_pass",
                                    :password_confirmation => "user_pass",
                                    :entity_id => entities(:abstract).id,
-                                   :place_id => places(:minsk).id,
+                                   :place_id => places(:orsha).id,
                                    :role_ids => [ roles(:user).id, roles(:operator).id]
                                  }
     end
     assert_equal 1, User.where(:email =>'user@mail.com').count,
       "User not saved"
-    assert_equal places(:minsk).tag, User.where(:email =>'user@mail.com').first.place.tag,
+    assert_equal places(:orsha).tag, User.where(:email =>'user@mail.com').first.place.tag,
       "Place not added"
   end
 end

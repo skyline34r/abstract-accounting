@@ -15,6 +15,7 @@ class WaybillsControllerTest < ActionController::TestCase
        xml_http_request :post, :create,
                         :waybill => { :date => DateTime.now,
                                       :organization => entities(:abstract),
+                                      :place => places(:orsha),
                                       :vatin => '500100732259' },
                         :entry_resource => ['test1'],
                         :entry_amount => ['5'],

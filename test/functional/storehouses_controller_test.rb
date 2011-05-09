@@ -23,7 +23,8 @@ class StorehousesControllerTest < ActionController::TestCase
 
   test "should_create_release_storehouse" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract))
+                     :organization => entities(:abstract),
+                     :place => places(:orsha))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
     assert wb.save, "Save waybill with entries"
@@ -50,12 +51,14 @@ class StorehousesControllerTest < ActionController::TestCase
 
   test "should_show_release" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract))
+                     :organization => entities(:abstract),
+                     :place => places(:orsha))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
-    assert wb.save, "Save waybill with entries"
+    assert wb.save, "Can't save waybill with entries"
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
-      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"),
+      :place => places(:orsha))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
     xml_http_request :get, :show, :id => sr.id
@@ -67,12 +70,14 @@ class StorehousesControllerTest < ActionController::TestCase
 
   test "should_get_view_release" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract))
+                     :organization => entities(:abstract),
+                     :place => places(:orsha))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
-    assert wb.save, "Save waybill with entries"
+    assert wb.save, "Can't save waybill with entries"
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
-      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"),
+      :place => places(:orsha))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
     xml_http_request :get, :view_release, :id => sr.id
@@ -82,12 +87,14 @@ class StorehousesControllerTest < ActionController::TestCase
 
   test "should_cancel_release" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract))
+                     :organization => entities(:abstract),
+                     :place => places(:orsha))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
-    assert wb.save, "Save waybill with entries"
+    assert wb.save, "Can't save waybill with entries"
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
-      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+      :owner => entities(:sergey), :place => places(:orsha),
+      :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
     xml_http_request :post, :cancel, :id => sr.id
@@ -96,12 +103,14 @@ class StorehousesControllerTest < ActionController::TestCase
 
   test "should_apply_release" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-                  :organization => entities(:abstract))
+                     :organization => entities(:abstract),
+                     :place => places(:orsha))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
-    assert wb.save, "Save waybill with entries"
+    assert wb.save, "Can't save waybill with entries"
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
-      :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
+      :owner => entities(:sergey), :place => places(:orsha),
+      :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
     xml_http_request :post, :apply, :id => sr.id
