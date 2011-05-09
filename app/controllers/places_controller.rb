@@ -1,4 +1,5 @@
 class PlacesController < ApplicationController
+
   def index
     session[:res_type] = ''
   end
@@ -17,4 +18,12 @@ class PlacesController < ApplicationController
       render :action => "new"
     end
   end
+
+  def update
+    @place = Place.find(params[:id])
+    if !@place.update_attributes(params[:place])
+      render :action => "edit"
+    end
+  end
+
 end

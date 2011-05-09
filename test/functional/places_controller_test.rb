@@ -25,4 +25,12 @@ class PlacesControllerTest < ActionController::TestCase
       'Place \'Vitebsk\' not saved'
   end
 
+  test "should update place" do
+    xml_http_request :put, :update, :id => places(:minsk).id,
+      :place => { :tag => 'Vitebsk' }
+    assert_response :success
+    assert_equal 'Vitebsk', Place.find(places(:minsk).id).tag,
+      'Place \'Vitebsk\' not edited'
+  end
+
 end
