@@ -6,6 +6,7 @@ class WaybillTest < ActiveSupport::TestCase
     assert Waybill.new.invalid?, "Empty waybill is valid"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
                       :organization => entities(:abstract),
+                      :place => Place.new(:tag => "Some place"),
                       :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                         :unit => "th", :amount => 10)]).valid?,
                       "Wrong waybill without vatin"
@@ -13,48 +14,56 @@ class WaybillTest < ActiveSupport::TestCase
 
   test "validate VATIN" do
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
-              :organization => entities(:abstract), :vatin => "1234",
+              :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"), :vatin => "1234",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
               "Waybill short vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "1234567890123",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
               "Waybill long vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "7830002293",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).valid?,
               "Waybill valid vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "7830002295",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
               "Waybill invalid vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "500100732259",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).valid?,
               "Waybill valid vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "500100732269",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
               "Waybill invalid vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "500100732253",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
               "Waybill invalid vatin number"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "1234d678901a",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
@@ -64,12 +73,14 @@ class WaybillTest < ActiveSupport::TestCase
   test "VATIN must be unique" do
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
               :organization => entities(:abstract),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "500100732259",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).save,
               "Waybill not saved"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:abstract),
               :organization => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :vatin => "500100732259",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).invalid?,
@@ -77,6 +88,7 @@ class WaybillTest < ActiveSupport::TestCase
   end
   test "save waybill with organization text" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "7830002293",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
@@ -85,6 +97,7 @@ class WaybillTest < ActiveSupport::TestCase
 
 
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :vatin => "7930002297",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
@@ -95,10 +108,12 @@ class WaybillTest < ActiveSupport::TestCase
 
   test "save two bills without vatin" do
     assert Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :organization => entities(:abstract),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).save, "Save first waybill"
     assert Waybill.new(:date => DateTime.now, :owner => entities(:jdow),
+              :place => Place.find_by_tag("Some place"),
               :organization => entities(:abstract),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)]).save, "Save first waybill"
@@ -106,6 +121,7 @@ class WaybillTest < ActiveSupport::TestCase
 
   test "save case insensitive" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :vatin => "7930002297",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
@@ -113,6 +129,7 @@ class WaybillTest < ActiveSupport::TestCase
     assert wb.save, "Waybill not saved"
     assert_equal 1,Entity.where(:tag => "abstract1").length, "Abstract1 entity is not saved"
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :vatin => "7830002293",
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
@@ -126,6 +143,7 @@ class WaybillTest < ActiveSupport::TestCase
     deals_count = Deal.all.count
 
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
     wb.assign_organization_text("abstract1")
@@ -137,6 +155,7 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 1, Deal.find_all_by_give_and_take_and_entity(assets(:sonyvaio), assets(:sonyvaio), wb.organization).count, "Owner deals is not created"
 
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 5)])
     wb.assign_organization_text("abstract1")
@@ -151,6 +170,7 @@ class WaybillTest < ActiveSupport::TestCase
     deals_count = Deal.all.count
 
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
     wb.assign_organization_text("abstract1")
@@ -163,6 +183,7 @@ class WaybillTest < ActiveSupport::TestCase
 
     rf = Asset.new(:tag => "roofing felt")
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 5),WaybillEntry.new(:resource => rf,
                 :unit => "m", :amount => 250)])
@@ -179,6 +200,7 @@ class WaybillTest < ActiveSupport::TestCase
 
   test "save fact for waybill entries" do
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 4, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 10)])
     wb.assign_organization_text("abstract1")
@@ -200,6 +222,7 @@ class WaybillTest < ActiveSupport::TestCase
 
     rf = Asset.new(:tag => "roofing felt")
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
                 :unit => "th", :amount => 5),WaybillEntry.new(:resource => rf,
                 :unit => "m", :amount => 250)])

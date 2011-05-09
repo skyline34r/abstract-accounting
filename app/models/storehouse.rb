@@ -1,13 +1,20 @@
 require "resource"
 
 class StorehouseEntry
-  attr_reader :deal, :amount, :resource
+  attr_reader :deal, :owner, :place, :amount, :resource
   def initialize(deal)
     @deal = nil
     @amount = 0
     @resource = nil
+    @owner = nil
+    @place = nil
     if !deal.nil? and deal.instance_of?(Deal)
       @deal = deal
+      @owner = deal.entity
+      user = User.find_by_entity_id(deal.entity.id)
+      if !user.nil?
+        @place = user.place
+      end
       @resource = deal.give
       @amount = StorehouseEntry.state(deal)
     end

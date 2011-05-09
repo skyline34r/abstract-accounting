@@ -24,6 +24,7 @@ class StorehouseTest < ActiveSupport::TestCase
 
     assert Waybill.new(:date => DateTime.civil(2011, 5, 3, 12, 0, 0),
       :owner => entities(:sergey), :organization => Entity.new(:tag => "Some organization"),
+      :place => Place.new(:tag => "Some test place"),
       :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
         :unit => "th", :amount => 10), WaybillEntry.new(:resource => Asset.new(:tag => "underlayer"),
         :unit => "m", :amount => 600)]).save, "Waybill is not saved"
@@ -43,8 +44,18 @@ class StorehouseTest < ActiveSupport::TestCase
   end
 
   test "storehouse do not show deals with empty state" do
+
+    assert Place.new(:tag => "Some test place").save, "Place is not saved"
+    user = User.new(:email => "user@mail.com",
+                 :password => "user_pass",
+                 :password_confirmation => "user_pass",
+                 :entity_id => entities(:sergey).id,
+                 :role_ids => [roles(:operator).id])
+    user.place = Place.find_by_tag("Some test place")
+    assert user.save, "User is not saved"
     assert Waybill.new(:date => DateTime.civil(2011, 5, 3, 12, 0, 0),
       :owner => entities(:sergey), :organization => Entity.new(:tag => "Some organization"),
+      :place => Place.find_by_tag("Some test place"),
       :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
         :unit => "th", :amount => 10), WaybillEntry.new(:resource => Asset.new(:tag => "underlayer"),
         :unit => "m", :amount => 600), WaybillEntry.new(:resource => Asset.new(:tag => "tile"),
@@ -68,8 +79,12 @@ class StorehouseTest < ActiveSupport::TestCase
       assert item.instance_of?(StorehouseEntry), "Wrong storehouse entry type"
       if item.resource == assets(:sonyvaio)
         assert_equal 10, item.amount, "Wrong storehouse entry amount"
+        assert_equal entities(:sergey), item.owner, "Wrong storehouse entity"
+        assert_equal Place.find_by_tag("Some test place"), item.place, "Wrong storehouse entity"
       elsif item.resource == Asset.find_by_tag("tile")
         assert_equal 50, item.amount, "Wrong storehouse entry amount"
+        assert_equal entities(:sergey), item.owner, "Wrong storehouse entity"
+        assert_equal Place.find_by_tag("Some test place"), item.place, "Wrong storehouse entity"
       else
         assert false, "Unknown storehouse entry resource"
       end
@@ -78,6 +93,7 @@ class StorehouseTest < ActiveSupport::TestCase
 
   test "check amounts" do
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
