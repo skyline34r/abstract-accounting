@@ -9,7 +9,7 @@ class StorehousesController < ApplicationController
   end
 
   def view
-    @columns = ['resource.tag', 'amount']
+    @columns = ['resource.tag', 'amount', 'place.tag']
     @storehouse = Storehouse.new(Entity.where(:id => params[:entity_id]).first)
     @storehouse = @storehouse.paginate(
       :page     => params[:page],

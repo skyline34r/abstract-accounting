@@ -10,10 +10,11 @@ module StorehousesHelper
       :url => '/storehouses/view?entity_id=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'amount'],
+      :colNames => ['resource', 'amount', 'place'],
       :colModel => [
-        { :name => 'resource',  :index => 'resource',   :width => 400 },
-        { :name => 'amount',  :index => 'amount',   :width => 400 }
+        { :name => 'resource', :index => 'resource', :width => 300 },
+        { :name => 'amount',   :index => 'amount',   :width => 200 },
+        { :name => 'place',    :index => 'place',    :width => 300 }
       ],
       :pager => '#storehouse_pager',
       :rowNum => 10,
