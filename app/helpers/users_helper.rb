@@ -10,10 +10,11 @@ module UsersHelper
       :url => '/users/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['email', 'entity', 'role_ids'],
+      :colNames => ['email', 'entity', 'place', 'role_ids'],
       :colModel => [
-        { :name => 'email',    :index => 'email',      :width => 400 },
-        { :name => 'entity',   :index => 'entity.tag', :width => 400 },
+        { :name => 'email',    :index => 'email',      :width => 200 },
+        { :name => 'entity',   :index => 'entity.tag', :width => 250 },
+        { :name => 'place',    :index => 'place.tag',  :width => 250 },
         { :name => 'role_ids', :index => 'role_ids', :width => 5, :hidden => true }
       ],
       :pager => '#data_pager',
@@ -26,6 +27,7 @@ module UsersHelper
       {
         $('#user_email').val($('#data_list').getCell(cell, 'email'));
         $('#user_entity_tag').val($('#data_list').getCell(cell, 'entity'));
+        $('#user_place_tag').val($('#data_list').getCell(cell, 'place'));
         if($('#data_list').getCell(cell, 'entity') == '') {
           $('#change_user').attr('disabled','disabled');
           $('#change_user_pass').attr('disabled','disabled');
@@ -42,6 +44,7 @@ module UsersHelper
           checkRoles($('#data_list').getCell(cell, 'role_ids').split(','));
           roles = $('#data_list').getCell(cell, 'role_ids').split(',');
           entity_tag = $('#data_list').getCell(cell, 'entity');
+          place_tag = $('#data_list').getCell(cell, 'place');
         }
       }".to_json_var,
       :beforeSelectRow => "function()

@@ -3,6 +3,8 @@
   var roles = "";
   var entity_id = "";
   var entity_tag = "";
+  var place_id = "";
+  var place_tag = "";
   var canSelect = true;
   var changePass;
   function uncheckRoles(enabled)
@@ -36,17 +38,20 @@
     $("#user_pass_c").val("");
     $("#user_entity_tag").val(entity_tag);
     $("#hide_user_entity_id").val(entity_id);
+    $("#user_place_tag").val(place_tag);
+    $("#hide_user_place_id").val(place_id);
     $("#save_user").attr("disabled","disabled");
     uncheckRoles("enabled");
     if(roles != "") {
       checkRoles(roles);
     }
   }
-  function viewActionForm(emailValue, entityId, loadType)
+  function viewActionForm(emailValue, entityId, placeId, loadType)
   {
     canSelect = false;
     email = emailValue;
     entity_id = entityId;
+    place_id = placeId;
     $("#data_list").resetSelection();
     if(loadType == 'edit_pass')
     {
@@ -62,6 +67,7 @@
       $("#user_email").removeAttr('disabled');
       $("#user_email").val(email);
       $("#user_entity_choose").removeAttr("disabled");
+      $("#user_place_choose").removeAttr("disabled");
       $("#roles").css("display","block");
       if(loadType == 'new')
       {
@@ -106,6 +112,24 @@
       }
     });
   }
+  function userChoisePlace()
+  {
+    crossPage = "user";
+    crossPageLink = "users/new";
+    $("#users_div").css("display","none");
+    $("#user_p_s_controls").css("display","block");
+    $("#user_page_selection").html("<%= escape_javascript(render :partial => 'places/index') %>");
+    $("#user_submit").click(function() {
+      var selRow = $("#place_list").getGridParam("selrow");
+      if (selRow != null)
+      {
+        $("#hide_user_place_id").val(selRow);
+        $("#user_place_tag").val($("#place_list").getCell(selRow, "tag"));
+        showUserPage();
+        $("#save_user").removeAttr('disabled');
+      }
+    });
+  }
   function showUserPage()
   {
     $("#users_div").css("display","block");
@@ -136,7 +160,7 @@
     <tr align="left" id="email" style="display: table-row">
       <td colspan="3">
         email:
-        <input id="user_email" type="text" disabled="true" value="" size="80"
+        <input id="user_email" type="text" disabled="true" value="" size="71"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
@@ -144,9 +168,18 @@
       <td colspan="3">
         entity:
         <input id="user_entity_tag" type="text" disabled="true" value=""
-               size="71"/>
+               size="62"/>
         <input id="user_entity_choose" type="button" value="choose" disabled="true"
                onclick="userChoiseEntity();"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="3">
+        place:
+        <input id="user_place_tag" type="text" disabled="true" value=""
+               size="62"/>
+        <input id="user_place_choose" type="button" value="choose" disabled="true"
+               onclick="userChoisePlace();"/>
       </td>
     </tr>
     <tr align="left" id="pass" style="display: none">

@@ -10,6 +10,7 @@
                          :onclick => "sendDataUser();" %>
     <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
     <%= f.hidden_field :entity_id, :id => "hide_user_entity_id" %>
+    <%= f.hidden_field :place_id, :id => "hide_user_place_id" %>
     <%= f.hidden_field :password, :id => "hide_pass", :value => "" %>
     <%= f.hidden_field :password_confirmation, :id => "hide_pass_c", :value => "" %>
     <div style="display: none">
