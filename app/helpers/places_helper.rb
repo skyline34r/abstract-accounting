@@ -26,6 +26,11 @@ module PlacesHelper
         $("#change_place").removeAttr("disabled");
         $("#change_place").parent().parent().attr("action",
             "/places/" + cell + "/edit");
+      }'.to_json_var,
+      :beforeSelectRow =>	'function()
+      {
+        if (canSelectPlace) return true;
+        return false;
       }'.to_json_var
     }]
 
