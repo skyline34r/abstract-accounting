@@ -7,4 +7,9 @@ class PlacesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get new place" do
+    xml_http_request :get, :new
+    assert_response :success
+  end
+
 end
