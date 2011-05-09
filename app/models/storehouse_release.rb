@@ -71,9 +71,10 @@ class StorehouseRelease < ActiveRecord::Base
   UNKNOWN = 0
 
   attr_accessor :owner, :to
-  validates :created, :owner, :to, :state, :presence => true
+  validates :created, :owner, :to, :place, :state, :presence => true
   validates_with StorehouseReleaseValidator
   belongs_to :deal
+  belongs_to :place
 
   after_initialize :sv_after_initialize
   before_save :sv_before_save

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110509094155) do
+ActiveRecord::Schema.define(:version => 20110509115443) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(:version => 20110509094155) do
     t.datetime "created"
     t.integer  "deal_id"
     t.integer  "state"
+    t.integer  "place_id"
   end
 
   create_table "txns", :force => true do |t|
