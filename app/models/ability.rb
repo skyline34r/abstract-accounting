@@ -15,9 +15,10 @@ class Ability
           Role.all[i].pages.each_line(',') do |p|
             if p == "Storehouse"
               if user.place.nil?
-                can :read, [StoreHouse, Waybill, StorehouseRelease]
+                alias_action :index, :view, :show, :releases, :list, :to => :storehouse_read
+                can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
               else
-                can :manage, [StoreHouse, Waybill, StorehouseRelease]
+                can :manage, [Storehouse, Waybill, StorehouseRelease]
               end
             else
               can :manage, eval(p.chomp(','))

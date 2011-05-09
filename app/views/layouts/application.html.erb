@@ -110,13 +110,37 @@
         </ul>
       </li>
     <% end %>
+    <% if !current_user.nil? and
+        (can?(:view, Storehouse) or can?(:view, Waybill) or
+         can?(:list, StorehouseRelease)) %>
+      <li>
+        <a href="#">Storehouse</a>
+        <ul>
+          <% if current_user != nil and can?(:view, Storehouse) %>
+            <li>
+              <a href="#storehouses" class="page_link">State</a>
+            </li>
+          <% end %>
+          <% if current_user != nil and can?(:view, Waybill) %>
+            <li>
+              <a href="#waybills" class="page_link">Waybills</a>
+            </li>
+          <% end %>
+          <% if current_user != nil and can?(:list, StorehouseRelease) %>
+            <li>
+              <a href="#storehouses/releases" class="page_link">Releases</a>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
     <% if current_user != nil and current_user.entity_id == 0 then %>
-    <li><a href="#">Administration</a>
-      <ul>
-        <li><a href="#users" class="page_link">User</a></li>
-        <li><a href="#roles" class="page_link">Role</a></li>
-      </ul>
-    </li>
+      <li><a href="#">Administration</a>
+        <ul>
+          <li><a href="#users" class="page_link">User</a></li>
+          <li><a href="#roles" class="page_link">Role</a></li>
+        </ul>
+      </li>
     <% end %>
   </ul>
 

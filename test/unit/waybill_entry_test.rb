@@ -15,6 +15,7 @@ class WaybillEntryTest < ActiveSupport::TestCase
 
   test "relations between waybill and waybill_entries" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :place => Place.new(:tag => "Some test place"),
                   :organization => entities(:abstract))
     wb.waybill_entries << WaybillEntry.new(:resource => assets(:sonyvaio),
       :unit => "th", :amount => 10)
@@ -29,6 +30,7 @@ class WaybillEntryTest < ActiveSupport::TestCase
 
   test "assign text for resource" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :place => Place.new(:tag => "Some test place"),
                   :organization => entities(:abstract))
     we = WaybillEntry.new(:unit => "th", :amount => 20)
     we.assign_resource_text("edge")
@@ -44,6 +46,7 @@ class WaybillEntryTest < ActiveSupport::TestCase
 
   test "case insensitive comparison" do
     wb = Waybill.new(:date => DateTime.now, :owner => entities(:sergey),
+                  :place => Place.new(:tag => "Some test place"),
                   :organization => entities(:abstract))
 
     we = WaybillEntry.new(:unit => "th", :amount => 20)

@@ -49,12 +49,13 @@ class EntryExistValidator < ActiveModel::Validator
 end
 
 class Waybill < ActiveRecord::Base
-  validates :date, :owner, :organization, :presence => true
+  validates :date, :owner, :place, :organization, :presence => true
   validates_with VatinValidator, :if => "!vatin.nil? && !vatin.empty?"
   validates_uniqueness_of :vatin, :if => "!vatin.nil? && !vatin.empty?"
   validates_with EntryExistValidator
   belongs_to :owner, :class_name => 'Entity'
   belongs_to :organization, :class_name => 'Entity'
+  belongs_to :place
   has_many :waybill_entries
   #temp functionality
   def assign_organization_text(entity)

@@ -1,6 +1,8 @@
 require 'storehouse.rb'
 
 class StorehousesController < ApplicationController
+  before_filter :authenticate_user!
+  load_and_authorize_resource
 
   def index
     session[:res_type] = ''
@@ -8,7 +10,7 @@ class StorehousesController < ApplicationController
 
   def view
     @columns = ['resource.tag', 'amount']
-    @storehouse = StoreHouse.new(Entity.where(:id => params[:entity_id]).first)
+    @storehouse = Storehouse.new(Entity.where(:id => params[:entity_id]).first)
     @storehouse = @storehouse.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

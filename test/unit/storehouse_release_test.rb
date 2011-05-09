@@ -3,6 +3,7 @@ require 'test_helper'
 class StorehouseReleaseTest < ActiveSupport::TestCase
   def setup
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 4, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.new(:tag => "Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => assets(:sonyvaio),
               :unit => "th", :amount => 10)])
     wb.assign_organization_text("Test Organization Store")
@@ -132,6 +133,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
@@ -186,6 +188,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal toDeal, rule.to, "Wrong rule to"
 
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
@@ -214,6 +217,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "entries is loaded" do
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
@@ -242,6 +246,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "get all inwork releases" do
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
@@ -285,6 +290,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "after apply - facts by rules" do
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
@@ -322,6 +328,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
   test "check is invalid for amount" do
 
     wb = Waybill.new(:date => DateTime.civil(2011, 4, 5, 12, 0, 0), :owner => entities(:sergey),
+              :place => Place.find_by_tag("Some test place"),
               :waybill_entries => [WaybillEntry.new(:resource => Asset.new(:tag => "roof"),
               :unit => "m2", :amount => 200)])
     wb.assign_organization_text("Test Organization Store")
