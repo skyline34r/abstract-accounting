@@ -74,7 +74,11 @@ Abstract::Application.routes.draw do
       post 'apply'
     end
   end
-  resources :places
+  resources :places do
+    collection do
+      get 'view'
+    end
+  end
   get "home/index"
 
   # The priority is based upon order of creation:

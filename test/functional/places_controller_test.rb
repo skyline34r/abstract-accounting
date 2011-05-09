@@ -33,4 +33,10 @@ class PlacesControllerTest < ActionController::TestCase
       'Place \'Vitebsk\' not edited'
   end
 
+  test "should get view place" do
+    xml_http_request :get, :view
+    assert_response :success
+    assert_not_nil assigns(:places)
+  end
+
 end
