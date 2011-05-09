@@ -1,0 +1,7 @@
+<td>
+  <%= button_to "new", new_place_path, :method => :get, :remote => true %>
+</td>
+<td style="width: 45px">
+  <%= button_to "change", edit_place_path(0), :id => "change_place",
+      :method => :get, :remote => true, :disabled => true %>
+</td>
