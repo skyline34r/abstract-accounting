@@ -1,5 +1,6 @@
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'places/index') %>");
 }
+$("#place_errors").html("<%= escape_javascript(render :partial => 'places/form_errors') %>");
 $("#place_actions").html("<%= escape_javascript(render :partial => 'places/form_actions') %>");
 showPlaceActionForm("");

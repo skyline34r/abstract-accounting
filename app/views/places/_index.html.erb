@@ -8,6 +8,7 @@
     $("#place_tag").removeAttr("disabled");
     $("#place_list").resetSelection();
     canSelectPlace = false;
+    loadPlaceElements();
   }
   function showPlaceIndexForm()
   {
@@ -26,6 +27,7 @@
   function sendTagPlace()
   {
     $("#hide_place_tag").val(escape($("#place_tag").val()));
+    savePlaceElements();
   }
   function onCancelPlace()
   {
@@ -36,14 +38,29 @@
     $("#place_tag").val(tagPlace);
     $("#save_place").attr("disabled","disabled");
   }
+  function savePlaceElements() {
+    dataPage = new Object();
+    dataPage["tag"] = tagPlace;
+  }
+  function loadPlaceElements() {
+    if(dataPage != null) {
+      tagPlace = dataPage["tag"];
+    }
+  }
 </script>
 
 <%= raw(places_jqgrid) %>
 
-<table id="place_list"></table>
-<div id="place_pager"></div>
-
 <table>
+  <tr>
+    <td colspan="2" id="place_errors"></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="place_list"></table>
+      <div id="place_pager"></div>
+    </td>
+  </tr>
   <tr id="place_actions" align="right">
   </tr>
   <tr align="left">
