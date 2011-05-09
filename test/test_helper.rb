@@ -17,10 +17,13 @@ class ActionController::TestCase
 end
 
 def sign_in_by_user
+  p = Place.new(:tag => "Access to storehouse")
+  assert p.save, "Place is not saved"
   u = User.new(:email => "user@mail.com",
                :password => "user_pass",
                :password_confirmation => "user_pass",
                :entity_id => entities(:sergey).id,
+               :place => p,
                :role_ids => [roles(:operator).id])
   assert u.save, "User can't be saved"
   sign_in u

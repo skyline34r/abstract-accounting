@@ -1,6 +1,6 @@
 require "resource"
 
-class StoreHouseEntry
+class StorehouseEntry
   attr_reader :deal, :amount, :resource
   def initialize(deal)
     @deal = nil
@@ -9,11 +9,11 @@ class StoreHouseEntry
     if !deal.nil? and deal.instance_of?(Deal)
       @deal = deal
       @resource = deal.give
-      @amount = StoreHouseEntry.state(deal)
+      @amount = StorehouseEntry.state(deal)
     end
   end
 
-  def StoreHouseEntry.state(deal)
+  def StorehouseEntry.state(deal)
     return 0 if deal.nil? or deal.state.nil?
     start_state = deal.state.amount
     releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
@@ -30,14 +30,14 @@ class StoreHouseEntry
   end
 end
 
-class StoreHouse < Array
+class Storehouse < Array
   attr_reader :entity
   def initialize(entity)
     @entity = nil
     if !entity.nil? and entity.instance_of?(Entity)
       @entity = entity
       Deal.where("entity_id = ? AND give_type = ? AND give_id = take_id AND give_type = take_type", entity.id, Asset)
-          .each { |item| if StoreHouseEntry.state(item) > 0; self << StoreHouseEntry.new(item); end; }
+          .each { |item| if StorehouseEntry.state(item) > 0; self << StorehouseEntry.new(item); end; }
     end
   end
 end
