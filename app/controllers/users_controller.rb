@@ -24,6 +24,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.place_id = params[:user][:place_id]
     if !@user.save
       render :action => "new"
     end
@@ -31,7 +32,8 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    if !@user.update_attributes(params[:user])
+    @user.place_id = params[:user][:place_id]
+    if !@user.save || !@user.update_attributes(params[:user])
       render :action => "edit"
     end
   end
