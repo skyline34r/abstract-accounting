@@ -45,6 +45,11 @@
       <li>
         <a href="#">Manage</a>
         <ul>
+          <% if current_user != nil and can? :read, Place %>
+            <li>
+              <a href="#places" class="page_link">Place</a>
+            </li>
+          <% end %>
           <% if current_user != nil and can? :read, Entity %>
             <li>
               <a href="#entities" class="page_link">Entity</a>
