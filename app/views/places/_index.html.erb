@@ -9,6 +9,20 @@
     $("#place_list").resetSelection();
     canSelectPlace = false;
   }
+  function showPlaceIndexForm()
+  {
+    if(crossPage.length) {
+      canSelectPlace = true;
+      $("#place_tag").attr("disabled","disabled");
+      $("#place_list").trigger("reloadGrid");
+      $("#place_tag").val("");
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#places";
+    }
+  }
+
 </script>
 
 <%= raw(places_jqgrid) %>
