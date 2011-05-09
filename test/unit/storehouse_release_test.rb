@@ -15,16 +15,19 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert StorehouseRelease.new(:created => DateTime.now).invalid?,
       "StorehouseRelease with created field is invalid"
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity"),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     assert sr.invalid?, "StorehouseRelease is invalid"
     sr.add_resource(Asset.new(:tag => "Resource1"), 2)
     assert sr.invalid?, "StorehouseRelease is invalid"
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 11)
     assert sr.invalid?, "StorehouseRelease is invalid"
 
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 0)
     assert sr.invalid?, "StorehouseRelease is invalid"
@@ -34,11 +37,13 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
       :give => Asset.find_by_tag("Test resource"), :take => Asset.find_by_tag("Test resource"),
       :rate => 1.0).save, "Deal is not saved"
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Asset.find_by_tag("Test resource"), 3)
     assert sr.invalid?, "StorehouseRelease is invalid"
 
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 9)
     sr.add_resource(Asset.new(:tag => "some unknown resource"), 1)
@@ -46,15 +51,22 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 9)
+    assert sr.invalid?, "StorehouseRelease is invalid"
+    sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => Entity.new(:tag => "Test2Entity"))
+    sr.add_resource(assets(:sonyvaio), 9)
     assert sr.valid?, "StorehouseRelease is valid"
     assert sr.save, "StorehouseRelease is not saved"
 
     assert_equal 1, StorehouseRelease.all.count, "StorehouseRelease count is not equal to 1"
+    assert_equal Place.find_by_tag("Some test place"), StorehouseRelease.first.place, "Wrong storehouse place"
     assert_equal StorehouseRelease::INWORK, StorehouseRelease.first.state, "State is not equal to inwork"
   end
 
   test "to as text" do
-    sh = StorehouseRelease.new :created => DateTime.now, :owner => entities(:sergey)
+    sh = StorehouseRelease.new :created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place")
     sh.to = Entity.new(:tag => "HelloWorld1")
     sh.add_resource(assets(:sonyvaio), 9)
     assert sh.to.instance_of?(Entity), "To field is not entity"
@@ -75,6 +87,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "cancel" do
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 9)
     assert sr.save, "StorehouseRelease is not saved"
@@ -85,6 +98,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "apply" do
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 9)
     assert sr.save, "StorehouseRelease is not saved"
@@ -95,6 +109,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "entries" do
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => Entity.new(:tag => "Test1Entity"),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test2Entity"))
     a = Asset.new(:tag => "hello")
     sr.add_resource(a, 28)
@@ -116,6 +131,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     deals_count = Deal.all.count
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
@@ -143,6 +159,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     deals_count = Deal.all.count
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 100)
@@ -156,6 +173,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert !d.nil?, "Deal not found"
 
     sr = StorehouseRelease.new(:created => DateTime.now, :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
       :to => Entity.new(:tag => "Test3Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     sr.add_resource(Asset.find_by_tag("roof"), 100)
@@ -175,6 +193,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "rules is created" do
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.save, "StorehouseRelease not saved"
@@ -195,6 +214,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert wb.save, "Waybill is not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 100)
@@ -224,6 +244,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert wb.save, "Waybill is not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 100)
@@ -256,23 +277,27 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal 0, srs.length, "Wrong inwork releases count"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     assert sr.save, "StorehouseRelease not saved"
 
     sr1 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 2, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr1.add_resource(assets(:sonyvaio), 1)
     sr1.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr1.save, "StorehouseRelease not saved"
 
     sr2 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr2.add_resource(assets(:sonyvaio), 4)
     sr2.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr2.save, "StorehouseRelease not saved"
 
     sr3 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr3.add_resource(assets(:sonyvaio), 1)
     sr3.add_resource(Asset.find_by_tag("roof"), 100)
@@ -297,6 +322,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert wb.save, "Waybill is not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 50)
@@ -316,6 +342,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "to and owner retrieved when release loaded" do
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     assert sr.save, "Release is not saved"
@@ -335,39 +362,46 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert wb.save, "Waybill is not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 1, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     assert sr.save, "StorehouseRelease not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 2, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr.save, "StorehouseRelease not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 4)
     sr.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr.save, "StorehouseRelease not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 1)
     sr.add_resource(Asset.find_by_tag("roof"), 100)
     assert sr.save, "StorehouseRelease not saved"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(Asset.find_by_tag("roof"), 10)
     assert sr.invalid?, "StorehouseRelease is valid"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 3)
     assert sr.valid?, "StorehouseRelease is invalid"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 7, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(assets(:sonyvaio), 4)
     assert sr.invalid?, "StorehouseRelease is valid"

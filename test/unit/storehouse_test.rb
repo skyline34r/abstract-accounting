@@ -104,6 +104,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 200, sh[0].amount, "Wrong roof amount"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 2, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr.save, "StorehouseRelease not saved"
@@ -113,6 +114,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 150, sh[0].amount, "Wrong roof amount"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(Asset.find_by_tag("roof"), 50)
     assert sr.save, "StorehouseRelease not saved"
@@ -122,6 +124,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 100, sh[0].amount, "Wrong roof amount"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :place => Place.find_by_tag("Some test place"),
       :owner => entities(:sergey), :to => Entity.find_by_tag("Test2Entity"))
     sr.add_resource(Asset.find_by_tag("roof"), 100)
     assert sr.save, "StorehouseRelease not saved"
