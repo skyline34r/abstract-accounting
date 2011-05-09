@@ -9,11 +9,14 @@ class UserTest < ActiveSupport::TestCase
     u.password = "user_pass"
     u.password_confirmation = "user_pass"
     u.entity = entities(:abstract)
+    u.place = Place.new(:tag => "PlaceTest")
     assert u.save, "User can't be saved"
     assert_equal 1, User.all.count,
       "User can't be saved"
     assert_equal "user@mail.com", User.where(:id => u.id).first.email,
       "User email is not equal to 'user@mail.com'"
+
+    assert_equal Place.find_by_tag("PlaceTest"), User.find(u.id).place, "Place is not saved"
   end
 
   test "user should save with role" do
