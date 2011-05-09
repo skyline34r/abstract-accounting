@@ -1,8 +1,8 @@
 <td>
   <input name="cancel" type="button" value="cancel"
-    onclick=""/>
+    onclick="onCancelPlace();"/>
   <input name="reset" type="button" value="reset"
-    onclick=""/>
+    onclick="onResetPlace();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@place, :remote => true) do |f| %>
