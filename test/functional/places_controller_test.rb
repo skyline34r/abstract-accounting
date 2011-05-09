@@ -12,4 +12,9 @@ class PlacesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get edit place" do
+    xml_http_request :get, :edit, :id => places(:minsk).id
+    assert_response :success
+  end
+
 end
