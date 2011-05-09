@@ -17,4 +17,12 @@ class PlacesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should create place" do
+    assert_difference('Place.count') do
+       xml_http_request :post, :create, :place => { :tag => 'Vitebsk' }
+    end
+    assert_equal 1, Place.where(:tag =>'Vitebsk').count,
+      'Place \'Vitebsk\' not saved'
+  end
+
 end

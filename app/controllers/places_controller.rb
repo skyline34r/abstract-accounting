@@ -10,4 +10,11 @@ class PlacesController < ApplicationController
   def edit
     @place = Place.find(params[:id])
   end
+
+  def create
+    @place = Place.new(params[:place])
+    if !@place.save
+      render :action => "new"
+    end
+  end
 end
