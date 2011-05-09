@@ -1,5 +1,14 @@
 <script type="text/javascript">
   var canSelectPlace = true;
+  var tagPlace = "";
+  function showPlaceActionForm(tag)
+  {
+    tagPlace = tag;
+    $("#place_tag").val(tagPlace);
+    $("#place_tag").removeAttr("disabled");
+    $("#place_list").resetSelection();
+    canSelectPlace = false;
+  }
 </script>
 
 <%= raw(places_jqgrid) %>
