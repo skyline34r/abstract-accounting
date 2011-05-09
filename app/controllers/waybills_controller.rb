@@ -35,7 +35,7 @@ class WaybillsController < ApplicationController
   end
 
   def view
-    @columns = ['date', 'organization.tag', 'owner.tag', 'vatin']
+    @columns = ['date', 'organization.tag', 'owner.tag', 'vatin', 'place.tag']
     @waybills = Waybill.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

@@ -73,15 +73,16 @@ module WaybillsHelper
       :url => '/waybills/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'organization', 'owner', 'vatin'],
+      :colNames => ['date', 'organization', 'owner', 'vatin', 'place'],
       :colModel => [
         { :name => 'date', :index => 'date', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'organization',  :index => 'organization',   :width => 290 },
-        { :name => 'owner',         :index => 'owner',          :width => 290 },
-        { :name => 'vatin',         :index => 'vatin',          :width => 100 }
+        { :name => 'organization',  :index => 'organization',   :width => 220 },
+        { :name => 'owner',         :index => 'owner',          :width => 220 },
+        { :name => 'place',         :index => 'place',          :width => 150 },
+        { :name => 'vatin',         :index => 'vatin',          :width => 90 }
       ],
       :pager => '#waybills_tree_pager',
       :rowNum => 10,
