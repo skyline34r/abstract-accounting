@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class PlacesControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
 
   test "should get index place" do
     xml_http_request :get, :index
