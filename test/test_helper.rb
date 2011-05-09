@@ -23,8 +23,8 @@ def sign_in_by_user
                :password => "user_pass",
                :password_confirmation => "user_pass",
                :entity_id => entities(:sergey).id,
-               :place => p,
                :role_ids => [roles(:operator).id])
+  u.place = p
   assert u.save, "User can't be saved"
   sign_in u
 end
