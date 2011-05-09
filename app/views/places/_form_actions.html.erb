@@ -7,7 +7,7 @@
 <td style="width: 45px">
   <%= form_for(@place, :remote => true) do |f| %>
   <%= f.submit "save", :id => "save_place", :disabled => "true",
-                       :onclick => "" %>
+                       :onclick => "sendTagPlace();" %>
   <%= f.hidden_field :tag, :id => "hide_place_tag", :value => @place.tag %>
   <% end %>
 </td>

@@ -22,7 +22,10 @@
       location.hash = "#places";
     }
   }
-
+  function sendTagPlace()
+  {
+    $("#hide_place_tag").val(escape($("#place_tag").val()));
+  }
 </script>
 
 <%= raw(places_jqgrid) %>
