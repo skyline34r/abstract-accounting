@@ -23,6 +23,7 @@
     } else {
       location.hash = "#places";
     }
+    dataPage = null;
   }
   function sendTagPlace()
   {
@@ -45,6 +46,7 @@
   function loadPlaceElements() {
     if(dataPage != null) {
       tagPlace = dataPage["tag"];
+      dataPage = null;
     }
   }
 </script>
