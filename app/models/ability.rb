@@ -13,7 +13,7 @@ class Ability
       while i < Role.count
         if user.role? Role.all[i].name
           Role.all[i].pages.each_line(',') do |p|
-            if p == "Storehouse"
+            if p.chomp(",") == "Storehouse"
               if user.place.nil?
                 alias_action :index, :view, :show, :releases, :list, :to => :storehouse_read
                 can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
