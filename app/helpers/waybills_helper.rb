@@ -12,8 +12,13 @@ module WaybillsHelper
       :colModel => [ { :name => 'resource', :index => 'resource', :editable => true,
                        :width => 300 },
                      { :name => 'amount',   :index => 'amount',   :editable => true,
-                       :width => 120,       :formatter => 'integer',
-                       :formatoptions => {:defaultValue => ''} },
+                       :width => 120, :formatter => 'function(cellvalue, options, rowObject) {
+                           if(isNaN(cellvalue) || (cellvalue == "") ||
+                               (parseInt(cellvalue) <= "0")) {
+                             return "";
+                           }
+                           return cellvalue;
+                         }'.to_json_var },
                      { :name => 'unit',     :index => 'unit',     :editable => true,
                        :width => 80 }],
       :pager => '#waybills_pager',
