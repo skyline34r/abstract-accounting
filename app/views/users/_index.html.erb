@@ -30,6 +30,7 @@
     $('#hide_email').val(escape($('#user_email').val()));
     $('#hide_pass').val($('#user_pass').val());
     $('#hide_pass_c').val($('#user_pass_c').val());
+    saveUserElements();
   }
   function onReset()
   {
@@ -49,51 +50,57 @@
   function viewActionForm(emailValue, entityId, placeId, loadType)
   {
     canSelect = false;
-    email = emailValue;
-    entity_id = entityId;
-    if(entityId == "") entity_tag = "";
-    place_id = placeId;
-    if(placeId == "") place_tag = "";
-    $("#data_list").resetSelection();
-    if(loadType == 'edit_pass')
-    {
-      $("#email").css("display","none");
-      $("#user_entity").css("display","none");
-      $("#user_place").css("display","none");
-      $("#pass").css("display","table-row");
-      $("#pass_c").css("display","table-row");
-      $("#roles").css("display","none");
-      $("#hide_email").attr("name", "");
-    }
-    else
-    {
-      uncheckRoles("enabled");
-      $("#user_email").removeAttr('disabled');
-      $("#user_email").val(email);
-      $("#user_place_choose").removeAttr("disabled");
-      $("#roles").css("display","block");
-      if(loadType == 'new')
+    if(dataPage == null) {
+      email = emailValue;
+      entity_id = entityId;
+      if(entityId == "") entity_tag = "";
+      place_id = placeId;
+      if(placeId == "") place_tag = "";
+      onReset();
+      $("#data_list").resetSelection();
+      if(loadType == 'edit_pass')
       {
-        $("#user_entity_choose").removeAttr("disabled");
+        $("#email").css("display","none");
+        $("#user_entity").css("display","none");
+        $("#user_place").css("display","none");
         $("#pass").css("display","table-row");
         $("#pass_c").css("display","table-row");
-        roles = "";
+        $("#roles").css("display","none");
+        $("#hide_email").attr("name", "");
       }
       else
       {
-        $("#user_entity_choose").attr("disabled", "disabled");
-        $('#hide_pass').attr('name', '');
-        $('#hide_pass_c').attr('name', '');
+        uncheckRoles("enabled");
+        $("#user_email").removeAttr('disabled');
+        $("#user_email").val(email);
+        $("#user_place_choose").removeAttr("disabled");
+        $("#roles").css("display","block");
+        if(loadType == 'new')
+        {
+          $("#user_entity_choose").removeAttr("disabled");
+          $("#pass").css("display","table-row");
+          $("#pass_c").css("display","table-row");
+          roles = "";
+        }
+        else
+        {
+          $("#user_entity_choose").attr("disabled", "disabled");
+          $('#hide_pass').attr('name', '');
+          $('#hide_pass_c').attr('name', '');
+        }
       }
+      <% for role in Role.find(:all) %>
+        $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
+          $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
+      <% end %>
+    } else {
+      loadUserElements();
     }
-    <% for role in Role.find(:all) %>
-      $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
-        $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
-    <% end %>
   }
   function viewIndexFrom()
   {
     location.hash = "#users";
+    dataPage = null;
   }
   function onCancel()
   {
@@ -150,30 +157,56 @@
       $("#user_role_id_" + ids[i]).attr("checked", "checked");
     }
   }
+  function saveUserElements() {
+    dataPage = new Object();
+    dataPage["email"] = email;
+    dataPage["roles"] = roles;
+    dataPage["entity_id"] = entity_id;
+    dataPage["entity_tag"] = entity_tag;
+    dataPage["place_id"] = place_id;
+    dataPage["place_tag"] = place_tag;
+  }
+  function loadUserElements() {
+    if(dataPage != null) {
+      email = dataPage["email"];
+      roles = dataPage["roles"];
+      entity_id = dataPage["entity_id"];
+      entity_tag = dataPage["entity_tag"];
+      place_id = dataPage["place_id"];
+      place_tag = dataPage["place_tag"];
+      dataPage = null;
+    }
+  }
 </script>
 
 <%= raw(users_jqgrid) %>
 
 <div id="users_div">
-  <table id="data_list"></table>
-  <div id="data_pager"></div>
 
   <table>
+    <tr>
+      <td colspan="3" id="user_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <table id="data_list"></table>
+        <div id="data_pager"></div>
+      </td>
+    </tr>
     <tr id="actions" align="right">
       <%= render 'form_index' %>
     </tr>
     <tr align="left" id="email" style="display: table-row">
       <td colspan="3">
         email:
-        <input id="user_email" type="text" disabled="true" value="" style="width: 661px"
+        <input id="user_email" type="text" disabled="true" style="width: 661px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
     <tr align="left" id="user_entity" style="display: table-row">
       <td colspan="3">
         entity:
-        <input id="user_entity_tag" type="text" disabled="true" value=""
-               style="width: 582px"/>
+        <input id="user_entity_tag" type="text" disabled="true" style="width: 582px"/>
         <input id="user_entity_choose" type="button" value="choose" disabled="true"
                onclick="userChoiseEntity();"/>
       </td>
@@ -181,8 +214,7 @@
     <tr align="left" id="user_place" style="display: table-row">
       <td colspan="3">
         place:
-        <input id="user_place_tag" type="text" disabled="true" value=""
-               style="width: 586px"/>
+        <input id="user_place_tag" type="text" disabled="true" style="width: 586px"/>
         <input id="user_place_choose" type="button" value="choose" disabled="true"
                onclick="userChoisePlace();"/>
       </td>
@@ -190,14 +222,14 @@
     <tr align="left" id="pass" style="display: none">
       <td colspan="3">
         password:
-        <input id="user_pass" type="password" value="" style="width: 635px"
+        <input id="user_pass" type="password" style="width: 635px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
     <tr align="left" id="pass_c" style="display: none">
       <td colspan="3">
         password confirmation:
-        <input id="user_pass_c" type="password" value="" style="width: 544px"
+        <input id="user_pass_c" type="password" style="width: 544px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>

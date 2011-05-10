@@ -1,6 +1,7 @@
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'users/index') %>");
 }
+$("#user_errors").html("<%= escape_javascript(render :partial => 'users/form_errors') %>");
 $("#actions").html("<%= escape_javascript(render :partial => 'users/form_actions' ) %>");
 if(changePass) {
   viewActionForm("", "", "", "edit_pass");
