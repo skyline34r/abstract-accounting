@@ -51,7 +51,9 @@
     canSelect = false;
     email = emailValue;
     entity_id = entityId;
+    if(entityId == "") entity_tag = "";
     place_id = placeId;
+    if(placeId == "") place_tag = "";
     $("#data_list").resetSelection();
     if(loadType == 'edit_pass')
     {
