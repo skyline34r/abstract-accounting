@@ -1,5 +1,6 @@
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'roles/index') %>");
 }
+$("#role_errors").html("<%= escape_javascript(render :partial => 'roles/form_errors') %>");
 $("#actions").html("<%= escape_javascript(render :partial => 'roles/form_actions' ) %>");
 viewActionForm('','');

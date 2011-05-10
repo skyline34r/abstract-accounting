@@ -4,9 +4,13 @@
   var rolePages = '';
   function sendDataRole()
   {
+    var count = 0;
+    <% if !@project_pages.nil? %>
+      count = "<%= @project_pages.count %>";
+    <% end %>
     var pages = new Array();
     var j = 0;
-    for(var i=0; i<'<%= @project_pages.count %>'; i++)
+    for(var i=0; i<count; i++)
     {
       if($('#page_' + i).attr('checked'))
       {
@@ -16,10 +20,12 @@
     }
     $('#hide_pages').val(pages);
     $('#hide_name').val(escape($('#role_name').val()));
+    saveRoleElements();
   }
   function viewIndexForm()
   {
     location.hash = "#roles";
+    dataPage = null;
   }
   function onCancel()
   {
@@ -37,7 +43,11 @@
   }
   function uncheckPages(enabled)
   {
-    for(var i=0; i<'<%= @project_pages.count %>'; i++)
+    var count = 0;
+    <% if !@project_pages.nil? %>
+      count = "<%= @project_pages.count %>";
+    <% end %>
+    for(var i=0; i<count; i++)
     {
       $('#page_' + i).removeAttr('checked');
       if(enabled)
@@ -57,20 +67,48 @@
     $('#role_name').removeAttr('disabled');
     $('#role_name').val(name);
     $('#data_list').resetSelection();
-    for(var i=0; i<rolePages.length; i++)
-    {
-      $('[name=' + rolePages[i] + ']').attr('checked', 'checked');
+    if(dataPage == null) {
+      for(var i=0; i<rolePages.length; i++)
+      {
+        $('[name=' + rolePages[i] + ']').attr('checked', 'checked');
+      }
+    } else {
+      for(var i=0; i<dataPage["currRolePages"].length; i++)
+      {
+        $('[name=' + dataPage["currRolePages"][i] + ']').attr('checked', 'checked');
+      }
     }
     $('#pages').css('display','block');
+    loadRoleElements();
+  }
+  function saveRoleElements() {
+    dataPage = new Object();
+    dataPage["name"] = name;
+    dataPage["rolePages"] = rolePages;
+    dataPage["currRolePages"] = $("#hide_pages").val().split(",");
+  }
+  function loadRoleElements() {
+    if(dataPage != null) {
+      name = dataPage["name"];
+      rolePages = dataPage["rolePages"];
+      dataPage = null;
+    }
   }
 </script>
 
 <%= raw(roles_jqgrid) %>
 
-<table id="data_list"></table>
-<div id="data_pager"></div>
 
 <table>
+  <tr>
+    <td id="role_errors" colspan="2"></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="data_list"></table>
+      <div id="data_pager"></div>
+    </td>
+  </tr>
   <tr id="actions" align="right">
     <%= render 'form_index' %>
   </tr>
@@ -84,13 +122,15 @@
   <tr id="pages" style="display: none">
     <td colspan="2">
       <p>Permitted pages</p>
-      <% for i in 0..@project_pages.count-1 %>
-        <p>
-          <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
-                :disabled => true, :name => @project_pages[i],
-                :onchange => "$('#save_role').removeAttr('disabled');"%>
-          <%= @project_pages[i] %>
-        </p>
+      <% if !@project_pages.nil? %>
+        <% for i in 0..@project_pages.count-1 %>
+          <p>
+            <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
+                  :disabled => true, :name => @project_pages[i],
+                  :onchange => "$('#save_role').removeAttr('disabled');"%>
+            <%= @project_pages[i] %>
+          </p>
+        <% end %>
       <% end %>
     </td>
   </tr>
