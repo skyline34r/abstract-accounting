@@ -56,6 +56,8 @@
     if(loadType == 'edit_pass')
     {
       $("#email").css("display","none");
+      $("#user_entity").css("display","none");
+      $("#user_place").css("display","none");
       $("#pass").css("display","table-row");
       $("#pass_c").css("display","table-row");
       $("#roles").css("display","none");
@@ -164,7 +166,7 @@
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
-    <tr align="left">
+    <tr align="left" id="user_entity" style="display: table-row">
       <td colspan="3">
         entity:
         <input id="user_entity_tag" type="text" disabled="true" value=""
@@ -173,7 +175,7 @@
                onclick="userChoiseEntity();"/>
       </td>
     </tr>
-    <tr align="left">
+    <tr align="left" id="user_place" style="display: table-row">
       <td colspan="3">
         place:
         <input id="user_place_tag" type="text" disabled="true" value=""

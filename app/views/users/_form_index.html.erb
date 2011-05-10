@@ -4,9 +4,10 @@
 <td style="width: 45px">
   <%= button_to "change", edit_user_path(0), :id => 'change_user',
       :method => :get, :remote => true, :disabled => true,
-      :onclick => 'changePass = true;' %>
+      :onclick => 'changePass = false;' %>
 </td>
 <td style="width: 45px">
   <%= button_to "change_pass", edit_user_path(0), :id => 'change_user_pass',
-    :method => :get, :remote => true, :disabled => true %>
+    :method => :get, :remote => true, :disabled => true,
+    :onclick => 'changePass = true;' %>
 </td>

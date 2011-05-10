@@ -2,11 +2,10 @@ if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'users/index') %>");
 }
 $("#actions").html("<%= escape_javascript(render :partial => 'users/form_actions' ) %>");
-if(changePass) viewActionForm(unescape($("#hide_email").val()),
-                              unescape($("#hide_user_entity_id").val()),
-                              unescape($("#hide_user_place_id").val()),
-                              "edit");
-  else viewActionForm(unescape($("#hide_email").val()),
-                      unescape($("#hide_user_entity_id").val()),
-                      unescape($("#hide_user_place_id").val()),
-                      "edit_pass");
+if(changePass) {
+  viewActionForm("", "", "", "edit_pass");
+} else {
+  viewActionForm(unescape($("#hide_email").val()),
+                 unescape($("#hide_user_entity_id").val()),
+                 unescape($("#hide_user_place_id").val()), "edit");
+}
