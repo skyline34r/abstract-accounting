@@ -1,4 +1,8 @@
 <script type="text/javascript">
+  <% if !user_signed_in? %>
+    location.href = "<%= new_user_session_path %>";
+  <% end %>
+
   var dataPage = null;
   var crossPage = "";
   var crossPageLink = "";

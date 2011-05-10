@@ -28,17 +28,15 @@
 <body>
 
   <ul id="nav">
-    <li><a href="#">Account</a>
-      <ul>
-        <li>
-          <% if user_signed_in? %>
-            <%= link_to('Logout', destroy_user_session_path) %>
-          <% else %>
-            <%= link_to('Login', new_user_session_path)  %>
-          <% end %>
-        </li>
-      </ul>
-    </li>
+    <% if user_signed_in? %>
+      <li><a href="#">Account</a>
+        <ul>
+          <li>
+              <%= link_to('Logout', destroy_user_session_path) %>
+          </li>
+        </ul>
+      </li>
+    <% end %>
     <% if !current_user.nil? and
         (can?(:read, Entity) or can?(:read, [Asset, Money]) or
         can?(:read, Chart) or can?(:read, Quote) or can?(:read, Place)) %>

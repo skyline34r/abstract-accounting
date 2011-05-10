@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/AlexeyShepelev/jquery-rails.git
-  revision: 5fb826b7ef168d02849c941f03f8222992f0e794
+  revision: ec124c11449cad51405ad6332766aa0af4604cc1
   specs:
     jquery-rails (0.2.7)
       rails (~> 3.0)
@@ -57,7 +57,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    orm_adapter (0.0.4)
+    orm_adapter (0.0.5)
     polyglot (0.3.1)
     rack (1.2.2)
     rack-mount (0.6.14)
