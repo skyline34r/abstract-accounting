@@ -70,17 +70,18 @@
       uncheckRoles("enabled");
       $("#user_email").removeAttr('disabled');
       $("#user_email").val(email);
-      $("#user_entity_choose").removeAttr("disabled");
       $("#user_place_choose").removeAttr("disabled");
       $("#roles").css("display","block");
       if(loadType == 'new')
       {
+        $("#user_entity_choose").removeAttr("disabled");
         $("#pass").css("display","table-row");
         $("#pass_c").css("display","table-row");
         roles = "";
       }
       else
       {
+        $("#user_entity_choose").attr("disabled", "disabled");
         $('#hide_pass').attr('name', '');
         $('#hide_pass_c').attr('name', '');
       }
