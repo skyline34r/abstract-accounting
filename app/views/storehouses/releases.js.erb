@@ -5,3 +5,8 @@ if(location.hash != "#storehouses/releases") {
   cancelRequest = true;
   location.hash = "#storehouses/releases";
 }
+if("<%= can?(:manage, Storehouse) %>" == "true") {
+  $("#release_new").removeAttr("disabled");
+} else {
+  $("#release_new").attr("disabled", "disabled");
+}

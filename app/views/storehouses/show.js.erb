@@ -1,3 +1,10 @@
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/show') %>");
 document.title = "Abstract::Storehouse:Release:Show";
+if("<%= can?(:manage, Storehouse) %>" == "true") {
+  $("#release_apply").removeAttr("disabled");
+  $("#release_cancel").removeAttr("disabled");
+} else {
+  $("#release_apply").attr("disabled", "disabled");
+  $("#release_cancel").attr("disabled", "disabled");
+}

@@ -6,3 +6,10 @@ if(location.hash != "#storehouses") {
   location.hash = "#storehouses";
 }
 dataPage = null;
+if("<%= can?(:manage, Storehouse) %>" == "true") {
+  $("#add_release").removeAttr("disabled");
+  $("#add_waybill").removeAttr("disabled");
+} else {
+  $("#add_release").attr("disabled", "disabled");
+  $("#add_waybill").attr("disabled", "disabled");
+}
