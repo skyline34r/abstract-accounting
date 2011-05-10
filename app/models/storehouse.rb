@@ -43,8 +43,21 @@ class Storehouse < Array
     @entity = nil
     if !entity.nil? and entity.instance_of?(Entity)
       @entity = entity
-      Deal.where("entity_id = ? AND give_type = ? AND give_id = take_id AND give_type = take_type", entity.id, Asset)
-          .each { |item| if StorehouseEntry.state(item) > 0; self << StorehouseEntry.new(item); end; }
+      Deal.where("entity_id = ? AND give_type = ? AND give_id = take_id AND give_type = take_type",
+        entity.id, Asset)
+          .each do |item|
+            if item.give != Storehouse.shipment and StorehouseEntry.state(item) > 0
+              self << StorehouseEntry.new(item)
+            end
+          end
     end
+  end
+
+  def Storehouse.shipment
+    a = Asset.find_by_tag("Storehouse Shipment")
+    if a.nil?
+      a = Asset.new :tag => "Storehouse Shipment"
+    end
+    a
   end
 end
