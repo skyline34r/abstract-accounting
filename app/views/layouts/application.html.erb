@@ -39,33 +39,33 @@
         </li>
       </ul>
     </li>
-    <% if current_user != nil and
+    <% if !current_user.nil? and
         (can?(:read, Entity) or can?(:read, [Asset, Money]) or
-        can?(:read, Chart) or can?(:read, Quote)) %>
+        can?(:read, Chart) or can?(:read, Quote) or can?(:read, Place)) %>
       <li>
         <a href="#">Manage</a>
         <ul>
-          <% if current_user != nil and can? :read, Place %>
+          <% if can? :read, Place %>
             <li>
               <a href="#places" class="page_link">Place</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :read, Entity %>
+          <% if can? :read, Entity %>
             <li>
               <a href="#entities" class="page_link">Entity</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :read, Asset, Money %>
+          <% if can? :read, Asset, Money %>
             <li>
               <a href="#resources" class="page_link">Resource</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :read, Chart %>
+          <% if can? :read, Chart %>
             <li>
               <a href="#charts" class="page_link">Chart</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :read, Quote %>
+          <% if can? :read, Quote %>
             <li>
               <a href="#quotes" class="page_link">Quote</a>
             </li>
@@ -73,17 +73,17 @@
         </ul>
       </li>
     <% end %>
-    <% if current_user != nil and
+    <% if !current_user.nil? and
         (can?(:read, Deal) or can?(:manage, Fact)) %>
       <li>
         <a href="#">Process</a>
         <ul>
-          <% if current_user != nil and can?(:read, Deal) %>
+          <% if can?(:read, Deal) %>
             <li>
               <a href="#deals" class="page_link">Deal</a>
             </li>
           <% end %>
-          <% if current_user != nil and can?(:manage, Fact) %>
+          <% if can?(:manage, Fact) %>
             <li>
               <a href="#facts" class="page_link">Fact</a>
             </li>
@@ -91,23 +91,23 @@
         </ul>
       </li>
     <% end %>
-    <% if current_user != nil and
+    <% if !current_user.nil? and
         (can?(:manage, GeneralLedger) or can?(:manage, Balance) or
          can?(:manage, Transcript)) %>
       <li>
         <a href="#">Report</a>
         <ul>
-          <% if current_user != nil and can? :manage, GeneralLedger %>
+          <% if can? :manage, GeneralLedger %>
             <li>
               <a href="#general_ledgers" class="page_link">GeneralLedger</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :manage, Balance %>
+          <% if can? :manage, Balance %>
             <li>
               <a href="#balances" class="page_link">Balance</a>
             </li>
           <% end %>
-          <% if current_user != nil and can? :manage, Transcript %>
+          <% if can? :manage, Transcript %>
             <li>
               <a href="#transcripts" class="page_link">Transcript</a>
             </li>
@@ -121,17 +121,17 @@
       <li>
         <a href="#">Storehouse</a>
         <ul>
-          <% if current_user != nil and can?(:view, Storehouse) %>
+          <% if can?(:view, Storehouse) %>
             <li>
               <a href="#storehouses" class="page_link">State</a>
             </li>
           <% end %>
-          <% if current_user != nil and can?(:view, Waybill) %>
+          <% if can?(:view, Waybill) %>
             <li>
               <a href="#waybills" class="page_link">Waybills</a>
             </li>
           <% end %>
-          <% if current_user != nil and can?(:list, StorehouseRelease) %>
+          <% if can?(:list, StorehouseRelease) %>
             <li>
               <a href="#storehouses/releases" class="page_link">Releases</a>
             </li>
@@ -139,7 +139,7 @@
         </ul>
       </li>
     <% end %>
-    <% if current_user != nil and current_user.entity_id == 0 then %>
+    <% if !current_user.nil? and current_user.entity.nil? then %>
       <li><a href="#">Administration</a>
         <ul>
           <li><a href="#users" class="page_link">User</a></li>
