@@ -1,5 +1,6 @@
 <script type="text/javascript">
   var lastSelId = "";
+  var canSave = true;
 
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
@@ -15,6 +16,9 @@
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
     }
     $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() + entries});
+  }
+  function saveEdittedReleaseRow() {
+    if(canSave) $("#storehouse_release_list").saveRow(lastSelId);
   }
 </script>
 
@@ -40,8 +44,8 @@ Storehouse release
       </td>
     </tr>
     <tr>
-      <td colspan="2">
-        <table id=storehouse_release_list></table>
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReleaseRow();">
+        <table id=storehouse_release_list onmouseup="canSave = false;"></table>
         <div id=storehouse_release_pager></div>
       </td>
     </tr>
