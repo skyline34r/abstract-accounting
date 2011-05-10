@@ -5,17 +5,42 @@ class ProductTest < ActiveSupport::TestCase
   test "validation" do
     assert Product.new.invalid?, "Empty product valid"
     assert Product.new(:unit => "th").invalid?, "Wrong product valid"
-    assert Product.new(:asset => assets(:sonyvaio)).invalid?, "Wrong product valid"
-    assert Product.new(:asset => assets(:sonyvaio),
+    assert Product.new(:resource => assets(:sonyvaio)).invalid?, "Wrong product valid"
+    assert Product.new(:resource => assets(:sonyvaio),
       :unit => "th").invalid?, "Wrong product valid"
     assert Asset.new(:tag => "roof").save, "Asset is not saved"
-    assert Product.new(:asset => Asset.find_by_tag("roof"),
+    assert Product.new(:resource => Asset.find_by_tag("roof"),
       :unit => "th").valid?, "Product invalid"
 
-    assert Product.new(:asset => Asset.find_by_tag("roof"),
+    assert Product.new(:resource => Asset.find_by_tag("roof"),
       :unit => "th").save, "Product not saved"
     Product.all.each do |item|
-      assert !item.asset.nil?, "Asset is not valid"
+      assert !item.resource.nil?, "Asset is not valid"
     end
+  end
+
+  test "assign asset as text" do
+    assert Asset.new(:tag => "Some asset").save, "asset is not saved"
+    p = Product.new :unit => "th"
+    p.resource = Asset.find_by_tag "Some asset"
+    assert p.save, "Product not saved"
+
+    assert Asset.new(:tag => "Some asset 2").save, "asset is not saved"
+    p = Product.new :unit => "th"
+    p.resource = "Some asset 2"
+    assert_equal Asset.find_by_tag("Some asset 2"), p.resource, "Wrong product asset"
+    assert p.save, "Product is not saved"
+
+    assert Asset.new(:tag => "Some asset 3").save, "asset is not saved"
+    p = Product.new :unit => "th"
+    p.resource = "Some ASSET 3"
+    assert_equal Asset.find_by_tag("Some asset 3"), p.resource, "Wrong product asset"
+    assert p.save, "Product is not saved"
+
+    p = Product.new :unit => "th"
+    p.resource = "Some asset 4"
+    assert p.resource.instance_of?(Asset), "Wrong asset type"
+    assert p.save, "Product is not saved"
+    assert_equal Asset.find_by_tag("Some asset 4"), p.resource, "Wrong product asset"
   end
 end

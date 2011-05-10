@@ -84,10 +84,10 @@ ActiveRecord::Schema.define(:version => 20110510080814) do
 
   create_table "products", :force => true do |t|
     t.string  "unit"
-    t.integer "asset_id"
+    t.integer "resource_id"
   end
 
-  add_index "products", ["asset_id"], :name => "index_products_on_asset_id", :unique => true
+  add_index "products", ["resource_id"], :name => "index_products_on_resource_id", :unique => true
 
   create_table "quotes", :force => true do |t|
     t.integer  "money_id"
