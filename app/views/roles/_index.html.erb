@@ -29,14 +29,7 @@
   {
     $('#role_name').val(name);
     $('#save_role').attr('disabled','disabled');
-    if(rolePages != '')
-    {
-      uncheckPages('enabled');
-    }
-    else
-    {
-      uncheckPages();
-    }
+    uncheckPages('enabled');
     for(var i=0; i<rolePages.length; i++)
     {
       $('[name=' + rolePages[i] + ']').attr('checked', 'checked');
