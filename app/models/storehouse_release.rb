@@ -51,7 +51,6 @@ class StorehouseReleaseValidator < ActiveModel::Validator
       record.resources.each do |item|
         d = item.deal(record.owner)
         record.errors[:resources] = "invalid resource" if d.nil?
-        #TODO: check other not applied releases for state
         record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner) or item.amount <= 0)
       end
     else
@@ -170,4 +169,3 @@ class StorehouseRelease < ActiveRecord::Base
   end
 end
 
-#TODO: apply
