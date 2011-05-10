@@ -2,7 +2,7 @@ require 'storehouse.rb'
 
 class StorehousesController < ApplicationController
   before_filter :authenticate_user!
-  load_and_authorize_resource
+  authorize_resource
 
   def index
     session[:res_type] = ''
@@ -26,7 +26,8 @@ class StorehousesController < ApplicationController
 
   def create
     @release = StorehouseRelease.new(:created => DateTime.now,
-                                     :owner => current_user.entity)
+                                     :owner => current_user.entity,
+                                     :place => current_user.place)
     if params[:to] != nil and params[:to].length > 0 then
       @release.to = params[:to]
     end
@@ -46,7 +47,7 @@ class StorehousesController < ApplicationController
   end
 
   def list
-    @columns = ['created', 'owner.tag', 'to.tag']
+    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag']
     @releases = StorehouseRelease.inwork.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
@@ -58,6 +59,7 @@ class StorehousesController < ApplicationController
 
   def show
     release = StorehouseRelease.find(params[:id])
+    @place = release.place.tag
     @owner = release.owner.tag
     @date = release.created.strftime("%x")
     @to = release.to.tag

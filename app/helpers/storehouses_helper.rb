@@ -24,13 +24,8 @@ module StorehousesHelper
       :viewrecords => true,
       :beforeRequest => 'function()
       {
-        if(location.hash.indexOf("#storehouses/releases/show") == 0) {
-          $("#storehouse_list").setGridParam({url: "/storehouses/view_release?id="
-                                                     + location.hash.substr(30)});
-        } else {
-          $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
-                                                     + getOwnerId()});
-        }
+        $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
+                                                   + getOwnerId()});
       }'.to_json_var
     }]
 
@@ -132,14 +127,15 @@ module StorehousesHelper
       :url => '/storehouses/releases/list',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'owner', 'to'],
+      :colNames => ['date', 'owner', 'to', 'place'],
       :colModel => [
         { :name => 'date',  :index => 'date', :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'owner',  :index => 'owner',   :width => 300 },
-        { :name => 'to',  :index => 'to',   :width => 300 }
+        { :name => 'owner',  :index => 'owner',   :width => 200 },
+        { :name => 'to',  :index => 'to',   :width => 200 },
+        { :name => 'place',  :index => 'place',   :width => 200 }
       ],
       :pager => '#releases_pager',
       :rowNum => 10,
@@ -156,4 +152,36 @@ module StorehousesHelper
     jqgrid_api 'releases_list', grid, options
 
   end
+
+
+  def release_view_entries_jqgrid
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/view_release?id=',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['resource', 'amount'],
+      :colModel => [
+        { :name => 'resource', :index => 'resource', :width => 400 },
+        { :name => 'amount',   :index => 'amount',   :width => 400 }
+      ],
+      :pager => '#release_view_pager',
+      :rowNum => 10,
+      :rowList => [10, 20, 30],
+      :sortname => 'resource',
+      :sortorder => 'asc',
+      :viewrecords => true,
+      :beforeRequest => 'function()
+      {
+        $("#release_view_list").setGridParam({url: "/storehouses/view_release?id="
+                                                    + location.hash.substr(30)});
+      }'.to_json_var
+    }]
+
+    jqgrid_api 'release_view_list', grid, options
+
+  end
+
 end
