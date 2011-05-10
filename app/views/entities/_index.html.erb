@@ -4,6 +4,7 @@
   function sendTagEntity()
   {
     $("#hide_entity_tag").val(escape($("#entity_tag").val()));
+    saveEntityElements();
   }
   function showEntityIndexForm()
   {
@@ -18,6 +19,7 @@
     } else {
       location.hash = "#entities";
     }
+    dataPage = null;
   }
   function onCancelEntity()
   {
@@ -35,15 +37,32 @@
     $("#entity_tag").removeAttr("disabled");
     $("#entity_list").resetSelection();
     canSelectEntity = false;
+    loadEntityElements();
+  }
+  function saveEntityElements() {
+    dataPage = new Object();
+    dataPage["tag"] = tagEntity;
+  }
+  function loadEntityElements() {
+    if(dataPage != null) {
+      tagEntity = dataPage["tag"];
+      dataPage = null;
+    }
   }
 </script>
 
 <%= raw(entities_jqgrid) %>
 
-<table id="entity_list"></table>
-<div id="entity_pager"></div>
-
 <table>
+  <tr>
+    <td colspan="2" id="entity_errors"></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="entity_list"></table>
+      <div id="entity_pager"></div>
+    </td>
+  </tr>
   <tr id="entity_actions" align="right">
     <%= render 'entities/form_index' %>
   </tr>
