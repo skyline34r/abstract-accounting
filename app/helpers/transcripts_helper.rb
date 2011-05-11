@@ -68,7 +68,7 @@ module TranscriptsHelper
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :viewrecords => true,
-      :shrinkToFit => false
+      :shrinkToFit => true
     }]
 
     jqgrid_api 'transcripts_list', grid, options
