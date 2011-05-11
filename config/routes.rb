@@ -58,7 +58,11 @@ Abstract::Application.routes.draw do
       get 'load'
     end
   end
-  resources :rules
+  resources :rules do
+    collection do
+      get 'view'
+    end
+  end
   resources :waybills do
     collection do
       get 'view'

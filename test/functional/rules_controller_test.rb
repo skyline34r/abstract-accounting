@@ -7,4 +7,8 @@ class RulesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get view of rules" do
+    xml_http_request :get, :view
+    assert_response :success
+  end
 end
