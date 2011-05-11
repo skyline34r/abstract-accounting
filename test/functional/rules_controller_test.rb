@@ -8,8 +8,9 @@ class RulesControllerTest < ActionController::TestCase
   end
 
   test "should get view of rules" do
-    xml_http_request :get, :view
+    xml_http_request :get, :view, :deal_id => 1
     assert_response :success
+    assert_not_nil assigns(:deal_id)
   end
 
   test "should get data of rules" do

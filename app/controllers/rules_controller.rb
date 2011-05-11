@@ -5,6 +5,7 @@ class RulesController < ApplicationController
 
   def view
     session[:res_type] = ''
+    @deal_id = params[:deal_id]
   end
 
   def data
