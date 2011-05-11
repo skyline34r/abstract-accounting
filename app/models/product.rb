@@ -16,8 +16,8 @@ class Product < ActiveRecord::Base
         end
       else
         a = asset.to_s
-        if !Asset.find(:first, :conditions => ["lower(tag) = lower(?)", a]).nil?
-          self[:resource] = Asset.find(:first, :conditions => ["lower(tag) = lower(?)", a])
+        if !Product.find_asset_by_tag(a).nil?
+          self[:resource] = Product.find_asset_by_tag(a)
           self.resource_id = self[:resource].id
         else
           self[:resource] = Asset.new(:tag => a)
@@ -32,6 +32,18 @@ class Product < ActiveRecord::Base
       self[:resource] = Asset.find(self.resource_id)
     end
     self[:resource]
+  end
+
+  def Product.find_by_resource_tag name
+    asset = Product.find_asset_by_tag name
+    if !asset.nil?
+      return Product.find_by_resource_id asset.id
+    end
+    nil
+  end
+
+  def Product.find_asset_by_tag tag
+    Asset.find(:first, :conditions => ["lower(tag) = lower(?)", tag])
   end
 
   before_save :product_before_save

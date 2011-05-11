@@ -57,6 +57,7 @@ class Storehouse < Array
     a = Asset.find_by_tag("Storehouse Shipment")
     if a.nil?
       a = Asset.new :tag => "Storehouse Shipment"
+      return nil unless a.save
     end
     a
   end

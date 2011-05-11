@@ -43,4 +43,15 @@ class ProductTest < ActiveSupport::TestCase
     assert p.save, "Product is not saved"
     assert_equal Asset.find_by_tag("Some asset 4"), p.resource, "Wrong product asset"
   end
+
+  test "find product by resource tag" do
+    assert Product.new(:resource => "roof",
+      :unit => "m2").save, "product is not saved"
+    assert Product.new(:resource => "dalle",
+      :unit => "m2").save, "product is not saved"
+    assert !Product.find_by_resource_tag("roof").nil?, "Wrong product find"
+    assert !Product.find_by_resource_tag("DAlle").nil?, "Wrong product find"
+    assert !Product.find_by_resource_tag("dalle").new_record?, "Wrong product find"
+    assert Product.find_by_resource_tag("dalle 2").nil?, "Wrong product find"
+  end
 end
