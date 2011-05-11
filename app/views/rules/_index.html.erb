@@ -189,8 +189,12 @@
   }
   function submitRule()
   {
-    dataPage["rules"] = $('#rules_list').getRowData();
-    location.hash = "deals/new";
+    if(ruleView) {
+      location.hash = "deals";
+    } else {
+      dataPage["rules"] = $('#rules_list').getRowData();
+      location.hash = "deals/new";
+    }
   }
 </script>
 

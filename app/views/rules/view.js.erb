@@ -1,2 +1,4 @@
 var ruleView = true;
 $("#body").html("<%= escape_javascript(render :partial => 'rules/index') %>");
+$("#new_rule").attr("disabled", "disabled");
+$("#change_rule").attr("disabled", "disabled");

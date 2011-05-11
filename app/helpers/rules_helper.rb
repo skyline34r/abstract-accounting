@@ -54,7 +54,7 @@ module RulesHelper
            ($("#rules_list").getCell(cell, "fact_side") == "true")) {
           $("#rule_off_on").attr("checked","checked");
         }
-        $("#change_rule").removeAttr("disabled");
+        if(!ruleView) $("#change_rule").removeAttr("disabled");
       }'.to_json_var,
       :beforeSelectRow => 'function()
       {
