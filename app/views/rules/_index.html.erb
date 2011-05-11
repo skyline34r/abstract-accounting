@@ -1,4 +1,7 @@
 <script type="text/javascript">
+  <% if !@deal_id.nil? %>
+    var dealId = "<%= @deal_id %>";
+  <% end %>
   var ruleCellId = -1;
   var ruleTag;
   var ruleRate;

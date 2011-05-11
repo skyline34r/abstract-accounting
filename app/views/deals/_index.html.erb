@@ -156,8 +156,12 @@
   }
   function showRules()
   {
-    rememberDealElements();
-    location.hash = "rules";
+    if($("#new_deal").length) {
+      rememberDealElements();
+      location.hash = "rules";
+    } else {
+      location.hash = "rules/view?deal_id=" + $("#deals_list").getGridParam("selrow");
+    }
   }
   function rememberDealElements()
   {

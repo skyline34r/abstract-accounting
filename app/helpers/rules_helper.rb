@@ -60,6 +60,13 @@ module RulesHelper
       {
         if (canSelectRule) return true;
         return false;
+      }'.to_json_var,
+      :beforeRequest => 'function()
+      {
+        if(ruleView) {
+          $("#rules_list").setGridParam({datatype: "json"});
+          $("#rules_list").setGridParam({url: "/rules/data?deal_id=" + dealId});
+        }
       }'.to_json_var
     }]
 

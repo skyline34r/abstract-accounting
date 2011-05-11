@@ -32,6 +32,7 @@ module DealsHelper
       {
         $("#dir_0").removeAttr("disabled");
         $("#dir_1").removeAttr("disabled");
+        $("#deal_rules").removeAttr("disabled");
         $("#deal_tag").val($("#deals_list").getCell(cell, "tag"));
         $("#deal_entity_tag").val($("#deals_list").getCell(cell, "entity"));
         $("#deal_give_tag").val($("#deals_list").getCell(cell, "give"));
@@ -48,6 +49,10 @@ module DealsHelper
       {
         if(canSelectDeal) return true;
         return false;
+      }'.to_json_var,
+      :beforeRequest => 'function()
+      {
+        $("#deal_rules").attr("disabled", "disabled");
       }'.to_json_var
     }]
 
