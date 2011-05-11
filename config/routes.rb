@@ -61,6 +61,7 @@ Abstract::Application.routes.draw do
   resources :rules do
     collection do
       get 'view'
+      get 'data'
     end
   end
   resources :waybills do
