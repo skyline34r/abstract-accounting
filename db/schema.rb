@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110510113311) do
+ActiveRecord::Schema.define(:version => 20110511140636) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -127,10 +127,12 @@ ActiveRecord::Schema.define(:version => 20110510113311) do
   end
 
   create_table "storehouse_releases", :force => true do |t|
-    t.datetime "created"
-    t.integer  "deal_id"
-    t.integer  "state"
+    t.integer  "owner_id"
     t.integer  "place_id"
+    t.integer  "to_id"
+    t.integer  "deal_id"
+    t.datetime "created"
+    t.integer  "state"
   end
 
   create_table "txns", :force => true do |t|
@@ -160,13 +162,6 @@ ActiveRecord::Schema.define(:version => 20110510113311) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-
-  create_table "waybill_entries", :force => true do |t|
-    t.integer "waybill_id"
-    t.integer "resource_id"
-    t.string  "unit"
-    t.integer "amount"
-  end
 
   create_table "waybills", :force => true do |t|
     t.integer  "owner_id"
