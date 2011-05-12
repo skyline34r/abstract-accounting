@@ -15,4 +15,12 @@ class User < ActiveRecord::Base
   def role?(role)
     return !!self.roles.find_by_name(role.to_s)
   end
+
+  def User.current
+    Thread.current[:user]
+  end
+
+  def User.current=(user)
+    Thread.current[:user] = user
+  end
 end

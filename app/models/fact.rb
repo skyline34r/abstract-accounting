@@ -16,6 +16,7 @@ class Fact < ActiveRecord::Base
   has_one :txn
 
   before_save :do_save
+  after_save :do_after_save
   before_destroy :do_destroy
 
   def self.pendings
@@ -46,6 +47,12 @@ class Fact < ActiveRecord::Base
       return false unless init_state(self.from.nil? ? nil : self.from.state(nil), self.from)
       return false unless init_state(self.to.state(nil), self.to)
       subfacts.each { |item| item.save! }
+    end
+  end
+  def do_after_save
+    if !User.current.nil?
+      return false unless Journal.new(:created_at => DateTime.now,
+        :created_by => User.current, :fact => self).save!
     end
   end
 
