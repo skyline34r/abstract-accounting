@@ -18,16 +18,11 @@ class WaybillsController < ApplicationController
       @waybill.place = current_user.place
     end
     if params[:entry_resource] != nil then
-      entry = Array.new(params[:entry_resource].length);
       for i in 0..params[:entry_resource].length-1
-        entry[i] = WaybillEntry.new(:unit => params[:entry_unit][i],
-                                    :amount => params[:entry_amount][i])
-        entry[i].assign_resource_text(params[:entry_resource][i])
+        @waybill.add_resource params[:entry_resource][i],
+                              params[:entry_unit][i],
+                              params[:entry_amount][i].to_f
       end
-      @waybill.waybill_entries = entry
-    end
-    if params[:organization_text] != '' then
-      @waybill.assign_organization_text(params[:organization_text])
     end
     if @waybill.save then
       render :action => 'index'
@@ -37,8 +32,9 @@ class WaybillsController < ApplicationController
   end
 
   def view
-    @columns = ['date', 'organization.tag', 'owner.tag', 'vatin', 'place.tag']
-    @waybills = Waybill.paginate(
+    @columns = ['created', 'from.tag', 'owner.tag', 'vatin', 'place.tag']
+    @waybills = Waybill.find_by_owner_and_place(current_user.entity,
+                                                current_user.place).paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
@@ -48,14 +44,14 @@ class WaybillsController < ApplicationController
   end
 
   def show
-    @columns = ['resource.tag', 'amount', 'unit']
-    @entries = Waybill.find(params[:id]).waybill_entries
+    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @entries = Waybill.find(params[:id]).resources
     @entries = @entries.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@entries, @columns, :id_column => 'id')
+      render :json => abstract_json_for_jqgrid(@entries, @columns)
     end
   end
 end

@@ -13,8 +13,8 @@ class WaybillsControllerTest < ActionController::TestCase
   test "should create waybills" do
     assert_difference('Waybill.count') do
        xml_http_request :post, :create,
-                        :waybill => { :date => DateTime.now,
-                                      :organization => entities(:abstract),
+                        :waybill => { :created => DateTime.now,
+                                      :from => entities(:abstract),
                                       :place => places(:orsha),
                                       :vatin => '500100732259' },
                         :entry_resource => ['test1'],
@@ -28,9 +28,9 @@ class WaybillsControllerTest < ActionController::TestCase
   test "should create waybills with text entity" do
     assert_difference('Waybill.count') do
        xml_http_request :post, :create,
-                        :waybill => { :date => DateTime.now,
-                                      :vatin => '500100732259' },
-                        :organization_text => 'abstract',
+                        :waybill => { :created => DateTime.now,
+                                      :vatin => '500100732259',
+                                      :from => 'abstract' },
                         :entry_resource => ['test1'],
                         :entry_amount => ['5'],
                         :entry_unit => ['kg']
@@ -48,14 +48,13 @@ class WaybillsControllerTest < ActionController::TestCase
   end
 
   test "should get show waybills entries" do
-    xml_http_request :post, :create,
-                     :waybill => { :date => DateTime.now,
-                                   :vatin => '500100732259' },
-                     :organization_text => 'abstract',
-                      :entry_resource => ['test1', 'test2'],
-                     :entry_amount => ['5', '8'],
-                     :entry_unit => ['kg', 'm']
-    xml_http_request :get, :show, :id => 1
+    wb = Waybill.new(:created => DateTime.now, :owner => entities(:sergey),
+                     :from => entities(:abstract),
+                     :place => places(:orsha),
+                     :vatin => '500100732259')
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Can't save waybill with entries"
+    xml_http_request :get, :show, :id => wb.id
     assert_response :success
     assert_not_nil assigns(:entries)
   end

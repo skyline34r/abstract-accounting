@@ -23,8 +23,8 @@
     d.setUTCHours(12);
     $("#hide_waybill_date").val(d.toUTCString());
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
-    $("#new_waybill").attr("action", "/waybills?organization_text="
-      + escape($("#waybill_organization").val()) + entries);
+    $("#hide_waybill_from").val(escape($("#waybill_organization").val()));
+    $("#new_waybill").attr("action", "/waybills?" + entries);
     saveWaybillElements();
   }
 
@@ -101,8 +101,9 @@
     <tr align="right">
       <td colspan="2" style="width: 45px">
         <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
-        <%= f.hidden_field :date, :id => "hide_waybill_date" %>
+        <%= f.hidden_field :created, :id => "hide_waybill_date" %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
+        <%= f.hidden_field :from, :id => "hide_waybill_from" %>
       </td>
     </tr>
   </tbody>

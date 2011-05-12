@@ -7,7 +7,7 @@ module StorehousesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/storehouses/view?entity_id=',
+      :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['resource', 'amount', 'place'],
@@ -21,12 +21,7 @@ module StorehousesHelper
       :rowList => [10, 20, 30],
       :sortname => 'resource',
       :sortorder => 'asc',
-      :viewrecords => true,
-      :beforeRequest => 'function()
-      {
-        $("#storehouse_list").setGridParam({url: "/storehouses/view?entity_id="
-                                                   + getOwnerId()});
-      }'.to_json_var
+      :viewrecords => true
     }]
 
     jqgrid_api 'storehouse_list', grid, options
@@ -39,7 +34,7 @@ module StorehousesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/storehouses/view?entity_id=',
+      :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['', 'resource', 'amount', 'release'],
@@ -95,8 +90,6 @@ module StorehousesHelper
           storeHouseData = dataPage;
           dataPage = null;
         }
-        $("#storehouse_release_list").setGridParam({url: "/storehouses/view?entity_id="
-                                                          + getOwnerId()});
       }'.to_json_var,
       :onSelectRow => 'function(id)
       {

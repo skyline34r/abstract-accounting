@@ -9,14 +9,14 @@ class StorehousesController < ApplicationController
   end
 
   def view
-    @columns = ['resource.tag', 'amount', 'place.tag']
-    @storehouse = Storehouse.new(Entity.where(:id => params[:entity_id]).first)
-    @storehouse = @storehouse.paginate(
+    @columns = ['product.resource.tag', 'amount', 'place.tag']
+    @storehouse = Storehouse.new(current_user.entity,
+                                 current_user.place).paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@storehouse, @columns, :id_column => 'resource.id')
+      render :json => abstract_json_for_jqgrid(@storehouse, @columns, :id_column => 'product.resource.id')
     end
   end
 
@@ -33,8 +33,8 @@ class StorehousesController < ApplicationController
     end
     if params[:resource_id] != nil then
       for i in 0..params[:resource_id].length-1
-        @release.add_resource(Asset.where(:id => params[:resource_id][i]).first,
-                                          params[:release_amount][i].to_f)
+        @release.add_resource(Product.find_by_resource_id(params[:resource_id][i]),
+                                                          params[:release_amount][i].to_f)
       end
     end
     if !@release.save then
@@ -66,7 +66,7 @@ class StorehousesController < ApplicationController
   end
 
   def view_release
-    @columns = ['resource.tag', 'amount']
+    @columns = ['product.resource.tag', 'amount']
     release = StorehouseRelease.find(params[:id])
     @resources = release.resources.paginate(
       :page     => params[:page],
