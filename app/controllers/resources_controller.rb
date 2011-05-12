@@ -4,6 +4,7 @@ class ResourcesController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource :asset
   load_and_authorize_resource :money
+  before_filter :set_current_user
 
   def index
   end

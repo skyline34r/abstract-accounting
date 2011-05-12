@@ -19,9 +19,9 @@ end
 def sign_in_by_user
   p = Place.new(:tag => "Access to storehouse")
   assert p.save, "Place is not saved"
-  u = User.new(:email => "user@mail.com",
-               :password => "user_pass",
-               :password_confirmation => "user_pass",
+  u = User.new(:email => "test@mail.com",
+               :password => "test_pass",
+               :password_confirmation => "test_pass",
                :entity_id => entities(:sergey).id,
                :role_ids => [roles(:operator).id])
   u.place = p

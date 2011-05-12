@@ -37,4 +37,9 @@ class ApplicationController < ActionController::Base
     }.to_json
 
   end
+  
+  def set_current_user
+    User.current = current_user.entity
+  end
+
 end

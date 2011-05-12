@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class RulesControllerTest < ActionController::TestCase
+  setup do
+    sign_in_by_user
+  end
 
   test "should get index of rules" do
     xml_http_request :get, :index
