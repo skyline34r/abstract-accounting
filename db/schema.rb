@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110511140636) do
+ActiveRecord::Schema.define(:version => 20110512141856) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -67,6 +67,14 @@ ActiveRecord::Schema.define(:version => 20110511140636) do
   end
 
   add_index "incomes", ["start"], :name => "index_incomes_on_start", :unique => true
+
+  create_table "journals", :force => true do |t|
+    t.integer  "fact_id"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+  end
+
+  add_index "journals", ["fact_id"], :name => "index_journals_on_fact_id", :unique => true
 
   create_table "money", :force => true do |t|
     t.integer "num_code"
