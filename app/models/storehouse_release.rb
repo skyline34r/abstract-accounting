@@ -1,14 +1,8 @@
-require "resource"
+require "waybill"
 
-class StorehouseReleaseEntry
-  attr_reader :resource, :amount
-  def initialize(resource, amount)
-    @resource = resource
-    @amount = amount
-  end
-
+class StorehouseReleaseEntry < WaybillEntry
   def state(entity)
-    storage_deal = self.deal(entity)
+    storage_deal = self.storehouse_deal entity
     return 0 if storage_deal.nil? or storage_deal.state.nil?
     start_state = storage_deal.state.amount
     releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
@@ -21,27 +15,6 @@ class StorehouseReleaseEntry
     end
     start_state
   end
-
-  def deal(entity)
-    Deal.find_by_entity_id_and_take_id_and_give_id_and_take_type_and_give_type(entity, @resource, @resource, Asset, Asset)
-  end
-
-  def storehouse_deal(entity)
-    return nil if entity.nil?
-    storehouses =
-      if self.resource.id.nil? or entity.id.nil?
-        Array.new
-      else
-        Deal.find_all_by_give_and_take_and_entity(self.resource, self.resource, entity)
-      end
-    if storehouses.length == 1
-      storehouses.first
-    else
-      Deal.new :entity => entity, :give => self.resource, :take => self.resource,
-        :rate => 1.0, :isOffBalance => true,
-        :tag => "storehouse entity: " + entity.tag + "; resource: " + self.resource.tag + ";"
-    end
-  end
 end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
@@ -49,9 +22,8 @@ class StorehouseReleaseValidator < ActiveModel::Validator
     if record.state == StorehouseRelease::UNKNOWN
       record.errors[:resources] = "must be not empty" if record.resources.empty?
       record.resources.each do |item|
-        d = item.deal(record.owner)
+        d = item.storehouse_deal record.owner
         record.errors[:resources] = "invalid resource" if d.nil?
-        #TODO: check other not applied releases for state
         record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner) or item.amount <= 0)
       end
     else
@@ -63,45 +35,62 @@ class StorehouseReleaseValidator < ActiveModel::Validator
 end
 
 class StorehouseRelease < ActiveRecord::Base
-
   #States
   INWORK = 1
   CANCELED = 2
   APPLIED = 3
   UNKNOWN = 0
+  #validations
+  validates :owner_id, :presence => true
+  validates :place_id, :presence => true
+  validates :to_id, :presence => true
+  validates :created, :presence => true
+  validates :state, :presence => true
 
-  attr_accessor :owner, :to
-  validates :created, :owner, :to, :place, :state, :presence => true
   validates_with StorehouseReleaseValidator
-  belongs_to :deal
+  #associations
+  belongs_to :owner, :class_name => 'Entity'
   belongs_to :place
-
-  after_initialize :sv_after_initialize
-  before_save :sv_before_save
+  belongs_to :to, :class_name => 'Entity'
+  belongs_to :deal
 
   def to=(entity)
     if !entity.nil?
       if entity.instance_of?(Entity)
-        @to = entity
-      else
-        e = entity.to_s
-        if !Entity.find(:first, :conditions => ["lower(tag) = lower(?)", e]).nil?
-          @to = Entity.find(:first, :conditions => ["lower(tag) = lower(?)", e])
+        self[:to] = entity
+        if entity.new_record?
+          self.to_id = -1
         else
-          @to = Entity.new(:tag => e)
+          self.to_id = entity.id
+        end
+      else
+        a = entity.to_s
+        if !Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a]).nil?
+          self[:to] = Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a])
+          self.to_id = self[:to].id
+        else
+          self[:to] = Entity.new(:tag => a)
+          self.to_id = -1
         end
       end
     end
   end
 
-  def add_resource(resource, amount)
-    @entries << StorehouseReleaseEntry.new(resource, amount)
+  def to
+    if self[:to].nil? and !self.to_id.nil? and self.to_id > -1
+      self[:to] = Entity.find(self.to_id)
+    end
+    self[:to]
+  end
+
+  def add_resource product, amount
+    @entries << StorehouseReleaseEntry.new(product, amount)
   end
 
   def resources
     if @entries.empty? and !self.deal.nil?
       self.deal.rules.each do |item|
-        @entries << StorehouseReleaseEntry.new(item.from.take, item.rate)
+        @entries << StorehouseReleaseEntry.new(Product.find_by_resource_id(item.from.take), item.rate)
       end
     end
     @entries
@@ -128,55 +117,51 @@ class StorehouseRelease < ActiveRecord::Base
     false
   end
 
-  def StorehouseRelease.inwork
-    StorehouseRelease.find_all_by_state INWORK
+  def StorehouseRelease.inwork entity = nil, place = nil
+    if entity.nil? or (!entity.nil? and place.nil?)
+      StorehouseRelease.find_all_by_state INWORK
+    else
+      StorehouseRelease.find_all_by_state_and_owner_id_and_place_id INWORK, entity, place
+    end
   end
+
+  after_initialize :sr_initialize
+  before_save :sr_before_save
 
   private
-  def sv_after_initialize
+  def sr_initialize
     self.state = UNKNOWN if self.id.nil?
     @entries = Array.new
-    if !self.new_record? && !self.deal.nil?
-      if @owner.nil?
-        @owner = self.deal.entity
-      end
-      if @to.nil? && self.deal.rules.length > 0 && !self.deal.rules.first.to.nil?
-        @to = self.deal.rules.first.to.entity
-      end
-    end
   end
 
-  def sv_before_save
-    if self.deal.nil? or self.deal.id.nil?
-      return false if !self.to.save
-      a = self.sr_asset
-      return false if !a.save
-      self.deal = Deal.new :tag => "StorehouseRelease created: " + self.created.to_s + "; owner: " + @owner.tag,
-        :rate => 1.0, :entity => @owner, :give => a,
-        :take => a, :isOffBalance => true
-      return false if !self.deal.save
+  def sr_before_save
+    if self.new_record?
+      if self.to_id == -1
+        return false unless self.to.save
+        self.to_id = self.to.id
+      end
+      shipment = Storehouse.shipment
+      self.deal = Deal.new :tag => "Storehouse release shipment #" +
+          (StorehouseRelease.last.nil? ? 0 : StorehouseRelease.last.id).to_s,
+        :rate => 1.0, :entity => self.owner, :give => shipment,
+        :take => shipment, :isOffBalance => true
+      return false unless self.deal.save
       @entries.each_with_index do |item, idx|
-        dItem = item.storehouse_deal self.to
-        return false if dItem.nil? or !dItem.save
-        #create rules
-        self.deal.rules.create :tag => self.deal.tag + "; rule" + idx.to_s,
-          :from => item.deal(self.owner), :to => dItem, :fact_side => false,
-          :change_side => true, :rate => item.amount
+        if item.product.new_record?
+          return false unless item.product.save
+        end
+        ownerItem = item.storehouse_deal self.owner
+        return false if ownerItem.nil? or !ownerItem.save
+        toItem = item.storehouse_deal self.to
+        return false if toItem.nil? or !toItem.save
+
+        return false if self.deal.rules.create(:tag => self.deal.tag + "; rule" + idx.to_s,
+          :from => ownerItem, :to => toItem, :fact_side => false,
+          :change_side => true, :rate => item.amount).nil?
       end
       self.deal_id = self.deal.id
+      self.state = INWORK if self.state == UNKNOWN
     end
-    self.state = INWORK if self.state == UNKNOWN
     true
   end
-
-  protected
-  def sr_asset
-    a = Asset.find_by_tag("Storehouse Release")
-    if a.nil?
-      a = Asset.new :tag => "Storehouse Release"
-    end
-    a
-  end
 end
-
-#TODO: apply

@@ -1,21 +1,15 @@
 require "resource"
 
 class StorehouseEntry
-  attr_reader :deal, :owner, :place, :amount, :resource
-  def initialize(deal)
-    @deal = nil
+  attr_reader :owner, :place, :product, :amount
+  def initialize(deal, place)
     @amount = 0
-    @resource = nil
+    @product = nil
     @owner = nil
-    @place = nil
+    @place = place
     if !deal.nil? and deal.instance_of?(Deal)
-      @deal = deal
       @owner = deal.entity
-      user = User.find_by_entity_id(deal.entity.id)
-      if !user.nil?
-        @place = user.place
-      end
-      @resource = deal.give
+      @product = Product.find_by_resource_id deal.give
       @amount = StorehouseEntry.state(deal)
     end
   end
@@ -38,13 +32,30 @@ class StorehouseEntry
 end
 
 class Storehouse < Array
-  attr_reader :entity
-  def initialize(entity)
-    @entity = nil
-    if !entity.nil? and entity.instance_of?(Entity)
-      @entity = entity
-      Deal.where("entity_id = ? AND give_type = ? AND give_id = take_id AND give_type = take_type", entity.id, Asset)
-          .each { |item| if StorehouseEntry.state(item) > 0; self << StorehouseEntry.new(item); end; }
+  attr_reader :entity, :place
+  def initialize(entity = nil, place = nil)
+    @entity = entity
+    @place = place
+    wbs = Waybill.find_by_owner_and_place @entity, @place
+    if !wbs.nil?
+      wbs.each do |item|
+        if !item.deal.nil?
+          item.deal.rules.each do |rule|
+            if StorehouseEntry.state(rule.to) > 0
+              self << StorehouseEntry.new(rule.to, item.place)
+            end
+          end
+        end
+      end
     end
+  end
+
+  def Storehouse.shipment
+    a = Asset.find_by_tag("Storehouse Shipment")
+    if a.nil?
+      a = Asset.new :tag => "Storehouse Shipment"
+      return nil unless a.save
+    end
+    a
   end
 end

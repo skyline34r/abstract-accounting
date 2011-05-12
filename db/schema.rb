@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110509115443) do
+ActiveRecord::Schema.define(:version => 20110511140636) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -82,6 +82,13 @@ ActiveRecord::Schema.define(:version => 20110509115443) do
 
   add_index "places", ["tag"], :name => "index_places_on_tag", :unique => true
 
+  create_table "products", :force => true do |t|
+    t.string  "unit"
+    t.integer "resource_id"
+  end
+
+  add_index "products", ["resource_id"], :name => "index_products_on_resource_id", :unique => true
+
   create_table "quotes", :force => true do |t|
     t.integer  "money_id"
     t.datetime "day"
@@ -120,10 +127,12 @@ ActiveRecord::Schema.define(:version => 20110509115443) do
   end
 
   create_table "storehouse_releases", :force => true do |t|
-    t.datetime "created"
-    t.integer  "deal_id"
-    t.integer  "state"
+    t.integer  "owner_id"
     t.integer  "place_id"
+    t.integer  "to_id"
+    t.integer  "deal_id"
+    t.datetime "created"
+    t.integer  "state"
   end
 
   create_table "txns", :force => true do |t|
@@ -154,19 +163,15 @@ ActiveRecord::Schema.define(:version => 20110509115443) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
-  create_table "waybill_entries", :force => true do |t|
-    t.integer "waybill_id"
-    t.integer "resource_id"
-    t.string  "unit"
-    t.integer "amount"
+  create_table "waybills", :force => true do |t|
+    t.integer  "owner_id"
+    t.integer  "place_id"
+    t.integer  "from_id"
+    t.integer  "deal_id"
+    t.datetime "created"
+    t.string   "vatin"
   end
 
-  create_table "waybills", :force => true do |t|
-    t.datetime "date"
-    t.integer  "owner_id"
-    t.integer  "organization_id"
-    t.string   "vatin"
-    t.integer  "place_id"
-  end
+  add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
 
 end
