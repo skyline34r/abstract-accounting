@@ -7,7 +7,7 @@ class StorehouseEntry
     @product = nil
     @owner = nil
     @place = place
-    if !deal.nil? and deal.instance_of?(Deal)
+    if !deal.nil?
       @owner = deal.entity
       @product = Product.find_by_resource_id deal.give
       @amount = StorehouseEntry.state(deal)
