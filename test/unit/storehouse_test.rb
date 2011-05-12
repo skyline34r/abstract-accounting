@@ -171,4 +171,27 @@ class StorehouseTest < ActiveSupport::TestCase
       Place.find_by_tag("Some test place"))
     assert_equal 1, sh.length, "Wrong storehouse length"
   end
+
+  test "show one resource for two waybills" do
+    assert Place.new(:tag => "Some test place").save, "Entity not saved"
+    wb = Waybill.new(:owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :from => "Some organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :from => "Some organization",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+  end
 end

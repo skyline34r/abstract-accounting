@@ -38,11 +38,15 @@ class Storehouse < Array
     @place = place
     wbs = Waybill.find_by_owner_and_place @entity, @place
     if !wbs.nil?
+      inner = Hash.new
       wbs.each do |item|
         if !item.deal.nil?
           item.deal.rules.each do |rule|
-            if StorehouseEntry.state(rule.to) > 0
-              self << StorehouseEntry.new(rule.to, item.place)
+            if !inner.has_key?(rule.to.id)
+              if StorehouseEntry.state(rule.to) > 0
+                self << StorehouseEntry.new(rule.to, item.place)
+              end
+              inner[rule.to.id] = true
             end
           end
         end
