@@ -16,7 +16,8 @@ class StorehousesController < ApplicationController
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@storehouse, @columns, :id_column => 'product.resource.id')
+      render :json => abstract_json_for_jqgrid(@storehouse, @columns,
+                                               :id_column => 'product.resource.id')
     end
   end
 
@@ -48,7 +49,8 @@ class StorehousesController < ApplicationController
 
   def list
     @columns = ['created', 'owner.tag', 'to.tag', 'place.tag']
-    @releases = StorehouseRelease.inwork.paginate(
+    @releases = StorehouseRelease.inwork(current_user.entity,
+                                         current_user.place).paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
@@ -73,7 +75,8 @@ class StorehousesController < ApplicationController
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@resources, @columns)
+      render :json => abstract_json_for_jqgrid(@resources, @columns,
+                                               :id_column => 'product.resource.id')
     end
   end
 
