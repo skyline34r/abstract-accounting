@@ -142,6 +142,14 @@ class Waybill < ActiveRecord::Base
   after_initialize :waybill_initialize
   before_save :waybill_before_save
 
+  def Waybill.find_by_owner_and_place entity = nil, place = nil
+    if entity.nil? or (!entity.nil? and place.nil?)
+      Waybill.all
+    else
+      Waybill.find_all_by_place_id_and_owner_id(place, entity)
+    end
+  end
+
   private
   def waybill_initialize
     @entries = Array.new

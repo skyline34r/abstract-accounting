@@ -117,8 +117,12 @@ class StorehouseRelease < ActiveRecord::Base
     false
   end
 
-  def StorehouseRelease.inwork
-    StorehouseRelease.find_all_by_state INWORK
+  def StorehouseRelease.inwork entity = nil, place = nil
+    if entity.nil? or (!entity.nil? and place.nil?)
+      StorehouseRelease.find_all_by_state INWORK
+    else
+      StorehouseRelease.find_all_by_state_and_owner_id_and_place_id INWORK, entity, place
+    end
   end
 
   after_initialize :sr_initialize
