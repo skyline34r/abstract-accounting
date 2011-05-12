@@ -87,7 +87,8 @@ module StorehousesHelper
       :beforeRequest => 'function()
       {
         if(dataPage != null) {
-          storeHouseData = dataPage;
+          storeHouseData = dataPage["dataGrid"];
+          $("#storehouse_to").val(dataPage["to"]);
           dataPage = null;
         }
       }'.to_json_var,

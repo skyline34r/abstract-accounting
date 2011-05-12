@@ -10,7 +10,9 @@
   }
   function sendRelease() {
     $("#storehouse_release_list").saveRow(lastSelId);
-    dataPage = storeHouseData;
+    dataPage = new Object();
+    dataPage["dataGrid"] = storeHouseData;
+    dataPage["to"] = $("#storehouse_to").val();
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
