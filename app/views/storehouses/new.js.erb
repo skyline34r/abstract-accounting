@@ -1,4 +1,8 @@
-var storeHouseData = new Object();
+if(dataPage != null) {
+  storeHouseData = dataPage["dataGrid"];
+} else {
+  var storeHouseData = new Object();
+}
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/new_release') %>");
 document.title = "Abstract::Storehouse";

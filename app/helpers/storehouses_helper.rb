@@ -10,11 +10,12 @@ module StorehousesHelper
       :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'amount', 'place'],
+      :colNames => ['place', 'resource', 'amount', 'unit'],
       :colModel => [
+        { :name => 'place',    :index => 'place',    :width => 250 },
         { :name => 'resource', :index => 'resource', :width => 300 },
         { :name => 'amount',   :index => 'amount',   :width => 200 },
-        { :name => 'place',    :index => 'place',    :width => 300 }
+        { :name => 'unit',     :index => 'unit',     :width => 50 }
       ],
       :pager => '#storehouse_pager',
       :rowNum => 10,
@@ -37,7 +38,7 @@ module StorehousesHelper
       :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['', 'resource', 'amount', 'release'],
+      :colNames => ['', 'resource', 'amount', 'release', 'unit'],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -50,17 +51,17 @@ module StorehousesHelper
                              + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                              + options.rowId + "\"); \' checked>";
                          }'.to_json_var },
-        { :name => 'resource',  :index => 'resource',   :width => 380,
-          :formatter => 'function(cellvalue, options, rowObject) {
-                           return rowObject[0];
-                         }'.to_json_var },
-        { :name => 'amount',  :index => 'amount',   :width => 200,
+        { :name => 'resource',  :index => 'resource',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
+        { :name => 'amount',  :index => 'amount',   :width => 200,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[2];
+                         }'.to_json_var },
         { :name => 'release',  :index => 'release',   :width => 200, :editable => true,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(cellvalue == undefined) {
+                           if(cellvalue == rowObject[3]) {
                              if(storeHouseData[options.rowId] == undefined) {
                                return "";
                              }
@@ -74,7 +75,12 @@ module StorehousesHelper
                            }
                            storeHouseData[options.rowId] = cellvalue;
                            return cellvalue;
-                         }'.to_json_var }
+                         }'.to_json_var },
+        { :name => 'unit',  :index => 'unit',   :width => 50,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[3];
+                         }'.to_json_var },
+
       ],
       :pager => '#storehouse_release_pager',
       :rowNum => 10,
@@ -156,10 +162,11 @@ module StorehousesHelper
       :url => '/storehouses/view_release?id=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'amount'],
+      :colNames => ['resource', 'amount', 'unit'],
       :colModel => [
-        { :name => 'resource', :index => 'resource', :width => 400 },
-        { :name => 'amount',   :index => 'amount',   :width => 400 }
+        { :name => 'resource', :index => 'resource', :width => 450 },
+        { :name => 'amount',   :index => 'amount',   :width => 300 },
+        { :name => 'unit',     :index => 'unit',     :width => 50 }
       ],
       :pager => '#release_view_pager',
       :rowNum => 10,
