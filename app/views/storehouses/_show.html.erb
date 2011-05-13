@@ -1,8 +1,8 @@
 <%= raw(release_view_entries_jqgrid) %>
 <table>
   <tbody>
-    <tr align="right">
-      <td colspan="2">
+    <tr>
+      <td align="right" colspan="2">
         * - required fields
       </td>
     </tr>
@@ -45,7 +45,10 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2" align="right">
+      <td align="left">
+        <input type="button" value="Print" onclick="window.location.href='storehouses/pdf?id=3'" />
+      </td>
+      <td align="right">
         <input type="button" value="back" onclick="location.hash = '#storehouses/releases';"/>
         <input type="button" value="cancel" id="release_apply"
                onclick="$.ajax({url: 'storehouses/releases/cancel/' + location.hash.substr(30)});"/>
