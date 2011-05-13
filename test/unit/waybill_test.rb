@@ -396,4 +396,58 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 5, sOrganization.amount, "Organization state amount is invalid"
     assert_equal wb.created, sOrganization.start, "Organization state date is invalid"
   end
+
+  test "show waybills by owner and place" do
+    assert Entity.new(:tag => "Storekeeper").save, "Entity not saved"
+    assert Place.new(:tag => "Moscow").save, "Entity not saved"
+    assert Entity.new(:tag => "Storekeeper 2").save, "Entity not saved"
+    assert Place.new(:tag => "Minsk").save, "Entity not saved"
+
+    assert_equal 0, Waybill.find_by_owner_and_place.length,
+      "Wrong waybills count"
+    assert_equal 0, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper"),
+      Place.find_by_tag("Moscow")).length,
+      "Wrong waybills count"
+    assert_equal 0, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper 2"),
+      Place.find_by_tag("Minsk")).length,
+      "Wrong waybills count"
+
+    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 500
+    assert wb.save, "Waybill not saved"
+
+    assert_equal 1, Waybill.find_by_owner_and_place.length,
+      "Wrong waybills count"
+    assert_equal 1, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper"),
+      Place.find_by_tag("Moscow")).length,
+      "Wrong waybills count"
+    assert_equal 0, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper 2"),
+      Place.find_by_tag("Minsk")).length,
+      "Wrong waybills count"
+
+    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper 2"),
+      :place => Place.find_by_tag("Minsk"),
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 300
+    assert wb.save, "Waybill not saved"
+
+    assert_equal 2, Waybill.find_by_owner_and_place.length,
+      "Wrong waybills count"
+    assert_equal 1, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper"),
+      Place.find_by_tag("Moscow")).length,
+      "Wrong waybills count"
+    assert_equal 1, Waybill.find_by_owner_and_place(
+      Entity.find_by_tag("Storekeeper 2"),
+      Place.find_by_tag("Minsk")).length,
+      "Wrong waybills count"
+  end
 end

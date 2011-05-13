@@ -106,11 +106,12 @@ class StorehouseRelease < ActiveRecord::Base
 
   def apply
     if self.state == INWORK and !self.deal.nil?
-      return false if !Fact.new(:amount => 1.0,
-              :day => self.created,
-              :from => nil,
-              :to => self.deal,
-              :resource => self.deal.give).save
+      return false unless Fact.new(:amount => 1.0,
+            :day => self.created,
+            :from => nil,
+            #if using self.deal - instance_of?("Deal") return false
+            :to => Deal.find(self.deal.id),
+            :resource => self.deal.give).save
       self.state = APPLIED
       return self.save
     end
