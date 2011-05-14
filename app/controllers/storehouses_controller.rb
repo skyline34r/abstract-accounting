@@ -51,7 +51,7 @@ class StorehousesController < ApplicationController
 
   def list
     @columns = ['created', 'owner.tag', 'to.tag', 'place.tag']
-    @releases = StorehouseRelease.inwork(current_user.entity,
+    @releases = StorehouseRelease.find_all_by_owner_and_place(current_user.entity,
                                          current_user.place).paginate(
       :page     => params[:page],
       :per_page => params[:rows],
