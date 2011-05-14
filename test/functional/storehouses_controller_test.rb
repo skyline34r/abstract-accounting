@@ -29,6 +29,7 @@ class StorehousesControllerTest < ActionController::TestCase
     assert wb.save, "Can't save waybill with entries"
     assert_difference('StorehouseRelease.count') do
        xml_http_request :post, :create,
+                        :date => DateTime.now,
                         :to => 'TestTo',
                         :resource_id => [assets(:sonyvaio).id],
                         :release_amount => [3]
