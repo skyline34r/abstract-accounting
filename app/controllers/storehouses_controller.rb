@@ -50,7 +50,7 @@ class StorehousesController < ApplicationController
   end
 
   def list
-    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag']
+    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag', 'state']
     @releases = StorehouseRelease.find_all_by_owner_and_place(current_user.entity,
                                          current_user.place).paginate(
       :page     => params[:page],
