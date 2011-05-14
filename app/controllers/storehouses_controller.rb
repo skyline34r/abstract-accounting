@@ -10,7 +10,7 @@ class StorehousesController < ApplicationController
   end
 
   def view
-    @columns = ['product.resource.tag', 'amount', 'place.tag']
+    @columns = ['place.tag', 'product.resource.tag', 'amount', 'product.unit']
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place).paginate(
       :page     => params[:page],
@@ -69,7 +69,7 @@ class StorehousesController < ApplicationController
   end
 
   def view_release
-    @columns = ['product.resource.tag', 'amount']
+    @columns = ['product.resource.tag', 'amount', 'product.unit']
     release = StorehouseRelease.find(params[:id])
     @resources = release.resources.paginate(
       :page     => params[:page],
