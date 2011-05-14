@@ -15,7 +15,8 @@ pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width d
 end
 pdf.move_down 10
 pdf.bounding_box [pdf.bounds.left, pdf.cursor], :width => pdf.bounds.width do
-  pdf.table [@header] + @row, :header => true, :width => pdf.bounds.width do
+  x_width = pdf.bounds.width / 5
+  pdf.table [@header] + @row, :header => true, :column_widths => [x_width*3,x_width,x_width] do
     row(0).style(:font => "Times-Roman", :font_style => :bold, :background_color => 'cccccc')
   end
   pdf.bounding_box [pdf.bounds.left, pdf.cursor], :width => pdf.bounds.width do
