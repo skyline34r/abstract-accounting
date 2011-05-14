@@ -7,3 +7,4 @@ public/javascripts/jquery*
 public/javascripts/jqgrid/
 public/javascripts/jspdf/
 public/javascripts/rails.js
+.idea/
