@@ -75,6 +75,7 @@ Abstract::Application.routes.draw do
       get 'releases'
       get 'list'
       get 'view_release'
+      get 'pdf'
       post 'cancel'
       post 'apply'
     end

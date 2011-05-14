@@ -12,6 +12,8 @@ gem 'jquery-rails', :git => 'git://github.com/AlexeyShepelev/jquery-rails.git'
 gem 'devise'
 gem 'cancan'
 gem 'dynamic_form'
+gem 'prawn'
+gem 'prawnto'
 
 # Use unicorn as the web server
 # gem 'unicorn'

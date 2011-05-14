@@ -1,4 +1,5 @@
 require 'storehouse.rb'
+require 'prawn'
 
 class StorehousesController < ApplicationController
   before_filter :authenticate_user!
@@ -90,4 +91,29 @@ class StorehousesController < ApplicationController
     StorehouseRelease.find(params[:id]).apply
     render :action => 'releases'
   end
+
+  def pdf
+    sr = StorehouseRelease.find(params[:id])
+    @place = sr.place.tag
+    @owner = sr.owner.tag
+    @date = sr.created.to_date.to_s
+    @to = sr.to.tag
+   @title="My Article"
+   @blocks= [
+         {:title=>'Block One', :content=>'content one'},
+         {:title=>'Block Two', :content=>'content two'},
+         {:title=>'Block Three', :content=>'content three'},
+         {:title=>'Block Four', :content=>'content four'}]
+   @table_headers = ['Customer'] + ['Total Boxes']
+   
+   prawnto :prawn => {
+      :page_size => 'A4',
+      :left_margin => 50,
+      :right_margin => 50,
+      :top_margin => 24,
+      :bottom_margin => 24},
+      :filename=>"#{@title.gsub(' ','_')}.pdf"
+   render :layout=>false
+  end
+
 end
