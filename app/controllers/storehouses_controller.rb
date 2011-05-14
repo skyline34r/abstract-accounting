@@ -67,6 +67,7 @@ class StorehousesController < ApplicationController
     @owner = release.owner.tag
     @date = release.created.strftime("%x")
     @to = release.to.tag
+    @state = get_status(release.state)
   end
 
   def view_release
@@ -112,6 +113,19 @@ class StorehousesController < ApplicationController
       :bottom_margin => 24},
       :filename=>"shipment_#{@date.gsub("/", "-")}.pdf"
     render :layout=>false
+  end
+
+  def get_status(id)
+    case id
+      when 1
+        return "InWork"
+      when 2
+        return "Canceled"
+      when 3
+        return "Applied"
+      else
+        return "Unknown"
+    end
   end
 
 end
