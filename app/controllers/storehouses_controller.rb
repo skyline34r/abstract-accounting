@@ -98,22 +98,20 @@ class StorehousesController < ApplicationController
     @owner = sr.owner.tag
     @date = sr.created.to_date.to_s
     @to = sr.to.tag
-   @title="My Article"
-   @blocks= [
-         {:title=>'Block One', :content=>'content one'},
-         {:title=>'Block Two', :content=>'content two'},
-         {:title=>'Block Three', :content=>'content three'},
-         {:title=>'Block Four', :content=>'content four'}]
-   @table_headers = ['Customer'] + ['Total Boxes']
+    @header = %w{resource amount unit}
+    @row = []
+    sr.resources.each_with_index do |entry, idx|
+      @row[idx] = [entry.product.resource.tag, entry.amount, entry.product.unit]
+    end
    
-   prawnto :prawn => {
+    prawnto :prawn => {
       :page_size => 'A4',
       :left_margin => 50,
       :right_margin => 50,
       :top_margin => 24,
       :bottom_margin => 24},
-      :filename=>"#{@title.gsub(' ','_')}.pdf"
-   render :layout=>false
+      :filename=>"shipment_#{@date.gsub("/", "-")}.pdf"
+    render :layout=>false
   end
 
 end
