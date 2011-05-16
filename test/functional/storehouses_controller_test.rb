@@ -55,7 +55,7 @@ class StorehousesControllerTest < ActionController::TestCase
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
     assert wb.save, "Can't save waybill with entries"
-    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0),
       :owner => entities(:sergey), :place => places(:orsha),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Product.find_by_resource_id(assets(:sonyvaio)), 3)
@@ -73,7 +73,7 @@ class StorehousesControllerTest < ActionController::TestCase
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
     assert wb.save, "Can't save waybill with entries"
-    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0),
       :owner => entities(:sergey), :place => places(:orsha),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Product.find_by_resource_id(assets(:sonyvaio)), 3)
@@ -89,7 +89,7 @@ class StorehousesControllerTest < ActionController::TestCase
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
     assert wb.save, "Can't save waybill with entries"
-    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0),
       :owner => entities(:sergey), :place => places(:orsha),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Product.find_by_resource_id(assets(:sonyvaio)), 3)
@@ -104,7 +104,7 @@ class StorehousesControllerTest < ActionController::TestCase
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
     assert wb.save, "Can't save waybill with entries"
-    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0),
       :owner => entities(:sergey), :place => places(:orsha),
       :to => Entity.new(:tag => "Test2Entity"))
     sr.add_resource(Product.find_by_resource_id(assets(:sonyvaio)), 3)
