@@ -518,4 +518,58 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal 3, StorehouseRelease.find_all_by_owner_and_place.length,
       "Wrong storehouse releases count"
   end
+
+  test "check state by date" do
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    assert sr.valid?, "StorehouseRelease is not valid"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    assert sr.invalid?, "StorehouseRelease is valid"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :from => "Test Organization Store",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource "roof", "m2", 100
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    assert sr.valid?, "StorehouseRelease is not valid"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    sr.add_resource Product.find_by_resource_tag("roof"), 40
+    assert sr.valid?, "StorehouseRelease is not valid"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    sr.add_resource Product.find_by_resource_tag("roof"), 40
+    assert sr.invalid?, "StorehouseRelease is valid"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
+    sr.add_resource Product.find_by_resource_tag("roof"), 40
+    assert sr.valid?, "StorehouseRelease is not valid"
+  end
 end
