@@ -1,9 +1,9 @@
 require "waybill"
 
 class StorehouseReleaseEntry < WaybillEntry
-  def state(entity)
+  def state(entity, date)
     storage_deal = self.storehouse_deal entity
-    return 0 if storage_deal.nil? or storage_deal.state.nil?
+    return 0 if storage_deal.nil? or storage_deal.state(date).nil?
     start_state = storage_deal.state.amount
     releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
     releases.each do |item|
@@ -24,7 +24,7 @@ class StorehouseReleaseValidator < ActiveModel::Validator
       record.resources.each do |item|
         d = item.storehouse_deal record.owner
         record.errors[:resources] = "invalid resource" if d.nil?
-        record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner) or item.amount <= 0)
+        record.errors[:resources] = "invalid amount" if !d.nil? and (item.amount > item.state(record.owner, record.created) or item.amount <= 0)
       end
     else
       record.errors[:release] = "cann't change release after save" \
