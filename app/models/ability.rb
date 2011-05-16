@@ -16,7 +16,7 @@ class Ability
             if p.chomp(",") == "Storehouse"
               if user.place.nil?
                 alias_action :index, :view, :show, :releases, :list,
-                             :view_release, :to => :storehouse_read
+                             :view_release, :pdf, :to => :storehouse_read
                 can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
               else
                 can :manage, [Storehouse, Waybill, StorehouseRelease]

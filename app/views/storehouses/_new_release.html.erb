@@ -2,6 +2,10 @@
   var lastSelId = "";
   var canSave = true;
 
+  $(function() {
+    $("#storehouse_date").datepicker();
+  });
+
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
      $("#storehouse_release_list").setCell(id, 'release',' ');
@@ -13,11 +17,15 @@
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     dataPage["to"] = $("#storehouse_to").val();
+    dataPage["date"] = $("#storehouse_date").val();
+    var d = new Date($("#storehouse_date").val());
+    d.setUTCHours(12);
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
     }
-    $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() + entries});
+    $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() +
+                  "&date=" + d.toUTCString() + entries});
   }
   function saveEdittedReleaseRow() {
     if(canSave) $("#storehouse_release_list").saveRow(lastSelId);
@@ -35,6 +43,14 @@ Storehouse release
     <tr align="right">
       <td colspan="2">
         * - required fields
+      </td>
+    </tr>
+    <tr align="left">
+      <td>
+        Date*:
+      </td>
+      <td align="right">
+        <input type="text" id="storehouse_date" value="" size="50"/>
       </td>
     </tr>
     <tr>

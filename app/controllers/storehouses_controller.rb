@@ -28,7 +28,7 @@ class StorehousesController < ApplicationController
   end
 
   def create
-    @release = StorehouseRelease.new(:created => DateTime.now,
+    @release = StorehouseRelease.new(:created => params[:date],
                                      :owner => current_user.entity,
                                      :place => current_user.place)
     if params[:to] != nil and params[:to].length > 0 then
@@ -50,7 +50,7 @@ class StorehousesController < ApplicationController
   end
 
   def list
-    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag']
+    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag', 'state']
     @releases = StorehouseRelease.find_all_by_owner_and_place(current_user.entity,
                                          current_user.place).paginate(
       :page     => params[:page],
@@ -67,6 +67,7 @@ class StorehousesController < ApplicationController
     @owner = release.owner.tag
     @date = release.created.strftime("%x")
     @to = release.to.tag
+    @state = get_status(release.state)
   end
 
   def view_release
@@ -112,6 +113,19 @@ class StorehousesController < ApplicationController
       :bottom_margin => 24},
       :filename=>"shipment_#{@date.gsub("/", "-")}.pdf"
     render :layout=>false
+  end
+
+  def get_status(id)
+    case id
+      when 1
+        return "InWork"
+      when 2
+        return "Canceled"
+      when 3
+        return "Applied"
+      else
+        return "Unknown"
+    end
   end
 
 end

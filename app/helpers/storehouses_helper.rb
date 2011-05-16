@@ -95,6 +95,7 @@ module StorehousesHelper
         if(dataPage != null) {
           storeHouseData = dataPage["dataGrid"];
           $("#storehouse_to").val(dataPage["to"]);
+          $("#storehouse_date").val(dataPage["date"]);
           dataPage = null;
         }
       }'.to_json_var,
@@ -127,15 +128,28 @@ module StorehousesHelper
       :url => '/storehouses/releases/list',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'owner', 'to', 'place'],
+      :colNames => ['date', 'owner', 'to', 'place', 'status'],
       :colModel => [
-        { :name => 'date',  :index => 'date', :width => 200,
+        { :name => 'date',   :index => 'date',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'owner',  :index => 'owner',   :width => 200 },
-        { :name => 'to',  :index => 'to',   :width => 200 },
-        { :name => 'place',  :index => 'place',   :width => 200 }
+        { :name => 'owner',  :index => 'owner',  :width => 200 },
+        { :name => 'to',     :index => 'to',     :width => 200 },
+        { :name => 'place',  :index => 'place',  :width => 200 },
+        { :name => 'status', :index => 'status', :width => 100, :hidden => true,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           switch(cellvalue) {
+                             case 1:
+                               return "InWork";
+                             case 2:
+                               return "Canceled";
+                             case 3:
+                               return "Applied";
+                             default:
+                               return "Unknown";
+                           }
+                         }'.to_json_var },
       ],
       :pager => '#releases_pager',
       :rowNum => 10,
@@ -146,7 +160,7 @@ module StorehousesHelper
       :onSelectRow => 'function(cell)
       {
         $("#view_release").removeAttr("disabled");
-      }'.to_json_var
+      }'.to_json_var        
     }]
 
     jqgrid_api 'releases_list', grid, options
