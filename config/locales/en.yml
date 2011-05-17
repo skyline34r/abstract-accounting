@@ -1,4 +1,5 @@
 en:
+  reqFields: required fields
   menu:
     account: Account
     logout: Logout
@@ -33,3 +34,14 @@ en:
       resource: Resource
       amount: Amount
       unit: Unit
+    date: Date
+    organization: From
+    vatin: Vatin
+    entry: Entries
+    btn_save: Save
+    entryList:
+      resource: Resource
+      amount: Amount
+      unit: Unit
+      btn_add: Add
+      btn_del: Del

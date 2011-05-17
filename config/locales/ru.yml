@@ -1,4 +1,5 @@
 ru:
+  reqFields: обязательные поля
   menu:
     account: Учётная запись
     logout: Выход
@@ -33,3 +34,14 @@ ru:
       resource: Ресурс
       amount: Количество
       unit: Единица
+    date: Дата
+    organization: От
+    vatin: ИНН
+    entry: Позиции
+    btn_save: Сохранить
+    entryList:
+      resource: Ресурс
+      amount: Количество
+      unit: Единица
+      btn_add: Добавить
+      btn_del: Удалить
