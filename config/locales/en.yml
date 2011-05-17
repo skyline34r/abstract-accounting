@@ -1,5 +1,21 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  menu:
+    account: Account
+    logout: Logout
+    manage: Manage
+    place: Place
+    entity: Entity
+    resource: Resource
+    chart: Chart
+    quote: Quote
+    process: Process
+    deal: Deal
+    fact: Fact
+    report: Report
+    generalLedger: GeneralLedger
+    balance: Balance
+    transcript: Transcript
+    state: State
+    storehouse: Storehouse
+    waybill: Waybills
+    release: Releases

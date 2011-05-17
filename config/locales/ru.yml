@@ -1,0 +1,21 @@
+ru:
+  menu:
+    account: Учётная запись
+    logout: Выход
+    manage: Состояние
+    place: Места
+    entity: Лица
+    resource: Ресурсы
+    chart: План счетов
+    quote: Курс
+    process: Операции
+    deal: Сделки
+    fact: Переводы
+    report: Отчеты
+    generalLedger: Главная книга
+    balance: Счета
+    transcript: Выписки
+    state: Состояние
+    storehouse: Склад
+    waybill: Накладные
+    release: Выдачи
