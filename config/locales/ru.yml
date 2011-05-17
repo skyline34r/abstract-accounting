@@ -23,6 +23,7 @@ ru:
   title:
     abstract: Абстрактный учет
     waybill: Накладные
+    storehouse: Склад
   waybill:
     btn_add: Создать
     tree:
@@ -45,3 +46,11 @@ ru:
       unit: Единица
       btn_add: Добавить
       btn_del: Удалить
+  storehouse:
+    btn_new_release: Новая выдача
+    btn_new_waybill: Новая накладная
+    storehouseList:
+      place: Объект
+      resource: Ресурс
+      amount: Количество
+      unit: Единица

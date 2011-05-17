@@ -23,6 +23,7 @@ en:
   title:
     abstract: Abstract
     waybill: Waybills
+    storehouse: Storehouse
   waybill:
     btn_add: New
     tree:
@@ -45,3 +46,11 @@ en:
       unit: Unit
       btn_add: Add
       btn_del: Del
+  storehouse:
+    btn_new_release: New release
+    btn_new_waybill: New waybill
+    storehouseList:
+      place: Place
+      resource: Resource
+      amount: Amount
+      unit: Unit

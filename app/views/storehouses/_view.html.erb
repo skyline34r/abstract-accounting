@@ -1,4 +1,3 @@
-Storehouse
 <%= raw(storehouse_jqgrid) %>
 <table>
   <tr>
@@ -9,9 +8,9 @@ Storehouse
   </tr>
   <tr>
     <td align="right">
-      <input type="button" id="add_release" value="add release"
+      <input type="button" id="add_release" value="<%=t 'storehouse.btn_new_release'%>"
              onclick="location.hash = '#storehouses/releases/new';" />
-      <input type="button" id="add_waybill" value="add waybill"
+      <input type="button" id="add_waybill" value="<%=t 'storehouse.btn_new_waybill'%>"
              onclick="location.hash = '#waybills/new';" />
     </td>
   </tr>

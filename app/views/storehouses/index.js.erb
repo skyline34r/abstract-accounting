@@ -1,6 +1,6 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.storehouse'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/view') %>");
-document.title = "Abstract::Storehouse";
 if(location.hash != "#storehouses") {
   cancelRequest = true;
   location.hash = "#storehouses";
