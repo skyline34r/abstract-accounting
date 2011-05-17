@@ -3,7 +3,7 @@ ru:
     account: Учётная запись
     logout: Выход
     manage: Состояние
-    place: Места
+    place: Объекты
     entity: Лица
     resource: Ресурсы
     chart: План счетов
@@ -19,3 +19,17 @@ ru:
     storehouse: Склад
     waybill: Накладные
     release: Выдачи
+  title:
+    abstract: Абстрактный учет
+    waybill: Накладные
+  waybill:
+    btn_add: Создать
+    tree:
+      date: Дата
+      organization: От
+      owner: Кому
+      vatin: ИНН
+      place: Объект
+      resource: Ресурс
+      amount: Количество
+      unit: Единица

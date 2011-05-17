@@ -78,7 +78,9 @@ module WaybillsHelper
       :url => '/waybills/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'organization', 'owner', 'vatin', 'place'],
+      :colNames => [t('waybill.tree.date'), t('waybill.tree.organization'),
+                    t('waybill.tree.owner'), t('waybill.tree.vatin'),
+                    t('waybill.tree.place')],
       :colModel => [
         { :name => 'date', :index => 'date', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -98,7 +100,8 @@ module WaybillsHelper
       :subGrid => true,
       :subGridUrl => '/waybills/',
       :subGridModel => [
-        { :name => ['resource', 'amount', 'unit'],
+        { :name => [t('waybill.tree.resource'), t('waybill.tree.amount'),
+                    t('waybill.tree.unit')],
           :width => [300, 100, 100],
           :params => [
             { :name => 'resource', :index => 'resource' },

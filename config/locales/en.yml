@@ -19,3 +19,17 @@ en:
     storehouse: Storehouse
     waybill: Waybills
     release: Releases
+  title:
+    abstract: Abstract
+    waybill: Waybills
+  waybill:
+    btn_add: New
+    tree:
+      date: Date
+      organization: From
+      owner: To
+      vatin: Vatin
+      place: Place
+      resource: Resource
+      amount: Amount
+      unit: Unit

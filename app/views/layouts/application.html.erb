@@ -7,7 +7,7 @@
   <%= stylesheet_link_tag 'main_menu.css' %>
 
   <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'locale/grid.locale-en.js' %>
+  <%= javascript_include_tag 'locale/grid.locale-' + I18n.locale.to_s + '.js' %>
   <%= javascript_include_tag 'jqgrid/grid.base.js' %>
   <%= javascript_include_tag 'jqgrid/grid.common.js' %>
   <%= javascript_include_tag 'jqgrid/grid.custom.js' %>
