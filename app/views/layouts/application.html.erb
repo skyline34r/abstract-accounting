@@ -5,9 +5,13 @@
   <%= stylesheet_link_tag 'jquery/ui-lightness/jquery-ui.css' %>
   <%= stylesheet_link_tag 'jquery/ui.jqgrid.css' %>
   <%= stylesheet_link_tag 'main_menu.css' %>
-
+  
   <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'locale/grid.locale-en.js' %>
+  <%= javascript_include_tag 'locale/grid.locale-' + I18n.locale.to_s + '.js' %>
+  <% if I18n.locale.to_s != 'en' %>
+  <%= javascript_include_tag 'locale/ui.datepicker-' + I18n.locale.to_s + '.js' %>
+  <% end %>
+
   <%= javascript_include_tag 'jqgrid/grid.base.js' %>
   <%= javascript_include_tag 'jqgrid/grid.common.js' %>
   <%= javascript_include_tag 'jqgrid/grid.custom.js' %>
@@ -29,10 +33,10 @@
 
   <ul id="nav">
     <% if user_signed_in? %>
-      <li><a href="#">Account</a>
+      <li><a href="#"><%=t 'menu.account'%></a>
         <ul>
           <li>
-              <%= link_to('Logout', destroy_user_session_path) %>
+              <%= link_to(t('menu.logout'), destroy_user_session_path) %>
           </li>
         </ul>
       </li>
@@ -41,31 +45,31 @@
         (can?(:read, Entity) or can?(:read, [Asset, Money]) or
         can?(:read, Chart) or can?(:read, Quote) or can?(:read, Place)) %>
       <li>
-        <a href="#">Manage</a>
+        <a href="#"><%=t 'menu.manage'%></a>
         <ul>
           <% if can? :read, Place %>
             <li>
-              <a href="#places" class="page_link">Place</a>
+              <a href="#places" class="page_link"><%=t 'menu.place'%></a>
             </li>
           <% end %>
           <% if can? :read, Entity %>
             <li>
-              <a href="#entities" class="page_link">Entity</a>
+              <a href="#entities" class="page_link"><%=t 'menu.entity'%></a>
             </li>
           <% end %>
           <% if can? :read, Asset, Money %>
             <li>
-              <a href="#resources" class="page_link">Resource</a>
+              <a href="#resources" class="page_link"><%=t 'menu.resource'%></a>
             </li>
           <% end %>
           <% if can? :read, Chart %>
             <li>
-              <a href="#charts" class="page_link">Chart</a>
+              <a href="#charts" class="page_link"><%=t 'menu.chart'%></a>
             </li>
           <% end %>
           <% if can? :read, Quote %>
             <li>
-              <a href="#quotes" class="page_link">Quote</a>
+              <a href="#quotes" class="page_link"><%=t 'menu.quote'%></a>
             </li>
           <% end %>
         </ul>
@@ -74,16 +78,16 @@
     <% if !current_user.nil? and
         (can?(:read, Deal) or can?(:manage, Fact)) %>
       <li>
-        <a href="#">Process</a>
+        <a href="#"><%=t 'menu.process'%></a>
         <ul>
           <% if can?(:read, Deal) %>
             <li>
-              <a href="#deals" class="page_link">Deal</a>
+              <a href="#deals" class="page_link"><%=t 'menu.deal'%></a>
             </li>
           <% end %>
           <% if can?(:manage, Fact) %>
             <li>
-              <a href="#facts" class="page_link">Fact</a>
+              <a href="#facts" class="page_link"><%=t 'menu.fact'%></a>
             </li>
           <% end %>
         </ul>
@@ -93,21 +97,21 @@
         (can?(:manage, GeneralLedger) or can?(:manage, Balance) or
          can?(:manage, Transcript)) %>
       <li>
-        <a href="#">Report</a>
+        <a href="#"><%=t 'menu.report'%></a>
         <ul>
           <% if can? :manage, GeneralLedger %>
             <li>
-              <a href="#general_ledgers" class="page_link">GeneralLedger</a>
+              <a href="#general_ledgers" class="page_link"><%=t 'menu.generalLedger'%></a>
             </li>
           <% end %>
           <% if can? :manage, Balance %>
             <li>
-              <a href="#balances" class="page_link">Balance</a>
+              <a href="#balances" class="page_link"><%=t 'menu.balance'%></a>
             </li>
           <% end %>
           <% if can? :manage, Transcript %>
             <li>
-              <a href="#transcripts" class="page_link">Transcript</a>
+              <a href="#transcripts" class="page_link"><%=t 'menu.transcript'%></a>
             </li>
           <% end %>
         </ul>
@@ -117,21 +121,21 @@
         (can?(:view, Storehouse) or can?(:view, Waybill) or
          can?(:list, StorehouseRelease)) %>
       <li>
-        <a href="#">Storehouse</a>
+        <a href="#"><%=t 'menu.storehouse'%></a>
         <ul>
           <% if can?(:view, Storehouse) %>
             <li>
-              <a href="#storehouses" class="page_link">State</a>
+              <a href="#storehouses" class="page_link"><%=t 'menu.state'%></a>
             </li>
           <% end %>
           <% if can?(:view, Waybill) %>
             <li>
-              <a href="#waybills" class="page_link">Waybills</a>
+              <a href="#waybills" class="page_link"><%=t 'menu.waybill'%></a>
             </li>
           <% end %>
           <% if can?(:list, StorehouseRelease) %>
             <li>
-              <a href="#storehouses/releases" class="page_link">Releases</a>
+              <a href="#storehouses/releases" class="page_link"><%=t 'menu.release'%></a>
             </li>
           <% end %>
         </ul>

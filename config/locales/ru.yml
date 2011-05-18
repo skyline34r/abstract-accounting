@@ -1,0 +1,56 @@
+ru:
+  reqFields: обязательные поля
+  menu:
+    account: Учётная запись
+    logout: Выход
+    manage: Состояние
+    place: Объекты
+    entity: Лица
+    resource: Ресурсы
+    chart: План счетов
+    quote: Курс
+    process: Операции
+    deal: Сделки
+    fact: Переводы
+    report: Отчеты
+    generalLedger: Главная книга
+    balance: Счета
+    transcript: Выписки
+    state: Состояние
+    storehouse: Склад
+    waybill: Накладные
+    release: Выдачи
+  title:
+    abstract: Абстрактный учет
+    waybill: Накладные
+    storehouse: Склад
+  waybill:
+    btn_add: Создать
+    tree:
+      date: Дата
+      organization: От
+      owner: Кому
+      vatin: ИНН
+      place: Объект
+      resource: Ресурс
+      amount: Количество
+      unit: Единица
+    date: Дата
+    organization: От
+    vatin: ИНН
+    entry: Позиции
+    btn_save: Сохранить
+    entryList:
+      resource: Ресурс
+      amount: Количество
+      unit: Единица
+      btn_add: Добавить
+      btn_del: Удалить
+  storehouse:
+    btn_new_release: Новая выдача
+    btn_new_waybill: Новая накладная
+    storehouseList:
+      place: Объект
+      resource: Ресурс
+      amount: Количество
+      unit: Единица

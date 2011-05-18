@@ -1,5 +1,5 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.waybill'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'waybills/form_actions') %>");
-document.title = "Abstract::Waybills";
 if(dataPage != null) {
   loadWaybillElements();
   dataPage = null;

@@ -1,5 +1,56 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  reqFields: required fields
+  menu:
+    account: Account
+    logout: Logout
+    manage: Manage
+    place: Place
+    entity: Entity
+    resource: Resource
+    chart: Chart
+    quote: Quote
+    process: Process
+    deal: Deal
+    fact: Fact
+    report: Report
+    generalLedger: GeneralLedger
+    balance: Balance
+    transcript: Transcript
+    state: State
+    storehouse: Storehouse
+    waybill: Waybills
+    release: Releases
+  title:
+    abstract: Abstract
+    waybill: Waybills
+    storehouse: Storehouse
+  waybill:
+    btn_add: New
+    tree:
+      date: Date
+      organization: From
+      owner: To
+      vatin: Vatin
+      place: Place
+      resource: Resource
+      amount: Amount
+      unit: Unit
+    date: Date
+    organization: From
+    vatin: Vatin
+    entry: Entries
+    btn_save: Save
+    entryList:
+      resource: Resource
+      amount: Amount
+      unit: Unit
+      btn_add: Add
+      btn_del: Del
+  storehouse:
+    btn_new_release: New release
+    btn_new_waybill: New waybill
+    storehouseList:
+      place: Place
+      resource: Resource
+      amount: Amount
+      unit: Unit

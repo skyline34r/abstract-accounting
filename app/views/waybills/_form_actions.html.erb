@@ -5,7 +5,7 @@
   var uin;
 
   $(function() {
-    $("#waybill_date").datepicker();
+    $("#waybill_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   });
 
   function sendWaybill() {
@@ -60,12 +60,12 @@
   <tbody>
     <tr align="right">
       <td colspan="2">
-        * - required fields
+        * - <%=t 'reqFields'%>
       </td>
     </tr>
     <tr align="left">
       <td>
-        Date*:
+        <%=t 'waybill.date'%>*:
       </td>
       <td align="right">
         <input type="text" id="waybill_date" value="" size="35"/>
@@ -73,7 +73,7 @@
     </tr>
     <tr align="left">
       <td>
-        Organization*:
+        <%=t 'waybill.organization'%>*:
       </td>
       <td align="right">
         <input type="text" id="waybill_organization" value="" size="35"/>
@@ -81,7 +81,7 @@
     </tr>
     <tr align="left">
       <td>
-        Vatin:
+        <%=t 'waybill.vatin'%>:
       </td>
       <td align="right">
         <input type="text" id="waybill_vatin" value="" size="35"/>
@@ -89,7 +89,7 @@
     </tr>
     <tr align="left">
       <td colspan="2">
-        Entry*:
+        <%=t 'waybill.entry'%>*:
       </td>
     </tr>
     <tr>
@@ -100,7 +100,8 @@
     </tr>
     <tr align="right">
       <td colspan="2" style="width: 45px">
-        <%= f.submit "save", :id => "save_waybill", :onclick => "sendWaybill();" %>
+        <%= f.submit t('waybill.btn_save'), :id => "save_waybill",
+                                        :onclick => "sendWaybill();" %>
         <%= f.hidden_field :created, :id => "hide_waybill_date" %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
         <%= f.hidden_field :from, :id => "hide_waybill_from" %>

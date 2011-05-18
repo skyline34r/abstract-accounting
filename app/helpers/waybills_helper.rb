@@ -8,7 +8,9 @@ module WaybillsHelper
 
     grid = [{
       :datatype => 'local',
-      :colNames => ['resource*', 'amount*', 'unit*'],
+      :colNames => [t('waybill.entryList.resource') + '*',
+                    t('waybill.entryList.amount') + '*',
+                    t('waybill.entryList.unit') + '*'],
       :colModel => [ { :name => 'resource', :index => 'resource', :editable => true,
                        :width => 300 },
                      { :name => 'amount',   :index => 'amount',   :editable => true,
@@ -43,17 +45,17 @@ module WaybillsHelper
                                            :search => false, :view => false},
                                           {}, {}, {}]
     
-    pager_button_add = [:navButtonAdd, '#waybills_pager', {:caption => 'Add',
-      :buttonicon => 'ui-icon-plus', :onClickButton =>
-      'function() {
+    pager_button_add = [:navButtonAdd, '#waybills_pager', {
+      :caption => t('waybill.entryList.btn_add'), :buttonicon => 'ui-icon-plus',
+      :onClickButton => 'function() {
         $("#waybills_list").addRowData(uin, { resource: ""
                                             , amount: ""
                                             , unit: "" });
         uin++;
       }'.to_json_var }]
-    pager_button_del = [:navButtonAdd, '#waybills_pager', {:caption => 'Del',
-      :buttonicon => 'ui-icon-trash', :onClickButton =>
-      'function() {
+    pager_button_del = [:navButtonAdd, '#waybills_pager', {
+      :caption => t('waybill.entryList.btn_del'), :buttonicon => 'ui-icon-trash',
+      :onClickButton => 'function() {
         if($("#waybills_list").getGridParam("selrow") != null) {
           $("#waybills_list").delRowData($("#waybills_list").getGridParam("selrow"));
           var data = $("#waybills_list").getRowData();
@@ -78,7 +80,9 @@ module WaybillsHelper
       :url => '/waybills/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'organization', 'owner', 'vatin', 'place'],
+      :colNames => [t('waybill.tree.date'), t('waybill.tree.organization'),
+                    t('waybill.tree.owner'), t('waybill.tree.vatin'),
+                    t('waybill.tree.place')],
       :colModel => [
         { :name => 'date', :index => 'date', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -98,7 +102,8 @@ module WaybillsHelper
       :subGrid => true,
       :subGridUrl => '/waybills/',
       :subGridModel => [
-        { :name => ['resource', 'amount', 'unit'],
+        { :name => [t('waybill.tree.resource'), t('waybill.tree.amount'),
+                    t('waybill.tree.unit')],
           :width => [300, 100, 100],
           :params => [
             { :name => 'resource', :index => 'resource' },
