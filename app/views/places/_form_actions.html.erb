@@ -1,13 +1,14 @@
+<td></td>
 <td>
-  <input name="cancel" type="button" value="cancel"
+  <input name="cancel" type="button" value="<%=t 'place.btn_cancel'%>"
     onclick="onCancelPlace();"/>
-  <input name="reset" type="button" value="reset"
+  <input name="reset" type="button" value="<%=t 'place.btn_reset'%>"
     onclick="onResetPlace();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@place, :remote => true) do |f| %>
-  <%= f.submit "save", :id => "save_place", :disabled => "true",
-                       :onclick => "sendTagPlace();" %>
+  <%= f.submit t('place.btn_save'), :id => "save_place", :disabled => "true",
+                                    :onclick => "sendTagPlace();" %>
   <%= f.hidden_field :tag, :id => "hide_place_tag", :value => @place.tag %>
   <% end %>
 </td>

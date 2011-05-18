@@ -56,6 +56,8 @@ ru:
     release: Выдачи
     new: Создать
     show: Просмотр
+    place: Объекты
+    edit: Редактировать
   waybill:
     btn_add: Создать
     tree:
@@ -116,3 +118,10 @@ ru:
       resource: Ресурс
       amount: Количество
       unit: Единица
+  place:
+    tag: Название
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить

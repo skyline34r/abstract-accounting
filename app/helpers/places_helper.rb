@@ -10,7 +10,7 @@ module PlacesHelper
       :url => '/places/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag'],
+      :colNames => [t('place.tag')],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800 }
       ],
