@@ -3,7 +3,7 @@
   var canSave = true;
 
   $(function() {
-    $("#storehouse_date").datepicker();
+    $("#storehouse_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   });
 
   function check_storehouse_waybill(id) {
@@ -33,7 +33,6 @@
 </script>
 
 <%= raw(storehouse_release_jqgrid) %>
-Storehouse release
 
 <%= form_for(:release, :remote => true) do |f| %>
 <%= f.error_messages %>
@@ -42,12 +41,12 @@ Storehouse release
   <tbody>
     <tr align="right">
       <td colspan="2">
-        * - required fields
+        * - <%=t 'reqFields'%>
       </td>
     </tr>
     <tr align="left">
       <td>
-        Date*:
+        <%=t 'storehouse.date'%>*:
       </td>
       <td align="right">
         <input type="text" id="storehouse_date" value="" size="50"/>
@@ -55,7 +54,7 @@ Storehouse release
     </tr>
     <tr>
       <td align="left">
-        To*:
+        <%=t 'storehouse.to'%>*:
       </td>
       <td align="right">
         <input type="text" id="storehouse_to" value="" size="50"/>
@@ -69,7 +68,7 @@ Storehouse release
     </tr>
     <tr>
       <td colspan="2" align="right">
-        <input type="button" value="save" onclick="sendRelease();"/>
+        <input type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendRelease();"/>
       </td>
     </tr>
   </tbody>

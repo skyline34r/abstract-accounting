@@ -25,6 +25,7 @@ en:
     waybill: Waybills
     storehouse: Storehouse
     release: Releases
+    new: New
   waybill:
     btn_add: New
     tree:
@@ -69,3 +70,11 @@ en:
       inwork: In work
       canceled: Canceled
       applied: Applied
+    date: Date
+    to: To
+    btn_save: Save
+    releaseNewList:
+      resource: Resource
+      amount: Amount
+      release: Release
+      unit: Unit

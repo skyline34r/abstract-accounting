@@ -25,6 +25,7 @@ ru:
     waybill: Накладные
     storehouse: Склад
     release: Выдачи
+    new: Создать
   waybill:
     btn_add: Создать
     tree:
@@ -69,3 +70,11 @@ ru:
       inwork: В работе
       canceled: Отменено
       applied: Принято
+    date: Дата
+    to: Кому
+    btn_save: Сохранить
+    releaseNewList:
+      resource: Ресурс
+      amount: Количество
+      release: Выдача
+      unit: Единица

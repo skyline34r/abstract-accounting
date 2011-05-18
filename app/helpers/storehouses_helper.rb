@@ -41,7 +41,10 @@ module StorehousesHelper
       :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['', 'resource', 'amount', 'release', 'unit'],
+      :colNames => ['', t('storehouse.releaseNewList.resource'),
+                    t('storehouse.releaseNewList.amount'),
+                    t('storehouse.releaseNewList.release'),
+                    t('storehouse.releaseNewList.unit')],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
           :formatter => 'function(cellvalue, options, rowObject) {
