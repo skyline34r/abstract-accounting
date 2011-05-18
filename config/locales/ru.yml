@@ -1,4 +1,33 @@
 ru:
+  activerecord:
+    models:
+      waybill: накладная
+      storehouse_release: список выдачи
+    attributes:
+      waybill:
+        resources: Ресурсы
+        created: Дата
+      storehouse_release:
+        resources: Ресурсы
+        created: Дата
+        to_id: Кому
+    errors:
+      template:
+        header:
+          one:   "%{model}: сохранение не произведено из-за 1 ошибки"
+          other: "%{model}: сохранение не произведено из-за %{count} ошибок"
+        body:    "Следующие поля не верны:"
+      models:
+        waybill:
+          attributes:
+            created:
+              blank: "должна быть введена"
+        storehouse_release:
+          attributes:
+            created:
+              blank: "должна быть введена"
+            to_id:
+              blank: "не указано"
   reqFields: обязательные поля
   menu:
     account: Учётная запись
