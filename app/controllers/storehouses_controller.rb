@@ -118,13 +118,13 @@ class StorehousesController < ApplicationController
   def get_status(id)
     case id
       when 1
-        return "InWork"
+        return t('storehouse.status.inwork')
       when 2
-        return "Canceled"
+        return t('storehouse.status.canceled')
       when 3
-        return "Applied"
+        return t('storehouse.status.applied')
       else
-        return "Unknown"
+        return t('storehouse.status.unknown')
     end
   end
 

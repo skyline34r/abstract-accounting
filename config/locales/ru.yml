@@ -26,6 +26,7 @@ ru:
     storehouse: Склад
     release: Выдачи
     new: Создать
+    show: Просмотр
   waybill:
     btn_add: Создать
     tree:
@@ -77,4 +78,12 @@ ru:
       resource: Ресурс
       amount: Количество
       release: Выдача
+      unit: Единица
+    btn_print: Печать
+    btn_back: Назад
+    btn_cancel: Отменить
+    btn_apply: Подтвердить
+    entryList:
+      resource: Ресурс
+      amount: Количество
       unit: Единица

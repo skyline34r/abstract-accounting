@@ -26,6 +26,7 @@ en:
     storehouse: Storehouse
     release: Releases
     new: New
+    show: Show
   waybill:
     btn_add: New
     tree:
@@ -77,4 +78,12 @@ en:
       resource: Resource
       amount: Amount
       release: Release
+      unit: Unit
+    btn_print: Print
+    btn_back: Back
+    btn_cancel: Cancel
+    btn_apply: Apply
+    entryList:
+      resource: Resource
+      amount: Amount
       unit: Unit

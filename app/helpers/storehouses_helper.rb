@@ -177,11 +177,13 @@ module StorehousesHelper
       :url => '/storehouses/view_release?id=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'amount', 'unit'],
+      :colNames => [ t('storehouse.entryList.resource'),
+                     t('storehouse.entryList.amount'),
+                     t('storehouse.entryList.unit') ],
       :colModel => [
         { :name => 'resource', :index => 'resource', :width => 450 },
-        { :name => 'amount',   :index => 'amount',   :width => 300 },
-        { :name => 'unit',     :index => 'unit',     :width => 50 }
+        { :name => 'amount',   :index => 'amount',   :width => 295 },
+        { :name => 'unit',     :index => 'unit',     :width => 55 }
       ],
       :pager => '#release_view_pager',
       :rowNum => 10,

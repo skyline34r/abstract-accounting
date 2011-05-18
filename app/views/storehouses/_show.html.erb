@@ -3,12 +3,12 @@
   <tbody>
     <tr>
       <td align="right" colspan="2">
-        * - required fields
+        * - <%=t 'reqFields'%>
       </td>
     </tr>
     <tr>
       <td align="left">
-        Place*:
+        <%=t 'storehouse.releaseList.place'%>*:
       </td>
       <td align="right">
         <input type="text" size="50" disabled="true" value="<%= @place %>"/>
@@ -16,7 +16,7 @@
     </tr>
     <tr>
       <td align="left">
-        Owner*:
+        <%=t 'storehouse.releaseList.owner'%>*:
       </td>
       <td align="right">
         <input type="text" size="50" disabled="true" value="<%= @owner %>"/>
@@ -24,7 +24,7 @@
     </tr>
     <tr>
       <td align="left">
-        Date*:
+        <%=t 'storehouse.releaseList.date'%>*:
       </td>
       <td align="right">
         <input type="text" size="50" disabled="true" value="<%= @date %>"/>
@@ -32,7 +32,7 @@
     </tr>
     <tr>
       <td align="left">
-        To*:
+        <%=t 'storehouse.releaseList.to'%>*:
       </td>
       <td align="right">
         <input type="text" size="50" disabled="true" value="<%= @to %>"/>
@@ -40,7 +40,7 @@
     </tr>
     <tr id="release_state" style="display: none">
       <td align="left">
-        State:
+        <%=t 'storehouse.releaseList.status'%>*:
       </td>
       <td align="right">
         <input type="text" size="50" disabled="true" value="<%= @state %>"/>
@@ -54,14 +54,16 @@
     </tr>
     <tr>
       <td align="left">
-        <input type="button" value="Print" onclick="window.location.href='storehouses/pdf?id=' +
-                                                      location.hash.substr(30)" />
+        <input type="button" value="<%=t 'storehouse.btn_print'%>"
+               onclick="window.location.href='storehouses/pdf?id=' +
+                        location.hash.substr(30)" />
       </td>
       <td align="right">
-        <input type="button" value="back" onclick="location.hash = '#storehouses/releases';"/>
-        <input type="button" value="cancel" id="release_apply"
+        <input type="button" value="<%=t 'storehouse.btn_back'%>"
+               onclick="location.hash = '#storehouses/releases';"/>
+        <input type="button" value="<%=t 'storehouse.btn_cancel'%>" id="release_apply"
                onclick="$.ajax({url: 'storehouses/releases/cancel/' + location.hash.substr(30)});"/>
-        <input type="button" value="apply" id="release_cancel"
+        <input type="button" value="<%=t 'storehouse.btn_apply'%>" id="release_cancel"
                onclick="$.ajax({url: 'storehouses/releases/apply/' + location.hash.substr(30)});"/>
       </td>
     </tr>
