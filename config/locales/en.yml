@@ -24,6 +24,7 @@ en:
     abstract: Abstract
     waybill: Waybills
     storehouse: Storehouse
+    release: Releases
   waybill:
     btn_add: New
     tree:
@@ -54,3 +55,17 @@ en:
       resource: Resource
       amount: Amount
       unit: Unit
+    release:
+      btn_new: New
+      btn_view: View
+    releaseList:
+      date: Date
+      owner: From
+      to: To
+      place: Place
+      status: Status
+    status:
+      unknown: Unknown
+      inwork: In work
+      canceled: Canceled
+      applied: Applied

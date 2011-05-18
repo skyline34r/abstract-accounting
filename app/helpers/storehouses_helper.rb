@@ -131,7 +131,11 @@ module StorehousesHelper
       :url => '/storehouses/releases/list',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'owner', 'to', 'place', 'status'],
+      :colNames => [t('storehouse.releaseList.date'),
+                    t('storehouse.releaseList.owner'),
+                    t('storehouse.releaseList.to'),
+                    t('storehouse.releaseList.place'),
+                    t('storehouse.releaseList.status')],
       :colModel => [
         { :name => 'date',   :index => 'date',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -142,16 +146,7 @@ module StorehousesHelper
         { :name => 'place',  :index => 'place',  :width => 200 },
         { :name => 'status', :index => 'status', :width => 100, :hidden => true,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           switch(cellvalue) {
-                             case 1:
-                               return "InWork";
-                             case 2:
-                               return "Canceled";
-                             case 3:
-                               return "Applied";
-                             default:
-                               return "Unknown";
-                           }
+                           return getReleaseStatus(cellvalue);
                          }'.to_json_var },
       ],
       :pager => '#releases_pager',

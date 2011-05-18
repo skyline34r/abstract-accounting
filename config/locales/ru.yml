@@ -24,6 +24,7 @@ ru:
     abstract: Абстрактный учет
     waybill: Накладные
     storehouse: Склад
+    release: Выдачи
   waybill:
     btn_add: Создать
     tree:
@@ -54,3 +55,17 @@ ru:
       resource: Ресурс
       amount: Количество
       unit: Единица
+    release:
+      btn_new: Создать
+      btn_view: Просмотр
+    releaseList:
+      date: Дата
+      owner: От
+      to: Кому
+      place: Объект
+      status: Статус
+    status:
+      unknown: Неизвестно
+      inwork: В работе
+      canceled: Отменено
+      applied: Принято
