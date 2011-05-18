@@ -55,10 +55,10 @@
 
 <table>
   <tr>
-    <td colspan="2" id="place_errors"></td>
+    <td colspan="3" id="place_errors"></td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td colspan="3">
       <table id="place_list"></table>
       <div id="place_pager"></div>
     </td>
@@ -67,9 +67,11 @@
     <%= render 'places/form_index' %>
   </tr>
   <tr align="left">
-    <td colspan="2">
-      tag:
-      <input id="place_tag" type="text" value="" size="83" disabled="true"
+    <td>
+      <%=t 'place.tag'%>:
+    </td>
+    <td colspan="2" align="right">
+      <input id="place_tag" type="text" value="" size="75" disabled="true"
              onkeypress="$('#save_place').removeAttr('disabled');"/>
     </td>
   </tr>

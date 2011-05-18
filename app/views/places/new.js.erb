@@ -1,3 +1,4 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.place'%> :: <%=t 'title.new'%>";
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'places/index') %>");
 }
