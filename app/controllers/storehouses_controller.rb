@@ -95,11 +95,17 @@ class StorehousesController < ApplicationController
 
   def pdf
     sr = StorehouseRelease.find(params[:id])
+    @tDate = t('storehouse.releaseList.date')
+    @tPlace = t('storehouse.releaseList.place')
+    @tOwner = t('storehouse.releaseList.owner')
+    @tTo = t('storehouse.releaseList.to')
     @place = sr.place.tag
     @owner = sr.owner.tag
     @date = sr.created.to_date.to_s
     @to = sr.to.tag
-    @header = %w{resource amount unit}
+    @header = [t('storehouse.entryList.resource'),
+               t('storehouse.entryList.amount'),
+               t('storehouse.entryList.unit')]
     @row = []
     sr.resources.each_with_index do |entry, idx|
       @row[idx] = [entry.product.resource.tag, entry.amount, entry.product.unit]
