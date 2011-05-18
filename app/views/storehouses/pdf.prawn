@@ -1,10 +1,10 @@
 pdf.font "#{Prawn::BASEDIR}/data/fonts/DejaVuSans.ttf"
 pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width do
   pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width / 2 do
-    pdf.text 'Date'
-    pdf.text 'Place'
-    pdf.text 'Owner'
-    pdf.text 'To'
+    pdf.text @tDate
+    pdf.text @tPlace
+    pdf.text @tOwner
+    pdf.text @tTo
   end
   pdf.bounding_box [pdf.bounds.left + pdf.bounds.width / 2, pdf.bounds.top], :width => pdf.bounds.width / 2 do
     pdf.text @date
@@ -17,7 +17,7 @@ pdf.move_down 10
 pdf.bounding_box [pdf.bounds.left, pdf.cursor], :width => pdf.bounds.width do
   x_width = pdf.bounds.width / 5
   pdf.table [@header] + @row, :header => true, :column_widths => [x_width*3,x_width,x_width] do
-    row(0).style(:font => "Times-Roman", :font_style => :bold, :background_color => 'cccccc')
+    row(0).style(:background_color => 'cccccc')
   end
   pdf.bounding_box [pdf.bounds.left, pdf.cursor], :width => pdf.bounds.width do
     pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width / 3 do

@@ -3,8 +3,21 @@
     location.hash = "#storehouses/releases/show?id=" +
                       $("#releases_list").getGridParam('selrow');
   }
+  function getReleaseStatus(status)
+  {
+    switch(status) {
+      case 1:
+        return "<%= t('storehouse.status.inwork') %>";
+      case 2:
+        return "<%= t('storehouse.status.canceled') %>";
+      case 3:
+        return "<%= t('storehouse.status.applied') %>";
+      default:
+        return "<%= t('storehouse.status.unknown') %>";
+    }
+  }
 </script>
-Releases
+
 <%= raw(releases_jqgrid) %>
 
 <%= form_for(:release, :remote => true) do |f| %>
@@ -20,9 +33,11 @@ Releases
     </tr>
     <tr>
       <td align="right">
-        <input type="button" id="release_new" value="add"
+        <input type="button" id="release_new"
+               value="<%=t 'storehouse.release.btn_new'%>"
                onclick="location.hash = '#storehouses/releases/new';" />
-        <input type="button" id="view_release" value="view" disabled="true"
+        <input type="button" id="view_release"
+               value="<%=t 'storehouse.release.btn_view'%>" disabled="true"
                onclick="viewRelease();"/>
       </td>
     </tr>

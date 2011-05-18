@@ -95,11 +95,17 @@ class StorehousesController < ApplicationController
 
   def pdf
     sr = StorehouseRelease.find(params[:id])
+    @tDate = t('storehouse.releaseList.date')
+    @tPlace = t('storehouse.releaseList.place')
+    @tOwner = t('storehouse.releaseList.owner')
+    @tTo = t('storehouse.releaseList.to')
     @place = sr.place.tag
     @owner = sr.owner.tag
     @date = sr.created.to_date.to_s
     @to = sr.to.tag
-    @header = %w{resource amount unit}
+    @header = [t('storehouse.entryList.resource'),
+               t('storehouse.entryList.amount'),
+               t('storehouse.entryList.unit')]
     @row = []
     sr.resources.each_with_index do |entry, idx|
       @row[idx] = [entry.product.resource.tag, entry.amount, entry.product.unit]
@@ -118,13 +124,13 @@ class StorehousesController < ApplicationController
   def get_status(id)
     case id
       when 1
-        return "InWork"
+        return t('storehouse.status.inwork')
       when 2
-        return "Canceled"
+        return t('storehouse.status.canceled')
       when 3
-        return "Applied"
+        return t('storehouse.status.applied')
       else
-        return "Unknown"
+        return t('storehouse.status.unknown')
     end
   end
 

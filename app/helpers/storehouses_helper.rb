@@ -41,7 +41,10 @@ module StorehousesHelper
       :url => '/storehouses/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['', 'resource', 'amount', 'release', 'unit'],
+      :colNames => ['', t('storehouse.releaseNewList.resource'),
+                    t('storehouse.releaseNewList.amount'),
+                    t('storehouse.releaseNewList.release'),
+                    t('storehouse.releaseNewList.unit')],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -131,7 +134,11 @@ module StorehousesHelper
       :url => '/storehouses/releases/list',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'owner', 'to', 'place', 'status'],
+      :colNames => [t('storehouse.releaseList.date'),
+                    t('storehouse.releaseList.owner'),
+                    t('storehouse.releaseList.to'),
+                    t('storehouse.releaseList.place'),
+                    t('storehouse.releaseList.status')],
       :colModel => [
         { :name => 'date',   :index => 'date',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
@@ -142,16 +149,7 @@ module StorehousesHelper
         { :name => 'place',  :index => 'place',  :width => 200 },
         { :name => 'status', :index => 'status', :width => 100, :hidden => true,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           switch(cellvalue) {
-                             case 1:
-                               return "InWork";
-                             case 2:
-                               return "Canceled";
-                             case 3:
-                               return "Applied";
-                             default:
-                               return "Unknown";
-                           }
+                           return getReleaseStatus(cellvalue);
                          }'.to_json_var },
       ],
       :pager => '#releases_pager',
@@ -179,11 +177,13 @@ module StorehousesHelper
       :url => '/storehouses/view_release?id=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'amount', 'unit'],
+      :colNames => [ t('storehouse.entryList.resource'),
+                     t('storehouse.entryList.amount'),
+                     t('storehouse.entryList.unit') ],
       :colModel => [
         { :name => 'resource', :index => 'resource', :width => 450 },
-        { :name => 'amount',   :index => 'amount',   :width => 300 },
-        { :name => 'unit',     :index => 'unit',     :width => 50 }
+        { :name => 'amount',   :index => 'amount',   :width => 295 },
+        { :name => 'unit',     :index => 'unit',     :width => 55 }
       ],
       :pager => '#release_view_pager',
       :rowNum => 10,
