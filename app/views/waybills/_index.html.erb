@@ -1,15 +1,15 @@
 <%= raw(waybills_jqgrid_tree) %>
 <table>
   <tr>
-    <td>
-      <table id=waybills_tree></table>
-      <div id=waybills_tree_pager></div>
-    </td>
-  </tr>
-  <tr>
     <td align="right">
       <input type="button" id="waybills_add" value="<%=t 'waybill.btn_add'%>"
              onclick="location.hash = '#waybills/new';" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table id=waybills_tree></table>
+      <div id=waybills_tree_pager></div>
     </td>
   </tr>
 </table>

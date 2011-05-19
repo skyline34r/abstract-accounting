@@ -26,35 +26,37 @@
 <table>
   <tbody>
     <tr>
-      <td align="right">
-        <a href="#storehouses/releases" onclick="filterGrid(-1)" style="margin-left:5px;margin-right:5px">
-          <%= t 'storehouse.release.all' %>
-        </a>
-        <a href="#storehouses/releases" onclick="filterGrid(1)" style="margin-left:5px;margin-right:5px">
-          <%= t 'storehouse.release.inwork' %>
-        </a>
-        <a href="#storehouses/releases" onclick="filterGrid(3)" style="margin-left:5px;margin-right:5px">
-          <%= t 'storehouse.release.closed' %>
-        </a>
-        <a href="#storehouses/releases" onclick="filterGrid(2)" style="margin-left:5px;margin-right:5px">
-          <%= t 'storehouse.release.applied' %>
-        </a>
+      <td><!-- style="width:80%"-->
+        <div align="left">
+          <a href="#storehouses/releases" onclick="filterGrid(-1)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.release.all' %>
+          </a>
+          <a href="#storehouses/releases" onclick="filterGrid(1)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.release.inwork' %>
+          </a>
+          <a href="#storehouses/releases" onclick="filterGrid(3)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.release.closed' %>
+          </a>
+          <a href="#storehouses/releases" onclick="filterGrid(2)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.release.applied' %>
+          </a>
+        </div>
+      <!--</td>
+      <td align="right">-->
+        <div align="right">
+          <input type="button" id="release_new"
+               value="<%=t 'storehouse.release.btn_new'%>"
+               onclick="location.hash = '#storehouses/releases/new';" />
+          <input type="button" id="view_release"
+               value="<%=t 'storehouse.release.btn_view'%>" disabled="true"
+               onclick="viewRelease();"/>
+        </div>
       </td>
     </tr>
     <tr>
       <td>
         <table id=releases_list></table>
         <div id=releases_pager></div>
-      </td>
-    </tr>
-    <tr>
-      <td align="right">
-        <input type="button" id="release_new"
-               value="<%=t 'storehouse.release.btn_new'%>"
-               onclick="location.hash = '#storehouses/releases/new';" />
-        <input type="button" id="view_release"
-               value="<%=t 'storehouse.release.btn_view'%>" disabled="true"
-               onclick="viewRelease();"/>
       </td>
     </tr>
   </tbody>

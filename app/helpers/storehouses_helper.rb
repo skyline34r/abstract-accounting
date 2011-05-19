@@ -23,11 +23,12 @@ module StorehousesHelper
         { :name => 'unit',     :index => 'unit',     :width => 55 }
       ],
       :pager => '#storehouse_pager',
-      :rowNum => 10,
-      :rowList => [10, 20, 30],
+      :rowNum => 30,
+      :rowList => [30, 50, 100],
       :sortname => 'resource',
       :sortorder => 'asc',
-      :viewrecords => true
+      :viewrecords => true,
+      :height => "450px"
     }]
 
     jqgrid_api 'storehouse_list', grid, options
@@ -155,9 +156,10 @@ module StorehousesHelper
                            return getReleaseStatus(cellvalue);
                          }'.to_json_var },
       ],
+      :rowNum => 30,
+      :rowList => [30, 50, 100],
+      :height => "450px",
       :pager => '#releases_pager',
-      :rowNum => 10,
-      :rowList => [10, 20, 30],
       :sortname => 'date',
       :sortorder => 'asc',
       :viewrecords => true,

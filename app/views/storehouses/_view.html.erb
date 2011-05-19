@@ -1,17 +1,17 @@
 <%= raw(storehouse_jqgrid) %>
 <table>
   <tr>
-    <td>
-      <table id=storehouse_list></table>
-      <div id=storehouse_pager></div>
-    </td>
-  </tr>
-  <tr>
     <td align="right">
       <input type="button" id="add_release" value="<%=t 'storehouse.btn_new_release'%>"
              onclick="location.hash = '#storehouses/releases/new';" />
       <input type="button" id="add_waybill" value="<%=t 'storehouse.btn_new_waybill'%>"
              onclick="location.hash = '#waybills/new';" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table id=storehouse_list></table>
+      <div id=storehouse_pager></div>
     </td>
   </tr>
 </table>
