@@ -69,6 +69,7 @@ module StorehousesHelper
                          }'.to_json_var },
         { :name => 'release',  :index => 'release',   :width => 200, :editable => true,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(cellvalue == " ") cellvalue = "";
                            if(cellvalue == rowObject[3]) {
                              if(storeHouseData[options.rowId] == undefined) {
                                return "";
