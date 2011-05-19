@@ -11,7 +11,8 @@ class StorehousesController < ApplicationController
   end
 
   def view
-    @columns = ['place.tag', 'product.resource.tag', 'amount', 'product.unit']
+    @columns = ['place.tag', 'product.resource.tag', 'real_amount',
+                'amount', 'product.unit']
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place).paginate(
       :page     => params[:page],

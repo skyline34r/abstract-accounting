@@ -12,12 +12,14 @@ module StorehousesHelper
       :mtype => 'GET',
       :colNames => [t('storehouse.storehouseList.place'),
                     t('storehouse.storehouseList.resource'),
+                    t('storehouse.storehouseList.real_amount'),
                     t('storehouse.storehouseList.amount'),
                     t('storehouse.storehouseList.unit')],
       :colModel => [
         { :name => 'place',    :index => 'place',    :width => 250 },
         { :name => 'resource', :index => 'resource', :width => 300 },
-        { :name => 'amount',   :index => 'amount',   :width => 195 },
+        { :name => 'real_amount',   :index => 'real_amount',   :width => 150 },
+        { :name => 'amount',   :index => 'amount',   :width => 100 },
         { :name => 'unit',     :index => 'unit',     :width => 55 }
       ],
       :pager => '#storehouse_pager',

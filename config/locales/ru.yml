@@ -86,6 +86,7 @@ ru:
     storehouseList:
       place: Объект
       resource: Ресурс
+      real_amount: Фактическое кол-во
       amount: Количество
       unit: Единица
     release:

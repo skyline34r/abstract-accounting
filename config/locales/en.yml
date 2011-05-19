@@ -57,6 +57,7 @@ en:
     storehouseList:
       place: Place
       resource: Resource
+      real_amount: Real amount
       amount: Amount
       unit: Unit
     release:

@@ -1,9 +1,10 @@
 require "resource"
 
 class StorehouseEntry
-  attr_reader :owner, :place, :product, :amount
+  attr_reader :owner, :place, :product, :real_amount, :amount
   def initialize(deal, place)
     @amount = 0
+    @real_amount = 0
     @product = nil
     @owner = nil
     @place = place
@@ -11,6 +12,7 @@ class StorehouseEntry
       @owner = deal.entity
       @product = Product.find_by_resource_id deal.give
       @amount = StorehouseEntry.state(deal)
+      @real_amount = deal.state.amount
     end
   end
 
