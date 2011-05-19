@@ -10,3 +10,13 @@ if("<%= can?(:manage, Storehouse) %>" == "true") {
 } else {
   $("#release_new").attr("disabled", "disabled");
 }
+
+function filterGrid(state)
+{
+    var link = '/storehouses/releases/list';
+    if(state != -1) {
+        link += '?state=' + state
+    }
+    $('#releases_list').setGridParam({url: link});
+    $('#releases_list').trigger('reloadGrid');
+}

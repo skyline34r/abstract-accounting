@@ -59,8 +59,16 @@ class StorehousesController < ApplicationController
 
   def list
     @columns = ['created', 'owner.tag', 'to.tag', 'place.tag', 'state']
+    state = nil
+    if params[:state] == "1"
+      state = StorehouseRelease::INWORK
+    elsif params[:state] == "2"
+      state = StorehouseRelease::APPLIED
+    elsif params[:state] == "3"
+      state = StorehouseRelease::CANCELED
+    end
     @releases = StorehouseRelease.find_all_by_owner_and_place_and_state(current_user.entity,
-                                         current_user.place).paginate(
+                                         current_user.place, state).paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
@@ -76,6 +84,7 @@ class StorehousesController < ApplicationController
     @date = release.created.strftime("%x")
     @to = release.to.tag
     @state = get_status(release.state)
+    @disable_btns = (release.state != StorehouseRelease::INWORK)
   end
 
   def view_release

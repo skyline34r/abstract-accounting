@@ -61,6 +61,10 @@ en:
       amount: Expected amount
       unit: Unit
     release:
+      all: All
+      inwork: In work
+      closed: Closed
+      applied: Applied
       btn_new: New
       btn_view: View
     releaseList:

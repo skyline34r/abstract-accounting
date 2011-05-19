@@ -90,6 +90,10 @@ ru:
       amount: Ожидаемое кол-во
       unit: Единица
     release:
+      all: Все
+      inwork: В работе
+      closed: Отмененные
+      applied: Принятые
       btn_new: Создать
       btn_view: Просмотр
     releaseList:

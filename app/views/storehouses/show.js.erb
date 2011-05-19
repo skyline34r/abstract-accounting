@@ -2,12 +2,3 @@ document.title = "<%=t 'title.abstract'%> :: <%=t 'title.storehouse'%>" +
   " :: <%=t 'title.release'%> :: <%=t 'title.show'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/show') %>");
-if("<%= can?(:manage, Storehouse) %>" == "true") {
-  $("#release_apply").removeAttr("disabled");
-  $("#release_cancel").removeAttr("disabled");
-  $("#release_state").css("display","none");
-} else {
-  $("#release_apply").attr("disabled", "disabled");
-  $("#release_cancel").attr("disabled", "disabled");
-  $("#release_state").css("display","table-row");
-}

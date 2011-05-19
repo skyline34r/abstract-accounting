@@ -26,6 +26,22 @@
 <table>
   <tbody>
     <tr>
+      <td align="right">
+        <a href="#storehouses/releases" onclick="filterGrid(-1)" style="margin-left:5px;margin-right:5px">
+          <%= t 'storehouse.release.all' %>
+        </a>
+        <a href="#storehouses/releases" onclick="filterGrid(1)" style="margin-left:5px;margin-right:5px">
+          <%= t 'storehouse.release.inwork' %>
+        </a>
+        <a href="#storehouses/releases" onclick="filterGrid(3)" style="margin-left:5px;margin-right:5px">
+          <%= t 'storehouse.release.closed' %>
+        </a>
+        <a href="#storehouses/releases" onclick="filterGrid(2)" style="margin-left:5px;margin-right:5px">
+          <%= t 'storehouse.release.applied' %>
+        </a>
+      </td>
+    </tr>
+    <tr>
       <td>
         <table id=releases_list></table>
         <div id=releases_pager></div>

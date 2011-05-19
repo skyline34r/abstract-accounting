@@ -38,7 +38,7 @@
         <input type="text" size="50" disabled="true" value="<%= @to %>"/>
       </td>
     </tr>
-    <tr id="release_state" style="display: none">
+    <tr id="release_state">
       <td align="left">
         <%=t 'storehouse.releaseList.status'%>*:
       </td>
@@ -62,9 +62,15 @@
         <input type="button" value="<%=t 'storehouse.btn_back'%>"
                onclick="location.hash = '#storehouses/releases';"/>
         <input type="button" value="<%=t 'storehouse.btn_cancel'%>" id="release_apply"
-               onclick="$.ajax({url: 'storehouses/releases/cancel/' + location.hash.substr(30)});"/>
+               onclick="$.ajax({url: 'storehouses/releases/cancel/' + location.hash.substr(30)});"
+               <% if !can?(:manage, Storehouse) or @disable_btns %>
+                 disabled="disabled"
+               <% end %>/>
         <input type="button" value="<%=t 'storehouse.btn_apply'%>" id="release_cancel"
-               onclick="$.ajax({url: 'storehouses/releases/apply/' + location.hash.substr(30)});"/>
+               onclick="$.ajax({url: 'storehouses/releases/apply/' + location.hash.substr(30)});"
+               <% if !can?(:manage, Storehouse) or @disable_btns %>
+                 disabled="disabled"
+               <% end %>/>
       </td>
     </tr>
   </tbody>
