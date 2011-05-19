@@ -16,10 +16,10 @@ module StorehousesHelper
                     t('storehouse.storehouseList.amount'),
                     t('storehouse.storehouseList.unit')],
       :colModel => [
-        { :name => 'place',    :index => 'place',    :width => 250 },
+        { :name => 'place',    :index => 'place',    :width => 150 },
         { :name => 'resource', :index => 'resource', :width => 300 },
         { :name => 'real_amount',   :index => 'real_amount',   :width => 150 },
-        { :name => 'amount',   :index => 'amount',   :width => 100 },
+        { :name => 'amount',   :index => 'amount',   :width => 150 },
         { :name => 'unit',     :index => 'unit',     :width => 55 }
       ],
       :pager => '#storehouse_pager',
