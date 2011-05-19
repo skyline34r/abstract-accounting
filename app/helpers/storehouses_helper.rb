@@ -40,7 +40,7 @@ module StorehousesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/storehouses/view?short=true',
+      :url => '/storehouses/view?release=true',
       :datatype => 'json',
       :mtype => 'GET',
       :colNames => ['', t('storehouse.releaseNewList.resource'),

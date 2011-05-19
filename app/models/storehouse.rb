@@ -35,7 +35,7 @@ end
 
 class Storehouse < Array
   attr_reader :entity, :place
-  def initialize(entity = nil, place = nil)
+  def initialize(entity = nil, place = nil, real_amount = true)
     @entity = entity
     @place = place
     wbs = Waybill.find_by_owner_and_place @entity, @place
@@ -45,7 +45,8 @@ class Storehouse < Array
         if !item.deal.nil?
           item.deal.rules.each do |rule|
             if !inner.has_key?(rule.to.id)
-              if StorehouseEntry.state(rule.to) > 0
+              if (real_amount and !rule.to.state.nil? and rule.to.state.amount > 0) or
+                  (!real_amount and StorehouseEntry.state(rule.to) > 0)
                 self << StorehouseEntry.new(rule.to, item.place)
               end
               inner[rule.to.id] = true
