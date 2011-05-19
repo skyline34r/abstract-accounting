@@ -21,7 +21,7 @@ class StorehouseEntry
     releases.each do |item|
       if !item.deal.nil?
         item.deal.rules.each do |rule|
-          if rule.from == deal
+          if rule.from.id == deal.id
             start_state -= rule.rate
           end
         end
