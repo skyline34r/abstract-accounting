@@ -133,7 +133,7 @@ class StorehouseTest < ActiveSupport::TestCase
     sr.add_resource Product.find_by_resource_tag("roof"), 100
     assert sr.save, "StorehouseRelease not saved"
 
-    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"), false)
     assert_equal 0, sh.length, "Wrong storehouse length"
 
     assert sr.cancel, "Storehouse release is not closed"
