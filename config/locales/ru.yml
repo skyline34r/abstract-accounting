@@ -126,3 +126,10 @@ ru:
     btn_cancel: Отмена
     btn_reset: Очистить
     btn_save: Сохранить
+  devise:
+    sign_in: Войти
+    email: Почтовый адрес
+    password: Пароль
+    remember_me: Запомнить меня
+    forgot: Забыли пароль?
+    send_me_reset_pass: Отправить мне инструкции по сбросу пароля
