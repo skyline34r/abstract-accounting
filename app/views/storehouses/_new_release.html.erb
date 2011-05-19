@@ -9,6 +9,9 @@
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
      $("#storehouse_release_list").setCell(id, 'release',' ');
+   } else {
+     $("#storehouse_release_list").setCell(id, 'release',
+       $("#storehouse_release_list").getCell(id, 'amount'));
    }
    $("#storehouse_release_list").setSelection(id);
   }
