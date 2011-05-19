@@ -8,7 +8,7 @@ class StorehouseReleaseEntry < WaybillEntry
     releases = StorehouseRelease.find_all_by_state StorehouseRelease::INWORK
     releases.each do |item|
       item.deal.rules.each do |rule|
-        if rule.from == storage_deal
+        if rule.from.id == storage_deal.id
           start_state -= rule.rate
         end
       end
