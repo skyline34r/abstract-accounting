@@ -163,6 +163,24 @@ module StorehousesHelper
       :sortname => 'date',
       :sortorder => 'asc',
       :viewrecords => true,
+      :subGrid => true,
+      :subGridUrl => '/storehouses/view_release',
+      :subGridModel => [
+        { :name => [ t('storehouse.entryList.resource'),
+                     t('storehouse.entryList.amount'),
+                     t('storehouse.entryList.unit') ],
+          :width => [300, 100, 100],
+          :params => [
+            { :name => 'resource', :index => 'resource' },
+            { :name => 'amount',   :index => 'amount' },
+            { :name => 'unit', :index => 'unit' }
+          ]
+        }
+      ],
+      :subGridBeforeExpand => 'function(pId, id)
+      {
+        $("#releases_list").setGridParam({subGridUrl: "/storehouses/view_release?id=" + id });
+      }'.to_json_var,
       :onSelectRow => 'function(cell)
       {
         $("#view_release").removeAttr("disabled");
