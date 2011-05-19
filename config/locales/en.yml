@@ -101,3 +101,10 @@ en:
     btn_cancel: Cancel
     btn_reset: Reset
     btn_save: Save
+  devise:
+    sign_in: Sign in
+    email: Email
+    password: Password
+    remember_me: Remember me
+    forgot: Forgot your password?
+    send_me_reset_pass: Send me reset password instructions
