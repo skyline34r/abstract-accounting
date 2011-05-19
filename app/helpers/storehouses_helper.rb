@@ -150,7 +150,7 @@ module StorehousesHelper
         { :name => 'owner',  :index => 'owner',  :width => 200 },
         { :name => 'to',     :index => 'to',     :width => 200 },
         { :name => 'place',  :index => 'place',  :width => 200 },
-        { :name => 'status', :index => 'status', :width => 100, :hidden => true,
+        { :name => 'status', :index => 'status', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return getReleaseStatus(cellvalue);
                          }'.to_json_var },

@@ -7,8 +7,6 @@ if(location.hash != "#storehouses/releases") {
 }
 if("<%= can?(:manage, Storehouse) %>" == "true") {
   $("#release_new").removeAttr("disabled");
-  $("#releases_list").hideCol("status");
 } else {
   $("#release_new").attr("disabled", "disabled");
-  $("#releases_list").showCol("status");
 }

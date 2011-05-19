@@ -300,7 +300,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 200
     assert wb.save, "Waybill is not saved"
 
-    srs = StorehouseRelease.find_all_by_owner_and_place
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state
     assert_equal 0, srs.length, "Wrong inwork releases count"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
@@ -334,17 +334,35 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     sr3.add_resource Product.find_by_resource_tag("roof"), 100
     assert sr3.save, "StorehouseRelease not saved"
 
-    srs = StorehouseRelease.find_all_by_owner_and_place
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state
     assert_equal 4, srs.length, "Wrong inwork releases count"
 
     assert sr1.apply, "Release is not applied"
     assert sr3.cancel, "Release is not canceled"
 
-    srs = StorehouseRelease.find_all_by_owner_and_place
-    assert_equal 4, srs.length, "Wrong inwork releases count"
-    srs = StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
-      Place.find_by_tag("Some test place"))
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state
+    assert_equal 4, srs.length, "Wrong releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state nil, nil,
+        StorehouseRelease::INWORK
     assert_equal 2, srs.length, "Wrong inwork releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state nil, nil,
+        StorehouseRelease::CANCELED
+    assert_equal 1, srs.length, "Wrong canceled releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state nil, nil,
+        StorehouseRelease::APPLIED
+    assert_equal 1, srs.length, "Wrong applied releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
+      Place.find_by_tag("Some test place"))
+    assert_equal 4, srs.length, "Wrong inwork releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
+      Place.find_by_tag("Some test place"), StorehouseRelease::INWORK)
+    assert_equal 2, srs.length, "Wrong inwork releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
+      Place.find_by_tag("Some test place"), StorehouseRelease::CANCELED)
+    assert_equal 1, srs.length, "Wrong canceled releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
+      Place.find_by_tag("Some test place"), StorehouseRelease::APPLIED)
+    assert_equal 1, srs.length, "Wrong applied releases count"
   end
 
   test "after apply - facts by rules" do
@@ -355,8 +373,8 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 200
     assert wb.save, "Waybill is not saved"
 
-    srs = StorehouseRelease.find_all_by_owner_and_place
-    assert_equal 0, srs.length, "Wrong inwork releases count"
+    srs = StorehouseRelease.find_all_by_owner_and_place_and_state
+    assert_equal 0, srs.length, "Wrong releases count"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
       :owner => entities(:sergey),
@@ -443,13 +461,13 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Some entity 2").save, "Entity not saved"
     assert Place.new(:tag => "Some test place 2").save, "Place not saved"
 
-    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
+    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
       Place.find_by_tag("Some test place")).length,
       "Wrong storehouse releases count"
-    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place(Entity.find_by_tag("Some entity 2"),
+    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
       Place.find_by_tag("Some test place 2")).length,
       "Wrong storehouse releases count"
-    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place.length,
+    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place_and_state.length,
       "Wrong storehouse releases count"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
@@ -459,13 +477,13 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
     assert sr.save, "StorehouseRelease is not saved"
     
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
       Place.find_by_tag("Some test place")).length,
       "Wrong storehouse releases count"
-    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place(Entity.find_by_tag("Some entity 2"),
+    assert_equal 0, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
       Place.find_by_tag("Some test place 2")).length,
       "Wrong storehouse releases count"
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place.length,
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state.length,
       "Wrong storehouse releases count"
 
     wb = Waybill.new(:owner => Entity.find_by_tag("Some entity 2"),
@@ -482,13 +500,13 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
     assert sr.save, "StorehouseRelease is not saved"
 
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
       Place.find_by_tag("Some test place")).length,
       "Wrong storehouse releases count"
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(Entity.find_by_tag("Some entity 2"),
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
       Place.find_by_tag("Some test place 2")).length,
       "Wrong storehouse releases count"
-    assert_equal 2, StorehouseRelease.find_all_by_owner_and_place.length,
+    assert_equal 2, StorehouseRelease.find_all_by_owner_and_place_and_state.length,
       "Wrong storehouse releases count"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
@@ -498,24 +516,27 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 4
     assert sr.save, "StorehouseRelease is not saved"
 
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
       Place.find_by_tag("Some test place")).length,
       "Wrong storehouse releases count"
-    assert_equal 2, StorehouseRelease.find_all_by_owner_and_place(Entity.find_by_tag("Some entity 2"),
+    assert_equal 2, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
       Place.find_by_tag("Some test place 2")).length,
       "Wrong storehouse releases count"
-    assert_equal 3, StorehouseRelease.find_all_by_owner_and_place.length,
+    assert_equal 3, StorehouseRelease.find_all_by_owner_and_place_and_state.length,
       "Wrong storehouse releases count"
 
     assert sr.apply, "Release is not applied"
 
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(entities(:sergey),
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(entities(:sergey),
       Place.find_by_tag("Some test place")).length,
       "Wrong storehouse releases count"
-    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place(Entity.find_by_tag("Some entity 2"),
+    assert_equal 2, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
       Place.find_by_tag("Some test place 2")).length,
       "Wrong storehouse releases count"
-    assert_equal 3, StorehouseRelease.find_all_by_owner_and_place.length,
+    assert_equal 1, StorehouseRelease.find_all_by_owner_and_place_and_state(Entity.find_by_tag("Some entity 2"),
+      Place.find_by_tag("Some test place 2"), StorehouseRelease::INWORK).length,
+      "Wrong storehouse releases count"
+    assert_equal 3, StorehouseRelease.find_all_by_owner_and_place_and_state.length,
       "Wrong storehouse releases count"
   end
 
