@@ -58,7 +58,7 @@ en:
       place: Place
       resource: Resource
       real_amount: Real amount
-      amount: Amount
+      amount: Expected amount
       unit: Unit
     release:
       btn_new: New

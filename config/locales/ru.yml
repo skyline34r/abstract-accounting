@@ -87,7 +87,7 @@ ru:
       place: Объект
       resource: Ресурс
       real_amount: Фактическое кол-во
-      amount: Количество
+      amount: Ожидаемое кол-во
       unit: Единица
     release:
       btn_new: Создать
