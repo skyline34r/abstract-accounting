@@ -50,6 +50,36 @@
       $("#waybills_list").addRowData(uin, dataPage["dataGrid"][uin]);
     }
   }
+
+  function onWaybillKeyUp(e) {
+    if(e.keyCode == 13) {
+      if(editRowId == $("#waybills_list").getRowData().length) {
+        top: {
+          var rowid = $("#waybills_list").getGridParam("selrow");
+          var resource = $("#waybills_list").getCell(rowid, "resource");
+          if((resource == "")||(resource.substring(0,7) == "<input ")) {
+            $("#waybills_list").editCell(editRowId, "1", true);
+            break top;
+          }
+          var amount = $("#waybills_list").getCell(rowid, "amount");
+          if((amount == "")||(amount.substring(0,7) == "<input ")) {
+            $("#waybills_list").editCell(editRowId, "2", true);
+            break top;
+          }
+          var unit = $("#waybills_list").getCell(rowid, "unit");
+          if((unit == "")||(unit.substring(0,7) == "<input ")) {
+            $("#waybills_list").editCell(editRowId, "3", true);
+            break top;
+          }
+          
+          $("#waybills_list").addRowData(uin, { resource: "", amount: ""
+                                              , unit: "" });
+          uin++;
+          $("#waybills_list").editCell(editRowId+1, "1", true);
+        }
+      }
+    }
+  }
 </script>
 
 <%= raw(waybills_jqgrid) %>
@@ -93,7 +123,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedRow();">
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedRow();" onkeyup="onWaybillKeyUp(event);">
         <table id=waybills_list onmouseup="canSave = false;"></table>
         <div id=waybills_pager></div>
       </td>
