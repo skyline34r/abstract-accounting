@@ -61,6 +61,7 @@ ru:
   waybill:
     btn_add: Создать
     tree:
+      document_id: Номер накладной
       date: Дата
       organization: От
       owner: Кому

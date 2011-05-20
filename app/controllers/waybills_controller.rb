@@ -37,7 +37,8 @@ class WaybillsController < ApplicationController
   end
 
   def view
-    @columns = ['created', 'from.tag', 'owner.tag', 'vatin', 'place.tag']
+    @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
+                'place.tag']
     @waybills = Waybill.find_by_owner_and_place(current_user.entity,
                                                 current_user.place).paginate(
       :page     => params[:page],

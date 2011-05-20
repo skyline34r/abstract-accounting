@@ -32,6 +32,7 @@ en:
   waybill:
     btn_add: New
     tree:
+      document_id: Waybill
       date: Date
       organization: From
       owner: To

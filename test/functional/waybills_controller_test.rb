@@ -13,7 +13,8 @@ class WaybillsControllerTest < ActionController::TestCase
   test "should create waybills" do
     assert_difference('Waybill.count') do
        xml_http_request :post, :create,
-                        :waybill => { :created => DateTime.now,
+                        :waybill => { :document_id => "123456",
+                                      :created => DateTime.now,
                                       :from => entities(:abstract),
                                       :place => places(:orsha),
                                       :vatin => '500100732259' },
@@ -28,7 +29,8 @@ class WaybillsControllerTest < ActionController::TestCase
   test "should create waybills with text entity" do
     assert_difference('Waybill.count') do
        xml_http_request :post, :create,
-                        :waybill => { :created => DateTime.now,
+                        :waybill => { :document_id => "123456",
+                                      :created => DateTime.now,
                                       :vatin => '500100732259',
                                       :from => 'abstract' },
                         :entry_resource => ['test1'],
@@ -48,7 +50,8 @@ class WaybillsControllerTest < ActionController::TestCase
   end
 
   test "should get show waybills entries" do
-    wb = Waybill.new(:created => DateTime.now, :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "123456",
+                     :created => DateTime.now, :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha),
                      :vatin => '500100732259')

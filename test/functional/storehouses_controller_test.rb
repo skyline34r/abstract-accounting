@@ -22,7 +22,8 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_create_release_storehouse" do
-    wb = Waybill.new(:created => DateTime.now, :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.now, :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
@@ -50,7 +51,9 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_show_release" do
-    wb = Waybill.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0), :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.civil(2011, 5, 16, 12, 0, 0),
+                     :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
@@ -68,7 +71,9 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_get_view_release" do
-    wb = Waybill.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0), :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.civil(2011, 5, 16, 12, 0, 0),
+                     :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
@@ -84,7 +89,9 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_cancel_release" do
-    wb = Waybill.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0), :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.civil(2011, 5, 16, 12, 0, 0),
+                     :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
@@ -99,7 +106,9 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_apply_release" do
-    wb = Waybill.new(:created => DateTime.civil(2011, 5, 16, 12, 0, 0), :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.civil(2011, 5, 16, 12, 0, 0),
+                     :owner => entities(:sergey),
                      :from => entities(:abstract),
                      :place => places(:orsha))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
