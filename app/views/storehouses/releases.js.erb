@@ -7,8 +7,10 @@ if(location.hash != "#storehouses/releases") {
 }
 if("<%= can?(:manage, Storehouse) %>" == "true") {
   $("#release_new").removeAttr("disabled");
+  $("#release_new_1").removeAttr("disabled");
 } else {
   $("#release_new").attr("disabled", "disabled");
+  $("#release_new_1").attr("disabled", "disabled");
 }
 
 function filterGrid(state)
@@ -17,6 +19,8 @@ function filterGrid(state)
     if(state != -1) {
         link += '?state=' + state
     }
+    $("#view_release").attr("disabled", "disabled");
+    $("#view_release_1").attr("disabled", "disabled");
     $('#releases_list').setGridParam({url: link});
     $('#releases_list').trigger('reloadGrid');
 }

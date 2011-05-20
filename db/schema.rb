@@ -182,6 +182,5 @@ ActiveRecord::Schema.define(:version => 20110520132236) do
   end
 
   add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
-  add_index "waybills", ["document_id", "from_id"], :name => "index_waybills_on_document_id_and_from_id", :unique => true
 
 end
