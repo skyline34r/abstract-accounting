@@ -20,9 +20,13 @@ class WaybillsController < ApplicationController
     end
     if params[:entry_resource] != nil then
       for i in 0..params[:entry_resource].length-1
-        @waybill.add_resource params[:entry_resource][i],
-                              params[:entry_unit][i],
-                              params[:entry_amount][i].to_f
+        if params[:entry_resource][i].length != 0 or
+           params[:entry_unit][i].length != 0 or
+           params[:entry_amount][i].length != 0
+          @waybill.add_resource params[:entry_resource][i],
+                                params[:entry_unit][i],
+                                params[:entry_amount][i].to_f
+        end
       end
     end
     if @waybill.save then

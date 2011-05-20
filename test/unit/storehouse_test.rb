@@ -26,6 +26,7 @@ class StorehouseTest < ActiveSupport::TestCase
 
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -51,6 +52,7 @@ class StorehouseTest < ActiveSupport::TestCase
   test "storehouse do not show deals with empty state" do
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -94,6 +96,7 @@ class StorehouseTest < ActiveSupport::TestCase
   test "check amounts" do
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -146,6 +149,7 @@ class StorehouseTest < ActiveSupport::TestCase
   test "storehouse show only by entity and place" do
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -158,6 +162,7 @@ class StorehouseTest < ActiveSupport::TestCase
 
     assert Entity.new(:tag => "Second storekeeper").save, "Entity is not saved"
     wb = Waybill.new(:owner => Entity.find_by_tag("Second storekeeper"),
+      :document_id => "1283456",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -175,6 +180,7 @@ class StorehouseTest < ActiveSupport::TestCase
   test "show one resource for two waybills" do
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -185,6 +191,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.length, "Wrong storehouse length"
 
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "1283456",
       :place => Place.find_by_tag("Some test place"),
       :from => "Some organization",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))

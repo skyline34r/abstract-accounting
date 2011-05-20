@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110512141856) do
+ActiveRecord::Schema.define(:version => 20110520132236) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -178,8 +178,10 @@ ActiveRecord::Schema.define(:version => 20110512141856) do
     t.integer  "deal_id"
     t.datetime "created"
     t.string   "vatin"
+    t.string   "document_id"
   end
 
   add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
+  add_index "waybills", ["document_id"], :name => "index_waybills_on_document_id", :unique => true
 
 end
