@@ -78,6 +78,8 @@ end
 
 class Waybill < ActiveRecord::Base
   #validations
+  validates :document_id, :presence => true
+  validates :document_id, :uniqueness => true
   validates :owner_id, :presence => true
   validates :place_id, :presence => true
   validates :from_id, :presence => true

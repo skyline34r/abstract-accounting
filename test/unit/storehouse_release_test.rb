@@ -6,6 +6,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert Place.new(:tag => "Some test place").save, "Entity not saved"
     
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "12834",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -171,6 +172,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -232,6 +234,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert_equal toDeal, rule.to, "Wrong rule to"
 
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -263,6 +266,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "entries is loaded" do
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -294,6 +298,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "get all inwork releases" do
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -367,6 +372,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "after apply - facts by rules" do
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -398,6 +404,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
 
   test "check is invalid for amount" do
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
@@ -487,6 +494,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
       "Wrong storehouse releases count"
 
     wb = Waybill.new(:owner => Entity.find_by_tag("Some entity 2"),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place 2"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -556,6 +564,7 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
     assert sr.invalid?, "StorehouseRelease is valid"
 
     wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
       :place => Place.find_by_tag("Some test place"),
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 5, 12, 0, 0))

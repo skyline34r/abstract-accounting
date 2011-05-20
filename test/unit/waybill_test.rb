@@ -8,16 +8,22 @@ class WaybillTest < ActiveSupport::TestCase
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
     assert Waybill.new.invalid?, "Empty waybill is valid"
-    assert Waybill.new(:owner => Entity.find_by_tag("Storekeeper")).invalid?,
+    assert Waybill.new(:document_id => "12345").invalid?,
       "Wrong waybill"
-    assert Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    assert Waybill.new(:document_id => "12345",
+                       :owner => Entity.find_by_tag("Storekeeper")).invalid?,
+      "Wrong waybill"
+    assert Waybill.new(:document_id => "12345",
+                       :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow")).invalid?,
       "Wrong waybill"
-    assert Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    assert Waybill.new(:document_id => "12345",
+                       :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization")).invalid?,
       "Wrong waybill"
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
@@ -25,7 +31,8 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource("Test resource", "th", -1)
     assert wb.invalid?, "invalid waybill"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
@@ -35,17 +42,28 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource("Test resource2", "th", -1)
     assert wb.invalid?, "invalid waybill"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
     assert wb.invalid?, "invalid waybill"
     wb.add_resource("Test resource", "th", 10)
     assert wb.valid?, "valid waybill"
+    assert wb.save, "Waybill not saved"
+
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => Entity.find_by_tag("Organization"),
+      :created => DateTime.civil(2011, 5, 12, 12, 0, 0))
+    wb.add_resource("Test resource", "th", 15)
+    assert wb.invalid?, "Document is is unique"
   end
 
   test "validate VATIN" do
-    wb = Waybill.new(:created => DateTime.now,
+    wb = Waybill.new(:document_id => "12345",
+              :created => DateTime.now,
               :owner => entities(:sergey),
               :from => entities(:abstract),
               :place => places(:orsha))
@@ -78,7 +96,8 @@ class WaybillTest < ActiveSupport::TestCase
   end
 
   test "VATIN must be unique" do
-    wb = Waybill.new(:created => DateTime.now, :owner => entities(:sergey),
+    wb = Waybill.new(:document_id => "12345",
+                     :created => DateTime.now, :owner => entities(:sergey),
               :from => entities(:abstract),
               :place => places(:orsha))
     wb.add_resource "roof", "m2", 500
@@ -86,7 +105,8 @@ class WaybillTest < ActiveSupport::TestCase
     wb.vatin = "500100732259"
     assert wb.save, "Waybill is not saved"
 
-    wb = Waybill.new(:created => DateTime.now, :owner => entities(:abstract),
+    wb = Waybill.new(:document_id => "123456",
+                     :created => DateTime.now, :owner => entities(:abstract),
               :from => entities(:sergey),
               :place => places(:orsha),
               :vatin => "500100732259")
@@ -99,7 +119,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Organization").save, "Entity not saved"
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
     wb.add_resource "roof", "m2", 500
@@ -107,7 +128,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert wb.save, "Waybill not saved"
 
     assert Entity.new(:tag => "Some entity 2").save, "entity is not saved"
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
     wb.add_resource "roof", "m2", 500
@@ -116,7 +138,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert wb.save, "Waybill is not saved"
 
     assert Entity.new(:tag => "Some entity 3").save, "entity is not saved"
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "1234567",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
     wb.add_resource "roof", "m2", 500
@@ -124,7 +147,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal Entity.find_by_tag("Some entity 3"), wb.from, "Wrong waybill entity"
     assert wb.save, "Waybill is not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345678",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
     wb.add_resource "roof", "m2", 500
@@ -141,7 +165,8 @@ class WaybillTest < ActiveSupport::TestCase
     
     product_length = Product.all.count
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 11, 12, 0, 0))
@@ -176,7 +201,8 @@ class WaybillTest < ActiveSupport::TestCase
     
     deals_count = Deal.all.count
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 1, 12, 0, 0))
@@ -200,7 +226,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert !d.nil?, "Deal not found"
     assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 2, 12, 0, 0))
@@ -225,7 +252,8 @@ class WaybillTest < ActiveSupport::TestCase
 
     assert Entity.new(:tag => "Organization 2").save, "Entity not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "1234567",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization 2"),
       :created => DateTime.civil(2011, 5, 3, 12, 0, 0))
@@ -242,7 +270,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert !d.nil?, "Deal not found"
     assert_equal true, d.isOffBalance, "IsOffbalance is invalid"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345678",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 4, 12, 0, 0))
@@ -260,7 +289,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Organization").save, "Entity not saved"
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 1, 12, 0, 0))
@@ -275,7 +305,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal fromDeal, rule.from, "Wrong rule from"
     assert_equal ownerDeal, rule.to, "Wrong rule to"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 2, 12, 0, 0))
@@ -303,7 +334,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Organization").save, "Entity not saved"
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 2, 12, 0, 0))
@@ -333,7 +365,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Organization").save, "Entity not saved"
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 2, 12, 0, 0))
@@ -356,7 +389,8 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 500, sOrganization.amount, "Organization state amount is invalid"
     assert_equal wb.created, sOrganization.start, "Organization state date is invalid"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => Entity.find_by_tag("Organization"),
       :created => DateTime.civil(2011, 5, 3, 12, 0, 0))
@@ -414,7 +448,8 @@ class WaybillTest < ActiveSupport::TestCase
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper"),
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :from => "Organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
@@ -432,7 +467,8 @@ class WaybillTest < ActiveSupport::TestCase
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
 
-    wb = Waybill.new(:owner => Entity.find_by_tag("Storekeeper 2"),
+    wb = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper 2"),
       :place => Place.find_by_tag("Minsk"),
       :from => "Organization",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
