@@ -40,6 +40,7 @@ en:
       resource: Resource
       amount: Amount
       unit: Unit
+    number: Waybill
     date: Date
     organization: From
     vatin: Vatin
@@ -60,6 +61,7 @@ en:
       real_amount: Real amount
       amount: Expected amount
       unit: Unit
+      btn_find: Find
     release:
       all: All
       inwork: In work

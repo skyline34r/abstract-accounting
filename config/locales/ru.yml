@@ -69,6 +69,7 @@ ru:
       resource: Ресурс
       amount: Количество
       unit: Единица
+    number: Номер накладной
     date: Дата
     organization: От
     vatin: ИНН
@@ -89,6 +90,7 @@ ru:
       real_amount: Фактическое кол-во
       amount: Ожидаемое кол-во
       unit: Единица
+      btn_find: Поиск
     release:
       all: Все
       inwork: В работе
