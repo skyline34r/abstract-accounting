@@ -31,6 +31,7 @@ en:
     edit: Edit
     generalLedger: GeneralLedger
     balance: Balance
+    transcript: Transcript
   waybill:
     btn_add: New
     tree:
@@ -133,3 +134,21 @@ en:
     resource: Resource
     debit: Debit
     credit: Credit
+  transcript:
+    btn_cancel: Cancel
+    btn_change: Change
+    btn_load: Load
+    deal: Deal
+    btn_choose: click to choose
+    from: from
+    to: to
+    total: Total turnovers
+    exchange: Exchange differences
+    transcriptList:
+      date: Date
+      deal: Deal
+      debit: Debit
+      credit: Credit
+    units: Units
+    physical: physical
+    accounting: accounting

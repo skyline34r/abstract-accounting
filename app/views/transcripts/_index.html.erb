@@ -1,9 +1,9 @@
 <script type="text/javascript">
   $(function() {
     var curr_date = new Date();
-    $('#to_datepicker').datepicker();
+    $("#to_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
     $('#to_datepicker').val(curr_date.toLocaleDateString());
-    $('#from_datepicker').datepicker();
+    $("#from_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
     curr_date.setFullYear(curr_date.getFullYear()-10);
     $('#from_datepicker').val(curr_date.toLocaleDateString());
   });
@@ -115,34 +115,34 @@
 <table id="transcript_table">
   <tr>
     <td colspan="2" align="right" style="width: 800px">
-      <input type="button" id="cancel" value="cancel" disabled="true"
+      <input type="button" id="cancel" value="<%=t 'transcript.btn_cancel'%>" disabled="true"
              onclick="cancelTranscript();"/>
-      <input type="button" id="change" value="change" style="display: none"
+      <input type="button" id="change" value="<%=t 'transcript.btn_change'%>" style="display: none"
              onclick="changeTranscript();"/>
-      <input type="button" id="load" value="load" onclick="loadTranscript();"/>
+      <input type="button" id="load" value="<%=t 'transcript.btn_load'%>" onclick="loadTranscript();"/>
     </td>
   </tr>
   <tr>
     <td id="loadData" colspan="2">
       <div id="beforeLoadData">
-        deal
-        <input type="button" id="transcript_choose_deal" value="click to choose"
+        <%=t 'transcript.deal'%>
+        <input type="button" id="transcript_choose_deal" value="<%=t 'transcript.btn_choose'%>"
                onclick="transcriptChooseDeal();"/>
         <input type="hidden" id="transcript_deal_id" value=""/>
-        from
+        <%=t 'transcript.from'%>
         <input type="text" id="from_datepicker"/>
-        to
+        <%=t 'transcript.to'%>
         <input type="text" id="to_datepicker"/>
       </div>
       <div id="afterLoadData" style="display: none">
-        deal
+        <%=t 'transcript.deal'%>
         <a id="loadedDeal"> </a>
         <br>
-          units
-          physical
+          <%=t 'transcript.units'%>:
+          <%=t 'transcript.physical'%>
           <input type="radio" id="physical" name="unit" checked="true"
                  onchange="choosePhysical();"/>
-          accounting
+          <%=t 'transcript.accounting'%>
           <input type="radio" id="accounting" name="unit"
                  onchange="chooseAccounting();"/>
         </br>
@@ -168,7 +168,7 @@
   </tr>
   <tr>
     <td align="left">
-      Total turnovers
+      <%=t 'transcript.total'%>
     </td>
     <td align="right">
       <a id="turnoversDebit"></a>
@@ -179,7 +179,7 @@
   </tr>
   <tr>
     <td align="left">
-      Exchange differences
+      <%=t 'transcript.exchange'%>
     </td>
     <td align="right">
       <a id="exchangeDebit"></a>

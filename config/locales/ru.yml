@@ -60,6 +60,7 @@ ru:
     edit: Редактировать
     generalLedger: Главная книга
     balance: Счета
+    transcript: Выписки
   waybill:
     btn_add: Создать
     tree:
@@ -162,3 +163,21 @@ ru:
     resource: Ресурс
     debit: Дебет
     credit: Кредит
+  transcript:
+    btn_cancel: Отменить
+    btn_change: Изменить
+    btn_load: Загрузить
+    deal: Cделка
+    btn_choose: выбрать из списка
+    from: с
+    to: по
+    total: Итого обороты
+    exchange: Курсовые разницы
+    transcriptList:
+      date: Дата
+      deal: Счет
+      debit: Дебет
+      credit: Кредит
+    units: Единицы измерения
+    physical: натуральные
+    accounting: в валюте учета
