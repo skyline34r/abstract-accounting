@@ -58,6 +58,7 @@ ru:
     show: Просмотр
     place: Объекты
     edit: Редактировать
+    generalLedger: Главная книга
   waybill:
     btn_add: Создать
     tree:
@@ -140,3 +141,12 @@ ru:
     remember_me: Запомнить меня
     forgot: Забыли пароль?
     send_me_reset_pass: Отправить мне инструкции по сбросу пароля
+  generalLedger:
+    date: Дата
+    resource: Ресурс
+    quantity: Количество
+    DC: Д/К
+    deal: Счет
+    price: Цена
+    debit: Дебет
+    credit: Кредит

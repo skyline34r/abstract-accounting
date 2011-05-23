@@ -29,6 +29,7 @@ en:
     show: Show
     place: Place
     edit: Edit
+    generalLedger: GeneralLedger
   waybill:
     btn_add: New
     tree:
@@ -111,3 +112,12 @@ en:
     remember_me: Remember me
     forgot: Forgot your password?
     send_me_reset_pass: Send me reset password instructions
+  generalLedger:
+    date: Date
+    resource: Resource
+    quantity: Quantity
+    DC: D/C
+    deal: Deal
+    price: Price
+    debit: Debit
+    credit: Credit
