@@ -40,7 +40,12 @@ module StorehousesHelper
     pager_button_find = [:navButtonAdd, '#storehouse_pager', {
       :caption => t('storehouse.storehouseList.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
-        //$("#storehouse_list")[0].clearToolbar();
+        if(filter) {
+          $("#storehouse_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
         $("#storehouse_list")[0].toggleToolbar();
       }'.to_json_var }]
 

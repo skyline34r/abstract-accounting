@@ -21,6 +21,7 @@
     $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
     d.setUTCHours(12);
+    $("#hide_waybill_number").val(escape($("#waybill_number").val()));
     $("#hide_waybill_date").val(d.toUTCString());
     $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
     $("#hide_waybill_from").val(escape($("#waybill_organization").val()));
@@ -36,6 +37,7 @@
 
   function saveWaybillElements() {
     dataPage = new Object();
+    dataPage["number"] = $("#waybill_number").val();
     dataPage["date"] = $("#waybill_date").val();
     dataPage["organization"] = $("#waybill_organization").val();
     dataPage["vatin"] = $("#waybill_vatin").val();
@@ -43,6 +45,7 @@
   }
 
   function loadWaybillElements() {
+    $("#waybill_number").val(dataPage["number"]);
     $("#waybill_date").val(dataPage["date"]);
     $("#waybill_organization").val(dataPage["organization"]);
     $("#waybill_vatin").val(dataPage["vatin"]);
@@ -95,6 +98,14 @@
     </tr>
     <tr align="left">
       <td>
+        <%=t 'waybill.number'%>*:
+      </td>
+      <td align="right">
+        <input type="text" id="waybill_number" value="" size="35"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td>
         <%=t 'waybill.date'%>*:
       </td>
       <td align="right">
@@ -132,6 +143,7 @@
       <td colspan="2" style="width: 45px">
         <%= f.submit t('waybill.btn_save'), :id => "save_waybill",
                                         :onclick => "sendWaybill();" %>
+        <%= f.hidden_field :document_id, :id => "hide_waybill_number" %>
         <%= f.hidden_field :created, :id => "hide_waybill_date" %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>
         <%= f.hidden_field :from, :id => "hide_waybill_from" %>
