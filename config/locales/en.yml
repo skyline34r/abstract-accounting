@@ -30,6 +30,7 @@ en:
     place: Place
     edit: Edit
     generalLedger: GeneralLedger
+    balance: Balance
   waybill:
     btn_add: New
     tree:
@@ -119,5 +120,16 @@ en:
     DC: D/C
     deal: Deal
     price: Price
+    debit: Debit
+    credit: Credit
+  balance:
+    date: Date
+    units: Units
+    physical: physical
+    accounting: accounting
+    total: total
+    deal: Deal
+    entity: Entity
+    resource: Resource
     debit: Debit
     credit: Credit

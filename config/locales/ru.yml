@@ -59,6 +59,7 @@ ru:
     place: Объекты
     edit: Редактировать
     generalLedger: Главная книга
+    balance: Счета
   waybill:
     btn_add: Создать
     tree:
@@ -148,5 +149,16 @@ ru:
     DC: Д/К
     deal: Счет
     price: Цена
+    debit: Дебет
+    credit: Кредит
+  balance:
+    date: Дата
+    units: Единицы измерения
+    physical: натуральные
+    accounting: в валюте учета
+    total: Итого
+    deal: Сделка
+    entity: Лицо
+    resource: Ресурс
     debit: Дебет
     credit: Кредит
