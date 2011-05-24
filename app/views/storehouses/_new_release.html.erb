@@ -33,6 +33,15 @@
   function saveEdittedReleaseRow() {
     if(canSave) $("#storehouse_release_list").saveRow(lastSelId);
   }
+  function filterEntryGrid(state) {
+    if(state == 0) {
+      $("#release_entry_table").html("<%= escape_javascript(render :partial =>
+        'storehouses/release_entries_by_resource') %>");
+    } else {
+      $("#release_entry_table").html("<%= escape_javascript(render :partial =>
+        'storehouses/release_entries_by_waybill') %>");
+    }
+  }
 </script>
 
 <%= raw(storehouse_release_jqgrid) %>
@@ -64,9 +73,20 @@
       </td>
     </tr>
     <tr>
+      <td align="left" colspan="2">
+        <div>
+          <a href="#storehouses/releases/new" onclick="filterEntryGrid(0)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.filt_resource' %>
+          </a>
+          <a href="#storehouses/releases/new" onclick="filterEntryGrid(1)" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.filt_waybills' %>
+          </a>
+        </div>
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReleaseRow();">
-        <table id=storehouse_release_list onmouseup="canSave = false;"></table>
-        <div id=storehouse_release_pager></div>
+        <div id="release_entry_table"></div>
       </td>
     </tr>
     <tr>

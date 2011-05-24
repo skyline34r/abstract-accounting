@@ -7,3 +7,4 @@ if(dataPage != null) {
 }
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/new_release') %>");
+$("#release_entry_table").html("<%= escape_javascript(render :partial => 'storehouses/release_entries_by_resource') %>");

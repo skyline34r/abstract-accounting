@@ -129,6 +129,8 @@ ru:
       resource: Ресурс
       amount: Количество
       unit: Единица
+    filt_resource: По ресурсам
+    filt_waybills: По накладным
   place:
     tag: Название
     btn_new: Создать
