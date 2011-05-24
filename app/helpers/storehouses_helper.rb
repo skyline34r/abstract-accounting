@@ -243,4 +243,101 @@ module StorehousesHelper
 
   end
 
+
+  def release_waybills_jqgrid_tree
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/waybill_list',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['', t('waybill.tree.document_id'), t('waybill.tree.date'),
+                    t('waybill.tree.organization'), t('waybill.tree.owner'),
+                    t('waybill.tree.vatin'), t('waybill.tree.place')],
+      :colModel => [
+        { :name => '',  :index => 'check', :width => 14,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return "<input type=\'checkbox\' id=\'check_waybill_"
+                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                             + options.rowId + "\"); \'>";
+                         }'.to_json_var },
+        { :name => 'document_id', :index => 'document_id', :width => 110,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[0];
+                         }'.to_json_var },
+        { :name => 'date', :index => 'date', :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[1].substr(0,10);
+                         }'.to_json_var },
+        { :name => 'organization',  :index => 'organization',   :width => 180,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[2];
+                         }'.to_json_var },
+        { :name => 'owner',         :index => 'owner',          :width => 180,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[3];
+                         }'.to_json_var },
+        { :name => 'place',         :index => 'place',          :width => 146,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[4];
+                         }'.to_json_var },
+        { :name => 'vatin',         :index => 'vatin',          :width => 90,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[5];
+                         }'.to_json_var }
+      ],
+      :pager => '#release_waybills_tree_pager',
+      :height => "450px",
+      :rowNum => 30,
+      :rowList => [30, 50, 100],
+      :sortname => 'id',
+      :sortorder => 'asc',
+      :viewrecords => true,
+      :subGrid => true,
+      :subGridRowExpanded => 'function(subgrid_id, row_id)
+      {
+        var subgrid_table_id;
+        subgrid_table_id = subgrid_id + "_t";
+
+        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id + "\"></table>");
+        $("#"+subgrid_table_id).jqGrid({
+          url: "/storehouses/" + row_id + "/waybill_entries_list",
+          datatype: "json",
+          mtype: "GET",
+          colNames: ["", getReleaseEntryColumn("resource"), getReleaseEntryColumn("amount"),
+                     getReleaseEntryColumn("release"), getReleaseEntryColumn("unit")],
+          colModel: [
+              { name: "", index: "", width: 14, sortable: false, resizable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                  return "<input type=\'checkbox\' id=\'check_waybill_"
+                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                             + options.rowId + "\"); \'>";
+                }},
+              { name: "resource", index: "resource", width: 300, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[0];
+                }},
+              { name: "amount", index: "amount", width: 93, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[1];
+                }},
+              { name: "release", index: "release", width: 93, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return cellvalue;
+                }},
+              { name: "resource", index: "unit", width: 93, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[2];
+                }}
+              ],
+          height: "100%"
+        });
+      }'.to_json_var
+    }]
+
+    jqgrid_api 'release_waybills_tree', grid, options
+
+  end
+
 end

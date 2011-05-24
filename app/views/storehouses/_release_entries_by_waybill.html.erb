@@ -1,3 +1,15 @@
+<script type="text/javascript">
+  function getReleaseEntryColumn(name) {
+    switch(name) {
+      case "resource": return "<%= t('storehouse.releaseNewList.resource') %>";
+      case "amount": return "<%= t('storehouse.releaseNewList.amount') %>";
+      case "release": return "<%= t('storehouse.releaseNewList.release') %>";
+      case "unit": return "<%= t('storehouse.releaseNewList.unit') %>";
+      default: return "";
+    }
+  }
+</script>
+
 <%= raw(release_waybills_jqgrid_tree) %>
 <table id=release_waybills_tree onmouseup="canSave = false;"></table>
 <div id=release_waybills_tree_pager></div>
