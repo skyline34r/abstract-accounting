@@ -1,7 +1,7 @@
 <script type="text/javascript">
 $(function() {
   var curr_date = new Date();
-  $("#balance_datepicker").datepicker();
+  $("#balance_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   $("#balance_datepicker").val(curr_date.toLocaleDateString());
 });
 
@@ -14,34 +14,34 @@ function loadBalance()
 }
 </script>
 
+<%= raw(balances_jqgrid) %>
+
 <table>
   <tr>
-    <td align="left">Balances</td>
-    <td align="right" style="width: 723px">
-      date
-      <input type="text" id="balance_datepicker" size="20" onchange="loadBalance();" />
+    <td align="left"><%=t 'balance.date'%></td>
+    <td align="right">
+      <input type="text" id="balance_datepicker" size="40" onchange="loadBalance();" />
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      units
-      physical
+      <%=t 'balance.units'%>:
+      <%=t 'balance.physical'%>
       <input type="radio" id="physical" name="unit" checked="true"
              onchange="$('#balances_list').trigger('reloadGrid');"/>
-      accounting
+      <%=t 'balance.accounting'%>
       <input type="radio" id="accounting" name="unit"
              onchange="$('#balances_list').trigger('reloadGrid');"/>
     </td>
   </tr>
-</table>
-
-<%= raw(balances_jqgrid) %>
-<table id="data_list"></table>
-<div id="data_pager"></div>
-
-<table>
   <tr>
-    <td align="left">Total</td>
+    <td colspan="2">
+      <table id="data_list"></table>
+      <div id="data_pager"></div>
+    </td>
+  </tr>
+  <tr>
+    <td align="left"><%=t 'balance.total'%></td>
     <td align="right">
       <a id="tDebit">
         <%= @assets %>

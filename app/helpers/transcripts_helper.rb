@@ -10,7 +10,12 @@ module TranscriptsHelper
       :url => '/transcripts/load?empty=true',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['id', 'date', 'deal', 'debit', 'credit', 'debit', 'credit'],
+      :colNames => ['id', t('transcript.transcriptList.date'),
+                          t('transcript.transcriptList.deal'),
+                          t('transcript.transcriptList.debit'),
+                          t('transcript.transcriptList.credit'),
+                          t('transcript.transcriptList.debit'),
+                          t('transcript.transcriptList.credit')],
       :colModel => [
         { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
         { :name => 'date',   :index => 'date',   :width => 200,

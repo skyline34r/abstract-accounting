@@ -29,6 +29,9 @@ en:
     show: Show
     place: Place
     edit: Edit
+    generalLedger: GeneralLedger
+    balance: Balance
+    transcript: Transcript
   waybill:
     btn_add: New
     tree:
@@ -111,3 +114,41 @@ en:
     remember_me: Remember me
     forgot: Forgot your password?
     send_me_reset_pass: Send me reset password instructions
+  generalLedger:
+    date: Date
+    resource: Resource
+    quantity: Quantity
+    DC: D/C
+    deal: Deal
+    price: Price
+    debit: Debit
+    credit: Credit
+  balance:
+    date: Date
+    units: Units
+    physical: physical
+    accounting: accounting
+    total: total
+    deal: Deal
+    entity: Entity
+    resource: Resource
+    debit: Debit
+    credit: Credit
+  transcript:
+    btn_cancel: Cancel
+    btn_change: Change
+    btn_load: Load
+    deal: Deal
+    btn_choose: click to choose
+    from: from
+    to: to
+    total: Total turnovers
+    exchange: Exchange differences
+    transcriptList:
+      date: Date
+      deal: Deal
+      debit: Debit
+      credit: Credit
+    units: Units
+    physical: physical
+    accounting: accounting

@@ -10,8 +10,10 @@ module GeneralLedgersHelper
       :url => '/general_ledgers/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['date', 'resource', 'quantity', 'DC', 'deal', 'price',
-                    'debit', 'credit'],
+      :colNames => [t('generalLedger.date'), t('generalLedger.resource'),
+                    t('generalLedger.quantity'), t('generalLedger.DC'),
+                    t('generalLedger.deal'), t('generalLedger.price'),
+                    t('generalLedger.debit'), t('generalLedger.credit')],
       :colModel => [
         { :name => 'date',     :index => 'fact.day',          :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {

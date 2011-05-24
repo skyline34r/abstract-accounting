@@ -28,10 +28,28 @@ module StorehousesHelper
       :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
-      :height => "100%"
+      :height => "100%",
+      :gridview => true
     }]
 
-    jqgrid_api 'storehouse_list', grid, options
+    pager = [:navGrid, '#storehouse_pager', {:refresh => false, :add => false,
+                                             :del=> false, :edit => false,
+                                             :search => false, :view => false},
+                                            {}, {}, {}]
+
+    pager_button_find = [:navButtonAdd, '#storehouse_pager', {
+      :caption => t('storehouse.storehouseList.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#storehouse_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#storehouse_list")[0].toggleToolbar();
+      }'.to_json_var }]
+
+    jqgrid_api 'storehouse_list', grid, options, pager, pager_button_find
 
   end
 

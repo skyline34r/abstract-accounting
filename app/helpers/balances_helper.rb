@@ -10,7 +10,9 @@ module BalancesHelper
       :url => '/balances/load?date=',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['deal', 'entity', 'resource', 'debit', 'credit', 'side'],
+      :colNames => [t('balance.deal'), t('balance.entity'),
+                    t('balance.resource'), t('balance.debit'),
+                    t('balance.credit'), t('balance.side')],
       :colModel => [
         { :name => 'deal',     :index => 'deal.tag',        :width => 240 },
         { :name => 'entity',   :index => 'deal.entity.tag', :width => 230 },
