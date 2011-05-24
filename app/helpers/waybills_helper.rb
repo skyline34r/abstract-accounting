@@ -95,7 +95,7 @@ module WaybillsHelper
         { :name => 'vatin',         :index => 'vatin',          :width => 90 }
       ],
       :pager => '#waybills_tree_pager',
-      :height => "450px",
+      :height => "100%",
       :rowNum => 30,
       :rowList => [30, 50, 100],
       :sortname => 'id',

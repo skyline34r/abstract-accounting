@@ -28,7 +28,7 @@ module StorehousesHelper
       :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
-      :height => "450px",
+      :height => "100%",
       :gridview => true
     }]
 
@@ -176,7 +176,7 @@ module StorehousesHelper
       ],
       :rowNum => 30,
       :rowList => [30, 50, 100],
-      :height => "450px",
+      :height => "100%",
       :pager => '#releases_pager',
       :sortname => 'date',
       :sortorder => 'asc',
@@ -202,6 +202,7 @@ module StorehousesHelper
       :onSelectRow => 'function(cell)
       {
         $("#view_release").removeAttr("disabled");
+        $("#view_release_1").removeAttr("disabled");
       }'.to_json_var        
     }]
 

@@ -51,14 +51,6 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource("Test resource", "th", 10)
     assert wb.valid?, "valid waybill"
     assert wb.save, "Waybill not saved"
-
-    wb = Waybill.new(:document_id => "12345",
-                     :owner => Entity.find_by_tag("Storekeeper"),
-      :place => Place.find_by_tag("Moscow"),
-      :from => Entity.find_by_tag("Organization"),
-      :created => DateTime.civil(2011, 5, 12, 12, 0, 0))
-    wb.add_resource("Test resource", "th", 15)
-    assert wb.invalid?, "Document is is unique"
   end
 
   test "validate VATIN" do

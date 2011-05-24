@@ -9,7 +9,11 @@ dataPage = null;
 if("<%= can?(:manage, Storehouse) %>" == "true") {
   $("#add_release").removeAttr("disabled");
   $("#add_waybill").removeAttr("disabled");
+  $("#add_release_1").removeAttr("disabled");
+  $("#add_waybill_1").removeAttr("disabled");
 } else {
   $("#add_release").attr("disabled", "disabled");
   $("#add_waybill").attr("disabled", "disabled");
+  $("#add_release_1").attr("disabled", "disabled");
+  $("#add_waybill_1").attr("disabled", "disabled");
 }

@@ -79,7 +79,6 @@ end
 class Waybill < ActiveRecord::Base
   #validations
   validates :document_id, :presence => true
-  validates :document_id, :uniqueness => true
   validates :owner_id, :presence => true
   validates :place_id, :presence => true
   validates :from_id, :presence => true
@@ -144,11 +143,11 @@ class Waybill < ActiveRecord::Base
   after_initialize :waybill_initialize
   before_save :waybill_before_save
 
-  def Waybill.find_by_owner_and_place entity = nil, place = nil
+  def Waybill.find_by_owner_and_place entity = nil, place = nil, *args
     if entity.nil? or (!entity.nil? and place.nil?)
-      Waybill.all
+      Waybill.all *args
     else
-      Waybill.find_all_by_place_id_and_owner_id(place, entity)
+      Waybill.find_all_by_place_id_and_owner_id(place, entity, *args)
     end
   end
 

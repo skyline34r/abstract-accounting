@@ -2,9 +2,9 @@
 <table>
   <tr>
     <td align="right">
-      <input type="button" id="add_release" value="<%=t 'storehouse.btn_new_release'%>"
+      <input type="button" id="add_release_1" value="<%=t 'storehouse.btn_new_release'%>"
              onclick="location.hash = '#storehouses/releases/new';" />
-      <input type="button" id="add_waybill" value="<%=t 'storehouse.btn_new_waybill'%>"
+      <input type="button" id="add_waybill_1" value="<%=t 'storehouse.btn_new_waybill'%>"
              onclick="location.hash = '#waybills/new';" />
     </td>
   </tr>
@@ -12,6 +12,14 @@
     <td>
       <table id=storehouse_list></table>
       <div id=storehouse_pager></div>
+    </td>
+  </tr>
+  <tr>
+    <td align="right">
+      <input type="button" id="add_release" value="<%=t 'storehouse.btn_new_release'%>"
+             onclick="location.hash = '#storehouses/releases/new';" />
+      <input type="button" id="add_waybill" value="<%=t 'storehouse.btn_new_waybill'%>"
+             onclick="location.hash = '#waybills/new';" />
     </td>
   </tr>
 </table>
