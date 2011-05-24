@@ -163,4 +163,16 @@ class StorehousesController < ApplicationController
       render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')
     end
   end
+
+  def waybill_entries_list
+    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @entries = Waybill.find(params[:id]).resources
+    @entries = @entries.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows],
+      :order    => order_by_from_params(params))
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@entries, @columns)
+    end
+  end
 end

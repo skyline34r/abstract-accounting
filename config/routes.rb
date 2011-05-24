@@ -80,6 +80,9 @@ Abstract::Application.routes.draw do
       post 'apply'
       get 'waybill_list'
     end
+    member do
+      get 'waybill_entries_list'
+    end
   end
   resources :places do
     collection do
