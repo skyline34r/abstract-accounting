@@ -151,4 +151,16 @@ class StorehousesController < ApplicationController
     end
   end
 
+  def waybill_list
+    @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
+                'place.tag']
+    @waybills = Waybill.find_by_owner_and_place(current_user.entity,
+                                                current_user.place).paginate(
+      :page     => params[:page],
+      :per_page => params[:rows],
+      :order    => order_by_from_params(params))
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')
+    end
+  end
 end

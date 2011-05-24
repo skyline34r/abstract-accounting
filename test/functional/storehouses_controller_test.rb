@@ -121,4 +121,11 @@ class StorehousesControllerTest < ActionController::TestCase
     xml_http_request :post, :apply, :id => sr.id
     assert_response :success
   end
+
+  test "should_get_list_of_waybills" do
+    xml_http_request :get, :waybill_list
+    assert_response :success
+    assert_not_nil assigns(:waybills)
+  end
+
 end
