@@ -201,4 +201,73 @@ class StorehouseTest < ActiveSupport::TestCase
     sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
     assert_equal 1, sh.length, "Wrong storehouse length"
   end
+
+  test "real amount for two waybills" do
+    assert Place.new(:tag => "Some test place").save, "Entity not saved"
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "128345",
+      :place => Place.find_by_tag("Some test place"),
+      :from => "Some organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 200, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 200, sh[0].real_amount, "Wrong storehouse amount"
+
+    assert Entity.new(:tag => "Some entity for test").save, "Entity not saved"
+    assert Place.new(:tag => "Some test place 2").save, "Place not saved"
+    wb = Waybill.new(:owner => Entity.find_by_tag("Some entity for test"),
+      :document_id => "1283456",
+      :place => Place.find_by_tag("Some test place 2"),
+      :from => "Some organization 2",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource "roof", "m2", 230
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new(Entity.find_by_tag("Some entity for test"),
+                        Place.find_by_tag("Some test place 2"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 230, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 230, sh[0].real_amount, "Wrong storehouse amount"
+
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 200, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 200, sh[0].real_amount, "Wrong storehouse amount"
+
+    sh = Storehouse.new
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    assert_equal 200, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 200, sh[0].real_amount, "Wrong storehouse amount"
+    assert_equal 230, sh[1].amount, "Wrong storehouse amount"
+    assert_equal 230, sh[1].real_amount, "Wrong storehouse amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 7, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => Place.find_by_tag("Some test place"),
+      :to => "Test2Entity")
+    sr.add_resource Product.find_by_resource_tag("roof"), 100
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = Storehouse.new(Entity.find_by_tag("Some entity for test"),
+                        Place.find_by_tag("Some test place 2"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 230, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 230, sh[0].real_amount, "Wrong storehouse amount"
+
+    sh = Storehouse.new(entities(:sergey), Place.find_by_tag("Some test place"))
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 100, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 200, sh[0].real_amount, "Wrong storehouse amount"
+
+    sh = Storehouse.new
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    assert_equal 100, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 200, sh[0].real_amount, "Wrong storehouse amount"
+    assert_equal 230, sh[1].amount, "Wrong storehouse amount"
+    assert_equal 230, sh[1].real_amount, "Wrong storehouse amount"
+  end
 end

@@ -118,18 +118,19 @@ class StorehouseRelease < ActiveRecord::Base
     false
   end
 
-  def StorehouseRelease.find_all_by_owner_and_place_and_state entity = nil, place = nil, state = nil
+  def StorehouseRelease.find_all_by_owner_and_place_and_state entity = nil,
+      place = nil, state = nil, *args
     if entity.nil? or (!entity.nil? and place.nil?)
       if state.nil?
-        StorehouseRelease.all
+        StorehouseRelease.all *args
       else
-        StorehouseRelease.find_all_by_state state
+        StorehouseRelease.find_all_by_state state, *args
       end
     else
       if state.nil?
-        StorehouseRelease.find_all_by_owner_id_and_place_id entity, place
+        StorehouseRelease.find_all_by_owner_id_and_place_id entity, place, *args
       else
-        StorehouseRelease.find_all_by_state_and_owner_id_and_place_id state, entity, place
+        StorehouseRelease.find_all_by_state_and_owner_id_and_place_id state, entity, place, *args
       end
     end
   end
