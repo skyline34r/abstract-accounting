@@ -42,6 +42,16 @@
         'storehouses/release_entries_by_waybill') %>");
     }
   }
+  function check_storehouse_waybill(id) {
+    if(!$("#check_waybill_" + id).is(":checked")) {
+     //$("#storehouse_release_list").setCell(id, 'release',' ');
+    } else {
+      $("#release_waybills_tree").expandSubGridRow(id);
+     //$("#storehouse_release_list").setCell(id, 'release',
+     //  $("#storehouse_release_list").getCell(id, 'amount'));
+    }
+    //$("#storehouse_release_list").setSelection(id);
+  }
 </script>
 
 <%= raw(storehouse_release_jqgrid) %>

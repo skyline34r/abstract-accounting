@@ -311,8 +311,13 @@ module StorehousesHelper
           colModel: [
               { name: "", index: "", width: 14, sortable: false, resizable: false,
                 formatter: function (cellvalue, options, rowObject) {
-                  return "<input type=\'checkbox\' id=\'check_waybill_"
-                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                  if($("#check_waybill_" + row_id).is(":checked")) {
+                    return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                               + options.rowId + "\' onClick=\'check_release_waybill(\""
+                               + options.rowId + "\"); \' checked>";
+                  }
+                  return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                             + options.rowId + "\' onClick=\'check_release_waybill(\""
                              + options.rowId + "\"); \'>";
                 }},
               { name: "resource", index: "resource", width: 300, sortable: false,
@@ -325,6 +330,9 @@ module StorehousesHelper
                 }},
               { name: "release", index: "release", width: 93, sortable: false,
                 resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  if($("#check_entry_" + row_id  + "_" + options.rowId).is(":checked")) {
+                    return rowObject[1];
+                  }
                   return cellvalue;
                 }},
               { name: "resource", index: "unit", width: 93, sortable: false,
