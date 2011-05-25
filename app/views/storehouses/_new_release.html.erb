@@ -1,4 +1,5 @@
 <script type="text/javascript">
+  var listAction = "";
   var lastSelId = "";
   var canSave = true;
 
@@ -31,26 +32,69 @@
                   "&date=" + d.toUTCString() + entries});
   }
   function saveEdittedReleaseRow() {
-    if(canSave) $("#storehouse_release_list").saveRow(lastSelId);
+    if(canSave) {
+      if($("#gbox_storehouse_release_list").html() != null) {
+        $("#storehouse_release_list").saveRow(lastSelId);
+      } else {
+        $("#" + lastSubgridTableId).saveRow(lastSelId);
+      }
+    }
   }
   function filterEntryGrid(state) {
     if(state == 0) {
-      $("#release_entry_table").html("<%= escape_javascript(render :partial =>
-        'storehouses/release_entries_by_resource') %>");
+      if($("#gbox_storehouse_release_list").html() == null) {
+        lastSelId = "";
+        var storeHouseData = new Object();
+        $("#release_entry_table").html("<%= escape_javascript(render :partial =>
+          'storehouses/release_entries_by_resource') %>");
+      }
     } else {
-      $("#release_entry_table").html("<%= escape_javascript(render :partial =>
-        'storehouses/release_entries_by_waybill') %>");
+      if($("#gbox_release_waybills_tree").html() == null) {
+        lastSelId = "";
+        var storeHouseData = new Object();
+        $("#release_entry_table").html("<%= escape_javascript(render :partial =>
+          'storehouses/release_entries_by_waybill') %>");
+      }
     }
   }
-  function check_storehouse_waybill(id) {
+  function check_waybill(id) {
     if(!$("#check_waybill_" + id).is(":checked")) {
-     //$("#storehouse_release_list").setCell(id, 'release',' ');
+      for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
+        var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+        $("#check_entry_" + id + "_" + row_id).removeAttr("checked");
+        $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release", " ");
+      }
+      delete storeHouseData[id];
     } else {
-      $("#release_waybills_tree").expandSubGridRow(id);
-     //$("#storehouse_release_list").setCell(id, 'release',
-     //  $("#storehouse_release_list").getCell(id, 'amount'));
+      if($("#release_waybills_tree_" + id + "_t").html()) {
+        for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
+          var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+          $("#check_entry_" + id + "_" + row_id).attr("checked", "checked");
+          $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release",
+            $("#release_waybills_tree_" + id + "_t").getCell(row_id, "amount"));
+        }
+      } else {
+        listAction = "check_waybill";
+        $("#release_waybills_tree").expandSubGridRow(id);
+      }
     }
-    //$("#storehouse_release_list").setSelection(id);
+  }
+  function check_release_waybill(sub_id, row_id) {
+    if(!$("#check_entry_" + sub_id + "_" + row_id).is(":checked")) {
+      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release", " ");
+      var dataIDs = $("#release_waybills_tree_" + sub_id + "_t").getDataIDs();
+      for(var i=0; i<dataIDs.length; i++) {
+        if($("#check_entry_" + sub_id + "_" + dataIDs[i]).is(":checked")) {
+          return;
+        }
+      }
+      $("#check_waybill_" + sub_id).removeAttr("checked");
+    } else {
+      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release",
+        $("#release_waybills_tree_" + sub_id + "_t").getCell(row_id, "amount"));
+      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
+      $("#check_waybill_" + sub_id).attr("checked", "checked");
+    }
   }
 </script>
 

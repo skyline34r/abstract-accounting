@@ -115,6 +115,7 @@ module StorehousesHelper
       :rowList => [10, 20, 30],
       :sortname => 'resource',
       :sortorder => 'asc',
+      :height => "100%",
       :viewrecords => true,
       :editurl => 'clientArray',
       :cellsubmit => 'clientArray',
@@ -259,8 +260,13 @@ module StorehousesHelper
       :colModel => [
         { :name => '',  :index => 'check', :width => 14,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(storeHouseData[options.rowId] != null) {
+                             return "<input type=\'checkbox\' id=\'check_waybill_"
+                               + options.rowId + "\' onClick=\'check_waybill(\""
+                               + options.rowId + "\"); \' checked>";
+                           }
                            return "<input type=\'checkbox\' id=\'check_waybill_"
-                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                             + options.rowId + "\' onClick=\'check_waybill(\""
                              + options.rowId + "\"); \'>";
                          }'.to_json_var },
         { :name => 'document_id', :index => 'document_id', :width => 110,
@@ -289,19 +295,27 @@ module StorehousesHelper
                          }'.to_json_var }
       ],
       :pager => '#release_waybills_tree_pager',
-      :height => "450px",
+      :height => "100%",
       :rowNum => 30,
       :rowList => [30, 50, 100],
       :sortname => 'id',
       :sortorder => 'asc',
       :viewrecords => true,
+      :beforeSelectRow =>	'function()
+      {
+        if(canSave) {
+          $("#" + lastSubgridTableId).saveRow(lastSelId);
+        }
+        return false;
+      }'.to_json_var,
       :subGrid => true,
       :subGridRowExpanded => 'function(subgrid_id, row_id)
       {
         var subgrid_table_id;
         subgrid_table_id = subgrid_id + "_t";
 
-        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id + "\"></table>");
+        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id +
+          "\" onmouseup=\"canSave = false;\"></table>");
         $("#"+subgrid_table_id).jqGrid({
           url: "/storehouses/" + row_id + "/waybill_entries_list",
           datatype: "json",
@@ -311,14 +325,15 @@ module StorehousesHelper
           colModel: [
               { name: "", index: "", width: 14, sortable: false, resizable: false,
                 formatter: function (cellvalue, options, rowObject) {
-                  if($("#check_waybill_" + row_id).is(":checked")) {
+                  if((listAction == "check_waybill") || ((storeHouseData[row_id] != null) &&
+                     (storeHouseData[row_id][options.rowId] != null))) {
                     return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
                                + options.rowId + "\' onClick=\'check_release_waybill(\""
-                               + options.rowId + "\"); \' checked>";
+                               + row_id + "\", \"" + options.rowId + "\"); \' checked>";
                   }
                   return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
                              + options.rowId + "\' onClick=\'check_release_waybill(\""
-                             + options.rowId + "\"); \'>";
+                               + row_id + "\", \"" + options.rowId + "\"); \'>";
                 }},
               { name: "resource", index: "resource", width: 300, sortable: false,
                 resizable: false, formatter: function (cellvalue, options, rowObject) {
@@ -328,11 +343,32 @@ module StorehousesHelper
                 resizable: false, formatter: function (cellvalue, options, rowObject) {
                   return rowObject[1];
                 }},
-              { name: "release", index: "release", width: 93, sortable: false,
+              { name: "release", index: "release", width: 93, sortable: false, editable: true,
                 resizable: false, formatter: function (cellvalue, options, rowObject) {
-                  if($("#check_entry_" + row_id  + "_" + options.rowId).is(":checked")) {
-                    return rowObject[1];
+                  if(cellvalue == " ") cellvalue = "";
+                  if(listAction == "check_waybill") {
+                    cellvalue = rowObject[1];
                   }
+                  if(isNaN(cellvalue)) {
+                    if((storeHouseData[row_id] == null) ||
+                       (storeHouseData[row_id][options.rowId] == null)) {
+                      return "";
+                    }
+                    return storeHouseData[row_id][options.rowId];
+                  }
+                  if((cellvalue == "") || (parseInt(cellvalue) <= "0")) {
+                    if(storeHouseData[row_id] != null) {
+                      delete storeHouseData[row_id][options.rowId];
+                      if(storeHouseData[row_id].toSource().length == 4) {
+                        delete storeHouseData[row_id];
+                      }
+                    }
+                    return "";
+                  }
+                  if(storeHouseData[row_id] == null) {
+                    storeHouseData[row_id] = new Object();
+                  }
+                  storeHouseData[row_id][options.rowId] = cellvalue;
                   return cellvalue;
                 }},
               { name: "resource", index: "unit", width: 93, sortable: false,
@@ -340,7 +376,23 @@ module StorehousesHelper
                   return rowObject[2];
                 }}
               ],
-          height: "100%"
+          height: "100%",
+          editurl: "clientArray",
+          cellsubmit: "clientArray",
+          loadComplete: function () {
+            listAction = "";
+          },
+          onSelectRow: function(id)
+          {
+            if(lastSelId != "") {
+              $("#" + subgrid_table_id).saveRow(lastSelId);
+            }
+            lastSelId = id;
+            lastSubgridTableId = subgrid_table_id;
+            if($("#check_entry_" + row_id + "_" + id).is(":checked")) {
+              $("#" + subgrid_table_id).editRow(id, true);
+            }
+          }
         });
       }'.to_json_var
     }]

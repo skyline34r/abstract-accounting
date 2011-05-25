@@ -1,4 +1,6 @@
 <script type="text/javascript">
+  var waybillDataEntries = new Object();
+  var lastSubgridTableId = "";
   function getReleaseEntryColumn(name) {
     switch(name) {
       case "resource": return "<%= t('storehouse.releaseNewList.resource') %>";
@@ -11,5 +13,5 @@
 </script>
 
 <%= raw(release_waybills_jqgrid_tree) %>
-<table id=release_waybills_tree onmouseup="canSave = false;"></table>
+<table id=release_waybills_tree></table>
 <div id=release_waybills_tree_pager></div>
