@@ -43,9 +43,15 @@ class ResourcesValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:resources] <<
       "Resources must exist" if record.resources.empty?
+    resources = Hash.new
     record.resources.each do |item|
       record.errors[:resources] <<
-        "Invalid resource" if item.product.nil? or item.product.invalid? or item.amount <= 0
+          "invalid" if item.product.nil? or item.product.invalid?
+      record.errors[:resources] <<
+          "invalid amount" if item.amount <= 0
+      record.errors[:resources] <<
+          "two identical resources" if resources.key?(item.product.resource.tag)
+      resources[item.product.resource.tag] = true
     end
   end
 end

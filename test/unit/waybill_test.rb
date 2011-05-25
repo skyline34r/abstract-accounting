@@ -478,4 +478,18 @@ class WaybillTest < ActiveSupport::TestCase
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
   end
+
+  test "create waybill with two identical resources" do
+    assert Entity.new(:tag => "Storekeeper").save, "Entity not saved"
+    assert Place.new(:tag => "Moscow").save, "Entity not saved"
+
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 500
+    wb.add_resource "roof", "m2", 500
+    assert wb.invalid?, "Waybill is valid"
+  end
 end
