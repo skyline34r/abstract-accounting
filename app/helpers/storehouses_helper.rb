@@ -308,6 +308,15 @@ module StorehousesHelper
         }
         return false;
       }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(listAction != "") {
+          var _id = listAction;
+          listAction = "check_waybill";
+          $("#check_waybill_" + _id).attr("checked", "checked");
+          $("#release_waybills_tree").expandSubGridRow(_id);
+        }
+      }'.to_json_var,
       :subGrid => true,
       :subGridRowExpanded => 'function(subgrid_id, row_id)
       {

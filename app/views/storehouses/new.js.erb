@@ -9,7 +9,7 @@ $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/new_release') %>");
 
 if($("#errorExplanation").html()) {
-  if(location.hash == "#storehouses/releases/new?filter=resource") {
+  if(location.hash.substr(0,40) == "#storehouses/releases/new?filter=resource") {
     $("#release_entry_table").html("<%= escape_javascript(render :partial => 'storehouses/release_entries_by_resource') %>");
   } else {
     $("#release_entry_table").html("<%= escape_javascript(render :partial => 'storehouses/release_entries_by_waybill') %>");
@@ -20,6 +20,9 @@ if($("#errorExplanation").html()) {
                                       else
                                         escape_javascript(render :partial => 'storehouses/release_entries_by_waybill')
                                       end %>");
+  if("<%= params[:waybill] %>" != "") {
+    listAction = "<%= params[:waybill] %>";
+  }
 }
 lastSelId = "";
 if(dataPage != null) {
