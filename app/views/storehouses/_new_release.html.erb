@@ -17,7 +17,24 @@
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
-    $("#storehouse_release_list").saveRow(lastSelId);
+    if($("#gbox_release_waybills_tree").html()) {
+      if(lastSubgridTableId) {
+        $("#" + lastSubgridTableId).saveRow(lastSelId);
+      }
+      var tmpData = new Object();
+      for (var i in storeHouseData) {
+        for (var j in storeHouseData[i]) {
+          if(tmpData[j]) {
+            tmpData[j] += parseInt(storeHouseData[i][j]);
+          } else {
+            tmpData[j] = parseInt(storeHouseData[i][j]);
+          }
+        }
+      }
+      storeHouseData = tmpData;
+    } else {
+      $("#storehouse_release_list").saveRow(lastSelId);
+    }
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     dataPage["to"] = $("#storehouse_to").val();
