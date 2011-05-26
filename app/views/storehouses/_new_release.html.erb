@@ -82,6 +82,15 @@
   function check_release_waybill(sub_id, row_id) {
     if(!$("#check_entry_" + sub_id + "_" + row_id).is(":checked")) {
       $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release", " ");
+      uncheckParentWaybill(sub_id);
+    } else {
+      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release",
+        $("#release_waybills_tree_" + sub_id + "_t").getCell(row_id, "amount"));
+      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
+      $("#check_waybill_" + sub_id).attr("checked", "checked");
+    }
+  }
+  function uncheckParentWaybill(sub_id) {
       var dataIDs = $("#release_waybills_tree_" + sub_id + "_t").getDataIDs();
       for(var i=0; i<dataIDs.length; i++) {
         if($("#check_entry_" + sub_id + "_" + dataIDs[i]).is(":checked")) {
@@ -89,12 +98,6 @@
         }
       }
       $("#check_waybill_" + sub_id).removeAttr("checked");
-    } else {
-      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release",
-        $("#release_waybills_tree_" + sub_id + "_t").getCell(row_id, "amount"));
-      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
-      $("#check_waybill_" + sub_id).attr("checked", "checked");
-    }
   }
 </script>
 

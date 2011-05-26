@@ -357,6 +357,8 @@ module StorehousesHelper
                     return storeHouseData[row_id][options.rowId];
                   }
                   if((cellvalue == "") || (parseInt(cellvalue) <= "0")) {
+                    $("#check_entry_" + row_id + "_" + options.rowId).removeAttr("checked");
+                    uncheckParentWaybill(row_id);
                     if(storeHouseData[row_id] != null) {
                       delete storeHouseData[row_id][options.rowId];
                       if(storeHouseData[row_id].toSource().length == 4) {
