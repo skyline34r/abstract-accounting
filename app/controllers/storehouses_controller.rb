@@ -176,8 +176,4 @@ class StorehousesController < ApplicationController
                                                :id_column => 'product.resource.id')
     end
   end
-
-  def new_by_resource
-    session[:res_type] = ''
-  end
 end

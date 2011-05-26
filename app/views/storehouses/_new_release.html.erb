@@ -57,23 +57,6 @@
       }
     }
   }
-  function filterEntryGrid(state) {
-    if(state == 0) {
-      if($("#gbox_storehouse_release_list").html() == null) {
-        lastSelId = "";
-        var storeHouseData = new Object();
-        $("#release_entry_table").html("<%= escape_javascript(render :partial =>
-          'storehouses/release_entries_by_resource') %>");
-      }
-    } else {
-      if($("#gbox_release_waybills_tree").html() == null) {
-        lastSelId = "";
-        var storeHouseData = new Object();
-        $("#release_entry_table").html("<%= escape_javascript(render :partial =>
-          'storehouses/release_entries_by_waybill') %>");
-      }
-    }
-  }
   function check_waybill(id) {
     if(!$("#check_waybill_" + id).is(":checked")) {
       for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
@@ -149,11 +132,11 @@
     <tr>
       <td align="left" colspan="2">
         <div>
-          <a href="#storehouses/releases/new" onclick="filterEntryGrid(0)" style="margin-left:5px;margin-right:5px">
-            <%= t 'storehouse.filt_resource' %>
-          </a>
-          <a href="#storehouses/releases/new" onclick="filterEntryGrid(1)" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases/new?filter=waybill" style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.filt_waybills' %>
+          </a>
+          <a href="#storehouses/releases/new?filter=resource" style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.filt_resource' %>
           </a>
         </div>
       </td>

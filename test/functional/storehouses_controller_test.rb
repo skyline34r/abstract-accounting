@@ -17,7 +17,7 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_get_release_of_storehouse" do
-    xml_http_request :get, :new
+    xml_http_request :get, :new, :filter => "waybill"
     assert_response :success
   end
 
@@ -142,7 +142,7 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_get_new_release_of_storehouse_by_resource" do
-    xml_http_request :get, :new_by_resource
+    xml_http_request :get, :new, :filter => "resource"
     assert_response :success
   end
  
