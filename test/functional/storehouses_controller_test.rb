@@ -140,4 +140,10 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:entries)
   end
+
+  test "should_get_new_release_of_storehouse_by_resource" do
+    xml_http_request :get, :new_by_resource
+    assert_response :success
+  end
+ 
 end
