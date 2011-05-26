@@ -17,6 +17,8 @@
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
+    dataPage = new Object();
+    dataPage["dataGrid"] = storeHouseData;
     if($("#gbox_release_waybills_tree").html()) {
       if(lastSubgridTableId) {
         $("#" + lastSubgridTableId).saveRow(lastSelId);
@@ -35,8 +37,6 @@
     } else {
       $("#storehouse_release_list").saveRow(lastSelId);
     }
-    dataPage = new Object();
-    dataPage["dataGrid"] = storeHouseData;
     dataPage["to"] = $("#storehouse_to").val();
     dataPage["date"] = $("#storehouse_date").val();
     var d = new Date($("#storehouse_date").val());
@@ -132,10 +132,12 @@
     <tr>
       <td align="left" colspan="2">
         <div>
-          <a href="#storehouses/releases/new?filter=waybill" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases/new?filter=waybill" onclick="dataPage = null;"
+             style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.filt_waybills' %>
           </a>
-          <a href="#storehouses/releases/new?filter=resource" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases/new?filter=resource" onclick="dataPage = null;"
+             style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.filt_resource' %>
           </a>
         </div>
