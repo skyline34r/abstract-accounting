@@ -142,7 +142,7 @@
         </ul>
       </li>
     <% end %>
-    <% if !current_user.nil? and current_user.entity.nil? then %>
+    <% if !current_user.nil? and can?(:manage, :all) then %>
       <li><a href="#">Administration</a>
         <ul>
           <li><a href="#users" class="page_link">User</a></li>
