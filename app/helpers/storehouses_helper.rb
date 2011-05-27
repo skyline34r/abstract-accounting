@@ -204,7 +204,16 @@ module StorehousesHelper
       {
         $("#view_release").removeAttr("disabled");
         $("#view_release_1").removeAttr("disabled");
-      }'.to_json_var        
+      }'.to_json_var,
+      :beforeRequest => 'function()
+      {
+        var link = "/storehouses/releases/list";
+        var state = location.hash.substr(28, location.hash.length);
+        if(state.length != 0) {
+            link += "?state=" + state;
+        }
+        $("#releases_list").setGridParam({url: link});
+      }'.to_json_var
     }]
 
     jqgrid_api 'releases_list', grid, options
