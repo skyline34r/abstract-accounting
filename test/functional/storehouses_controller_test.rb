@@ -132,7 +132,7 @@ class StorehousesControllerTest < ActionController::TestCase
     wb = Waybill.new(:document_id => "123456",
                      :created => DateTime.now, :owner => entities(:sergey),
                      :from => entities(:abstract),
-                     :place => places(:orsha),
+                     :place => Place.find_by_tag("Access to storehouse"),
                      :vatin => '500100732259')
     wb.add_resource assets(:sonyvaio).tag, "th", 10
     assert wb.save, "Can't save waybill with entries"

@@ -118,4 +118,13 @@ class Storehouse < Array
     end
     waybills.values
   end
+
+  def waybill_by_id id
+    self.waybills.each do |item|
+      if item.waybill.id == id
+        return item
+      end
+    end
+    nil
+  end
 end

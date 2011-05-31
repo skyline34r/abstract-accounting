@@ -152,21 +152,24 @@ class StorehousesController < ApplicationController
   end
 
   def waybill_list
-    @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
-                'place.tag']
-    @waybills = Waybill.find_by_owner_and_place(current_user.entity,
-                                                current_user.place).paginate(
+    @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.tag',
+                'waybill.owner.tag', 'waybill.vatin', 'waybill.place.tag']
+    @waybills = Storehouse.new(current_user.entity,
+                               current_user.place).waybills.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')
+      render :json => abstract_json_for_jqgrid(@waybills, @columns,
+                                               :id_column => 'waybill.id')
     end
   end
 
   def waybill_entries_list
     @columns = ['product.resource.tag', 'amount', 'product.unit']
-    @entries = Waybill.find(params[:id]).resources
+    @entries = Storehouse.new(current_user.entity,
+                               current_user.place).
+                          waybill_by_id(params[:id].to_i).resources
     @entries = @entries.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
