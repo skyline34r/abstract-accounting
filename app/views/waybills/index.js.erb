@@ -5,7 +5,8 @@ if(location.hash != "#waybills") {
   location.hash = "#waybills";
 }
 dataPage = null;
-if("<%= can?(:manage, Storehouse) %>" == "true") {
+var canManageWaybill = "<%= can?(:manage, Storehouse) %>";
+if(canManageWaybill == "true") {
   $("#waybills_add").removeAttr("disabled");
   $("#waybills_add_1").removeAttr("disabled");
 } else {
