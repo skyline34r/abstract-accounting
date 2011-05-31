@@ -157,9 +157,11 @@ class Waybill < ActiveRecord::Base
     end
   end
 
-  def has_in_the_storehouse?
-    sh = Storehouse.new self.owner, self.place
-    return true if !sh.waybill_by_id(self.id).nil?
+  def has_in_the_storehouse? storehouse = nil
+    if storehouse.nil?
+      storehouse = Storehouse.new self.owner, self.place
+    end
+    return true if !storehouse.waybill_by_id(self.id).nil?
     false
   end
 
