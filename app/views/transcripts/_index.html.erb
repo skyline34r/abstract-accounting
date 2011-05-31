@@ -42,14 +42,8 @@
                      beforeSend: function() {
                        $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
                      },
-                     success: function() {
-                                $.popup({remove:true});
-                              },
-                     error: function() {
-                              $.popup({remove:true});
-                              $.popup({note:"<%=t 'popup.error'%>",time:2000});
-                            },
                      complete: function() {
+                       $.popup({remove:true});
                        var actionUrl = '/transcripts/load?deal_id=' + $("#transcript_deal_id").val() +
                                                         '&start=' + $("#from_datepicker").val() +
                                                         '&stop=' + $("#to_datepicker").val() +

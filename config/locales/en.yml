@@ -157,4 +157,7 @@ en:
     accounting: accounting
   popup:
     wait: Please, wait
-    error: Error!
+    timeout: Error! Server timeout
+    error: Error! Sever not found
+    abort: Error! Aborting connection server
+    parsererror: Syntactic error of request!

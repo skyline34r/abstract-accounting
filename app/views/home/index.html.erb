@@ -16,9 +16,14 @@
             success: function() {
                        $.popup({remove:true});
                      },
-            error: function() {
+            error: function(jqXHR, textStatus, errorThrown) {
                      $.popup({remove:true});
-                     $.popup({note:"<%=t 'popup.error'%>",time:2000});
+                     switch(textStatus) {
+                       case "timeout": $.popup({note:"<%=t 'popup.timeout'%>",time:2000}); break;
+                       case "error": $.popup({note:"<%=t 'popup.error'%>",time:2000}); break;
+                       case "abort": $.popup({note:"<%=t 'popup.abort'%>",time:2000}); break;
+                       case "parsererror": $.popup({note:"<%=t 'popup.parsererror'%>",time:2000}); break;
+                     }
                    }
            });
   }
