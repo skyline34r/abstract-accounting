@@ -61,6 +61,8 @@ class Storehouse < Array
   def initialize(entity = nil, place = nil, real_amount = true)
     @entity = entity
     @place = place
+    @waybills = nil
+
     wbs = Waybill.find_by_owner_and_place @entity, @place,
           :include => { :deal => { :rules => :to }}
     releases = StorehouseRelease.find_all_by_owner_and_place_and_state @entity, @place,
@@ -94,6 +96,7 @@ class Storehouse < Array
   end
 
   def waybills
+    return @waybills if !@waybills.nil?
     waybills = Hash.new
     self.each do |sh_entry|
       amount = sh_entry.amount
@@ -116,7 +119,7 @@ class Storehouse < Array
         break if amount == 0
       end
     end
-    waybills.values
+    @waybills = waybills.values
   end
 
   def waybill_by_id id
