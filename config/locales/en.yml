@@ -155,3 +155,6 @@ en:
     units: Units
     physical: physical
     accounting: accounting
+  popup:
+    wait: Please, wait
+    error: Error!

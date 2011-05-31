@@ -11,14 +11,14 @@
   function ajaxRequest(_url) {
     $.ajax({url: _url,
             beforeSend: function() {
-                          $.popup({note:'Пожалуйста, подождите',sticked:true});
+                          $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
                         },
             success: function() {
                        $.popup({remove:true});
                      },
             error: function() {
                      $.popup({remove:true});
-                     $.popup({note:'Ошибка запроса!',time:2000});
+                     $.popup({note:"<%=t 'popup.error'%>",time:2000});
                    }
            });
   }
