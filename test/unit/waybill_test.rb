@@ -492,4 +492,39 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 500
     assert wb.invalid?, "Waybill is valid"
   end
+
+  test "check has in the warehouse" do
+    assert Entity.new(:tag => "Storekeeper").save, "Entity not saved"
+    assert Place.new(:tag => "Moscow").save, "Entity not saved"
+
+    wb = Waybill.new(:document_id => "12345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 500
+    assert wb.save, "Waybill is not saved"
+
+    assert wb.has_in_the_storehouse?, "Waybill is not in the warehouse"
+
+    wb1 = Waybill.new(:document_id => "123456",
+                     :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => "Organization 2",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb1.add_resource "shovel", "th", 50
+    assert wb1.save, "Waybill is not saved"
+
+    assert wb1.has_in_the_storehouse?, "Waybill is not in the warehouse"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
+      :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_tag("roof"), 500
+    assert sr.save, "StorehouseRelease is not saved"
+
+    assert !wb.has_in_the_storehouse?, "Waybill is in the warehouse"
+    assert wb1.has_in_the_storehouse?, "Waybill is not in the warehouse"
+  end
 end

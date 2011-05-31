@@ -157,6 +157,12 @@ class Waybill < ActiveRecord::Base
     end
   end
 
+  def has_in_the_storehouse?
+    sh = Storehouse.new self.owner, self.place
+    return true if !sh.waybill_by_id(self.id).nil?
+    false
+  end
+
   private
   def waybill_initialize
     @entries = Array.new
