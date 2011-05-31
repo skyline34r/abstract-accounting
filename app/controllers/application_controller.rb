@@ -28,7 +28,12 @@ class ApplicationController < ActionController::Base
                    value = r
                    c.each_line('.') do |n|
                      if(value != nil) then
-                       value = value.send(n.chomp('.'))
+                       m = n.chomp('.')
+                       if !options[:params].nil? and !options[:params][m].nil?
+                         value = value.send(m, options[:params][m])
+                       else
+                         value = value.send(m)
+                       end
                      end
                    end
                    value

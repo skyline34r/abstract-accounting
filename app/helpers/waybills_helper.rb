@@ -82,7 +82,8 @@ module WaybillsHelper
       :mtype => 'GET',
       :colNames => [t('waybill.tree.document_id'), t('waybill.tree.date'),
                     t('waybill.tree.organization'), t('waybill.tree.owner'),
-                    t('waybill.tree.vatin'), t('waybill.tree.place')],
+                    t('waybill.tree.vatin'), t('waybill.tree.place'),
+                    'in_storehouse'],
       :colModel => [
         { :name => 'document_id', :index => 'document_id', :width => 110 },
         { :name => 'date', :index => 'date', :width => 100,
@@ -92,7 +93,8 @@ module WaybillsHelper
         { :name => 'organization',  :index => 'organization',   :width => 185 },
         { :name => 'owner',         :index => 'owner',          :width => 185 },
         { :name => 'place',         :index => 'place',          :width => 150 },
-        { :name => 'vatin',         :index => 'vatin',          :width => 90 }
+        { :name => 'vatin',         :index => 'vatin',          :width => 90 },
+        { :name => 'in_storehouse', :index => 'in_storehouse', :hidden => true }
       ],
       :pager => '#waybills_tree_pager',
       :height => "100%",
@@ -120,7 +122,8 @@ module WaybillsHelper
       }'.to_json_var,
       :onSelectRow => 'function(row_id)
       {
-        if(canManageWaybill == "true") {
+        if((canManageWaybill == "true") &&
+           ($("#waybills_tree").getCell(row_id, "in_storehouse") == "true")) {
           $("#waybills_release").click(function() {
             location.hash = "#storehouses/releases/new?filter=waybill&waybill=" + row_id;
           });
@@ -129,6 +132,9 @@ module WaybillsHelper
           });
           $("#waybills_release").removeAttr("disabled");
           $("#waybills_release_1").removeAttr("disabled");
+        } else {
+          $("#waybills_release").attr("disabled","disabled");
+          $("#waybills_release_1").attr("disabled","disabled");
         }
       }'.to_json_var
     }]
