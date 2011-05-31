@@ -34,6 +34,7 @@ en:
     transcript: Transcript
   waybill:
     btn_add: New
+    btn_release: Release
     tree:
       document_id: Waybill
       date: Date
@@ -100,6 +101,8 @@ en:
       resource: Resource
       amount: Amount
       unit: Unit
+    filt_resource: Resource
+    filt_waybills: Waybills
   place:
     tag: Tag
     btn_new: New

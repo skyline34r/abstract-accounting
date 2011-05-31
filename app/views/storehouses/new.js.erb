@@ -7,3 +7,26 @@ if(dataPage != null) {
 }
 $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/new_release') %>");
+
+if($("#errorExplanation").html()) {
+  if(location.hash.substr(0,40) == "#storehouses/releases/new?filter=resource") {
+    $("#release_entry_table").html("<%= escape_javascript(render :partial => 'storehouses/release_entries_by_resource') %>");
+  } else {
+    $("#release_entry_table").html("<%= escape_javascript(render :partial => 'storehouses/release_entries_by_waybill') %>");
+  }
+} else {
+  $("#release_entry_table").html("<%= if params[:filter] == 'resource'
+                                        escape_javascript(render :partial => 'storehouses/release_entries_by_resource')
+                                      else
+                                        escape_javascript(render :partial => 'storehouses/release_entries_by_waybill')
+                                      end %>");
+  if("<%= params[:waybill] %>" != "") {
+    listAction = "<%= params[:waybill] %>";
+  }
+}
+lastSelId = "";
+if(dataPage != null) {
+  storeHouseData = dataPage["dataGrid"];
+  $("#storehouse_to").val(dataPage["to"]);
+  $("#storehouse_date").val(dataPage["date"]);
+}

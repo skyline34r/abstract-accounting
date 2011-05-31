@@ -12,14 +12,14 @@
   <%= javascript_include_tag 'locale/ui.datepicker-' + I18n.locale.to_s + '.js' %>
   <% end %>
 
-  <%= javascript_include_tag 'jqgrid/grid.base.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.common.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.custom.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.formedit.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.inlinedit.js' %>
-  <%= javascript_include_tag 'jqgrid/jquery.fmatter.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.celledit.js' %>
-  <%= javascript_include_tag 'jqgrid/grid.subgrid.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.base.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.common.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.custom.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.formedit.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.inlinedit.min.js' %>
+  <%= javascript_include_tag 'jqgrid/jquery.fmatter.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.celledit.min.js' %>
+  <%= javascript_include_tag 'jqgrid/grid.subgrid.min.js' %>
   <%= javascript_include_tag 'jqgrid/jquery.jqGrid.min.js' %>
 
   <%= javascript_include_tag 'utils.js' %>
@@ -142,7 +142,7 @@
         </ul>
       </li>
     <% end %>
-    <% if !current_user.nil? and current_user.entity.nil? then %>
+    <% if !current_user.nil? and can?(:manage, :all) then %>
       <li><a href="#">Administration</a>
         <ul>
           <li><a href="#users" class="page_link">User</a></li>

@@ -17,7 +17,7 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_get_release_of_storehouse" do
-    xml_http_request :get, :new
+    xml_http_request :get, :new, :filter => "waybill"
     assert_response :success
   end
 
@@ -121,4 +121,29 @@ class StorehousesControllerTest < ActionController::TestCase
     xml_http_request :post, :apply, :id => sr.id
     assert_response :success
   end
+
+  test "should_get_list_of_waybills" do
+    xml_http_request :get, :waybill_list
+    assert_response :success
+    assert_not_nil assigns(:waybills)
+  end
+
+  test "should_get_list_of_waybills_entries" do
+    wb = Waybill.new(:document_id => "123456",
+                     :created => DateTime.now, :owner => entities(:sergey),
+                     :from => entities(:abstract),
+                     :place => places(:orsha),
+                     :vatin => '500100732259')
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Can't save waybill with entries"
+    xml_http_request :get, :waybill_entries_list, :id => wb.id
+    assert_response :success
+    assert_not_nil assigns(:entries)
+  end
+
+  test "should_get_new_release_of_storehouse_by_resource" do
+    xml_http_request :get, :new, :filter => "resource"
+    assert_response :success
+  end
+ 
 end

@@ -117,6 +117,17 @@ module WaybillsHelper
       :subGridBeforeExpand => 'function(pId, id)
       {
         $("#waybills_tree").setGridParam({subGridUrl: "/waybills/" + id });
+      }'.to_json_var,
+      :onSelectRow => 'function(row_id)
+      {
+        $("#waybills_release").click(function() {
+          location.hash = "#storehouses/releases/new?filter=waybill&waybill=" + row_id;
+        });
+        $("#waybills_release_1").click(function() {
+          location.hash = "#storehouses/releases/new?filter=waybill&waybill=" + row_id;
+        });
+        $("#waybills_release").removeAttr("disabled");
+        $("#waybills_release_1").removeAttr("disabled");
       }'.to_json_var
     }]
 

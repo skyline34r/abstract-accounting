@@ -78,6 +78,10 @@ Abstract::Application.routes.draw do
       get 'pdf'
       post 'cancel'
       post 'apply'
+      get 'waybill_list'
+    end
+    member do
+      get 'waybill_entries_list'
     end
   end
   resources :places do

@@ -115,6 +115,7 @@ module StorehousesHelper
       :rowList => [10, 20, 30],
       :sortname => 'resource',
       :sortorder => 'asc',
+      :height => "100%",
       :viewrecords => true,
       :editurl => 'clientArray',
       :cellsubmit => 'clientArray',
@@ -203,7 +204,16 @@ module StorehousesHelper
       {
         $("#view_release").removeAttr("disabled");
         $("#view_release_1").removeAttr("disabled");
-      }'.to_json_var        
+      }'.to_json_var,
+      :beforeRequest => 'function()
+      {
+        var link = "/storehouses/releases/list";
+        var state = location.hash.substr(28, location.hash.length);
+        if(state.length != 0) {
+            link += "?state=" + state;
+        }
+        $("#releases_list").setGridParam({url: link});
+      }'.to_json_var
     }]
 
     jqgrid_api 'releases_list', grid, options
@@ -241,6 +251,173 @@ module StorehousesHelper
     }]
 
     jqgrid_api 'release_view_list', grid, options
+
+  end
+
+
+  def release_waybills_jqgrid_tree
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/waybill_list',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['', t('waybill.tree.document_id'), t('waybill.tree.date'),
+                    t('waybill.tree.organization'), t('waybill.tree.owner'),
+                    t('waybill.tree.vatin'), t('waybill.tree.place')],
+      :colModel => [
+        { :name => '',  :index => 'check', :width => 14,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(storeHouseData[options.rowId] != null) {
+                             return "<input type=\'checkbox\' id=\'check_waybill_"
+                               + options.rowId + "\' onClick=\'check_waybill(\""
+                               + options.rowId + "\"); \' checked>";
+                           }
+                           return "<input type=\'checkbox\' id=\'check_waybill_"
+                             + options.rowId + "\' onClick=\'check_waybill(\""
+                             + options.rowId + "\"); \'>";
+                         }'.to_json_var },
+        { :name => 'document_id', :index => 'document_id', :width => 110,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[0];
+                         }'.to_json_var },
+        { :name => 'date', :index => 'date', :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[1].substr(0,10);
+                         }'.to_json_var },
+        { :name => 'organization',  :index => 'organization',   :width => 180,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[2];
+                         }'.to_json_var },
+        { :name => 'owner',         :index => 'owner',          :width => 180,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[3];
+                         }'.to_json_var },
+        { :name => 'place',         :index => 'place',          :width => 146,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[4];
+                         }'.to_json_var },
+        { :name => 'vatin',         :index => 'vatin',          :width => 90,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[5];
+                         }'.to_json_var }
+      ],
+      :pager => '#release_waybills_tree_pager',
+      :height => "100%",
+      :rowNum => 30,
+      :rowList => [30, 50, 100],
+      :sortname => 'id',
+      :sortorder => 'asc',
+      :viewrecords => true,
+      :beforeSelectRow =>	'function()
+      {
+        if(canSave) {
+          $("#" + lastSubgridTableId).saveRow(lastSelId);
+        }
+        return false;
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(listAction != "") {
+          var _id = listAction;
+          listAction = "check_waybill";
+          $("#check_waybill_" + _id).attr("checked", "checked");
+          $("#release_waybills_tree").expandSubGridRow(_id);
+        }
+      }'.to_json_var,
+      :subGrid => true,
+      :subGridRowExpanded => 'function(subgrid_id, row_id)
+      {
+        var subgrid_table_id;
+        subgrid_table_id = subgrid_id + "_t";
+
+        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id +
+          "\" onmouseup=\"canSave = false;\"></table>");
+        $("#"+subgrid_table_id).jqGrid({
+          url: "/storehouses/" + row_id + "/waybill_entries_list",
+          datatype: "json",
+          mtype: "GET",
+          colNames: ["", getReleaseEntryColumn("resource"), getReleaseEntryColumn("amount"),
+                     getReleaseEntryColumn("release"), getReleaseEntryColumn("unit")],
+          colModel: [
+              { name: "", index: "", width: 14, sortable: false, resizable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                  if((listAction == "check_waybill") || ((storeHouseData[row_id] != null) &&
+                     (storeHouseData[row_id][options.rowId] != null))) {
+                    return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                               + options.rowId + "\' onClick=\'check_release_waybill(\""
+                               + row_id + "\", \"" + options.rowId + "\"); \' checked>";
+                  }
+                  return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                             + options.rowId + "\' onClick=\'check_release_waybill(\""
+                               + row_id + "\", \"" + options.rowId + "\"); \'>";
+                }},
+              { name: "resource", index: "resource", width: 300, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[0];
+                }},
+              { name: "amount", index: "amount", width: 93, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[1];
+                }},
+              { name: "release", index: "release", width: 93, sortable: false, editable: true,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  if(cellvalue == " ") cellvalue = "";
+                  if(listAction == "check_waybill") {
+                    cellvalue = rowObject[1];
+                  }
+                  if(isNaN(cellvalue)) {
+                    if((storeHouseData[row_id] == null) ||
+                       (storeHouseData[row_id][options.rowId] == null)) {
+                      return "";
+                    }
+                    return storeHouseData[row_id][options.rowId];
+                  }
+                  if((cellvalue == "") || (parseInt(cellvalue) <= "0")) {
+                    $("#check_entry_" + row_id + "_" + options.rowId).removeAttr("checked");
+                    uncheckParentWaybill(row_id);
+                    if(storeHouseData[row_id] != null) {
+                      delete storeHouseData[row_id][options.rowId];
+                      if(storeHouseData[row_id].toSource().length == 4) {
+                        delete storeHouseData[row_id];
+                      }
+                    }
+                    return "";
+                  }
+                  if(storeHouseData[row_id] == null) {
+                    storeHouseData[row_id] = new Object();
+                  }
+                  storeHouseData[row_id][options.rowId] = cellvalue;
+                  return cellvalue;
+                }},
+              { name: "resource", index: "unit", width: 93, sortable: false,
+                resizable: false, formatter: function (cellvalue, options, rowObject) {
+                  return rowObject[2];
+                }}
+              ],
+          height: "100%",
+          editurl: "clientArray",
+          cellsubmit: "clientArray",
+          loadComplete: function () {
+            listAction = "";
+          },
+          onSelectRow: function(id)
+          {
+            if(lastSelId != "") {
+              $("#" + subgrid_table_id).saveRow(lastSelId);
+            }
+            lastSelId = id;
+            lastSubgridTableId = subgrid_table_id;
+            if($("#check_entry_" + row_id + "_" + id).is(":checked")) {
+              $("#" + subgrid_table_id).editRow(id, true);
+            }
+          }
+        });
+      }'.to_json_var
+    }]
+
+    jqgrid_api 'release_waybills_tree', grid, options
 
   end
 

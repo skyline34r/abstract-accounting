@@ -31,13 +31,13 @@
           <a href="#storehouses/releases" onclick="filterGrid(-1)" style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.release.all' %>
           </a>
-          <a href="#storehouses/releases" onclick="filterGrid(1)" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases?state=1" onclick="filterGrid(1)" style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.release.inwork' %>
           </a>
-          <a href="#storehouses/releases" onclick="filterGrid(3)" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases?state=3" onclick="filterGrid(3)" style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.release.closed' %>
           </a>
-          <a href="#storehouses/releases" onclick="filterGrid(2)" style="margin-left:5px;margin-right:5px">
+          <a href="#storehouses/releases?state=2" onclick="filterGrid(2)" style="margin-left:5px;margin-right:5px">
             <%= t 'storehouse.release.applied' %>
           </a>
         </div>
@@ -46,7 +46,7 @@
         <div align="right">
           <input type="button" id="release_new"
                value="<%=t 'storehouse.release.btn_new'%>"
-               onclick="location.hash = '#storehouses/releases/new';" />
+               onclick="location.hash = '#storehouses/releases/new?filter=waybill';" />
           <input type="button" id="view_release"
                value="<%=t 'storehouse.release.btn_view'%>" disabled="true"
                onclick="viewRelease();"/>
@@ -63,7 +63,7 @@
       <td align="right">
         <input type="button" id="release_new_1"
            value="<%=t 'storehouse.release.btn_new'%>"
-           onclick="location.hash = '#storehouses/releases/new';" />
+           onclick="location.hash = '#storehouses/releases/new?filter=waybill';" />
         <input type="button" id="view_release_1"
            value="<%=t 'storehouse.release.btn_view'%>" disabled="true"
            onclick="viewRelease();"/>

@@ -1,4 +1,5 @@
 <script type="text/javascript">
+  var listAction = "";
   var lastSelId = "";
   var canSave = true;
 
@@ -16,9 +17,26 @@
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
-    $("#storehouse_release_list").saveRow(lastSelId);
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
+    if($("#gbox_release_waybills_tree").html()) {
+      if(lastSubgridTableId) {
+        $("#" + lastSubgridTableId).saveRow(lastSelId);
+      }
+      var tmpData = new Object();
+      for (var i in storeHouseData) {
+        for (var j in storeHouseData[i]) {
+          if(tmpData[j]) {
+            tmpData[j] += parseInt(storeHouseData[i][j]);
+          } else {
+            tmpData[j] = parseInt(storeHouseData[i][j]);
+          }
+        }
+      }
+      storeHouseData = tmpData;
+    } else {
+      $("#storehouse_release_list").saveRow(lastSelId);
+    }
     dataPage["to"] = $("#storehouse_to").val();
     dataPage["date"] = $("#storehouse_date").val();
     var d = new Date($("#storehouse_date").val());
@@ -31,7 +49,55 @@
                   "&date=" + d.toUTCString() + entries});
   }
   function saveEdittedReleaseRow() {
-    if(canSave) $("#storehouse_release_list").saveRow(lastSelId);
+    if(canSave) {
+      if($("#gbox_storehouse_release_list").html() != null) {
+        $("#storehouse_release_list").saveRow(lastSelId);
+      } else {
+        $("#" + lastSubgridTableId).saveRow(lastSelId);
+      }
+    }
+  }
+  function check_waybill(id) {
+    if(!$("#check_waybill_" + id).is(":checked")) {
+      for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
+        var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+        $("#check_entry_" + id + "_" + row_id).removeAttr("checked");
+        $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release", " ");
+      }
+      delete storeHouseData[id];
+    } else {
+      if($("#release_waybills_tree_" + id + "_t").html()) {
+        for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
+          var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+          $("#check_entry_" + id + "_" + row_id).attr("checked", "checked");
+          $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release",
+            $("#release_waybills_tree_" + id + "_t").getCell(row_id, "amount"));
+        }
+      } else {
+        listAction = "check_waybill";
+        $("#release_waybills_tree").expandSubGridRow(id);
+      }
+    }
+  }
+  function check_release_waybill(sub_id, row_id) {
+    if(!$("#check_entry_" + sub_id + "_" + row_id).is(":checked")) {
+      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release", " ");
+      uncheckParentWaybill(sub_id);
+    } else {
+      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release",
+        $("#release_waybills_tree_" + sub_id + "_t").getCell(row_id, "amount"));
+      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
+      $("#check_waybill_" + sub_id).attr("checked", "checked");
+    }
+  }
+  function uncheckParentWaybill(sub_id) {
+      var dataIDs = $("#release_waybills_tree_" + sub_id + "_t").getDataIDs();
+      for(var i=0; i<dataIDs.length; i++) {
+        if($("#check_entry_" + sub_id + "_" + dataIDs[i]).is(":checked")) {
+          return;
+        }
+      }
+      $("#check_waybill_" + sub_id).removeAttr("checked");
   }
 </script>
 
@@ -64,9 +130,22 @@
       </td>
     </tr>
     <tr>
+      <td align="left" colspan="2">
+        <div>
+          <a href="#storehouses/releases/new?filter=waybill" onclick="dataPage = null;"
+             style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.filt_waybills' %>
+          </a>
+          <a href="#storehouses/releases/new?filter=resource" onclick="dataPage = null;"
+             style="margin-left:5px;margin-right:5px">
+            <%= t 'storehouse.filt_resource' %>
+          </a>
+        </div>
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReleaseRow();">
-        <table id=storehouse_release_list onmouseup="canSave = false;"></table>
-        <div id=storehouse_release_pager></div>
+        <div id="release_entry_table"></div>
       </td>
     </tr>
     <tr>

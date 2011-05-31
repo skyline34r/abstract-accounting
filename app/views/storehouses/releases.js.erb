@@ -15,12 +15,13 @@ if("<%= can?(:manage, Storehouse) %>" == "true") {
 
 function filterGrid(state)
 {
-    var link = '/storehouses/releases/list';
+    var link = '#storehouses/releases';
     if(state != -1) {
-        link += '?state=' + state
+        link += '?state=' + state;
     }
+    cancelRequest = true;
+    location.hash = link;
     $("#view_release").attr("disabled", "disabled");
     $("#view_release_1").attr("disabled", "disabled");
-    $('#releases_list').setGridParam({url: link});
-    $('#releases_list').trigger('reloadGrid');
+    $("#releases_list").trigger("reloadGrid");
 }
