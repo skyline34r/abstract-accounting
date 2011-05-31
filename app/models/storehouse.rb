@@ -36,6 +36,26 @@ class StorehouseEntry
   end
 end
 
+class StorehouseWaybillEntry
+  attr_reader :product, :amount
+  def initialize(product, amount)
+    @product = product
+    @amount = amount
+  end
+end
+
+class StorehouseWaybill
+  attr_reader :waybill, :resources
+  def initialize(waybill)
+    @waybill = waybill
+    @resources = Array.new
+  end
+
+  def add_resource product, amount
+    @resources << StorehouseWaybillEntry.new(product, amount)
+  end
+end
+
 class Storehouse < Array
   attr_reader :entity, :place
   def initialize(entity = nil, place = nil, real_amount = true)
@@ -71,5 +91,40 @@ class Storehouse < Array
       return nil unless a.save
     end
     a
+  end
+
+  def waybills
+    waybills = Hash.new
+    self.each do |sh_entry|
+      amount = sh_entry.amount
+      Waybill.order("created DESC").find_by_owner_and_place(@entity, @place).each do |waybill|
+        waybill.resources.each do |resource|
+          if sh_entry.product.id == resource.product.id
+            if !waybills.key?(waybill.id)
+              waybills[waybill.id] = StorehouseWaybill.new(waybill)
+            end
+            if amount <= resource.amount
+              waybills[waybill.id].add_resource resource.product, amount
+              amount = 0
+            else
+              waybills[waybill.id].add_resource resource.product, resource.amount
+              amount -= resource.amount
+            end
+            break
+          end
+        end
+        break if amount == 0
+      end
+    end
+    waybills.values
+  end
+
+  def waybill_by_id id
+    self.waybills.each do |item|
+      if item.waybill.id == id
+        return item
+      end
+    end
+    nil
   end
 end
