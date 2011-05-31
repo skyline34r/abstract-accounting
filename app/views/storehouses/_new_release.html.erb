@@ -45,8 +45,8 @@
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
     }
-    $.ajax({url: "/storehouses/releases/create?to=" + $("#storehouse_to").val() +
-                  "&date=" + d.toUTCString() + entries});
+    ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
+                "&date=" + d.toUTCString() + entries);
   }
   function saveEdittedReleaseRow() {
     if(canSave) {

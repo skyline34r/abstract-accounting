@@ -13,7 +13,7 @@
     crossPageLink = "charts";
     $("#chart_div").css("display","none");
     $("#chart_p_s_controls").css("display","block");
-    $.ajax({url: "resources"});
+    ajaxRequest("resources");
 
     $("#chart_submit").click(function() {
       var selRow = $("#resources_list").getGridParam("selrow");

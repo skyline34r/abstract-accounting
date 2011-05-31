@@ -8,9 +8,24 @@
   var crossPageLink = "";
   var cancelRequest = false;
 
+  function ajaxRequest(_url) {
+    $.ajax({url: _url,
+            beforeSend: function() {
+                          $.popup({note:'Пожалуйста, подождите',sticked:true});
+                        },
+            success: function() {
+                       $.popup({remove:true});
+                     },
+            error: function() {
+                     $.popup({remove:true});
+                     $.popup({note:'Ошибка запроса!',time:2000});
+                   }
+           });
+  }
+
   $(window).bind("hashchange", function() {
     if(!cancelRequest) {
-      $.ajax({url: location.hash.substr(1, location.hash.length)});
+      ajaxRequest(location.hash.substr(1, location.hash.length));
     } else {
       cancelRequest = false;
     }
@@ -21,13 +36,13 @@
     crossPageLink = "";
     dataPage = null;
     if($(this).attr("href") == location.hash) {
-      $.ajax({url: location.hash.substr(1, location.hash.length)});
+      ajaxRequest(location.hash.substr(1, location.hash.length));
     }
   });
 
   $(document).ready(function () {
     if(location.hash.length > 0) {
-      $.ajax({url: location.hash.substr(1, location.hash.length)});
+      ajaxRequest(location.hash.substr(1, location.hash.length));
     }
   });
 

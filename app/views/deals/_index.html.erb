@@ -39,7 +39,7 @@
     crossPageLink = "deals/new";
     $("#deals_div").css("display","none");
     $("#deal_p_s_controls").css("display","block");
-    $.ajax({url: "resources"});
+    ajaxRequest("resources");
     
     $("#deal_submit").click(function() {
       var selRow = $("#resources_list").getGridParam("selrow");

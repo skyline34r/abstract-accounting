@@ -9,7 +9,7 @@
     crossPageLink = "quotes/new";
     $("#quotes_div").css("display","none");
     $("#quote_p_s_controls").css("display","block");
-    $.ajax({url: "resources"});
+    ajaxRequest("resources");
 
     $("#quote_submit").click(function() {
       var selRow = $("#resources_list").getGridParam("selrow");
