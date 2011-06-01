@@ -130,4 +130,16 @@ class Storehouse < Array
     end
     nil
   end
+
+  def where_like name, like
+    self.keep_if do |item|
+      name.split(".").each do |attr|
+        if !attr.empty?
+          item = item.send(attr)
+        end
+      end
+      item.include? like
+    end
+    self
+  end
 end

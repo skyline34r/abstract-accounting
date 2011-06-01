@@ -23,6 +23,9 @@ class StorehousesController < ApplicationController
     
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place, real_amount)
+    if params[:_search] and !params[:resource].nil?
+      @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+    end
     objects_order_by_from_params @storehouse, params
     @storehouse = @storehouse.paginate(
       :page     => params[:page],
