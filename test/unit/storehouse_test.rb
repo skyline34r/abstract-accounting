@@ -531,4 +531,8 @@ class StorehouseTest < ActiveSupport::TestCase
     assert !sh.waybill_by_id(wb4.id).nil?, "Waybill is nil"
     assert sh.waybill_by_id(wb4.id - 1).nil?, "Waybill is not nil"
   end
+
+  test "check where" do
+
+  end
 end

@@ -21,7 +21,11 @@ class StorehousesController < ApplicationController
                   'amount', 'product.unit']
     end
     @storehouse = Storehouse.new(current_user.entity,
-                                 current_user.place, real_amount).paginate(
+                                 current_user.place, real_amount)
+    if params[:_search] and !params[:resource].nil?
+      @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+    end
+    @storehouse = @storehouse.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
