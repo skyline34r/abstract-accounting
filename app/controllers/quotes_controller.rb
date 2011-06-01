@@ -11,7 +11,9 @@ class QuotesController < ApplicationController
 
   def view
     @columns = ['money.alpha_code', 'day', 'rate']
-    @quotes = Quote.all.paginate(
+    @quotes = Quote.all
+    objects_order_by_from_params @quotes, params
+    @quotes = @quotes.paginate(
       :page     => params[:page],
       :per_page => params[:rows],
       :order    => order_by_from_params(params))
