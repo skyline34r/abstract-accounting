@@ -163,14 +163,14 @@ module StorehousesHelper
                     t('storehouse.releaseList.place'),
                     t('storehouse.releaseList.status')],
       :colModel => [
-        { :name => 'date',   :index => 'date',   :width => 200,
+        { :name => 'created',   :index => 'created',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'owner',  :index => 'owner',  :width => 200 },
-        { :name => 'to',     :index => 'to',     :width => 200 },
-        { :name => 'place',  :index => 'place',  :width => 200 },
-        { :name => 'status', :index => 'status', :width => 100,
+        { :name => 'owner.tag', :index => 'owner.tag', :width => 200 },
+        { :name => 'to.tag',    :index => 'to.tag',    :width => 200 },
+        { :name => 'place.tag', :index => 'place.tag', :width => 200 },
+        { :name => 'state',     :index => 'state',     :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return getReleaseStatus(cellvalue);
                          }'.to_json_var },
@@ -179,7 +179,7 @@ module StorehousesHelper
       :rowList => [30, 50, 100],
       :height => "100%",
       :pager => '#releases_pager',
-      :sortname => 'date',
+      :sortname => 'created',
       :sortorder => 'asc',
       :viewrecords => true,
       :subGrid => true,

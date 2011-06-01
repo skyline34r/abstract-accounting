@@ -67,11 +67,13 @@ class StorehousesController < ApplicationController
     elsif params[:state] == "3"
       state = StorehouseRelease::CANCELED
     end
+
     @releases = StorehouseRelease.find_all_by_owner_and_place_and_state(current_user.entity,
-                                         current_user.place, state).paginate(
+                                                                        current_user.place, state)
+    objects_order_by_from_params @releases, params
+    @releases = @releases.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@releases, @columns, :id_column => 'id')
     end
