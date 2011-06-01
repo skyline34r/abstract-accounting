@@ -30,8 +30,6 @@ module WaybillsHelper
       :cellsubmit => 'clientArray',
       :rowList => [10, 20, 30],
       :rownumbers => true,
-      :sortname => 'resource',
-      :sortorder => 'asc',
       :viewrecords => true,
       :beforeEditCell => 'function(rowid, cellname, value, iRow, iCol)
       {

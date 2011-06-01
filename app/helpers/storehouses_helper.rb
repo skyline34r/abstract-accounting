@@ -16,16 +16,16 @@ module StorehousesHelper
                     t('storehouse.storehouseList.amount'),
                     t('storehouse.storehouseList.unit')],
       :colModel => [
-        { :name => 'place',    :index => 'place',    :width => 150 },
-        { :name => 'resource', :index => 'resource', :width => 300 },
-        { :name => 'real_amount',   :index => 'real_amount',   :width => 150 },
-        { :name => 'amount',   :index => 'amount',   :width => 150 },
-        { :name => 'unit',     :index => 'unit',     :width => 55 }
+        { :name => 'place',       :index => 'place.tag',            :width => 150 },
+        { :name => 'resource',    :index => 'product.resource.tag', :width => 300 },
+        { :name => 'real_amount', :index => 'real_amount',          :width => 150 },
+        { :name => 'amount',      :index => 'amount',               :width => 150 },
+        { :name => 'unit',        :index => 'product.unit',         :width => 55 }
       ],
       :pager => '#storehouse_pager',
       :rowNum => 30,
       :rowList => [30, 50, 100],
-      :sortname => 'resource',
+      :sortname => 'product.resource.tag',
       :sortorder => 'asc',
       :viewrecords => true,
       :height => "100%",
@@ -78,7 +78,7 @@ module StorehousesHelper
                              + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                              + options.rowId + "\"); \' checked>";
                          }'.to_json_var },
-        { :name => 'resource',  :index => 'resource',   :width => 330,
+        { :name => 'resource',  :index => 'product.resource.tag',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
@@ -86,7 +86,8 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
-        { :name => 'release',  :index => 'release',   :width => 200, :editable => true,
+        { :name => 'release', :index => 'release', :width => 200,
+          :editable => true, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(cellvalue == " ") cellvalue = "";
                            if(cellvalue == rowObject[3]) {
@@ -104,7 +105,7 @@ module StorehousesHelper
                            storeHouseData[options.rowId] = cellvalue;
                            return cellvalue;
                          }'.to_json_var },
-        { :name => 'unit',  :index => 'unit',   :width => 50,
+        { :name => 'unit',  :index => 'product.unit',   :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[3];
                          }'.to_json_var },
@@ -113,7 +114,7 @@ module StorehousesHelper
       :pager => '#storehouse_release_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'resource',
+      :sortname => 'product.resource.tag',
       :sortorder => 'asc',
       :height => "100%",
       :viewrecords => true,
@@ -233,14 +234,14 @@ module StorehousesHelper
                      t('storehouse.entryList.amount'),
                      t('storehouse.entryList.unit') ],
       :colModel => [
-        { :name => 'resource', :index => 'resource', :width => 450 },
+        { :name => 'resource', :index => 'product.resource.tag', :width => 450 },
         { :name => 'amount',   :index => 'amount',   :width => 295 },
-        { :name => 'unit',     :index => 'unit',     :width => 55 }
+        { :name => 'unit',     :index => 'product.unit',     :width => 55 }
       ],
       :pager => '#release_view_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'resource',
+      :sortname => 'product.resource.tag',
       :sortorder => 'asc',
       :viewrecords => true,
       :beforeRequest => 'function()
@@ -278,27 +279,27 @@ module StorehousesHelper
                              + options.rowId + "\' onClick=\'check_waybill(\""
                              + options.rowId + "\"); \'>";
                          }'.to_json_var },
-        { :name => 'document_id', :index => 'document_id', :width => 110,
+        { :name => 'document_id', :index => 'waybill.document_id', :width => 110,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[0];
                          }'.to_json_var },
-        { :name => 'date', :index => 'date', :width => 100,
+        { :name => 'date', :index => 'waybill.created', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1].substr(0,10);
                          }'.to_json_var },
-        { :name => 'organization',  :index => 'organization',   :width => 180,
+        { :name => 'organization', :index => 'waybill.from.tag', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
-        { :name => 'owner',         :index => 'owner',          :width => 180,
+        { :name => 'owner', :index => 'waybill.owner.tag', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[3];
                          }'.to_json_var },
-        { :name => 'place',         :index => 'place',          :width => 146,
+        { :name => 'place', :index => 'waybill.place.tag', :width => 146,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[4];
                          }'.to_json_var },
-        { :name => 'vatin',         :index => 'vatin',          :width => 90,
+        { :name => 'vatin', :index => 'waybill.vatin', :width => 90,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[5];
                          }'.to_json_var }
@@ -307,7 +308,7 @@ module StorehousesHelper
       :height => "100%",
       :rowNum => 30,
       :rowList => [30, 50, 100],
-      :sortname => 'id',
+      :sortname => 'waybill.created',
       :sortorder => 'asc',
       :viewrecords => true,
       :beforeSelectRow =>	'function()
