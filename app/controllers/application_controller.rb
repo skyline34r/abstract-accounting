@@ -47,21 +47,37 @@ class ApplicationController < ActionController::Base
     if params[:sord] == 'asc'
       objects.sort! { |a,b| a = ( v = a
                                   params[:sidx].each_line('.') do |n|
-                                    v = v.send(n.chomp('.'))
+                                    if v.nil?
+                                      v = ''
+                                    else
+                                      v = v.send(n.chomp('.'))
+                                    end
                                   end
                                   v) <=> b = ( w = b
                                                params[:sidx].each_line('.') do |n|
-                                                 w = w.send(n.chomp('.'))
+                                                 if w.nil?
+                                                   w = ''
+                                                 else
+                                                   w = w.send(n.chomp('.'))
+                                                 end
                                                end
                                                w) }
     else
       objects.sort! { |b,a| a = ( v = a
                                   params[:sidx].each_line('.') do |n|
-                                    v = v.send(n.chomp('.'))
+                                    if v.nil?
+                                      v = ''
+                                    else
+                                      v = v.send(n.chomp('.'))
+                                    end
                                   end
                                   v) <=> b = ( w = b
                                                params[:sidx].each_line('.') do |n|
-                                                 w = w.send(n.chomp('.'))
+                                                 if w.nil?
+                                                   w = ''
+                                                 else
+                                                   w = w.send(n.chomp('.'))
+                                                 end
                                                end
                                                w) }
     end
