@@ -138,7 +138,16 @@ class Storehouse < Array
           item = item.send(attr)
         end
       end
-      item.include? like
+      if Integer === item or Float === item
+        like = if like === Integer or like === Float
+                 like
+               else
+                 like.to_i
+               end
+        item == like
+      elsif String === item
+        item.include? like
+      end
     end
     self
   end
