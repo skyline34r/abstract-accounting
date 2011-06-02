@@ -533,6 +533,62 @@ class StorehouseTest < ActiveSupport::TestCase
   end
 
   test "check where" do
+    p = Place.new(:tag => "Storehouse")
+    assert p.save, "Place not saved"
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "12345",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    assert wb.save, "Waybill is not saved"
 
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "123456",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    wb.add_resource "shovel", "th", 100
+    assert wb.save, "Waybill is not saved"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "1234567",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 6, 12, 0, 0))
+    wb.add_resource "shovel", "th", 50
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new entities(:sergey), p
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_where = sh.where_like 'product.resource.tag', "sho"
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'product.resource.tag', "el"
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'product.resource.tag', "ov"
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'product.resource.tag', "o"
+    assert_equal 2, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'product.unit', "th"
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'amount', 150
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh_where = sh.where_like 'amount', 150.00
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'amount', "150"
+    assert_equal 1, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'amount', 15
+    assert_equal 0, sh_where.length, "Wrong storehouse length"
+    sh = Storehouse.new entities(:sergey), p
+    sh_where = sh.where_like 'amount', "15"
+    assert_equal 0, sh_where.length, "Wrong storehouse length"
   end
 end
