@@ -188,6 +188,43 @@ class StorehousesController < ApplicationController
                 'waybill.owner.tag', 'waybill.vatin', 'waybill.place.tag']
     @waybills = Storehouse.new(current_user.entity,
                                current_user.place).waybills
+
+    if params[:_search]
+      if !params[:document_id].nil?
+        @waybills = @waybills.where_like 'waybill.document_id', params[:document_id]
+      end
+      if !params[:created].nil?
+        @waybills = @waybills.where_like 'waybill.created', params[:created]
+      end
+      if !params[:from].nil?
+        @waybills = @waybills.where_like 'waybill.from.tag', params[:from]
+      end
+      if !params[:owner].nil?
+        @waybills = @waybills.where_like 'waybill.owner.tag', params[:owner]
+      end
+      if !params[:vatin].nil?
+        @waybills = @waybills.where_like 'waybill.vatin', params[:vatin]
+      end
+      if !params[:place].nil?
+        @waybills = @waybills.where_like 'waybill.place.tag', params[:place]
+      end
+    end
+
+    case params[:sidx]
+      when 'document_id'
+        params[:sidx] = 'waybill.document_id'
+      when 'created'
+        params[:sidx] = 'waybill.created'
+      when 'from'
+        params[:sidx] = 'waybill.from.tag'
+      when 'owner'
+        params[:sidx] = 'waybill.owner.tag'
+      when 'vatin'
+        params[:sidx] = 'waybill.vatin'
+      when 'place'
+        params[:sidx] = 'waybill.place.tag'
+    end
+
     objects_order_by_from_params @waybills, params
     @waybills = @waybills.paginate(
       :page     => params[:page],

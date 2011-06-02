@@ -15,3 +15,9 @@
 <%= raw(release_waybills_jqgrid_tree) %>
 <table id=release_waybills_tree></table>
 <div id=release_waybills_tree_pager></div>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#release_waybills_tree").filterToolbar({searchOnEnter : false});
+  $("#release_waybills_tree")[0].toggleToolbar();
+</script>

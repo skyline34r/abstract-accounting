@@ -294,7 +294,7 @@ module StorehousesHelper
                     t('waybill.tree.organization'), t('waybill.tree.owner'),
                     t('waybill.tree.vatin'), t('waybill.tree.place')],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14,
+        { :name => '',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(storeHouseData[options.rowId] != null) {
                              return "<input type=\'checkbox\' id=\'check_waybill_"
@@ -305,27 +305,27 @@ module StorehousesHelper
                              + options.rowId + "\' onClick=\'check_waybill(\""
                              + options.rowId + "\"); \'>";
                          }'.to_json_var },
-        { :name => 'document_id', :index => 'waybill.document_id', :width => 110,
+        { :name => 'document_id', :index => 'document_id', :width => 110,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[0];
                          }'.to_json_var },
-        { :name => 'date', :index => 'waybill.created', :width => 100,
+        { :name => 'date', :index => 'created', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1].substr(0,10);
                          }'.to_json_var },
-        { :name => 'organization', :index => 'waybill.from.tag', :width => 180,
+        { :name => 'organization', :index => 'from', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
-        { :name => 'owner', :index => 'waybill.owner.tag', :width => 180,
+        { :name => 'owner', :index => 'owner', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[3];
                          }'.to_json_var },
-        { :name => 'place', :index => 'waybill.place.tag', :width => 146,
+        { :name => 'place', :index => 'place', :width => 146,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[4];
                          }'.to_json_var },
-        { :name => 'vatin', :index => 'waybill.vatin', :width => 90,
+        { :name => 'vatin', :index => 'vatin', :width => 90,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[5];
                          }'.to_json_var }
@@ -337,6 +337,8 @@ module StorehousesHelper
       :sortname => 'waybill.created',
       :sortorder => 'asc',
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :beforeSelectRow =>	'function()
       {
         if(canSave) {
@@ -444,7 +446,27 @@ module StorehousesHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'release_waybills_tree', grid, options
+    pager = [:navGrid, '#release_waybills_tree_pager', {:refresh => false, :add => false,
+                                                        :del=> false, :edit => false,
+                                                        :search => false, :view => false, :cloneToTop => true},
+                                                       {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('storehouse.storehouseList.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#release_waybills_tree")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#release_waybills_tree")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#release_waybills_tree_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#release_waybills_tree_toppager_left', button_find_data]
+
+    jqgrid_api 'release_waybills_tree', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
