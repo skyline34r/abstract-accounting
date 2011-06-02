@@ -24,21 +24,23 @@ class StorehousesController < ApplicationController
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place, real_amount)
     if params[:_search]
+      args = Hash.new
       if !params[:place].nil?
-        @storehouse = @storehouse.where_like 'place.tag', params[:place]
+        args['place.tag'] = {:like => params[:place]}
       end
       if !params[:resource].nil?
-        @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+        args['product.resource.tag'] = {:like => params[:resource]}
       end
       if !params[:real_amount].nil?
-        @storehouse = @storehouse.where_like 'real_amount', params[:real_amount]
+        args['real_amount'] = {:like => params[:real_amount]}
       end
       if !params[:amount].nil?
-        @storehouse = @storehouse.where_like 'amount', params[:amount]
+        args['amount'] = {:like => params[:amount]}
       end
       if !params[:unit].nil?
-        @storehouse = @storehouse.where_like 'product.unit', params[:unit]
+        args['product.unit'] = {:like => params[:unit]}
       end
+      @storehouse = @storehouse.where args
     end
 
     case params[:sidx]

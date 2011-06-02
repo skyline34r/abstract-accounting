@@ -1,4 +1,5 @@
 require "resource"
+require "action_array"
 
 class StorehouseEntry
   attr_reader :owner, :place, :product, :real_amount, :amount
@@ -129,26 +130,5 @@ class Storehouse < Array
       end
     end
     nil
-  end
-
-  def where_like name, like
-    self.keep_if do |item|
-      name.split(".").each do |attr|
-        if !attr.empty?
-          item = item.send(attr)
-        end
-      end
-      if Integer === item or Float === item
-        like = if like === Integer or like === Float
-                 like
-               else
-                 like.to_i
-               end
-        item == like
-      elsif String === item
-        item.include? like
-      end
-    end
-    self
   end
 end
