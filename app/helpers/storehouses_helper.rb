@@ -71,7 +71,7 @@ module StorehousesHelper
                     t('storehouse.releaseNewList.release'),
                     t('storehouse.releaseNewList.unit')],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14,
+        { :name => '',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(storeHouseData[options.rowId] == undefined) {
                              return "<input type=\'checkbox\' id=\'check_"
@@ -82,7 +82,7 @@ module StorehousesHelper
                              + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                              + options.rowId + "\"); \' checked>";
                          }'.to_json_var },
-        { :name => 'resource',  :index => 'product.resource.tag',   :width => 330,
+        { :name => 'resource',  :index => 'resource',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1];
                          }'.to_json_var },
@@ -90,7 +90,7 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
-        { :name => 'release', :index => 'release', :width => 200,
+        { :name => 'release', :index => 'release', :width => 200, :search => false,
           :editable => true, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(cellvalue == " ") cellvalue = "";
@@ -109,7 +109,7 @@ module StorehousesHelper
                            storeHouseData[options.rowId] = cellvalue;
                            return cellvalue;
                          }'.to_json_var },
-        { :name => 'unit',  :index => 'product.unit',   :width => 50,
+        { :name => 'unit',  :index => 'unit',   :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[3];
                          }'.to_json_var },
@@ -124,6 +124,8 @@ module StorehousesHelper
       :viewrecords => true,
       :editurl => 'clientArray',
       :cellsubmit => 'clientArray',
+      :gridview => true,
+      :toppager => true,
       :beforeRequest => 'function()
       {
         if(dataPage != null) {
@@ -149,7 +151,27 @@ module StorehousesHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'storehouse_release_list', grid, options
+    pager = [:navGrid, '#storehouse_release_pager', {:refresh => false, :add => false,
+                                                     :del=> false, :edit => false,
+                                                     :search => false, :view => false, :cloneToTop => true},
+                                                    {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('storehouse.storehouseList.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#storehouse_release_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#storehouse_release_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#storehouse_release_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#storehouse_release_list_toppager_left', button_find_data]
+
+    jqgrid_api 'storehouse_release_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 

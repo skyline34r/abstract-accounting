@@ -1,3 +1,9 @@
 <%= raw(storehouse_release_jqgrid) %>
 <table id=storehouse_release_list onmouseup="canSave = false;"></table>
 <div id=storehouse_release_pager></div>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#storehouse_release_list").filterToolbar({searchOnEnter : false});
+  $("#storehouse_release_list")[0].toggleToolbar();
+</script>
