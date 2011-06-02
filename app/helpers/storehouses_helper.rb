@@ -331,11 +331,11 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[0];
                          }'.to_json_var },
-        { :name => 'date', :index => 'created', :width => 100,
+        { :name => 'created', :index => 'created', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[1].substr(0,10);
                          }'.to_json_var },
-        { :name => 'organization', :index => 'from', :width => 180,
+        { :name => 'from', :index => 'from', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
