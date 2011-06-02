@@ -23,10 +23,34 @@ class StorehousesController < ApplicationController
     
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place, real_amount)
-    if params[:_search] and !params[:resource].nil?
-      @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+    if params[:_search]
+      if !params[:place].nil?
+        @storehouse = @storehouse.where_like 'place.tag', params[:place]
+      end
+      if !params[:resource].nil?
+        @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+      end
+      if !params[:real_amount].nil?
+        @storehouse = @storehouse.where_like 'real_amount', params[:real_amount]
+      end
+      if !params[:amount].nil?
+        @storehouse = @storehouse.where_like 'amount', params[:amount]
+      end
+      if !params[:unit].nil?
+        @storehouse = @storehouse.where_like 'product.unit', params[:unit]
+      end
+    end
+
+    case params[:sidx]
+      when 'place'
+        params[:sidx] = 'place.tag'
+      when 'resource'
+        params[:sidx] = 'product.resource.tag'
+      when 'unit'
+        params[:sidx] = 'product.unit'
     end
     objects_order_by_from_params @storehouse, params
+
     @storehouse = @storehouse.paginate(
       :page     => params[:page],
       :per_page => params[:rows])

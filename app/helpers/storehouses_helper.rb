@@ -16,16 +16,16 @@ module StorehousesHelper
                     t('storehouse.storehouseList.amount'),
                     t('storehouse.storehouseList.unit')],
       :colModel => [
-        { :name => 'place',       :index => 'place.tag',            :width => 150 },
-        { :name => 'resource',    :index => 'product.resource.tag', :width => 300 },
-        { :name => 'real_amount', :index => 'real_amount',          :width => 150 },
-        { :name => 'amount',      :index => 'amount',               :width => 150 },
-        { :name => 'unit',        :index => 'product.unit',         :width => 55 }
+        { :name => 'place',       :index => 'place',       :width => 150 },
+        { :name => 'resource',    :index => 'resource',    :width => 300 },
+        { :name => 'real_amount', :index => 'real_amount', :width => 150 },
+        { :name => 'amount',      :index => 'amount',      :width => 150 },
+        { :name => 'unit',        :index => 'unit',        :width => 55 }
       ],
       :pager => '#storehouse_pager',
       :rowNum => 30,
       :rowList => [30, 50, 100],
-      :sortname => 'product.resource.tag',
+      :sortname => 'resource',
       :sortorder => 'asc',
       :viewrecords => true,
       :height => "100%",
