@@ -1,5 +1,6 @@
 require 'storehouse.rb'
 require 'prawn'
+require 'action_array'
 
 class StorehousesController < ApplicationController
   before_filter :authenticate_user!
@@ -192,24 +193,26 @@ class StorehousesController < ApplicationController
                                current_user.place).waybills
 
     if params[:_search]
+      args = Hash.new
       if !params[:document_id].nil?
-        @waybills = @waybills.where_like 'waybill.document_id', params[:document_id]
+        args['waybill.document_id'] = {:like => params[:document_id]}
       end
       if !params[:created].nil?
-        @waybills = @waybills.where_like 'waybill.created', params[:created]
+        args['waybill.created'] = {:like => params[:created]}
       end
       if !params[:from].nil?
-        @waybills = @waybills.where_like 'waybill.from.tag', params[:from]
+        args['waybill.from.tag'] = {:like => params[:from]}
       end
       if !params[:owner].nil?
-        @waybills = @waybills.where_like 'waybill.owner.tag', params[:owner]
+        args['waybill.owner.tag'] = {:like => params[:owner]}
       end
       if !params[:vatin].nil?
-        @waybills = @waybills.where_like 'waybill.vatin', params[:vatin]
+        args['waybill.vatin'] = {:like => params[:vatin]}
       end
       if !params[:place].nil?
-        @waybills = @waybills.where_like 'waybill.place.tag', params[:place]
+        args['waybill.place.tag'] = {:like => params[:place]}
       end
+      @waybills = @waybills.where args
     end
 
     case params[:sidx]

@@ -334,7 +334,7 @@ module StorehousesHelper
       :height => "100%",
       :rowNum => 30,
       :rowList => [30, 50, 100],
-      :sortname => 'waybill.created',
+      :sortname => 'created',
       :sortorder => 'asc',
       :viewrecords => true,
       :gridview => true,
