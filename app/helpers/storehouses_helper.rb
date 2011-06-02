@@ -29,15 +29,16 @@ module StorehousesHelper
       :sortorder => 'asc',
       :viewrecords => true,
       :height => "100%",
-      :gridview => true
+      :gridview => true,
+      :toppager => true
     }]
 
     pager = [:navGrid, '#storehouse_pager', {:refresh => false, :add => false,
                                              :del=> false, :edit => false,
-                                             :search => false, :view => false},
+                                             :search => false, :view => false, :cloneToTop => true},
                                             {}, {}, {}]
 
-    pager_button_find = [:navButtonAdd, '#storehouse_pager', {
+    button_find_data = {
       :caption => t('storehouse.storehouseList.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
@@ -47,9 +48,12 @@ module StorehousesHelper
           filter = true;
         }
         $("#storehouse_list")[0].toggleToolbar();
-      }'.to_json_var }]
+      }'.to_json_var }
 
-    jqgrid_api 'storehouse_list', grid, options, pager, pager_button_find
+    pager_button_find = [:navButtonAdd, '#storehouse_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#storehouse_list_toppager_left', button_find_data]
+
+    jqgrid_api 'storehouse_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
