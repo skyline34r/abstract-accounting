@@ -23,7 +23,7 @@ module QuotesHelper
       :pager => '#quotes_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'resource',
+      :sortname => 'money.alpha_code',
       :sortorder => 'asc',
       :viewrecords => true,
       :onSelectRow => 'function(cell)

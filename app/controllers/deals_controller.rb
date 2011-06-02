@@ -18,6 +18,7 @@ class DealsController < ApplicationController
     @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name', 'isOffBalance']
     @deals = Deal.all;
+    objects_order_by_from_params @deals, params
     @deals = @deals.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

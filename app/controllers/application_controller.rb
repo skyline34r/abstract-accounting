@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
 
   def abstract_json_for_jqgrid records, columns = nil, options = {}
 
-    return if records.empty?
+    if records.empty?
+      return { :page => 1, :total => 1, :records => 0, :rows => nil }.to_json
+    end
 
     columns ||= records.first.attributes.keys
 
@@ -40,7 +42,48 @@ class ApplicationController < ActionController::Base
                  end}
       end
     }.to_json
+    
+  end
 
+  def objects_order_by_from_params objects, params
+    if params[:sord] == 'asc'
+      objects.sort! { |a,b| a = ( v = a
+                                  params[:sidx].each_line('.') do |n|
+                                    if v.nil?
+                                      v = ''
+                                    else
+                                      v = v.send(n.chomp('.'))
+                                    end
+                                  end
+                                  v) <=> b = ( w = b
+                                               params[:sidx].each_line('.') do |n|
+                                                 if w.nil?
+                                                   w = ''
+                                                 else
+                                                   w = w.send(n.chomp('.'))
+                                                 end
+                                               end
+                                               w) }
+    else if params[:sord] == 'desc'
+      objects.sort! { |b,a| a = ( v = a
+                                  params[:sidx].each_line('.') do |n|
+                                    if v.nil?
+                                      v = ''
+                                    else
+                                      v = v.send(n.chomp('.'))
+                                    end
+                                  end
+                                  v) <=> b = ( w = b
+                                               params[:sidx].each_line('.') do |n|
+                                                 if w.nil?
+                                                   w = ''
+                                                 else
+                                                   w = w.send(n.chomp('.'))
+                                                 end
+                                               end
+                                               w) }
+         end
+    end
   end
   
   def set_current_user

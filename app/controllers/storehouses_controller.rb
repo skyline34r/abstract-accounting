@@ -20,15 +20,40 @@ class StorehousesController < ApplicationController
       @columns = ['place.tag', 'product.resource.tag',
                   'amount', 'product.unit']
     end
+    
     @storehouse = Storehouse.new(current_user.entity,
                                  current_user.place, real_amount)
-    if params[:_search] and !params[:resource].nil?
-      @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+    if params[:_search]
+      if !params[:place].nil?
+        @storehouse = @storehouse.where_like 'place.tag', params[:place]
+      end
+      if !params[:resource].nil?
+        @storehouse = @storehouse.where_like 'product.resource.tag', params[:resource]
+      end
+      if !params[:real_amount].nil?
+        @storehouse = @storehouse.where_like 'real_amount', params[:real_amount]
+      end
+      if !params[:amount].nil?
+        @storehouse = @storehouse.where_like 'amount', params[:amount]
+      end
+      if !params[:unit].nil?
+        @storehouse = @storehouse.where_like 'product.unit', params[:unit]
+      end
     end
+
+    case params[:sidx]
+      when 'place'
+        params[:sidx] = 'place.tag'
+      when 'resource'
+        params[:sidx] = 'product.resource.tag'
+      when 'unit'
+        params[:sidx] = 'product.unit'
+    end
+    objects_order_by_from_params @storehouse, params
+
     @storehouse = @storehouse.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@storehouse, @columns,
                                                :id_column => 'product.resource.id')
@@ -71,11 +96,13 @@ class StorehousesController < ApplicationController
     elsif params[:state] == "3"
       state = StorehouseRelease::CANCELED
     end
+
     @releases = StorehouseRelease.find_all_by_owner_and_place_and_state(current_user.entity,
-                                         current_user.place, state).paginate(
+                                                                        current_user.place, state)
+    objects_order_by_from_params @releases, params
+    @releases = @releases.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@releases, @columns, :id_column => 'id')
     end
@@ -94,10 +121,11 @@ class StorehousesController < ApplicationController
   def view_release
     @columns = ['product.resource.tag', 'amount', 'product.unit']
     release = StorehouseRelease.find(params[:id])
-    @resources = release.resources.paginate(
+    @resources = release.resources
+    objects_order_by_from_params @resources, params
+    @resources = @resources.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@resources, @columns,
                                                :id_column => 'product.resource.id')
@@ -159,10 +187,11 @@ class StorehousesController < ApplicationController
     @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.tag',
                 'waybill.owner.tag', 'waybill.vatin', 'waybill.place.tag']
     @waybills = Storehouse.new(current_user.entity,
-                               current_user.place).waybills.paginate(
+                               current_user.place).waybills
+    objects_order_by_from_params @waybills, params
+    @waybills = @waybills.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@waybills, @columns,
                                                :id_column => 'waybill.id')
@@ -174,10 +203,10 @@ class StorehousesController < ApplicationController
     @entries = Storehouse.new(current_user.entity,
                                current_user.place).
                           waybill_by_id(params[:id].to_i).resources
+    objects_order_by_from_params @entries, params
     @entries = @entries.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entries, @columns,
                                                :id_column => 'product.resource.id')
