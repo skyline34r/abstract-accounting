@@ -88,9 +88,9 @@ module WaybillsHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'from.tag',      :index => 'from.tag',      :width => 185 },
-        { :name => 'owner.tag',     :index => 'owner.tag',     :width => 185 },
-        { :name => 'place.tag',     :index => 'place.tag',     :width => 150 },
+        { :name => 'from',      :index => 'from',      :width => 185 },
+        { :name => 'owner',     :index => 'owner',     :width => 185 },
+        { :name => 'place',     :index => 'place',     :width => 150 },
         { :name => 'vatin',         :index => 'vatin',         :width => 90 },
         { :name => 'in_storehouse', :index => 'in_storehouse', :hidden => true }
       ],
@@ -101,6 +101,8 @@ module WaybillsHelper
       :sortname => 'created',
       :sortorder => 'asc',
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :subGrid => true,
       :subGridUrl => '/waybills/',
       :subGridModel => [
@@ -137,7 +139,27 @@ module WaybillsHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'waybills_tree', grid, options
+    pager = [:navGrid, '#waybills_tree_pager', {:refresh => false, :add => false,
+                                                :del=> false, :edit => false,
+                                                :search => false, :view => false, :cloneToTop => true},
+                                               {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('storehouse.storehouseList.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#waybills_tree")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#waybills_tree")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#waybills_tree_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#waybills_tree_toppager_left', button_find_data]
+
+    jqgrid_api 'waybills_tree', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
