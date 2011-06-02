@@ -1,11 +1,12 @@
 module ActionArray
   def where *args
     return self if args.empty?
-    self.select do |item|
+    self.select do |entry|
       keep = true
       args.each do |arg_item|
         if Hash === arg_item
           arg_item.each do |key, value|
+            item = entry
             break if !keep
             unless String === key
               key = key.to_s
@@ -23,7 +24,7 @@ module ActionArray
             end
           end
         else
-          keep = (item == arg_item)
+          keep = (entry == arg_item)
         end
       end
       keep

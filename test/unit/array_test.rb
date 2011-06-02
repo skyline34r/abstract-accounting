@@ -15,6 +15,14 @@ class Test2
   end
 end
 
+class Test3
+  attr_reader :test1, :amount
+  def initialize(test1, amount)
+    @test1 = test1
+    @amount = amount
+  end
+end
+
 class ArrayTest < ActiveSupport::TestCase
   test "array compare value in where" do
     assert_equal 1, [1, 2, 3, 4].where(1).length, "Invalid length"
@@ -52,5 +60,17 @@ class ArrayTest < ActiveSupport::TestCase
     assert_equal 1, a.where('test1.test' => {:like => "1"}).length, "Wrong length after where"
     assert_equal 1, a.where('test1.test' => {:like => "hello2"}).length, "Wrong length after where"
     assert_equal 3, a.where('test1.test' => {:like => "ell"}).length, "Wrong length after where"
+  end
+
+  test "search by two fields" do
+    a = [Test3.new(Test1.new("hello"), 34),
+         Test3.new(Test1.new("hello1"), 35),
+         Test3.new(Test1.new("hello2"), 3)]
+    assert_equal 3, a.length, "Wrong array length"
+    assert_equal 3, a.where('test1.test' => {:like => "hello"}, 'amount' => {:like => 3}).length, "Wrong length after where"
+    assert_equal 1, a.where('test1.test' => {:like => "1"}, 'amount' => {:like => 3}).length, "Wrong length after where"
+    assert_equal 1, a.where('test1.test' => {:like => "hello2"}, 'amount' => {:like => 3}).length, "Wrong length after where"
+    assert_equal 3, a.where('test1.test' => {:like => "ell"}, 'amount' => {:like => 3}).length, "Wrong length after where"
+
   end
 end
