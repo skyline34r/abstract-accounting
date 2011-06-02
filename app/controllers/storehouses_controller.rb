@@ -102,6 +102,33 @@ class StorehousesController < ApplicationController
 
     @releases = StorehouseRelease.find_all_by_owner_and_place_and_state(current_user.entity,
                                                                         current_user.place, state)
+
+    if params[:_search]
+      args = Hash.new
+      if !params[:created].nil?
+        args['created'] = {:like => params[:created]}
+      end
+      if !params[:owner].nil?
+        args['owner.tag'] = {:like => params[:owner]}
+      end
+      if !params[:to].nil?
+        args['to.tag'] = {:like => params[:to]}
+      end
+      if !params[:place].nil?
+        args['place.tag'] = {:like => params[:place]}
+      end
+      @releases = @releases.where args
+    end
+
+    case params[:sidx]
+      when 'owner'
+        params[:sidx] = 'owner.tag'
+      when 'to'
+        params[:sidx] = 'to.tag'
+      when 'place'
+        params[:sidx] = 'place.tag'
+    end
+
     objects_order_by_from_params @releases, params
     @releases = @releases.paginate(
       :page     => params[:page],

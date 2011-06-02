@@ -194,10 +194,10 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var },
-        { :name => 'owner.tag', :index => 'owner.tag', :width => 200 },
-        { :name => 'to.tag',    :index => 'to.tag',    :width => 200 },
-        { :name => 'place.tag', :index => 'place.tag', :width => 200 },
-        { :name => 'state',     :index => 'state',     :width => 100,
+        { :name => 'owner', :index => 'owner', :width => 200 },
+        { :name => 'to',    :index => 'to',    :width => 200 },
+        { :name => 'place', :index => 'place', :width => 200 },
+        { :name => 'state', :index => 'state', :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return getReleaseStatus(cellvalue);
                          }'.to_json_var },
@@ -209,6 +209,8 @@ module StorehousesHelper
       :sortname => 'created',
       :sortorder => 'asc',
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :subGrid => true,
       :subGridUrl => '/storehouses/view_release',
       :subGridModel => [
@@ -243,7 +245,27 @@ module StorehousesHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'releases_list', grid, options
+    pager = [:navGrid, '#releases_pager', {:refresh => false, :add => false,
+                                             :del=> false, :edit => false,
+                                             :search => false, :view => false, :cloneToTop => true},
+                                            {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('storehouse.storehouseList.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#releases_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#releases_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#releases_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#releases_list_toppager_left', button_find_data]
+
+    jqgrid_api 'releases_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
