@@ -145,7 +145,7 @@ module WaybillsHelper
                                                {}, {}, {}]
 
     button_find_data = {
-      :caption => t('storehouse.storehouseList.btn_find'),
+      :caption => t('grid.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
           $("#waybills_tree")[0].clearToolbar();

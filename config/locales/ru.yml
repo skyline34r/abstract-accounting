@@ -49,6 +49,8 @@ ru:
     storehouse: Склад
     waybill: Накладные
     release: Выдачи
+  grid:
+    btn_find: Поиск
   title:
     abstract: Абстрактный учет
     waybill: Накладные
@@ -95,7 +97,6 @@ ru:
       real_amount: Фактическое кол-во
       amount: Ожидаемое кол-во
       unit: Единица
-      btn_find: Поиск
     release:
       all: Все
       inwork: В работе

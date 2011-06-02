@@ -20,6 +20,8 @@ en:
     storehouse: Storehouse
     waybill: Waybills
     release: Releases
+  grid:
+    btn_find: Find
   title:
     abstract: Abstract
     waybill: Waybills
@@ -66,7 +68,6 @@ en:
       real_amount: Real amount
       amount: Expected amount
       unit: Unit
-      btn_find: Find
     release:
       all: All
       inwork: In work

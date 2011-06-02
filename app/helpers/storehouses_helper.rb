@@ -39,7 +39,7 @@ module StorehousesHelper
                                             {}, {}, {}]
 
     button_find_data = {
-      :caption => t('storehouse.storehouseList.btn_find'),
+      :caption => t('grid.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
           $("#storehouse_list")[0].clearToolbar();
@@ -157,7 +157,7 @@ module StorehousesHelper
                                                     {}, {}, {}]
 
     button_find_data = {
-      :caption => t('storehouse.storehouseList.btn_find'),
+      :caption => t('grid.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
           $("#storehouse_release_list")[0].clearToolbar();
@@ -251,7 +251,7 @@ module StorehousesHelper
                                             {}, {}, {}]
 
     button_find_data = {
-      :caption => t('storehouse.storehouseList.btn_find'),
+      :caption => t('grid.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
           $("#releases_list")[0].clearToolbar();
@@ -474,7 +474,7 @@ module StorehousesHelper
                                                        {}, {}, {}]
 
     button_find_data = {
-      :caption => t('storehouse.storehouseList.btn_find'),
+      :caption => t('grid.btn_find'),
       :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
         if(filter) {
           $("#release_waybills_tree")[0].clearToolbar();
