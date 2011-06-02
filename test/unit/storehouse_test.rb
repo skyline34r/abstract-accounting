@@ -562,33 +562,25 @@ class StorehouseTest < ActiveSupport::TestCase
 
     sh = Storehouse.new entities(:sergey), p
     assert_equal 2, sh.length, "Wrong storehouse length"
-    sh_where = sh.where_like 'product.resource.tag', "sho"
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'product.resource.tag', "el"
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'product.resource.tag', "ov"
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'product.resource.tag', "o"
-    assert_equal 2, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'product.unit', "th"
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'amount', 150
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh_where = sh.where_like 'amount', 150.00
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'amount', "150"
-    assert_equal 1, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'amount', 15
-    assert_equal 0, sh_where.length, "Wrong storehouse length"
-    sh = Storehouse.new entities(:sergey), p
-    sh_where = sh.where_like 'amount', "15"
-    assert_equal 0, sh_where.length, "Wrong storehouse length"
+    assert_equal 1, sh.where('product.resource.tag' => {:like => "sho"}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('product.resource.tag' => {:like => "el"}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('product.resource.tag' => {:like => "ov"}).length,
+                 "Wrong storehouse length"
+    assert_equal 2, sh.where('product.resource.tag' => {:like => "o"}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('product.unit' => {:like => "th"}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('amount' => {:like => 150}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('amount' => {:like => 150.00}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('amount' => {:like => "150"}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('amount' => {:like => 15}).length,
+                 "Wrong storehouse length"
+    assert_equal 1, sh.where('amount' => {:like => "15"}).length,
+                 "Wrong storehouse length"
   end
 end
