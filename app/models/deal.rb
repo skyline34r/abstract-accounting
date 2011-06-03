@@ -62,6 +62,16 @@ class Deal < ActiveRecord::Base
     end
   end
 
+  def facts start, stop
+    (if self.income?
+      Fact
+    else
+      Fact.find_all_by_deal_id(self.id)
+    end).where("day > ? AND day < ?",
+        DateTime.new(start.year, start.month, start.day),
+        DateTime.new(stop.year, stop.month, stop.day) + 1)
+  end
+
   def Deal.find_all_by_give_and_take_and_entity(give, take, entity)
     Deal.find_all_by_give_id_and_give_type_and_take_id_and_take_type_and_entity_id(give, give.class, take, take.class, entity)
   end

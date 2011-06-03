@@ -73,6 +73,7 @@ module TranscriptsHelper
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :viewrecords => true,
+      :height => "100%",
       :shrinkToFit => true
     }]
 

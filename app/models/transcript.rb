@@ -20,21 +20,24 @@ class Transcript < Array
   private
   def load_list
     if !@deal.nil?
-      @deal.txns(@start, @stop).each do |item|
-        self << item
-        if @deal.income?
-          if item.earnings < 0.0
-            @total_debits_value -= item.earnings
+      @deal.facts(@start, @stop).each do |fact|
+        item = fact.txn.nil? ? Txn.new(:fact => fact, :value => 0, :earnings => 0) : fact.txn
+        if !@deal.income? or item.status == 1
+          self << item
+          if @deal.income?
+            if item.earnings < 0.0
+              @total_debits_value -= item.earnings
+            else
+              @total_credits_value += item.earnings
+            end
           else
-            @total_credits_value += item.earnings
-          end
-        else
-          if item.fact.to == @deal
-            @total_debits += item.fact.amount
-            @total_debits_value += item.value + item.earnings
-          elsif item.fact.from == @deal
-            @total_credits += item.fact.amount
-            @total_credits_value += item.value
+            if item.fact.to.id == @deal.id
+              @total_debits += item.fact.amount
+              @total_debits_value += item.value + item.earnings
+            elsif item.fact.from.id == @deal.id
+              @total_credits += item.fact.amount
+              @total_credits_value += item.value
+            end
           end
         end
       end
