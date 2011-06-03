@@ -38,6 +38,7 @@ module BalancesHelper
       :rowList => [10, 20, 30],
       :sortname => 'deal',
       :sortorder => 'asc',
+      :height => "100%",
       :viewrecords => true
     }]
     
