@@ -59,6 +59,7 @@ module GeneralLedgersHelper
       :rowNum => 10,
       :rowList => [10, 20, 30],
       :viewrecords => true,
+      :height => "100%",
       :afterInsertRow => 'function(rowid, rowdata, rowelem)
       {
          function getPrice() {
