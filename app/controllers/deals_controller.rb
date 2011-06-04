@@ -17,7 +17,21 @@ class DealsController < ApplicationController
     }
     @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name', 'isOffBalance']
-    @deals = Deal.all;
+    @deals = Deal.all
+    if params[:_search]
+      args = Hash.new
+      if !params[:tag].nil?
+        args['tag'] = {:like => params[:tag]}
+      end
+      if !params[:entity].nil?
+        args['entity.tag'] = {:like => params[:entity]}
+      end
+      @deals = @deals.where args
+    end
+    case params[:sidx]
+       when 'entity'
+         params[:sidx] = 'entity.tag'
+    end
     objects_order_by_from_params @deals, params
     @deals = @deals.paginate(
       :page     => params[:page],
