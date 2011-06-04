@@ -22,10 +22,21 @@ class TranscriptsController < ApplicationController
                                    DateTime.strptime(params[:start], '%m/%d/%Y'),
                                    DateTime.strptime(params[:stop], '%m/%d/%Y'))
       if params[:source] == 'grid'
+        if params[:_search]
+          args = Hash.new
+          if !params[:date].nil?
+            args['fact.day'] = {:like => params[:date]}
+          end
+          @transcript = @transcript.where args
+        end
+        case params[:sidx]
+          when 'fact.day'
+            params[:sidx] = 'place.tag'
+        end
+        objects_order_by_from_params @transcript, params
         @transcript = @transcript.paginate(
           :page     => params[:page],
-          :per_page => params[:rows],
-          :order    => order_by_from_params(params))
+          :per_page => params[:rows])
         if request.xhr?
           render :json => abstract_json_for_jqgrid(@transcript, @columns, :id_column => 'id')
         end
