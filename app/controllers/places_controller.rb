@@ -33,7 +33,6 @@ class PlacesController < ApplicationController
     @columns = ['tag']
 
     @places = Place.all
-
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
@@ -41,7 +40,6 @@ class PlacesController < ApplicationController
       end
       @places = @places.where args
     end
-
     objects_order_by_from_params @places, params
     @places = @places.paginate(
       :page     => params[:page],

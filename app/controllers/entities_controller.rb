@@ -9,10 +9,19 @@ class EntitiesController < ApplicationController
 
   def view
     @columns = ['tag']
-    @entities = Entity.paginate(
+
+    @entities = Entity.all
+    if params[:_search]
+      args = Hash.new
+      if !params[:tag].nil?
+        args['tag'] = {:like => params[:tag]}
+      end
+      @entities = @entities.where args
+    end
+    objects_order_by_from_params @entities, params
+    @entities = @entities.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entities, @columns, :id_column => 'id')
     end
