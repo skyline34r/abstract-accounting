@@ -1,3 +1,9 @@
 <%= raw(general_ledgers_jqgrid) %>
 <table id="data_list"></table>
 <div id="data_pager"></div>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#data_list").filterToolbar({searchOnEnter : false});
+  $("#data_list")[0].toggleToolbar();
+</script>

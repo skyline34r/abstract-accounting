@@ -15,39 +15,39 @@ module GeneralLedgersHelper
                     t('generalLedger.deal'), t('generalLedger.price'),
                     t('generalLedger.debit'), t('generalLedger.credit')],
       :colModel => [
-        { :name => 'date',     :index => 'fact.day',          :width => 100,
+        { :name => 'date',     :index => 'date',     :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var
         },
-        { :name => 'resource', :index => 'fact.resource.tag', :width => 100 },
-        { :name => 'quantity', :index => 'fact.amount',       :width => 100 },
-        { :name => 'DC',       :index => 'DC',                :width => 100,
+        { :name => 'resource', :index => 'resource', :width => 100 },
+        { :name => 'quantity', :index => 'quantity', :width => 100 },
+        { :name => 'DC',       :index => 'DC',       :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (cellvalue == "debit") return cellvalue;
                            return "credit";
                          }'.to_json_var
         },
-        { :name => 'deal', :index => 'deal',                  :width => 100,
+        { :name => 'deal', :index => 'deal',         :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.deal) return rowObject.deal;
                            return rowObject[3];
                          }'.to_json_var
         },
-        { :name => 'price', :index => 'price',                :width => 100,
+        { :name => 'price', :index => 'price',       :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject[2] == 0) return "0";
                            if (rowObject.price) return rowObject.price;
                            return ((rowObject[5] + rowObject[6]) / rowObject[2]).toFixed(2);
                          }'.to_json_var
         },
-        { :name => 'debit', :index => 'debit',                :width => 100,
+        { :name => 'debit', :index => 'debit',       :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.debit) return rowObject.debit;
                            return "";
                          }'.to_json_var
         },
-        { :name => 'credit', :index => 'credit',              :width => 100,
+        { :name => 'credit', :index => 'credit',     :width => 100, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.credit) return "";
                            return ((rowObject[5] + rowObject[6]) / rowObject[2]
@@ -58,7 +58,10 @@ module GeneralLedgersHelper
       :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
+      :height => "100%",
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :afterInsertRow => 'function(rowid, rowdata, rowelem)
       {
          function getPrice() {
@@ -81,7 +84,27 @@ module GeneralLedgersHelper
       }'.to_json_var
     }]
     
-    jqgrid_api 'data_list', grid, options
+    pager = [:navGrid, '#data_pager', {:refresh => false, :add => false,
+                                       :del=> false, :edit => false,
+                                       :search => false, :view => false, :cloneToTop => true},
+                                      {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('grid.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#data_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#data_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#data_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#data_list_toppager_left', button_find_data]
+
+    jqgrid_api 'data_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
