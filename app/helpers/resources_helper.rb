@@ -13,7 +13,7 @@ module ResourcesHelper
       :colNames => ['tag', 'type', 'id', 'code'],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 700 },
-        { :name => 'type', :index => 'class',  :width => 100 },
+        { :name => 'type', :index => 'type',  :width => 100 },
         { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
         { :name => 'code', :index => 'num_code',  :width => 5, :hidden => true }
       ],
@@ -22,7 +22,10 @@ module ResourcesHelper
       :rowList => [10, 20, 30],
       :sortname => 'tag',
       :sortorder => 'asc',
+      :height => "100%",
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :onSelectRow => 'function(cell)
       {
         $("#resource_tag").val($("#resources_list").getCell(cell, "tag"));
@@ -51,7 +54,27 @@ module ResourcesHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'resources_list', grid, options
+    pager = [:navGrid, '#resources_pager', {:refresh => false, :add => false,
+                                            :del=> false, :edit => false,
+                                            :search => false, :view => false, :cloneToTop => true},
+                                           {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('grid.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#resources_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#resources_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#resources_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#resources_list_toppager_left', button_find_data]
+
+    jqgrid_api 'resources_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 
