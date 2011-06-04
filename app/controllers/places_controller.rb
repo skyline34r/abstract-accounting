@@ -31,10 +31,21 @@ class PlacesController < ApplicationController
 
   def view
     @columns = ['tag']
-    @places = Place.paginate(
+
+    @places = Place.all
+
+    if params[:_search]
+      args = Hash.new
+      if !params[:tag].nil?
+        args['tag'] = {:like => params[:tag]}
+      end
+      @places = @places.where args
+    end
+
+    objects_order_by_from_params @places, params
+    @places = @places.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@places, @columns, :id_column => 'id')
     end
