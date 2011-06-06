@@ -90,8 +90,8 @@ module WaybillsHelper
                          }'.to_json_var },
         { :name => 'from',      :index => 'from',      :width => 185 },
         { :name => 'owner',     :index => 'owner',     :width => 185 },
+        { :name => 'vatin',     :index => 'vatin',     :width => 90 },
         { :name => 'place',     :index => 'place',     :width => 150 },
-        { :name => 'vatin',         :index => 'vatin',         :width => 90 },
         { :name => 'in_storehouse', :index => 'in_storehouse', :hidden => true }
       ],
       :pager => '#waybills_tree_pager',

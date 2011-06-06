@@ -71,6 +71,44 @@ class ArrayTest < ActiveSupport::TestCase
     assert_equal 1, a.where('test1.test' => {:like => "1"}, 'amount' => {:like => 3}).length, "Wrong length after where"
     assert_equal 1, a.where('test1.test' => {:like => "hello2"}, 'amount' => {:like => 3}).length, "Wrong length after where"
     assert_equal 3, a.where('test1.test' => {:like => "ell"}, 'amount' => {:like => 3}).length, "Wrong length after where"
+  end
 
+  test "order asc" do
+    a = [1, 3, 5, 4, 2].order 'asc'
+    idx = 1
+    a.each do |item|
+      assert item == idx, "Wrong item"
+      idx += 1
+    end
+  end
+
+  test "order desc" do
+    a = [1, 3, 5, 4, 2].order 'desc'
+    idx = 5
+    a.each do |item|
+      assert item == idx, "Wrong item"
+      idx -= 1
+    end
+  end
+
+  test "order by attribute - asc" do
+    t1 = Test2.new(Test1.new("hello2"))
+    t2 = Test2.new(Test1.new("hello"))
+    t3 = Test2.new(Test1.new("hello1"))
+    a = [t1, t2, t3].order 'test1.test' => 'asc'
+    assert_equal t2, a[0], "Wrong 0 element"
+    assert_equal t3, a[1], "Wrong 1 element"
+    assert_equal t1, a[2], "Wrong 2 element"
+  end
+
+  test "order by attribute - desc" do
+    t1 = Test2.new(Test1.new("hello"))
+    t2 = Test2.new(Test1.new("hello1"))
+    t3 = Test2.new(Test1.new("hello2"))
+    a = [t1, t2, t3]
+    a = a.order 'test1.test' => 'desc'
+    assert_equal t3, a[0], "Wrong 0 element"
+    assert_equal t2, a[1], "Wrong 1 element"
+    assert_equal t1, a[2], "Wrong 2 element"
   end
 end
