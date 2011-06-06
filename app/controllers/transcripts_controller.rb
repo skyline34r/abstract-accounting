@@ -30,8 +30,8 @@ class TranscriptsController < ApplicationController
           @transcript = @transcript.where args
         end
         case params[:sidx]
-          when 'fact.day'
-            params[:sidx] = 'place.tag'
+          when 'date'
+            params[:sidx] = 'fact.day'
         end
         objects_order_by_from_params @transcript, params
         @transcript = @transcript.paginate(
