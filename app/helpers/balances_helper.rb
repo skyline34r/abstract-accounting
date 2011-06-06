@@ -41,7 +41,11 @@ module BalancesHelper
       :height => "100%",
       :viewrecords => true,
       :gridview => true,
-      :toppager => true
+      :toppager => true,
+      :loadComplete => 'function()
+      {
+        ajaxRequest("/balances/total");
+      }'.to_json_var
     }]
     
     pager = [:navGrid, '#data_pager', {:refresh => false, :add => false,

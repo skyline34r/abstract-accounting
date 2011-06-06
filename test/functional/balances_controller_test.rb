@@ -45,4 +45,9 @@ class BalancesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:balances)
   end
+
+  def should_get_total_balance
+    xml_http_request :get, :total
+    assert_response :success
+  end
 end
