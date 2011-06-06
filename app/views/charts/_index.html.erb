@@ -38,12 +38,9 @@
 <div id="chart_div">
   <table>
     <tr>
-      <td>Chart</td>
-    </tr>
-    <tr>
-      <td>resource</td>
+      <td><%= t('chart.resource')%></td>
       <td>
-        <input type="button" id="chart_curr_btn" value="click to choose"
+        <input type="button" id="chart_curr_btn" value="<%= t('chart.btn_choose')%>"
                              onclick="chartChoiseResource();"/>
         <div id="curr_chart_div" style="display: none">
         </div>
@@ -55,10 +52,10 @@
         <%= form_for(@chart, :remote => true) do |f| %>
         <%= f.hidden_field :currency_id, :id => "hide_chart_curr_id" %>
         <%= f.submit "commit", :id => "save_chart",
-                               :value => "set as 'Functional currency'" %>
+                               :value => t('chart.btn_commit') %>
         <% end %>
         <div id="msg_chart_div" style="display: none">
-          Functional currency has already been set
+          <%= t('chart.msg')%>
         </div>
       </td>
     </tr>
