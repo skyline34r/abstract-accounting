@@ -2,10 +2,10 @@
   $(function() {
     var curr_date = new Date();
     $("#to_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
-    $('#to_datepicker').val(curr_date.toLocaleDateString());
+    $('#to_datepicker').val(getDateString(curr_date));
     $("#from_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
     curr_date.setFullYear(curr_date.getFullYear()-10);
-    $('#from_datepicker').val(curr_date.toLocaleDateString());
+    $('#from_datepicker').val(getDateString(curr_date));
   });
   function transcriptChooseDeal()
   {

@@ -12,3 +12,10 @@ function unescape(text)
              .replace(/&gt;/g, '>')
              .replace(/&amp;/g, '&');
 }
+function getDateString(date) {
+  var m = parseInt(date.getUTCMonth()) + 1;
+  m = m < 10 ? "0" + m : m;
+  var d = date.getUTCDate() < 10 ? "0" + date.getDate() : date.getDate();
+  var y = date.getFullYear();
+  return m + "/" + d + "/" + y;
+}
