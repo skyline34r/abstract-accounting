@@ -39,6 +39,7 @@ class GeneralLedgersController < ApplicationController
       when 'quantity'
         params[:sidx] = 'fact.amount'
     end
+    objects_order_by_from_params @general_ledgers, params
     @general_ledgers = @general_ledgers.paginate(
       :page     => params[:page],
       :per_page => params[:rows])

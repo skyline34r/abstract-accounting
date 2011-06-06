@@ -17,8 +17,8 @@ function factChooseDeal(type)
       $("#fact_" + type + "_btn").val($("#deals_list").getCell(selRow, "tag"));
       $("#hide_fact_" + type + "_deal").val(selRow);
       if(type == "from") {
-        $("#hide_fact_resource_id").val($("#deals_list").getCell(selRow, "take.id"));
-        $("#hide_fact_resource_type").val($("#deals_list").getCell(selRow, "take.type"));
+        $("#hide_fact_resource_id").val($("#deals_list").getCell(selRow, "take_id"));
+        $("#hide_fact_resource_type").val($("#deals_list").getCell(selRow, "take_type"));
       }
       showFactPage();
     }

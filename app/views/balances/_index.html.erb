@@ -2,7 +2,7 @@
 $(function() {
   var curr_date = new Date();
   $("#balance_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
-  $("#balance_datepicker").val(curr_date.toLocaleDateString());
+  $("#balance_datepicker").val(getDateString(curr_date));
 });
 
 function loadBalance()
