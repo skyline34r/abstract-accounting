@@ -28,10 +28,10 @@ function loadBalance()
       <%=t 'balance.units'%>:
       <%=t 'balance.physical'%>
       <input type="radio" id="physical" name="unit" checked="true"
-             onchange="$('#balances_list').trigger('reloadGrid');"/>
+             onchange="$('#data_list').trigger('reloadGrid');"/>
       <%=t 'balance.accounting'%>
       <input type="radio" id="accounting" name="unit"
-             onchange="$('#balances_list').trigger('reloadGrid');"/>
+             onchange="$('#data_list').trigger('reloadGrid');"/>
     </td>
   </tr>
   <tr>
@@ -43,12 +43,8 @@ function loadBalance()
   <tr>
     <td align="left"><%=t 'balance.total'%></td>
     <td align="right">
-      <a id="tDebit">
-        <%= @assets %>
-      </a>
-      <a id="tCredit">
-        <%= @liabilities %>
-      </a>
+      <a id="tDebit"></a>
+      <a id="tCredit"></a>
     </td>
   </tr>
 </table>

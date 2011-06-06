@@ -46,6 +46,7 @@ Abstract::Application.routes.draw do
   resources :balances do
     collection do
       get 'load'
+      get 'total'
     end
   end
   resources :general_ledgers do

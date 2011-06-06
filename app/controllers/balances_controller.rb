@@ -26,8 +26,9 @@ class BalancesController < ApplicationController
     else
       @balances = BalanceSheet.new DateTime.strptime(date, '%m/%d/%Y')
     end
-    @assets = @balances.assets
-    @liabilities = @balances.liabilities
+
+    session[:balance_assets] = @balances.assets
+    session[:balance_liabilities] = @balances.liabilities
 
     if params[:_search]
       args = Hash.new
@@ -53,11 +54,12 @@ class BalancesController < ApplicationController
     objects_order_by_from_params @balances, params
     @balances = @balances.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@balances, @columns)
     end
   end
 
+  def total
+  end
 end
