@@ -8,10 +8,19 @@ class RolesController < ApplicationController
 
   def view
     @columns = ['name', 'pages']
-    @roles = Role.paginate(
+
+    @roles = Role.all
+    if params[:_search]
+      args = Hash.new
+      if !params[:name].nil?
+        args['name'] = {:like => params[:name]}
+      end
+      @roles = @roles.where args
+    end
+    objects_order_by_from_params @roles, params
+    @roles = @roles.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@roles, @columns, :id_column => 'id')
     end

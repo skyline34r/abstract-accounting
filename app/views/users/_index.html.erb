@@ -23,8 +23,8 @@
   }
   function sendDataUser()
   {
-    <% for role in Role.find(:all) %>
-      $('#role_ids_' + <%= role.id.to_s %>).attr('checked',
+    <% for role in Role.all %>
+      $('#role_ids_' + '<%= role.id.to_s %>').attr('checked',
         $('#user_role_id_' + '<%= role.id.to_s %>').is(':checked'));
     <% end %>
     $('#hide_email').val(escape($('#user_email').val()));
@@ -89,9 +89,9 @@
           $('#hide_pass_c').attr('name', '');
         }
       }
-      <% for role in Role.find(:all) %>
-        $('#user_role_id_' + <%= role.id.to_s %>).attr('checked',
-          $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
+      <% for role in Role.all %>
+        $('#user_role_id_' + '<%= role.id.to_s %>').attr('checked',
+                $('#role_ids_' + '<%= role.id.to_s %>').is(':checked'));
       <% end %>
     } else {
       loadUserElements();
@@ -236,7 +236,7 @@
     <tr id="roles" style="display: none">
       <td colspan="3">
         <p>Roles</p>
-        <% for role in Role.find(:all) %>
+        <% for role in Role.all %>
           <div>
             <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
                   :disabled => true,
@@ -259,3 +259,9 @@
     <tr id="user_page_selection">
     </tr>
 </table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#data_list").filterToolbar({searchOnEnter : false});
+  $("#data_list")[0].toggleToolbar();
+</script>

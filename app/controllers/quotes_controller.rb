@@ -11,12 +11,29 @@ class QuotesController < ApplicationController
 
   def view
     @columns = ['money.alpha_code', 'day', 'rate']
+
     @quotes = Quote.all
+    if params[:_search]
+      args = Hash.new
+      if !params[:resource].nil?
+        args['money.alpha_code'] = {:like => params[:resource]}
+      end
+      if !params[:day].nil?
+        args['day'] = {:like => params[:day]}
+      end
+      if !params[:rate].nil?
+        args['rate'] = {:like => params[:rate]}
+      end
+      @quotes = @quotes.where args
+    end
+    case params[:sidx]
+       when 'resource'
+         params[:sidx] = 'money.alpha_code'
+    end
     objects_order_by_from_params @quotes, params
     @quotes = @quotes.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@quotes, @columns, :id_column => 'id')
     end

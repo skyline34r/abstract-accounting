@@ -19,7 +19,10 @@ module PlacesHelper
       :rowList => [10, 20, 30],
       :sortname => 'tag',
       :sortorder => 'asc',
+      :height => "100%",
       :viewrecords => true,
+      :gridview => true,
+      :toppager => true,
       :onSelectRow => 'function(cell)
       {
         $("#place_tag").val($("#place_list").getCell(cell, "tag"));
@@ -34,7 +37,27 @@ module PlacesHelper
       }'.to_json_var
     }]
 
-    jqgrid_api 'place_list', grid, options
+    pager = [:navGrid, '#place_pager', {:refresh => false, :add => false,
+                                        :del=> false, :edit => false,
+                                        :search => false, :view => false, :cloneToTop => true},
+                                       {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('grid.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#place_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#place_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#place_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#place_list_toppager_left', button_find_data]
+
+    jqgrid_api 'place_list', grid, options, pager, pager_button_find, pager_button_find1
 
   end
 

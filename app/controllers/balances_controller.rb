@@ -28,6 +28,29 @@ class BalancesController < ApplicationController
     end
     @assets = @balances.assets
     @liabilities = @balances.liabilities
+
+    if params[:_search]
+      args = Hash.new
+      if !params[:deal].nil?
+        args['deal.tag'] = {:like => params[:deal]}
+      end
+      if !params[:entity].nil?
+        args['deal.entity.tag'] = {:like => params[:entity]}
+      end
+      if !params[:resource].nil?
+        args['deal.give.tag'] = {:like => params[:resource]}
+      end
+      @balances = @balances.where args
+    end
+    case params[:sidx]
+      when 'deal'
+        params[:sidx] = 'deal.tag'
+      when 'entity'
+        params[:sidx] = 'deal.entity.tag'
+      when 'resource'
+        params[:sidx] = 'deal.give.tag'
+    end
+    objects_order_by_from_params @balances, params
     @balances = @balances.paginate(
       :page     => params[:page],
       :per_page => params[:rows],

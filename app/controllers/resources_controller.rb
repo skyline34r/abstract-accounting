@@ -37,21 +37,22 @@ class ResourcesController < ApplicationController
       @asset = Asset.all
       @resources = @money + @asset
     end
-    @resources = @resources.sort do |x,y|
-      if params[:sidx] == 'tag'
-        if params[:sord] == 'asc'
-          x.tag <=> y.tag
-        else
-          y.tag <=> x.tag
-        end
-      else
-        if params[:sord] == 'asc'
-          x.class.name <=> y.class.name
-        else
-          y.class.name <=> x.class.name
-        end
+
+    if params[:_search]
+      args = Hash.new
+      if !params[:tag].nil?
+        args['tag'] = {:like => params[:tag]}
       end
+      if !params[:type].nil?
+        args['class.name'] = {:like => params[:type]}
+      end
+      @resources = @resources.where args
     end
+    case params[:sidx]
+       when 'type'
+         params[:sidx] = 'class.name'
+    end
+    objects_order_by_from_params @resources, params
     @resources = @resources.paginate(
       :page     => params[:page],
       :per_page => params[:rows])

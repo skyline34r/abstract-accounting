@@ -8,6 +8,26 @@ class UsersController < ApplicationController
   def view
     @columns = ['email', 'entity.tag', 'place.tag', 'role_ids']
     @users = User.all
+
+    if params[:_search]
+      args = Hash.new
+      if !params[:email].nil?
+        args['email'] = {:like => params[:email]}
+      end
+      if !params[:entity].nil?
+        args['entity.tag'] = {:like => params[:entity]}
+      end
+      if !params[:place].nil?
+        args['place.tag'] = {:like => params[:place]}
+      end
+      @users = @users.where args
+    end
+    case params[:sidx]
+      when 'entity'
+        params[:sidx] = 'entity.tag'
+      when 'place'
+        params[:sidx] = 'place.tag'
+    end
     objects_order_by_from_params @users, params
     @users = @users.paginate(
       :page     => params[:page],
