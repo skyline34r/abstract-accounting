@@ -60,7 +60,7 @@ module TranscriptsHelper
         },
         { :name => 'h_credit', :index => 'h_credit', :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[2] == $("#choose_deal").val())
+                           if(rowObject[2] == $("#transcript_choose_deal").val())
                            {
                              return (rowObject[5]).toFixed(2);
                            }
