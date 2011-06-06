@@ -25,14 +25,14 @@ module TranscriptsHelper
         },
         { :name => 'deal',   :index => 'deal',   :width => 400, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[3] == $("#choose_deal").val())
+                           if(rowObject[3] == $("#transcript_choose_deal").val())
                              return rowObject[2];
                            return rowObject[3];
                          }'.to_json_var
         },
         { :name => 'debit',  :index => 'debit',  :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[3] == $("#choose_deal").val())
+                           if(rowObject[3] == $("#transcript_choose_deal").val())
                            {
                              return (rowObject[4]).toFixed(2);
                            }
@@ -41,7 +41,7 @@ module TranscriptsHelper
         },
         { :name => 'credit', :index => 'credit', :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[2] == $("#choose_deal").val())
+                           if(rowObject[2] == $("#transcript_choose_deal").val())
                            {
                              return (rowObject[4]).toFixed(2);
                            }
@@ -50,7 +50,7 @@ module TranscriptsHelper
         },
         { :name => 'h_debit',  :index => 'h_debit',  :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject[3] == $("#choose_deal").val())
+                           if(rowObject[3] == $("#transcript_choose_deal").val())
                            {
                              return (rowObject[5] + rowObject[6]).toFixed(2);
                            }
