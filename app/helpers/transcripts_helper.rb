@@ -23,14 +23,14 @@ module TranscriptsHelper
                            return cellvalue.substr(0,10);
                          }'.to_json_var
         },
-        { :name => 'deal',   :index => 'deal',   :width => 400, :search => false,
+        { :name => 'deal',   :index => 'deal',   :width => 400, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[3] == $("#choose_deal").val())
                              return rowObject[2];
                            return rowObject[3];
                          }'.to_json_var
         },
-        { :name => 'debit',  :index => 'debit',  :width => 100, :search => false,
+        { :name => 'debit',  :index => 'debit',  :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[3] == $("#choose_deal").val())
                            {
@@ -39,7 +39,7 @@ module TranscriptsHelper
                            return "";
                          }'.to_json_var
         },
-        { :name => 'credit', :index => 'credit', :width => 100, :search => false,
+        { :name => 'credit', :index => 'credit', :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[2] == $("#choose_deal").val())
                            {
@@ -48,7 +48,7 @@ module TranscriptsHelper
                            return "";
                          }'.to_json_var
         },
-        { :name => 'h_debit',  :index => 'h_debit',  :width => 100, :search => false,
+        { :name => 'h_debit',  :index => 'h_debit',  :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[3] == $("#choose_deal").val())
                            {
@@ -58,7 +58,7 @@ module TranscriptsHelper
                          }'.to_json_var,
           :hidden => true
         },
-        { :name => 'h_credit', :index => 'h_credit', :width => 100, :search => false,
+        { :name => 'h_credit', :index => 'h_credit', :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[2] == $("#choose_deal").val())
                            {
@@ -72,6 +72,8 @@ module TranscriptsHelper
       :pager => '#transcripts_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
+      :sortname => 'date',
+      :sortorder => 'asc',
       :height => "100%",
       :viewrecords => true,
       :gridview => true,
