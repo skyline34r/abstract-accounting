@@ -63,6 +63,7 @@ ru:
     generalLedger: Главная книга
     balance: Счета
     transcript: Выписки
+    entity: Лица
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -191,3 +192,10 @@ ru:
     error: Ошибка! Сервер не найден
     abort: Ошибка! Соединение оборвано сервером
     parsererror: Синтаксическая ошибка запроса!
+  entity:
+    tag: Название
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить

@@ -10,7 +10,7 @@ module EntitiesHelper
       :url => '/entities/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag'],
+      :colNames => [t('entity.tag')],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800 }
       ],

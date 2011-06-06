@@ -34,6 +34,7 @@ en:
     generalLedger: GeneralLedger
     balance: Balance
     transcript: Transcript
+    entity: Entity
   waybill:
     btn_add: New
     btn_release: Release
@@ -162,3 +163,10 @@ en:
     error: Error! Sever not found
     abort: Error! Aborting connection server
     parsererror: Syntactic error of request!
+  entity:
+    tag: Tag
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
