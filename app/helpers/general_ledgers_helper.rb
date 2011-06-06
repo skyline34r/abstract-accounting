@@ -22,32 +22,32 @@ module GeneralLedgersHelper
         },
         { :name => 'resource', :index => 'resource', :width => 100 },
         { :name => 'quantity', :index => 'quantity', :width => 100 },
-        { :name => 'DC',       :index => 'DC',       :width => 100, :search => false,
+        { :name => 'DC',       :index => 'DC',       :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (cellvalue == "debit") return cellvalue;
                            return "credit";
                          }'.to_json_var
         },
-        { :name => 'deal', :index => 'deal',         :width => 100, :search => false,
+        { :name => 'deal', :index => 'deal',         :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.deal) return rowObject.deal;
                            return rowObject[3];
                          }'.to_json_var
         },
-        { :name => 'price', :index => 'price',       :width => 100, :search => false,
+        { :name => 'price', :index => 'price',       :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject[2] == 0) return "0";
                            if (rowObject.price) return rowObject.price;
                            return ((rowObject[5] + rowObject[6]) / rowObject[2]).toFixed(2);
                          }'.to_json_var
         },
-        { :name => 'debit', :index => 'debit',       :width => 100, :search => false,
+        { :name => 'debit', :index => 'debit',       :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.debit) return rowObject.debit;
                            return "";
                          }'.to_json_var
         },
-        { :name => 'credit', :index => 'credit',     :width => 100, :search => false,
+        { :name => 'credit', :index => 'credit',     :width => 100, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.credit) return "";
                            return ((rowObject[5] + rowObject[6]) / rowObject[2]
@@ -58,6 +58,8 @@ module GeneralLedgersHelper
       :pager => '#data_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
+      :sortname => 'date',
+      :sortorder => 'asc',
       :height => "100%",
       :viewrecords => true,
       :gridview => true,
