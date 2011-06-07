@@ -1,13 +1,13 @@
 <td>
-  <%= button_to "new", new_user_path, :method => :get, :remote => true %>
+  <%= button_to t('user.btn_new'), new_user_path, :method => :get, :remote => true %>
 </td>
 <td style="width: 45px">
-  <%= button_to "change", edit_user_path(0), :id => 'change_user',
+  <%= button_to t('user.btn_change'), edit_user_path(0), :id => 'change_user',
       :method => :get, :remote => true, :disabled => true,
       :onclick => 'changePass = false;' %>
 </td>
 <td style="width: 45px">
-  <%= button_to "change_pass", edit_user_path(0), :id => 'change_user_pass',
+  <%= button_to t('user.btn_change_pass'), edit_user_path(0), :id => 'change_user_pass',
     :method => :get, :remote => true, :disabled => true,
     :onclick => 'changePass = true;' %>
 </td>

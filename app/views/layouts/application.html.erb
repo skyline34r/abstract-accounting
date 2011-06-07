@@ -146,10 +146,10 @@
       </li>
     <% end %>
     <% if !current_user.nil? and can?(:manage, :all) then %>
-      <li><a href="#">Administration</a>
+      <li><a href="#"><%= t('menu.administration')%></a>
         <ul>
-          <li><a href="#users" class="page_link">User</a></li>
-          <li><a href="#roles" class="page_link">Role</a></li>
+          <li><a href="#users" class="page_link"><%= t('menu.user')%></a></li>
+          <li><a href="#roles" class="page_link"><%= t('menu.role')%></a></li>
         </ul>
       </li>
     <% end %>

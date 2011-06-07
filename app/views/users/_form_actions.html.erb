@@ -1,12 +1,12 @@
 <td>
-  <input name="cancel" type="button" value="cancel"
+  <input name="cancel" type="button" value="<%=t 'user.btn_cancel'%>"
     onclick="onCancel();"/>
-  <input name="reset" type="button" value="reset"
+  <input name="reset" type="button" value="<%=t 'user.btn_reset'%>"
     onclick="onReset();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@user, :remote => true) do |f| %>
-    <%= f.submit "save", :id => "save_user", :disabled => "true",
+    <%= f.submit t('user.btn_save'), :id => "save_user", :disabled => "true",
                          :onclick => "sendDataUser();" %>
     <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
     <%= f.hidden_field :entity_id, :id => "hide_user_entity_id" %>

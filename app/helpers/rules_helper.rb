@@ -8,7 +8,7 @@ module RulesHelper
 
     grid = [{
       :datatype => 'local',
-      :colNames => ['tag', 'to_id', 'to_tag', 'from_id', 'from_tag', 'rate',
+      :colNames => [t('rule.tag'), 'to_id', t('rule.giveto'), 'from_id', t('rule.takefrom'), t('rule.rate'),
                     'change_side', 'fact_side'],
       :colModel => [ { :name => 'tag',         :index => 'tag',         :width => 300 },
                      { :name => 'to_id',       :index => 'to_id',       :hidden => true },

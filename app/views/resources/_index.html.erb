@@ -72,6 +72,10 @@
       location.hash = "#resources/new_asset";
     }
   }
+  function getResType(type) {
+    if(type == "Asset") return "<%= t('resource.asset')%>";
+    return "<%= t('resource.money')%>";
+  }
 </script>
 
 <%= raw(resources_jqgrid) %>
@@ -86,12 +90,12 @@
   <tr align="left">
     <td colspan="2">
       <div style="float:left">
-        monetary:
+        <%= t('resource.ismoney')%>:
         <input id="resource_type" type="checkbox" onchange="changeResourceType();"
                disabled="true"/>
       </div>
       <div id="div_money_code" style="float:right; display:none">
-        code:
+        <%= t('resource.code')%>:
         <input id="money_code" type="text" value="" size="20" disabled="true"
                onkeypress="$('#save_resource').removeAttr('disabled');"/>
       </div>
@@ -99,7 +103,7 @@
   </tr>
   <tr align="left">
     <td colspan="2">
-      tag:
+      <%= t('resource.tag')%>:
       <input id="resource_tag" type="text" value="" size="83" disabled="true"
              onkeypress="$('#save_resource').removeAttr('disabled');"/>
     </td>

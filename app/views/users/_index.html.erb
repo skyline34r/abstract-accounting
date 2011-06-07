@@ -198,44 +198,44 @@
     </tr>
     <tr align="left" id="email" style="display: table-row">
       <td colspan="3">
-        email:
+        <%= t('user.email')%>:
         <input id="user_email" type="text" disabled="true" style="width: 661px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
     <tr align="left" id="user_entity" style="display: table-row">
       <td colspan="3">
-        entity:
+        <%= t('user.entity')%>:
         <input id="user_entity_tag" type="text" disabled="true" style="width: 582px"/>
-        <input id="user_entity_choose" type="button" value="choose" disabled="true"
+        <input id="user_entity_choose" type="button" value="<%= t('user.btn_choose')%>" disabled="true"
                onclick="userChoiseEntity();"/>
       </td>
     </tr>
     <tr align="left" id="user_place" style="display: table-row">
       <td colspan="3">
-        place:
+        <%= t('user.place')%>:
         <input id="user_place_tag" type="text" disabled="true" style="width: 586px"/>
-        <input id="user_place_choose" type="button" value="choose" disabled="true"
+        <input id="user_place_choose" type="button" value="<%= t('user.btn_choose')%>" disabled="true"
                onclick="userChoisePlace();"/>
       </td>
     </tr>
     <tr align="left" id="pass" style="display: none">
       <td colspan="3">
-        password:
+        <%= t('user.password')%>:
         <input id="user_pass" type="password" style="width: 635px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
     <tr align="left" id="pass_c" style="display: none">
       <td colspan="3">
-        password confirmation:
+        <%= t('user.password_confirmation')%>:
         <input id="user_pass_c" type="password" style="width: 544px"
                onkeypress="$('#save_user').removeAttr('disabled');" />
       </td>
     </tr>
     <tr id="roles" style="display: none">
       <td colspan="3">
-        <p>Roles</p>
+        <p><%= t('user.roles')%>:</p>
         <% for role in Role.all %>
           <div>
             <%= check_box_tag "user_role_id_" + role.id.to_s, role.id, false,
@@ -252,8 +252,8 @@
 <table id="user_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" value="discard" onclick="showUserPage();"/>
-        <input type="button" id="user_submit" value="submit" onclick=""/>
+        <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showUserPage();"/>
+        <input type="button" id="user_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
       </td>
     </tr>
     <tr id="user_page_selection">

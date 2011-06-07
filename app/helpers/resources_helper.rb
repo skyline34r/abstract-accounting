@@ -10,10 +10,13 @@ module ResourcesHelper
       :url => '/resources/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'type', 'id', 'code'],
+      :colNames => [t('resource.tag'), t('resource.type'), 'id', 'code'],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 700 },
-        { :name => 'type', :index => 'type',  :width => 100 },
+        { :name => 'type', :index => 'type',  :width => 100, :search => false,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return getResType(cellvalue);
+                         }'.to_json_var  },
         { :name => 'id',   :index => 'id',    :width => 5, :hidden => true },
         { :name => 'code', :index => 'num_code',  :width => 5, :hidden => true }
       ],
@@ -31,7 +34,7 @@ module ResourcesHelper
         $("#resource_tag").val($("#resources_list").getCell(cell, "tag"));
         $("#change_resource").removeAttr("disabled");
         selResId = $("#resources_list").getCell(cell, "id");
-        if($("#resources_list").getCell(cell, "type") == "Asset")
+        if($("#resources_list").getCell(cell, "type") == getResType("Asset"))
         {
           $("#change_resource").parent().parent().attr("action",
             "/resources/" + selResId + "/edit_asset");

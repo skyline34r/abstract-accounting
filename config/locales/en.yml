@@ -20,8 +20,14 @@ en:
     storehouse: Storehouse
     waybill: Waybills
     release: Releases
+    administration: Administration
+    user: User
+    role: Role
   grid:
     btn_find: Find
+  buttons:
+    btn_submit: Submit
+    btn_discard: Discard
   title:
     abstract: Abstract
     waybill: Waybills
@@ -34,6 +40,14 @@ en:
     generalLedger: GeneralLedger
     balance: Balance
     transcript: Transcript
+    entity: Entity
+    resource: Resource
+    chart: Chart
+    quote: Quote
+    deal: Deal
+    fact: Fact
+    user: User
+    role: Role
   waybill:
     btn_add: New
     btn_release: Release
@@ -162,3 +176,101 @@ en:
     error: Error! Sever not found
     abort: Error! Aborting connection server
     parsererror: Syntactic error of request!
+  entity:
+    tag: Tag
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+  resource:
+    tag: Tag
+    ismoney: Monetary
+    code: Code
+    type: Type
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    asset: Asset
+    money: Money
+  chart:
+    resource: Resource
+    btn_choose: Click to choose
+    btn_commit: Set as 'Functional currency'
+    msg: Functional currency has already been set
+  quote:
+    resource: Resource
+    date: Date
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    btn_choose: Click to choose
+  deal:
+    tag: Tag
+    entity: Entity
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    isoffbalance: Is off balance
+    btn_choose: Choose
+    giveResource: We GIVE
+    takeResource: We TAKE
+    rules: Linked operations
+  rule:
+    tag: Tag
+    date: Date
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    giveto: Give To
+    takefrom: Take From
+    rate: Rate
+    changeon_factoff: Change On/Fact Off
+    changeon_facton: Change On/Fact On
+    changeoff_factoff: Change Off/Fact Off
+    changeoff_facton: Change Off/Fact On
+    btn_select: Select
+  fact:
+    date: Date
+    btn_choose: Click to choose
+    resource: Resource
+    fromFlow: From flow
+    toFlow: To flow
+    amount: Amount
+    commit: Commit
+    reset: Reset
+    value: Value
+    earnings: Earnings
+  user:
+    email: Email
+    entity: Entity
+    place: Place
+    btn_new: New
+    btn_change: Change
+    btn_change_pass: Change Password
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    btn_choose: Choose
+    password: Password
+    password_confirmation: Password confirmation
+    roles: Roles
+  role:
+    name: Name
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    permitted: Permitted pages

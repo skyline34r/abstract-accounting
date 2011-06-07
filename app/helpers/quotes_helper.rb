@@ -10,7 +10,7 @@ module QuotesHelper
       :url => '/quotes/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['resource', 'day', 'rate'],
+      :colNames => [t('quote.resource'), t('quote.date'), t('quote.rate')],
       :colModel => [
         { :name => 'resource', :index => 'resource', :width => 400 },
         { :name => 'day',      :index => 'day',              :width => 200,

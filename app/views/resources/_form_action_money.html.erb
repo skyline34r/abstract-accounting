@@ -1,6 +1,6 @@
 <%= form_for(@resource, :url => { :action => "create_money" }, :remote => true) do |f| %>
-<%= f.submit "save", :id => "save_resource", :disabled => true,
-                     :onclick => "sendMoney();" %>
+<%= f.submit t('resource.btn_save'), :id => "save_resource", :disabled => true,
+                                     :onclick => "sendMoney();" %>
 <%= f.hidden_field :num_code, :id => "hide_money_code", :value => @resource.num_code %>
 <%= f.hidden_field :alpha_code, :id => "hide_money_tag", :value => @resource.alpha_code %>
 <% end %>

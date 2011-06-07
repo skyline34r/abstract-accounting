@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $(function() {
-  $("#fact_datepicker").datepicker();
+  $("#fact_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
 });
 function factChooseDeal(type)
 {
@@ -40,7 +40,6 @@ function showFactPage()
 </script>
 
 <div id="fact_div">
-  <p>Transfer</p>
   <%= form_for(@fact, :remote => true) do |f| %>
     <%= f.hidden_field :day,           :id => "hide_fact_datepicker"%>
     <%= f.hidden_field :from_deal_id,  :id => "hide_fact_from_deal"%>
@@ -50,7 +49,7 @@ function showFactPage()
     <table>
       <tr>
         <td>
-          date
+          <%= t('fact.date')%>:
         </td>
         <td>
           <input type="text" id="fact_datepicker" size="20"/>
@@ -58,10 +57,10 @@ function showFactPage()
       </tr>
       <tr>
         <td>
-          from flow
+          <%= t('fact.fromFlow')%>:
         </td>
         <td>
-          <input type="button" id="fact_from_btn" value="click to choose"
+          <input type="button" id="fact_from_btn" value="<%= t('fact.btn_choose')%>"
                  onclick="factChooseDeal('from');"/>
         </td>
         <td>
@@ -71,10 +70,10 @@ function showFactPage()
       </tr>
       <tr>
         <td>
-          to flow
+          <%= t('fact.toFlow')%>:
         </td>
         <td>
-          <input type="button" id="fact_to_btn" value="click to choose"
+          <input type="button" id="fact_to_btn" value="<%= t('fact.btn_choose')%>"
                  onclick="factChooseDeal('to');"/>
         </td>
         <td>
@@ -84,7 +83,7 @@ function showFactPage()
       </tr>
       <tr>
         <td>
-          amount
+          <%= t('fact.amount')%>:
         </td>
         <td>
           <%= f.text_field :amount, :size => 20, :id => "fact_amount"%>
@@ -94,12 +93,12 @@ function showFactPage()
         <td>
         </td>
         <td>
-          <%= f.submit "commit", :id => "save_fact", :onclick => "commitFact();" %>
+          <%= f.submit t('fact.commit'), :id => "save_fact", :onclick => "commitFact();" %>
         </td>
       </tr>
       <tr>
         <td>
-          value
+          <%= t('fact.value')%>:
         </td>
         <td>
           <p id="fact_value_text"></p>
@@ -107,7 +106,7 @@ function showFactPage()
       </tr>
       <tr>
         <td>
-          earnings
+          <%= t('fact.earnings')%>:
         </td>
         <td>
           <p id="fact_earnings_text"></p>
@@ -117,7 +116,7 @@ function showFactPage()
         <td>
         </td>
         <td>
-          <input type="button" id="fact_reset" value="reset" style="visibility: hidden"/>
+          <input type="button" id="fact_reset" value="<%= t('fact.reset')%>" style="visibility: hidden"/>
         </td>
       </tr>
 
@@ -129,8 +128,8 @@ function showFactPage()
 <table id="fact_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" value="discard" onclick="showFactPage();"/>
-        <input type="button" id="fact_submit" value="submit" onclick=""/>
+        <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showFactPage();"/>
+        <input type="button" id="fact_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
       </td>
     </tr>
     <tr id="fact_page_selection">

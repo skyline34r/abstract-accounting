@@ -1,12 +1,12 @@
 <td>
-  <input name="cancel" type="button" value="cancel"
+  <input name="cancel" type="button" value="<%=t 'quote.btn_cancel'%>"
     onclick="onCancelQuote();"/>
-  <input name="reset" type="button" value="reset"
+  <input name="reset" type="button" value="<%=t 'quote.btn_reset'%>"
     onclick="onResetQuote();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@quote, :remote => true) do |f| %>
-  <%= f.submit "save", :id => "save_quote", :disabled => "true",
+  <%= f.submit t('quote.btn_save'), :id => "save_quote", :disabled => "true",
                        :onclick => "beforeQuoteSave();" %>
   <%= f.hidden_field :money_id, :id => "hide_quote_money" %>
   <%= f.hidden_field :day,      :id => "hide_quote_day" %>

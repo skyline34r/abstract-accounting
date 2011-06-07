@@ -49,8 +49,14 @@ ru:
     storehouse: Склад
     waybill: Накладные
     release: Выдачи
+    administration: Управление
+    user: Пользователи
+    role: Роли
   grid:
     btn_find: Поиск
+  buttons:
+    btn_submit: Подтвердить
+    btn_discard: Отменить
   title:
     abstract: Абстрактный учет
     waybill: Накладные
@@ -63,6 +69,14 @@ ru:
     generalLedger: Главная книга
     balance: Счета
     transcript: Выписки
+    entity: Лица
+    resource: Ресурсы
+    chart: План счетов
+    quote: Курс
+    deal: Сделки
+    fact: Переводы
+    user: Пользователи
+    role: Роли
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -191,3 +205,101 @@ ru:
     error: Ошибка! Сервер не найден
     abort: Ошибка! Соединение оборвано сервером
     parsererror: Синтаксическая ошибка запроса!
+  entity:
+    tag: Название
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+  resource:
+    tag: Код
+    ismoney: Денежный
+    code: Код
+    type: Тип
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    asset: Активы
+    money: Деньги
+  chart:
+    resource: Ресурс
+    btn_choose: Выбрать из списка
+    btn_commit: Установить как валюту учета
+    msg: Валюта учета установлена
+  quote:
+    resource: Ресурс
+    date: Дата
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    btn_choose: Выбрать из списка
+  deal:
+    tag: Код
+    entity: Лицо
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    isoffbalance: Вне баланса
+    btn_choose: Выбрать
+    giveResource: Мы ОТДАЕМ
+    takeResource: Мы БЕРЕМ
+    rules: Связанные операции
+  rule:
+    tag: Имя
+    date: Дата
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    giveto: Передовать
+    takefrom: Брать
+    rate: Ставка
+    changeon_factoff: Change On/Fact Off
+    changeon_facton: Change On/Fact On
+    changeoff_factoff: Change Off/Fact Off
+    changeoff_facton: Change Off/Fact On
+    btn_select: Выбрать
+  fact:
+    date: Дата
+    btn_choose: Выбрать из списка
+    resource: Ресурс
+    fromFlow: Получено по сделке
+    toFlow: Передано по сделке
+    amount: Количество
+    commit: Выполнить
+    reset: Очистить
+    value: Стоимость
+    earnings: Прибыль/Убыток
+  user:
+    email: Электронная почта
+    entity: Лицо
+    place: Объект
+    btn_new: Создать
+    btn_change: Изменить
+    btn_change_pass: Изменить пароль
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    btn_choose: Выбрать из списка
+    password: Пароль
+    password_confirmation: Подтверждение пароля
+    roles: Роли
+  role:
+    name: Имя
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    permitted: Допустимые страницы

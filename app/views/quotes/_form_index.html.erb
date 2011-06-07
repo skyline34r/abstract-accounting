@@ -1,6 +1,6 @@
 <td>
-  <%= button_to "new", new_quote_path, :method => :get, :remote => true %>
+  <%= button_to t('quote.btn_new'), new_quote_path, :method => :get, :remote => true %>
 </td>
 <td style="width: 45px">
-  <input type="button" value="change" disabled="true"/>
+  <input type="button" value="<%= t('place.btn_change')%>" disabled="true"/>
 </td>

@@ -213,22 +213,22 @@
     <tr align="right">
       <td colspan="2">
         <input type="checkbox" id="isOfBalance" disabled="true">
-          is off balance
+          <%= t('deal.isoffbalance')%>
         </input>
       </td>
     </tr>
     <tr align="left">
       <td colspan="2">
-        tag:
+        <%= t('deal.tag')%>:
         <input id="deal_tag" type="text" disabled="true" value="" size="83"
                onkeypress="$('#save_deal').removeAttr('disabled');"/>
       </td>
     </tr>
     <tr align="left">
       <td colspan="2">
-        entity:
+        <%= t('deal.entity')%>:
         <input id="deal_entity_tag" type="text" disabled="true" value="" size="72" />
-        <input id="deal_entity_choose" type="button" value="choose" disabled="true"
+        <input id="deal_entity_choose" type="button" value="<%= t('deal.btn_choose')%>" disabled="true"
                onclick="dealChoiseEntity();"/>
       </td>
     </tr>
@@ -237,14 +237,14 @@
         <table>
           <tr align="left">
             <td align="left">
-              <br> We GIVE </br>
+              <br> <%= t('deal.giveResource')%> </br>
               <br> <input id="deal_give_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
-              <br> <input id="deal_give_choose" type="button" value="choose"
+              <br> <input id="deal_give_choose" type="button" value="<%= t('deal.btn_choose')%>"
                           disabled="true" onclick="dealChoiseResource('give');"/> </br>
             </td>
             <td align="center">
-              <br>rate</br>
+              <br><%= t('deal.rate')%></br>
               <br> <input type="radio" id="dir_0" name="direction" checked="true"
                           disabled="true" onchange="changeDealDirRate();"/> --> </br>
               <br> <input type="radio" id="dir_1" name="direction"
@@ -253,10 +253,10 @@
                           size="20" /> </br>
             </td>
             <td align="right">
-              <br> We TAKE </br>
+              <br> <%= t('deal.takeResource')%> </br>
               <br> <input id="deal_take_tag" type="text" disabled="true" value=""
                           size="30" /> </br>
-              <br> <input id="deal_take_choose" type="button" value="choose"
+              <br> <input id="deal_take_choose" type="button" value="<%= t('deal.btn_choose')%>"
                           disabled="true" onclick="dealChoiseResource('take');"/> </br>
             </td>
           </tr>
@@ -265,7 +265,7 @@
     </tr>
     <tr>
       <td align="left">
-        <input type="button" id="deal_rules" value="linked operations"
+        <input type="button" id="deal_rules" value="<%= t('deal.rules')%>"
                onclick="showRules();" disabled="true"/>
       </td>
     </tr>
@@ -275,8 +275,8 @@
 <table id="deal_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" value="discard" onclick="showDealPage();"/>
-        <input type="button" id="deal_submit" value="submit" onclick=""/>
+        <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showDealPage();"/>
+        <input type="button" id="deal_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
       </td>
     </tr>
     <tr id="deal_page_selection">

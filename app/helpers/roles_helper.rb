@@ -10,7 +10,7 @@ module RolesHelper
       :url => '/roles/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['name', 'pages'],
+      :colNames => [t('role.name'), 'pages'],
       :colModel => [
         { :name => 'name',  :index => 'name',   :width => 800 },
         { :name => 'pages', :index => 'pages',  :width => 5, :hidden => true }

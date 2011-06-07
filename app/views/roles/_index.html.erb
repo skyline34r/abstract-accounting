@@ -114,21 +114,48 @@
   </tr>
   <tr align="left">
     <td colspan="2">
-      name:
+      <%= t('role.name')%>:
       <input id="role_name" type="text" value="" disabled="true" style="width: 750px"
              onkeypress="$('#save_role').removeAttr('disabled');"/>
     </td>
   </tr>
   <tr id="pages" style="display: none">
     <td colspan="2">
-      <p>Permitted pages</p>
+      <p><%= t('role.permitted')%>:</p>
       <% if !@project_pages.nil? %>
         <% for i in 0..@project_pages.count-1 %>
           <p>
             <%= check_box_tag "page_" + i.to_s, @project_pages[i], false,
                   :disabled => true, :name => @project_pages[i],
                   :onchange => "$('#save_role').removeAttr('disabled');"%>
-            <%= @project_pages[i] %>
+            <%=   case @project_pages[i]
+                    when "Place"
+                      t('menu.place')
+                    when "Entity"
+                      t('menu.entity')
+                    when "Asset"
+                      t('resource.asset')
+                    when "Money"
+                      t('resource.money')
+                    when "Deal"
+                      t('menu.deal')
+                    when "Fact"
+                      t('menu.fact')
+                    when "Chart"
+                      t('menu.chart')
+                    when "Quote"
+                      t('menu.quote')
+                    when "Balance"
+                      t('menu.balance')
+                    when "GeneralLedger"
+                      t('menu.generalLedger')
+                    when "Transcript"
+                      t('menu.transcript')
+                    when "Storehouse"
+                      t('menu.storehouse')
+                    else
+                      @project_pages[i]
+                  end %>
           </p>
         <% end %>
       <% end %>

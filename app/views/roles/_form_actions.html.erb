@@ -1,12 +1,12 @@
 <td>
-  <input name="cancel" type="button" value="cancel"
+  <input name="cancel" type="button" value="<%=t 'role.btn_cancel'%>"
     onclick="onCancel();"/>
-  <input name="reset" type="button" value="reset"
+  <input name="reset" type="button" value="<%=t 'role.btn_reset'%>"
     onclick="onReset();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@role, :remote => true) do |f| %>
-  <%= f.submit "save", :id => "save_role", :disabled => "true",
+  <%= f.submit t('role.btn_save'), :id => "save_role", :disabled => "true",
                        :onclick => "sendDataRole();" %>
   <%= f.hidden_field :name,  :id => "hide_name",  :value => @role.name %>
   <%= f.hidden_field :pages, :id => "hide_pages", :value => "" %>

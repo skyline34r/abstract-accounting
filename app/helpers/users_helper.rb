@@ -10,7 +10,7 @@ module UsersHelper
       :url => '/users/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['email', 'entity', 'place', 'role_ids'],
+      :colNames => [t('user.email'), t('user.entity'), t('user.place'), 'role_ids'],
       :colModel => [
         { :name => 'email',    :index => 'email',    :width => 200 },
         { :name => 'entity',   :index => 'entity',   :width => 250 },

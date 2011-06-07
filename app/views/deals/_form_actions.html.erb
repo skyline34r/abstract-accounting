@@ -1,12 +1,12 @@
 <td>
-  <input name="cancel" type="button" value="cancel"
+  <input name="cancel" type="button" value="<%=t 'deal.btn_cancel'%>"
     onclick="onCancelDeal();"/>
-  <input name="reset" type="button" value="reset"
+  <input name="reset" type="button" value="<%=t 'deal.btn_reset'%>"
     onclick="onResetDeal();"/>
 </td>
 <td style="width:45px">
   <%= form_for(@deal, :remote => true) do |f| %>
-  <%= f.submit "save", :id => "save_deal", :disabled => "true",
+  <%= f.submit t('deal.btn_save'), :id => "save_deal", :disabled => "true",
                        :onclick => "beforeDealSave();" %>
   <%= f.hidden_field :tag,          :id => "hide_deal_tag"%>
   <%= f.hidden_field :rate,         :id => "hide_deal_rate"%>

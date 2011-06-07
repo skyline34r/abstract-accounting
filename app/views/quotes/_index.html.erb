@@ -1,7 +1,7 @@
 <script type="text/javascript">
   var canSelectQuote = true;
   $(function() {
-    $("#quote_datepicker").datepicker();
+    $("#quote_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   });
   function quoteChooseMoney()
   {
@@ -61,7 +61,7 @@
     $("#hide_quote_day").val("");
     $("#hide_quote_rate").val("");
     $("#hide_quote_money").val("");
-    $("#quote_res_btn").val("click to choose");
+    $("#quote_res_btn").val("<%= t('quote.btn_choose')%>");
     $("#quote_datepicker").val("");
     $("#quote_rate").val("");
   }
@@ -79,16 +79,17 @@
     </tr>
     <tr>
       <td style="width: 724px">
-        resource:
-        <input type="button" id="quote_res_btn" value="click to choose"
+        <%= t('quote.resource')%>:
+        <input type="button" id="quote_res_btn" value="<%= t('quote.btn_choose')%>"
                disabled="true" onclick="quoteChooseMoney();"/>
       </td>
     </tr>
     <tr>
       <td>
+        <%= t('quote.date')%>:
         <input type="text" id="quote_datepicker" size="20" disabled="true"
                onchange="$('#save_quote').removeAttr('disabled');"/>
-        rate:
+        <%= t('quote.rate')%>:
         <input type="text" id="quote_rate" disabled="true"
                onkeypress="$('#save_quote').removeAttr('disabled');"/>
       </td>
@@ -99,8 +100,8 @@
 <table id="quote_p_s_controls" style="display: none">
     <tr align="right">
       <td>
-        <input type="button" value="discard" onclick="showQuotePage();"/>
-        <input type="button" id="quote_submit" value="submit" onclick=""/>
+        <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showQuotePage();"/>
+        <input type="button" id="quote_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
       </td>
     </tr>
     <tr id="quote_page_selection">

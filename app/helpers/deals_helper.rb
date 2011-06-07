@@ -10,7 +10,7 @@ module DealsHelper
       :url => '/deals/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['tag', 'entity', 'rate', 'give', 'take', 'take_id',
+      :colNames => [t('deal.tag'), t('deal.entity'), 'rate', 'give', 'take', 'take_id',
                     'take_type', 'isOffBalance'],
       :colModel => [
         { :name => 'tag',          :index => 'tag',          :width => 400 },
