@@ -46,6 +46,7 @@ en:
     quote: Quote
     deal: Deal
     fact: Fact
+    user: User
   waybill:
     btn_add: New
     btn_release: Release
@@ -250,3 +251,17 @@ en:
     reset: Reset
     value: Value
     earnings: Earnings
+  user:
+    email: Email
+    entity: Entity
+    place: Place
+    btn_new: New
+    btn_change: Change
+    btn_change_pass: Change Password
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    btn_choose: Choose
+    password: Password
+    password_confirmation: Password confirmation
+    roles: Roles

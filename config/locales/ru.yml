@@ -75,6 +75,7 @@ ru:
     quote: Курс
     deal: Сделки
     fact: Переводы
+    user: Пользователи
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -279,3 +280,17 @@ ru:
     reset: Очистить
     value: Стоимость
     earnings: Прибыль/Убыток
+  user:
+    email: Электронная почта
+    entity: Лицо
+    place: Объект
+    btn_new: Создать
+    btn_change: Изменить
+    btn_change_pass: Изменить пароль
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    btn_choose: Выбрать из списка
+    password: Пароль
+    password_confirmation: Подтверждение пароля
+    roles: Роли
