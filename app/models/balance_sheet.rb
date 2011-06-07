@@ -17,7 +17,7 @@ class BalanceSheet < Array
     proc_fact = Proc.new do |state|
       if !state.deal.nil?
         b = state.deal.balances.where("start = ?", state.start)
-        b = b.first if b.length > 0
+        b = b.length > 0 ? b.first : nil
         if b.nil?
           b = Balance.new :amount => state.amount,
             :value => 0.0,
