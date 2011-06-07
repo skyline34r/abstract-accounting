@@ -20,16 +20,20 @@ module BalancesHelper
         { :name => 'debit',    :index => 'amount',  :width => 50, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[5] == "active") return "";
-                           return cellvalue;
+                           if($("#accounting").is(":checked"))
+                           {
+                             return rowObject[4];
+                           }
+                           return rowObject[3];
                          }'.to_json_var  },
         { :name => 'credit',   :index => 'value',   :width => 50, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[5] == "passive") return "";
-                           if($("#physical").is(":checked"))
+                           if($("#accounting").is(":checked"))
                            {
-                             return rowObject[3];
+                             return rowObject[4];
                            }
-                           return cellvalue;
+                           return rowObject[3];
                          }'.to_json_var    },
         { :name => 'side', :index => 'side', :width => 50, :hidden => true }
       ],
