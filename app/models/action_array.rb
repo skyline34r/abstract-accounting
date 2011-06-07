@@ -1,6 +1,7 @@
 module ActionArray
   def call_sub_attributes name, item
     name.split(".").each do |attr|
+      break if item.nil?
       if !attr.empty?
         item = item.send(attr)
       end
@@ -49,6 +50,7 @@ module ActionArray
         order = value.to_s
       end
     end
+    return self if param.nil? or param.empty?
     if order == 'asc'
       self.sort! do |a,b|
         a = param.nil? ? a : self.call_sub_attributes(param, a)

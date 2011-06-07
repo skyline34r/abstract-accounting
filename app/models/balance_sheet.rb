@@ -14,7 +14,22 @@ class BalanceSheet < Array
         @liabilities += i.value
       end
     end
-    Balance.find_all_between_start_and_stop(@day, @day).each { |i| p.call(i) }
+    proc_fact = Proc.new do |state|
+      if !state.deal.nil?
+        b = state.deal.balances.where("start = ?", state.start)
+        b = b.length > 0 ? b.first : nil
+        if b.nil?
+          b = Balance.new :amount => state.amount,
+            :value => 0.0,
+            :start => state.start,
+            :paid => state.paid,
+            :side => state.side,
+            :deal => state.deal
+        end
+        p.call b if b.paid.nil? or b.paid > @day
+      end
+    end
+    State.find_all_between_start_and_stop(@day, @day).each { |i| proc_fact.call(i) }
     Income.find_all_between_start_and_stop(@day, @day).each { |i| p.call(i) }
   end
 end
