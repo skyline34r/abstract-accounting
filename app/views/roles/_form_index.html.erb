@@ -1,7 +1,7 @@
 <td>
-  <%= button_to "new", new_role_path, :method => :get, :remote => true %>
+  <%= button_to t('role.btn_new'), new_role_path, :method => :get, :remote => true %>
 </td>
 <td style="width: 45px">
-  <%= button_to "change", edit_role_path(0), :id => 'change_role',
+  <%= button_to t('role.btn_change'), edit_role_path(0), :id => 'change_role',
       :method => :get, :remote => true, :disabled => true %>
 </td>

@@ -6,7 +6,7 @@
 </td>
 <td style="width: 45px">
   <%= form_for(@user, :remote => true) do |f| %>
-    <%= f.submit t 'user.btn_save', :id => "save_user", :disabled => "true",
+    <%= f.submit t('user.btn_save'), :id => "save_user", :disabled => "true",
                          :onclick => "sendDataUser();" %>
     <%= f.hidden_field :email, :id => "hide_email", :value => @user.email %>
     <%= f.hidden_field :entity_id, :id => "hide_user_entity_id" %>

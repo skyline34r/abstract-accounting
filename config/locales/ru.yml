@@ -76,6 +76,7 @@ ru:
     deal: Сделки
     fact: Переводы
     user: Пользователи
+    role: Роли
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -294,3 +295,11 @@ ru:
     password: Пароль
     password_confirmation: Подтверждение пароля
     roles: Роли
+  role:
+    name: Имя
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    permitted: Допустимые страницы
