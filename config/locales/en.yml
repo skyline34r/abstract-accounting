@@ -20,6 +20,9 @@ en:
     storehouse: Storehouse
     waybill: Waybills
     release: Releases
+    administration: Administration
+    user: User
+    role: Role
   grid:
     btn_find: Find
   buttons:

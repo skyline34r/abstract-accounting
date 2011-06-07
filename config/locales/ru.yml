@@ -49,6 +49,9 @@ ru:
     storehouse: Склад
     waybill: Накладные
     release: Выдачи
+    administration: Управление
+    user: Пользователи
+    role: Роли
   grid:
     btn_find: Поиск
   buttons:
