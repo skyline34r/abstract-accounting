@@ -1,6 +1,7 @@
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'resources/index') %>");
 }
+$("#resource_errors").html("<%= escape_javascript(render :partial => 'resources/form_errors') %>");
 $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_actions') %>");
 $("#resource_action").html("<%= escape_javascript(render :partial => 'resources/form_action_asset' ) %>");
 showResourceActionForm("asset", "edit");

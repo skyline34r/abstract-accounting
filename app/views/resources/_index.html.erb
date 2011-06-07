@@ -80,10 +80,17 @@
 
 <%= raw(resources_jqgrid) %>
 
-<table id="resources_list"></table>
-<div id="resources_pager"></div>
 
 <table>
+  <tr>
+    <td colspan="2" id="resource_errors"></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="resources_list"></table>
+      <div id="resources_pager"></div>
+    </td>
+  </tr>
   <tr id="resource_actions" align="right">
     <%= render 'resources/form_index' %>
   </tr>
