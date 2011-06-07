@@ -247,3 +247,20 @@ ru:
     giveResource: Мы ОТДАЕМ
     takeResource: Мы БЕРЕМ
     rules: Связанные операции
+  rule:
+    tag: Имя
+    date: Дата
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    giveto: Передовать
+    takefrom: Брать
+    rate: Ставка
+    changeon_factoff: Change On/Fact Off
+    changeon_facton: Change On/Fact On
+    changeoff_factoff: Change Off/Fact Off
+    changeoff_facton: Change Off/Fact On
+    btn_select: Выбрать

@@ -218,3 +218,20 @@ en:
     giveResource: We GIVE
     takeResource: We TAKE
     rules: Linked operations
+  rule:
+    tag: Tag
+    date: Date
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    giveto: Give To
+    takefrom: Take From
+    rate: Rate
+    changeon_factoff: Change On/Fact Off
+    changeon_facton: Change On/Fact On
+    changeoff_factoff: Change Off/Fact Off
+    changeoff_facton: Change Off/Fact On
+    btn_select: Select
