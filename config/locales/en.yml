@@ -41,6 +41,7 @@ en:
     resource: Resource
     chart: Chart
     quote: Quote
+    deal: Deal
   waybill:
     btn_add: New
     btn_release: Release
@@ -203,3 +204,17 @@ en:
     btn_reset: Reset
     btn_save: Save
     btn_choose: Click to choose
+  deal:
+    tag: Tag
+    entity: Entity
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    isoffbalance: Is off balance
+    btn_choose: Choose
+    giveResource: We GIVE
+    takeResource: We TAKE
+    rules: Linked operations

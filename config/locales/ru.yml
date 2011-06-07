@@ -70,6 +70,7 @@ ru:
     resource: Ресурсы
     chart: План счетов
     quote: Курс
+    deal: Сделки
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -232,3 +233,17 @@ ru:
     btn_reset: Очистить
     btn_save: Сохранить
     btn_choose: Нажмите, чтобы выбрать
+  deal:
+    tag: Код
+    entity: Лицо
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    isoffbalance: Вне баланса
+    btn_choose: Выбрать
+    giveResource: Мы ОТДАЕМ
+    takeResource: Мы БЕРЕМ
+    rules: Связанные операции
