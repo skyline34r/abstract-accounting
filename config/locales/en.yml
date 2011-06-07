@@ -42,6 +42,7 @@ en:
     chart: Chart
     quote: Quote
     deal: Deal
+    fact: Fact
   waybill:
     btn_add: New
     btn_release: Release
@@ -235,3 +236,14 @@ en:
     changeoff_factoff: Change Off/Fact Off
     changeoff_facton: Change Off/Fact On
     btn_select: Select
+  fact:
+    date: Date
+    btn_choose: Click to choose
+    resource: Resource
+    fromFlow: From flow
+    toFlow: To flow
+    amount: Amount
+    commit: Commit
+    reset: Reset
+    value: Value
+    earnings: Earnings
