@@ -70,10 +70,16 @@
 <%= raw(quotes_jqgrid) %>
 
 <div id="quotes_div">
-  <table id="quotes_list"></table>
-  <div id="quotes_pager"></div>
-
   <table>
+    <tr>
+      <td colspan="2" id="quote_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id="quotes_list"></table>
+        <div id="quotes_pager"></div>
+      </td>
+    </tr>
     <tr id="actions" align="right">
       <%= render "quotes/form_index" %>
     </tr>
