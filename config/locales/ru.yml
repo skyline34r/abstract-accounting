@@ -51,6 +51,9 @@ ru:
     release: Выдачи
   grid:
     btn_find: Поиск
+  buttons:
+    btn_submit: Подтвердить
+    btn_discard: Отменить
   title:
     abstract: Абстрактный учет
     waybill: Накладные
@@ -66,6 +69,7 @@ ru:
     entity: Лица
     resource: Ресурсы
     chart: План счетов
+    quote: Курс
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -218,3 +222,13 @@ ru:
     btn_choose: Нажмите, чтобы выбрать
     btn_commit: Установить как валюту учета
     msg: Валюта учета установлена
+  quote:
+    resource: Ресурс
+    date: Дата
+    rate: Курс
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    btn_choose: Нажмите, чтобы выбрать

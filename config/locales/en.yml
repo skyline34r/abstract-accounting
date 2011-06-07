@@ -22,6 +22,9 @@ en:
     release: Releases
   grid:
     btn_find: Find
+  buttons:
+    btn_submit: Submit
+    btn_discard: Discard
   title:
     abstract: Abstract
     waybill: Waybills
@@ -37,6 +40,7 @@ en:
     entity: Entity
     resource: Resource
     chart: Chart
+    quote: Quote
   waybill:
     btn_add: New
     btn_release: Release
@@ -189,3 +193,13 @@ en:
     btn_choose: Click to choose
     btn_commit: Set as 'Functional currency'
     msg: Functional currency has already been set
+  quote:
+    resource: Resource
+    date: Date
+    rate: Rate
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    btn_choose: Click to choose
