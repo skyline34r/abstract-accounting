@@ -63,6 +63,9 @@ ru:
     generalLedger: Главная книга
     balance: Счета
     transcript: Выписки
+    entity: Лица
+    resource: Ресурсы
+    chart: План счетов
   waybill:
     btn_add: Создать
     btn_release: Выдать
@@ -191,3 +194,27 @@ ru:
     error: Ошибка! Сервер не найден
     abort: Ошибка! Соединение оборвано сервером
     parsererror: Синтаксическая ошибка запроса!
+  entity:
+    tag: Название
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+  resource:
+    tag: Код
+    ismoney: Денежный
+    code: Код
+    type: Тип
+    btn_new: Создать
+    btn_change: Изменить
+    btn_cancel: Отмена
+    btn_reset: Очистить
+    btn_save: Сохранить
+    asset: Активы
+    money: Деньги
+  chart:
+    resource: Ресурс
+    btn_choose: Нажмите, чтобы выбрать
+    btn_commit: Установить как валюту учета
+    msg: Валюта учета установлена

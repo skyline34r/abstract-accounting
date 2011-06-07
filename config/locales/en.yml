@@ -34,6 +34,9 @@ en:
     generalLedger: GeneralLedger
     balance: Balance
     transcript: Transcript
+    entity: Entity
+    resource: Resource
+    chart: Chart
   waybill:
     btn_add: New
     btn_release: Release
@@ -162,3 +165,27 @@ en:
     error: Error! Sever not found
     abort: Error! Aborting connection server
     parsererror: Syntactic error of request!
+  entity:
+    tag: Tag
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+  resource:
+    tag: Tag
+    ismoney: Monetary
+    code: Code
+    type: Type
+    btn_new: New
+    btn_change: Change
+    btn_cancel: Cancel
+    btn_reset: Reset
+    btn_save: Save
+    asset: Asset
+    money: Money
+  chart:
+    resource: Resource
+    btn_choose: Click to choose
+    btn_commit: Set as 'Functional currency'
+    msg: Functional currency has already been set

@@ -1,9 +1,9 @@
 <td>
-  <%= button_to "new", new_asset_resources_path, :method => :get,
+  <%= button_to t('resource.btn_new'), new_asset_resources_path, :method => :get,
       :remote => true %>
 </td>
 <td style="width: 45px">
-  <%= button_to "change", edit_asset_resource_path(0),
+  <%= button_to t('resource.btn_change'), edit_asset_resource_path(0),
       :id => "change_resource", :method => :get, :remote => true,
       :disabled => true %>
 </td>

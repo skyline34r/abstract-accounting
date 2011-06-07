@@ -1,5 +1,5 @@
 <%= form_for(@resource, :url => { :action => "create_asset" }, :remote => true) do |f| %>
-<%= f.submit "save", :id => "save_resource", :disabled => true,
-                     :onclick => "sendAsset();" %>
+<%= f.submit t('resource.btn_save'), :id => "save_resource", :disabled => true,
+                                     :onclick => "sendAsset();" %>
 <%= f.hidden_field :tag, :id => "hide_asset_tag", :value => @resource.tag %>
 <% end %>
