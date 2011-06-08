@@ -6,4 +6,7 @@ class HomeController < ApplicationController
     session[:res_type] = ''
   end
 
+  def main
+    session[:res_type] = ''
+  end
 end

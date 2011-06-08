@@ -90,7 +90,12 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
-  get "home/index"
+  resources :home do
+    collection do
+      get 'main'
+    end
+  end
+  #get "home/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
