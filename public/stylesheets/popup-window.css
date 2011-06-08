@@ -6,3 +6,6 @@
   margin-top:10px;
   margin-right:10px;
 }
+.main_popup {
+  z-index: 9999;
+}

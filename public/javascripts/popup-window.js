@@ -11,7 +11,7 @@
     }, o);
     var pWindow = $('#popup-window');
     if (!pWindow.length) {
-      $('body').prepend('<div id="popup-window"></div>');
+      $('body').prepend('<div id="popup-window" class="main_popup"></div>');
       var pWindow = $('#popup-window');
     }
     if (o.remove) {
