@@ -84,6 +84,7 @@
     } else {
       $("#hide_is_off_balance").val("0");
     }
+    rememberDealElements();
   }
   function disabledElements()
   {
@@ -132,7 +133,6 @@
   }
   function showDealIndexForm()
   {
-    dataPage = null;
     if(crossPage.length) {
       $("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
       $("#deals_list").trigger("reloadGrid");
@@ -183,20 +183,23 @@
   }
   function loadDealElements()
   {
-    if(dataPage["isOffBalance"]) $("#isOfBalance").attr("checked","checked");
-    $("#deal_tag").val(dataPage["tag"]);
-    $("#hide_deal_entity_id").val(dataPage["entity_id"]);
-    $("#deal_entity_tag").val(dataPage["entity_tag"]);
-    $("#hide_deal_give_id").val(dataPage["give_id"]);
-    $("#hide_deal_give_type").val(dataPage["give_type"]);
-    $("#deal_give_tag").val(dataPage["give_tag"]);
-    $("#hide_deal_take_id").val(dataPage["take_id"]);
-    $("#hide_deal_take_type").val(dataPage["take_type"]);
-    $("#deal_take_tag").val(dataPage["take_tag"]);
-    if(dataPage["dir_0"]) $("#dir_0").attr("checked","checked");
-      else $("#dir_1").attr("checked","checked");
-    $("#deal_rate").val(dataPage["rate"]);
-    $("#save_deal").removeAttr("disabled");
+    if(dataPage != null) {
+      if(dataPage["isOffBalance"]) $("#isOfBalance").attr("checked","checked");
+      $("#deal_tag").val(dataPage["tag"]);
+      $("#hide_deal_entity_id").val(dataPage["entity_id"]);
+      $("#deal_entity_tag").val(dataPage["entity_tag"]);
+      $("#hide_deal_give_id").val(dataPage["give_id"]);
+      $("#hide_deal_give_type").val(dataPage["give_type"]);
+      $("#deal_give_tag").val(dataPage["give_tag"]);
+      $("#hide_deal_take_id").val(dataPage["take_id"]);
+      $("#hide_deal_take_type").val(dataPage["take_type"]);
+      $("#deal_take_tag").val(dataPage["take_tag"]);
+      if(dataPage["dir_0"]) $("#dir_0").attr("checked","checked");
+        else $("#dir_1").attr("checked","checked");
+      $("#deal_rate").val(dataPage["rate"]);
+      $("#save_deal").removeAttr("disabled");
+      dataPage = null;
+    }
   }
 </script>
 
