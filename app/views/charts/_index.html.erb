@@ -38,7 +38,14 @@
 <div id="chart_div">
   <table>
     <tr>
-      <td><%= t('chart.resource')%></td>
+      <td colspan="2" id="chart_errors">
+        <%= form_for(:chart, :remote => true) do |f| %>
+        <%= f.error_messages %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td style="width:10px"><%= t('chart.resource')%>:</td>
       <td>
         <input type="button" id="chart_curr_btn" value="<%= t('chart.btn_choose')%>"
                              onclick="chartChoiseResource();"/>
@@ -47,8 +54,7 @@
       </td>
     </tr>
     <tr>
-      <td></td>
-      <td>
+      <td colspan="2">
         <%= form_for(@chart, :remote => true) do |f| %>
         <%= f.hidden_field :currency_id, :id => "hide_chart_curr_id" %>
         <%= f.submit "commit", :id => "save_chart",

@@ -15,7 +15,9 @@ class ChartsController < ApplicationController
 
   def create
     @chart = Chart.new(params[:chart])
-    @chart.save
+    if !@chart.save
+      render :action => "index"
+    end
   end
 
 end
