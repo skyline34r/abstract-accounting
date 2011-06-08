@@ -50,7 +50,7 @@ module ActionArray
         order = value.to_s
       end
     end
-    return self if param.nil? or param.empty?
+    return self if !param.nil? and param.empty?
     if order == 'asc'
       self.sort! do |a,b|
         a = param.nil? ? a : self.call_sub_attributes(param, a)

@@ -26,6 +26,7 @@ class FactTest < ActiveSupport::TestCase
   test "Store facts" do
     fact1 = Fact.new :amount => 100000.0,
       :day => DateTime.civil(2007, 8, 27, 12, 0, 0)
+    assert fact1.invalid?, "Invalid fact"
     fact1.to = deals(:equityshare1)
     fact1.from = deals(:equityshare2)
     fact1.resource = fact1.from.take
