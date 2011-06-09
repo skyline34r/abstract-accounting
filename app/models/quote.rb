@@ -16,8 +16,8 @@ class Quote < ActiveRecord::Base
       self.money.deal_gives.each do |deal|
         b = deal.balance
         self.diff += -(b.amount * self.rate).accounting_norm +
-            (b.amount * self.money.quote.rate).accounting_norm if
-            !b.nil? and b.side == "active"
+            (b.amount * (self.money.quote.nil? ? 1.0 : self.money.quote.rate)).
+                accounting_norm if !b.nil? and b.side == "active"
       end
     end
     if !self.money.deal_takes(true).nil? and !self.money.deal_takes.empty?
@@ -25,8 +25,8 @@ class Quote < ActiveRecord::Base
         b = deal.balance
         self.diff += (b.amount * self.rate).accounting_norm -
             #TODO: error when self.money.quote is nil
-            (b.amount * self.money.quote.rate).accounting_norm if
-            !b.nil? and b.side == "passive"
+            (b.amount * (self.money.quote.nil? ? 1.0 : self.money.quote.rate)).
+                accounting_norm if !b.nil? and b.side == "passive"
       end
     end
     if !self.diff.accounting_zero?
