@@ -46,6 +46,7 @@
     var d = new Date($("#quote_datepicker").val());
     $("#hide_quote_day").val(d.toUTCString());
     $("#hide_quote_rate").val($("#quote_rate").val());
+    saveQuoteElements();
   }
   function onCancelQuote()
   {
@@ -65,15 +66,37 @@
     $("#quote_datepicker").val("");
     $("#quote_rate").val("");
   }
+  function saveQuoteElements() {
+    dataPage = new Object();
+    dataPage["date"] = $("#quote_datepicker").val();
+    dataPage["rate"] = $("#quote_rate").val();
+    dataPage["money_id"] = $("#hide_quote_money").val();
+    dataPage["money_tag"] = $("#quote_res_btn").val();
+  }
+  function loadQuoteElements() {
+    if(dataPage != null) {
+      $("#quote_datepicker").val(dataPage["date"]);
+      $("#quote_rate").val(dataPage["rate"]);
+      $("#hide_quote_money").val(dataPage["money_id"]);
+      $("#quote_res_btn").val(dataPage["money_tag"]);
+      dataPage = null;
+    }
+  }
 </script>
 
 <%= raw(quotes_jqgrid) %>
 
 <div id="quotes_div">
-  <table id="quotes_list"></table>
-  <div id="quotes_pager"></div>
-
   <table>
+    <tr>
+      <td colspan="2" id="quote_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id="quotes_list"></table>
+        <div id="quotes_pager"></div>
+      </td>
+    </tr>
     <tr id="actions" align="right">
       <%= render "quotes/form_index" %>
     </tr>

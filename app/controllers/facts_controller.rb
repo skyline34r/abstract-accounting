@@ -15,6 +15,8 @@ class FactsController < ApplicationController
     if @fact.save
       @txn = Txn.new(:fact => @fact)
       @txn.save
+    else
+      render :action => "index"
     end
   end
 

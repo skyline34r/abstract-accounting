@@ -1,5 +1,7 @@
 if($("#body").html().length <= 1) {
   $("#body").html("<%= escape_javascript(render :partial => 'quotes/index') %>");
 }
+$("#quote_errors").html("<%= escape_javascript(render :partial => 'quotes/form_errors') %>");
 $("#actions").html("<%= escape_javascript(render :partial => 'quotes/form_actions') %>");
 showQuoteActionForm();
+loadQuoteElements();

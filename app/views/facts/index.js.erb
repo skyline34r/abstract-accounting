@@ -1,2 +1,3 @@
 document.title = "<%=t 'title.abstract'%> :: <%=t 'title.fact'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'facts/index' ) %>");
+loadFactElements();

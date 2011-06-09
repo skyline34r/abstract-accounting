@@ -1,4 +1,5 @@
 require 'float_accounting'
+require 'resource'
 
 class QuotesController < ApplicationController
   before_filter :authenticate_user!
@@ -40,6 +41,7 @@ class QuotesController < ApplicationController
   end
 
   def new
+    session[:res_type] = 'money'
     @quote = Quote.new
   end
 

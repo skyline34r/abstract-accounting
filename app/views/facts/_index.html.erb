@@ -28,6 +28,7 @@ function commitFact()
 {
   var d = new Date($("#fact_datepicker").val());
   $("#hide_fact_datepicker").val(d.toUTCString());
+  saveFactElements();
 }
 function showFactPage()
 {
@@ -37,6 +38,31 @@ function showFactPage()
   $("#fact_submit").unbind("click");
   crossPage = "";
 }
+
+function saveFactElements() {
+  dataPage = new Object();
+  dataPage["date"] = $("#fact_datepicker").val();
+  dataPage["deal_from_id"] = $("#hide_fact_from_deal").val();
+  dataPage["deal_from_tag"] = $("#fact_from_btn").val();
+  dataPage["deal_to_id"] = $("#hide_fact_to_deal").val();
+  dataPage["deal_to_tag"] = $("#fact_to_btn").val();
+  dataPage["resource_id"] = $("#hide_fact_resource_id").val();
+  dataPage["resource_type"] = $("#hide_fact_resource_type").val();
+}
+
+function loadFactElements() {
+  if(dataPage != null) {
+    $("#fact_datepicker").val(dataPage["date"]);
+    $("#hide_fact_from_deal").val(dataPage["deal_from_id"]);
+    $("#fact_from_btn").val(dataPage["deal_from_tag"]);
+    $("#hide_fact_to_deal").val(dataPage["deal_to_id"]);
+    $("#fact_to_btn").val(dataPage["deal_to_tag"]);
+    $("#hide_fact_resource_id").val(dataPage["resource_id"]);
+    $("#hide_fact_resource_type").val(dataPage["resource_type"]);
+    dataPage = null;
+  }
+}
+
 </script>
 
 <div id="fact_div">
@@ -47,6 +73,11 @@ function showFactPage()
     <%= f.hidden_field :resource_id,   :id => "hide_fact_resource_id"%>
     <%= f.hidden_field :resource_type, :id => "hide_fact_resource_type"%>
     <table>
+      <tr>
+        <td colspan="3" id="fact_errors">
+          <%= f.error_messages %>
+        </td>
+      </tr>
       <tr>
         <td>
           <%= t('fact.date')%>:
@@ -59,7 +90,7 @@ function showFactPage()
         <td>
           <%= t('fact.fromFlow')%>:
         </td>
-        <td>
+        <td style="width:5px">
           <input type="button" id="fact_from_btn" value="<%= t('fact.btn_choose')%>"
                  onclick="factChooseDeal('from');"/>
         </td>
@@ -72,7 +103,7 @@ function showFactPage()
         <td>
           <%= t('fact.toFlow')%>:
         </td>
-        <td>
+        <td style="width:5px">
           <input type="button" id="fact_to_btn" value="<%= t('fact.btn_choose')%>"
                  onclick="factChooseDeal('to');"/>
         </td>
