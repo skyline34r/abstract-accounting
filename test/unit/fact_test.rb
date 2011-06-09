@@ -33,17 +33,114 @@ class FactTest < ActiveSupport::TestCase
     assert !fact1.valid?, "Fact should not be valid"
     fact1.to = deals(:bankaccount)
     assert fact1.save, "Fact not saved"
+  end
 
-#    f = Fact.find(fact1.id)
-#    pp f.from.state(f.day)
-#    pp f.to.state(f.day)
-#    assert_equal "passive", f.from.state(f.day).side,
-#      "From state side is no passive"
-#    assert_equal 30000, f.from.state(f.day).amount,
-#      "From state amount is not equal to 30000"
-#    assert_equal "active", f.to.state(f.day).side,
-#      "To state side is no active"
-#    assert_equal 300, f.to.state(f.day).amount,
-#      "To state amount is not equal to 300"
+  test "store fact with old date" do
+    exchange = Deal.new :tag => "exchange money",
+      :entity => entities(:sbrfbank),
+      :give => money(:eur),
+      :take => money(:rub),
+      :rate => 31.0
+    keep = Deal.new :tag => "money keep",
+      :entity => entities(:sbrfbank),
+      :give => money(:rub),
+      :take => money(:rub),
+      :rate => 1.0
+    assert exchange.save, "Deal is not saved"
+    assert keep.save, "Deal is not saved"
+
+    f = Fact.new(:amount => 310.0,
+              :day => DateTime.civil(2011, 6, 6, 12, 0, 0),
+              :from => exchange,
+              :to => keep,
+              :resource => exchange.take)
+    assert f.save, "Fact is not saved"
+
+    s = exchange.state
+    assert_equal 10.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    s = keep.state
+    assert_equal 310.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+
+    f = Fact.new(:amount => 620.0,
+              :day => DateTime.civil(2011, 6, 7, 12, 0, 0),
+              :from => exchange,
+              :to => keep,
+              :resource => exchange.take)
+    assert f.save, "Fact is not saved"
+
+    s = exchange.state
+    assert_equal 30.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, exchange.states(true).length, "Wrong states count"
+    s = exchange.states[0]
+    assert_equal 10.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
+    s = keep.state
+    assert_equal 930.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, keep.states.length, "Wrong states count"
+    s = keep.states[0]
+    assert_equal 310.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
+
+    assert_raise ActiveRecord::RecordInvalid do
+      Fact.new(:amount => 930.0,
+                :day => DateTime.civil(2011, 6, 6, 12, 0, 0),
+                :from => exchange,
+                :to => keep,
+                :resource => exchange.take).save
+    end
+    s = exchange.state
+    assert_equal 30.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, exchange.states(true).length, "Wrong states count"
+    s = exchange.states[0]
+    assert_equal 10.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
+    s = keep.state
+    assert_equal 930.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, keep.states.length, "Wrong states count"
+    s = keep.states[0]
+    assert_equal 310.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
+
+    f = Fact.new(:amount => 930.0,
+              :day => DateTime.civil(2011, 6, 7, 12, 0, 0),
+              :from => exchange,
+              :to => keep,
+              :resource => exchange.take)
+    assert f.save, "Fact is not saved"
+
+    s = exchange.state
+    assert_equal 60.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, exchange.states.length, "Wrong states count"
+    s = exchange.states[0]
+    assert_equal 10.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
+    s = keep.state
+    assert_equal 1860.0, s.amount, "Wrong amount"
+    assert_equal f.day, s.start, "Wrong day"
+    assert s.paid.nil?, "Wrong paid"
+    assert_equal 2, keep.states.length, "Wrong states count"
+    s = keep.states[0]
+    assert_equal 310.0, s.amount, "Wrong amount"
+    assert_equal DateTime.civil(2011, 6, 6, 12, 0, 0), s.start, "Wrong day"
+    assert_equal f.day, s.paid, "Wrong paid"
   end
 end
