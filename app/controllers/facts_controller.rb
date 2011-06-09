@@ -12,10 +12,13 @@ class FactsController < ApplicationController
 
   def create
     @fact = Fact.new(params[:fact])
-    if @fact.save
-      @txn = Txn.new(:fact => @fact)
-      @txn.save
-    else
+    begin
+      Fact.transaction do
+        @fact.save!
+        @txn = Txn.new(:fact => @fact)
+        @txn.save!
+      end
+    rescue
       render :action => "index"
     end
   end
