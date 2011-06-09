@@ -29,6 +29,7 @@ ru:
             to_id:
               blank: "не указано"
   reqFields: обязательные поля
+  loading: Загрузка...
   menu:
     account: Учётная запись
     logout: Выход

@@ -1,65 +1,77 @@
-<script type="text/javascript">
-  <% if !user_signed_in? %>
-    location.href = "<%= new_user_session_path %>";
-  <% end %>
-
-  var dataPage = null;
-  var crossPage = "";
-  var crossPageLink = "";
-  var cancelRequest = false;
-
-  function ajaxRequest(_url) {
-    $.ajax({url: _url,
-            beforeSend: function() {
-                          $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
-                        },
-            success: function() {
-                       $.popup({remove:true});
-                     },
-            error: function(jqXHR, textStatus, errorThrown) {
-                     $.popup({remove:true});
-                     switch(textStatus) {
-                       case "timeout": $.popup({note:"<%=t 'popup.timeout'%>",time:2000}); break;
-                       case "error": $.popup({note:"<%=t 'popup.error'%>",time:2000}); break;
-                       case "abort": $.popup({note:"<%=t 'popup.abort'%>",time:2000}); break;
-                       case "parsererror": $.popup({note:"<%=t 'popup.parsererror'%>",time:2000}); break;
-                     }
-                   }
-           });
-  }
-
-  $(window).bind("hashchange", function() {
-    if(!cancelRequest) {
-      ajaxRequest(location.hash.substr(1, location.hash.length));
-    } else {
-      cancelRequest = false;
-    }
-  });
-
-  $(".page_link").live("click", function() {
-    crossPage = "";
-    crossPageLink = "";
-    dataPage = null;
-    if($(this).attr("href") == location.hash) {
-      ajaxRequest(location.hash.substr(1, location.hash.length));
-    }
-  });
-
-  $(document).ready(function () {
-    if(location.hash.length > 0) {
-      ajaxRequest(location.hash.substr(1, location.hash.length));
-    }
-  });
-
-  $(".button_to").live("submit", function() {
-    cancelRequest = true;
-    location.hash = $(this).attr("action").substr(1, $(this).attr("action").length);
-  });
-</script>
-
 <% content_for :head do %>
   <title><%=t 'title.abstract'%></title>
-<% end %>
 
-<div id="body">
-</div>
+  <script type="text/javascript">
+    var loadStep = 0;
+    var progressBarState = 0;
+    var listJSLinks = ["javascripts/jquery.js"
+                      ,"javascripts/jquery-ui.js"
+                      ,"javascripts/rails.js"
+                      ,"javascripts/locale/grid.locale-" + "<%=I18n.locale.to_s%>" + ".js"
+                      ,"javascripts/jqgrid/grid.base.min.js"
+                      ,"javascripts/jqgrid/grid.common.min.js"
+                      ,"javascripts/jqgrid/grid.custom.min.js"
+                      ,"javascripts/jqgrid/grid.formedit.min.js"
+                      ,"javascripts/jqgrid/grid.inlinedit.min.js"
+                      ,"javascripts/jqgrid/jquery.fmatter.min.js"
+                      ,"javascripts/jqgrid/grid.celledit.min.js"
+                      ,"javascripts/jqgrid/grid.subgrid.min.js"
+                      ,"javascripts/jqgrid/jquery.jqGrid.min.js"
+                      ,"javascripts/popup-window.js"
+                      ,"javascripts/utils.js"
+                      ,"javascripts/menu.js"
+                      ];
+    <% if I18n.locale.to_s != 'en' %>
+      listJSLinks[listJSLinks.length] = "javascripts/locale/ui.datepicker-" + "<%=I18n.locale.to_s%>" + ".js";
+    <% end %>
+    var listCssLinks = ["stylesheets/jquery/ui-lightness/jquery-ui.css"
+                       ,"stylesheets/jquery/ui.jqgrid.css"
+                       ,"stylesheets/main_menu.css"
+                       ,"stylesheets/popup-window.css"
+                       ];
+    var stateStep = parseInt(100 / (listJSLinks.length + listCssLinks.length)) + 1;
+
+    function loadCallback() {
+      progressBarState += stateStep;
+      if(progressBarState > 100) progressBarState = 100;
+      progressbar({note:"<%= t('loading')%>", state: progressBarState});
+      loadStep++;
+      if(loadStep >= listJSLinks.length) {
+        if(loadStep >= listJSLinks.length + listCssLinks.length) {
+          progressbar({remove: true});
+          ajaxRequest("/home/main");
+        } else {
+          loadCss(listCssLinks[loadStep-listJSLinks.length], loadCallback);
+        }
+      } else {
+        loadScript(listJSLinks[loadStep], loadCallback);
+      }
+    }
+    function ajaxRequest(_url) {
+      $.ajax({url: _url,
+              beforeSend: function() {
+                            $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
+                          },
+              success: function() {
+                         $.popup({remove:true});
+                       },
+              error: function(jqXHR, textStatus, errorThrown) {
+                       $.popup({remove:true});
+                       switch(textStatus) {
+                         case "timeout": $.popup({note:"<%=t 'popup.timeout'%>",time:2000}); break;
+                         case "error": $.popup({note:"<%=t 'popup.error'%>",time:2000}); break;
+                         case "abort": $.popup({note:"<%=t 'popup.abort'%>",time:2000}); break;
+                         case "parsererror": $.popup({note:"<%=t 'popup.parsererror'%>",time:2000}); break;
+                       }
+                     }
+             });
+    }
+    onload = function() {
+      <% if !user_signed_in? %>
+        location.href = "<%= new_user_session_path %>";
+      <% else %>
+        loadScript(listJSLinks[loadStep], loadCallback);
+      <% end %>
+    }
+  </script>
+<% end %>

@@ -1,5 +1,6 @@
 en:
   reqFields: required fields
+  loading: Loading...
   menu:
     account: Account
     logout: Logout
