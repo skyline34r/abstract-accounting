@@ -63,15 +63,15 @@ class Fact < ActiveRecord::Base
     init_state self.to.state(nil), self.to
   end
   
-  def init_state(aState, aDeal)
-    return true if (aDeal.nil? or aDeal.income?) and aState.nil?
-    (if aState.nil?
+  def init_state(state, deal)
+    return true if (deal.nil? or deal.income?) and state.nil?
+    (if state.nil?
       State.new
-    else
-      aState
-    end).save_or_replace!(self.day) do |state|
-      state.deal = aDeal
-      state.fact = self
+     else
+      state
+    end).save_or_replace!(self.day) do |new_state|
+      new_state.deal = deal
+      new_state.fact = self
     end
     true
   end

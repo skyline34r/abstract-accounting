@@ -473,7 +473,7 @@ class StorehouseTest < ActiveSupport::TestCase
       :document_id => "123456789",
       :place => p1,
       :from => "Storehouse organization",
-      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+      :created => DateTime.civil(2011, 4, 8, 12, 0, 0))
     wb4.add_resource "roof", "m2", 130
     assert wb4.save, "Waybill is not saved"
 
@@ -539,7 +539,7 @@ class StorehouseTest < ActiveSupport::TestCase
       :document_id => "12345",
       :place => p,
       :from => "Storehouse organization",
-      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+      :created => DateTime.civil(2011, 4, 9, 12, 0, 0))
     wb.add_resource "roof", "m2", 200
     assert wb.save, "Waybill is not saved"
 
@@ -547,7 +547,7 @@ class StorehouseTest < ActiveSupport::TestCase
       :document_id => "123456",
       :place => p,
       :from => "Storehouse organization",
-      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+      :created => DateTime.civil(2011, 4, 10, 12, 0, 0))
     wb.add_resource "roof", "m2", 200
     wb.add_resource "shovel", "th", 100
     assert wb.save, "Waybill is not saved"
@@ -556,7 +556,7 @@ class StorehouseTest < ActiveSupport::TestCase
       :document_id => "1234567",
       :place => p,
       :from => "Storehouse organization",
-      :created => DateTime.civil(2011, 4, 6, 12, 0, 0))
+      :created => DateTime.civil(2011, 4, 11, 12, 0, 0))
     wb.add_resource "shovel", "th", 50
     assert wb.save, "Waybill is not saved"
 

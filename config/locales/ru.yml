@@ -17,6 +17,8 @@ ru:
           one:   "%{model}: сохранение не произведено из-за 1 ошибки"
           other: "%{model}: сохранение не произведено из-за %{count} ошибок"
         body:    "Следующие поля не верны:"
+      messages:
+        record_invalid: "не верные данные"
       models:
         waybill:
           attributes:
