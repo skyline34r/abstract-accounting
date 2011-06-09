@@ -1,34 +1,46 @@
 function progressbar(o) {
-  var o = $.extend({
-    state:0,
-    note:"",
-    remove:false,
-    position:{top:0,left:0}
-  }, o);
-  var pBar = $("#progress-bar-main");
-  if (!pBar.length) {
-    $('body').prepend('<div id="progress-bar-main" class="progress_bar_main"></div>');
-    pBar = $("#progress-bar-main");
-  }
-  if (o.remove) {
-    pBar.remove();
-  } else {
-    pBar.css(o.position);
-    var pBarNote = $("#progress-bar-note");
-    if (!pBarNote.length) {
-      pBarNote = $("<div id='progress-bar-note' class='progress_bar_note'>" + o.note + "</div>");
-      pBar.append(pBarNote);
+  if(o) {
+    var pBar = document.getElementById("progress-bar-main");
+    if (!pBar) {
+      var divMain = document.createElement("div");
+      divMain.id = "progress-bar-main";
+      divMain.className = "progress_bar_main";
+      document.body.appendChild(divMain);
+      pBar = document.getElementById("progress-bar-main");
     }
-    var pBarContainer = $("#progress-bar-container");
-    if (!pBarContainer.length) {
-      pBarContainer = $("<div id='progress-bar-container' class='progress_bar_container'></div>");
-      pBar.append(pBarContainer);
+    if (o.remove) {
+      document.body.removeChild(pBar);
+    } else {
+      var pBarNote = document.getElementById("progress-bar-note");
+      if (!pBarNote) {
+        var divNote = document.createElement("div");
+        divNote.id = "progress-bar-note";
+        divNote.className = "progress_bar_note";
+        pBar.appendChild(divNote);
+        pBarNote = document.getElementById("progress-bar-note");
+        if(o.note) pBarNote.innerHTML = o.note;
+      }
+      var pBarContainer = document.getElementById("progress-bar-container");
+      if (!pBarContainer) {
+        var divContainer = document.createElement("div");
+        divContainer.id = "progress-bar-container";
+        divContainer.className = "progress_bar_container";
+        pBar.appendChild(divContainer);
+        pBarContainer = document.getElementById("progress-bar-container");
+      }
+      var pBarStatus = document.getElementById("progress-bar-status");
+      if (!pBarStatus) {
+        var divStatus = document.createElement("div");
+        divStatus.id = "progress-bar-status";
+        divStatus.className = "progress_bar_status";
+        pBarContainer.appendChild(divStatus);
+        pBarStatus = document.getElementById("progress-bar-status");
+      }
+      if(o.state) {
+        pBarStatus.style.width = o.state+"%";
+      } else {
+        pBarStatus.style.width = "0";
+      }
     }
-    var pBarStatus = $("#progress-bar-status");
-    if (!pBarStatus.length) {
-      pBarStatus = $("<div id='progress-bar-status' class='progress_bar_status'></div>");
-      pBarContainer.append(pBarStatus);
-    }
-    pBarStatus.css('width', o.state+"%");
   }
 }

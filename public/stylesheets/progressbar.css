@@ -1,17 +1,15 @@
-.progress_bar_main {
-  z-index:9999;
-  position:fixed;
-  margin: 20px 20px 20px 20px
-}
-.progress_bar_note {
-  margin-bottom:7px;
-}
-.progress_bar_container {
-  border:1px solid gray;
-  height:8px;
-  width:310px;
-}
-.progress_bar_status {
-  background-color:#dcdcdc;
-  height:100%;
-}
+.progress_bar_main{
+z-index:9999;
+position:fixed;
+margin: 20px 20px 20px 20px;
+top:0;
+left:0;}
+.progress_bar_note{
+margin-bottom:7px;}
+.progress_bar_container{
+border:1px solid gray;
+height:8px;
+width:310px;}
+.progress_bar_status{
+background-color:#dcdcdc;
+height:100%;}
