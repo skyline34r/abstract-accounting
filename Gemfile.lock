@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/AlexeyShepelev/jquery-rails.git
-  revision: a60a86642a793edd7ed77914fbf14fd9b776ed54
+  revision: 6e2c615487d8d1b9e11d40af259e5597f4299725
   specs:
     jquery-rails (0.2.7)
       rails (~> 3.0)
