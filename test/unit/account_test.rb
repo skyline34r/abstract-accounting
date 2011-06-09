@@ -257,8 +257,12 @@ class AccountTest < ActiveSupport::TestCase
               :from => deals(:forex2),
               :to => deals(:bankaccount),
               :resource => deals(:forex2).take)
-    assert t.fact.save, "Fact is not saved"
-    assert t.save, "Txn is not saved"
+    assert_nothing_raised do
+      Txn.transaction do
+        t.fact.save!
+        t.save!
+      end
+    end
 
     assert !Balance.open.nil?, "Open balances is nil"
     assert_equal 4, Balance.open.count, "Open balances count is wrong"
