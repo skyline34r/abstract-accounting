@@ -48,8 +48,8 @@
         $("#deal_" + type + "_tag").val($("#resources_list").getCell(selRow, "tag"));
         $("#hide_deal_" + type + "_id").val($("#resources_list")
                                                 .getCell(selRow, "id"));
-        $("#hide_deal_" + type + "_type").val($("#resources_list")
-                                                .getCell(selRow, "type"));
+        $("#hide_deal_" + type + "_type").val(getResClass($("#resources_list")
+                                                            .getCell(selRow, "type")));
         showDealPage();
       }
     });
@@ -141,6 +141,7 @@
       cancelRequest = true;
       location.hash = crossPageLink;
     } else {
+      dataPage = null;
       location.hash = "#deals";
     }
   }
@@ -200,6 +201,10 @@
       $("#save_deal").removeAttr("disabled");
       dataPage = null;
     }
+  }
+  function getResClass(localName) {
+    if(localName == "<%= t('resource.asset')%>") return "Asset";
+    return "Money";
   }
 </script>
 

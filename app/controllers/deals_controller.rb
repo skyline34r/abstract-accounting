@@ -35,8 +35,7 @@ class DealsController < ApplicationController
     objects_order_by_from_params @deals, params
     @deals = @deals.paginate(
       :page     => params[:page],
-      :per_page => params[:rows],
-      :order    => order_by_from_params(params))
+      :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@deals, @columns, :id_column => 'id')
     end
