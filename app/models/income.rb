@@ -9,6 +9,14 @@ class Income < ActiveRecord::Base
     Income.find_all_by_paid nil
   end
 
+  def deal
+    Deal.income
+  end
+
+  def amount
+    0.0
+  end
+
   def self.find_all_between_start_and_stop(start, stop)
     Income.where("start <= ? AND (paid > ? OR paid IS NULL)",
       DateTime.new(stop.year, stop.month, stop.day) + 1,
