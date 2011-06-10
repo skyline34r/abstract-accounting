@@ -15,16 +15,14 @@ function loadCss(sCssSrc, oCallback) {
   oCss.href = sCssSrc;
   oCss.type="text/css";
   oCss.rel="stylesheet";
-  var sheet, cssRules;
+  var sheet;
   if("sheet" in oCss) {
     sheet = "sheet";
-    cssRules = "cssRules";
   } else {
     sheet = "styleSheet";
-    cssRules = "rules";
   }
   var timeout_id = setInterval(function() {
-                                 if(oCss[sheet] && oCss[sheet][cssRules].length ) {
+                                 if(oCss && oCss[sheet]) {
                                    clearInterval(timeout_id);
                                    clearTimeout(timeout_id);
                                    oCallback();
