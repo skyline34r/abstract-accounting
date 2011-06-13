@@ -583,4 +583,93 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.where('amount' => {:like => "15"}).length,
                  "Wrong storehouse length"
   end
+
+  test "check storehouse for taskmaster" do
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal entities(:jdow), stm.entity, "Wrong storehouse entity"
+    assert_equal places(:orsha), stm.place, "Wrong storehouse place"
+    assert_equal 0, stm.length, "Wrong storehouse length"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "12345",
+      :place => places(:orsha),
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 9, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    assert wb.save, "Waybill is not saved"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "123456",
+      :place => places(:orsha),
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 10, 12, 0, 0))
+    wb.add_resource "roof", "m2", 200
+    wb.add_resource "shovel", "th", 100
+    assert wb.save, "Waybill is not saved"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "1234567",
+      :place => places(:orsha),
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 11, 12, 0, 0))
+    wb.add_resource "shovel", "th", 50
+    assert wb.save, "Waybill is not saved"
+
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal 0, stm.length, "Wrong storehouse length"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 12, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => places(:orsha),
+      :to => entities(:jdow))
+    sr.add_resource Product.find_by_resource_tag("roof"), 238
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "StorehouseRelease not applied"
+
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal 1, stm.length, "Wrong storehouse length"
+    assert_equal 238, stm[0].amount, "Wrong storehouse amount"
+    assert_equal Product.find_by_resource_tag("roof").id, stm[0].product.id,
+                 "Wrong storehouse product"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 13, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => places(:orsha),
+      :to => entities(:jdow))
+    sr.add_resource Product.find_by_resource_tag("shovel"), 55
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "StorehouseRelease not applied"
+
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal 2, stm.length, "Wrong storehouse length"
+    stm.each do |entry|
+      if entry.product.id == Product.find_by_resource_tag("roof").id
+        assert_equal 238, entry.amount, "Wrong storehouse amount"
+      elsif entry.product.id == Product.find_by_resource_tag("shovel").id
+        assert_equal 55, entry.amount, "Wrong storehouse amount"
+      else
+        assert false, "Wrong storehouse entry"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 14, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => places(:orsha),
+      :to => entities(:jdow))
+    sr.add_resource Product.find_by_resource_tag("shovel"), 55
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "StorehouseRelease not applied"
+
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal 2, stm.length, "Wrong storehouse length"
+    stm.each do |entry|
+      if entry.product.id == Product.find_by_resource_tag("roof").id
+        assert_equal 238, entry.amount, "Wrong storehouse amount"
+      elsif entry.product.id == Product.find_by_resource_tag("shovel").id
+        assert_equal 110, entry.amount, "Wrong storehouse amount"
+      else
+        assert false, "Wrong storehouse entry"
+      end
+    end
+  end
 end

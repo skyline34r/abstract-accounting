@@ -3,18 +3,19 @@ require "action_array"
 
 class StorehouseEntry
   attr_reader :owner, :place, :product, :real_amount, :amount
-  def initialize(deal, place, amount)
+  def initialize(deal, place, amount, product = nil)
     @amount = 0
     @real_amount = 0
     @product = nil
     @owner = nil
     @place = place
+    @amount = amount
     if !deal.nil?
       @owner = deal.entity
-      @product = Product.find_by_resource_id deal.give
-      @amount = amount
+      @product = Product.find_by_resource_id deal.give.id
       @real_amount = deal.state.amount
     end
+    @product = product unless product.nil?
   end
 
   def StorehouseEntry.state(deal, releases = nil)
@@ -94,6 +95,26 @@ class Storehouse < Array
       return nil unless a.save
     end
     a
+  end
+
+  def Storehouse.taskmaster entity, place
+    resources = Hash.new
+    sr = StorehouseRelease.find_all_by_to_id_and_place_id_and_state entity.id,
+      place.id, StorehouseRelease::APPLIED
+    sr.each do |release|
+      release.resources.each do |resource|
+        if resources.key?(resource.product.id)
+          resources[resource.product.id] += resource.amount
+        else
+          resources[resource.product.id] = resource.amount
+        end
+      end unless release.resources.nil?
+    end unless sr.nil?
+    s = Storehouse.new entity, place
+    resources.each do |key, value|
+      s << StorehouseEntry.new(nil, s.place, value, Product.find(key))
+    end
+    s
   end
 
   def waybills
