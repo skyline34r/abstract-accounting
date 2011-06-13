@@ -44,7 +44,7 @@ class GeneralLedgersController < ApplicationController
       :page     => params[:page],
       :per_page => params[:rows])
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@general_ledgers, @columns)
+      render :json => abstract_json_for_jqgrid(@general_ledgers, @columns, :id_column => 'fact.id')
     end
   end
 end

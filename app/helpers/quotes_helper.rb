@@ -39,6 +39,10 @@ module QuotesHelper
       {
         if (canSelectQuote) return true;
         return false;
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "quotes_list");
       }'.to_json_var
     }]
     

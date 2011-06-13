@@ -35,6 +35,10 @@ module WaybillsHelper
       {
         editRowId = iRow;
         editColId = iCol;
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "waybills_list");
       }'.to_json_var
     }]
 
@@ -136,6 +140,10 @@ module WaybillsHelper
           $("#waybills_release").attr("disabled","disabled");
           $("#waybills_release_1").attr("disabled","disabled");
         }
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "waybills_tree");
       }'.to_json_var
     }]
 

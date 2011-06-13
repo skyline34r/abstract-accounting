@@ -34,6 +34,10 @@ module EntitiesHelper
       {
         if (canSelectEntity) return true;
         return false;
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "entity_list");
       }'.to_json_var
     }]
 

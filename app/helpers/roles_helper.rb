@@ -47,7 +47,11 @@ module RolesHelper
       {
         if (canSelect) return true;
         return false;
-      }".to_json_var
+      }".to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "data_list");
+      }'.to_json_var
     }]
 
     pager = [:navGrid, '#data_pager', {:refresh => false, :add => false,

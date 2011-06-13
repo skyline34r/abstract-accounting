@@ -30,7 +30,11 @@ module StorehousesHelper
       :viewrecords => true,
       :height => "100%",
       :gridview => true,
-      :toppager => true
+      :toppager => true,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "storehouse_list");
+      }'.to_json_var
     }]
 
     pager = [:navGrid, '#storehouse_pager', {:refresh => false, :add => false,
@@ -145,8 +149,9 @@ module StorehousesHelper
           $("#storehouse_release_list").editRow(id, true);
         }
       }'.to_json_var,
-      :onPaging => 'function()
+      :onPaging => 'function(param)
       {
+        fixPager(param, "storehouse_release_list");
         $("#storehouse_release_list").saveRow(lastSelId);
       }'.to_json_var
     }]
@@ -242,6 +247,10 @@ module StorehousesHelper
             link += "?state=" + state;
         }
         $("#releases_list").setGridParam({url: link});
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "releases_list");
       }'.to_json_var
     }]
 
@@ -296,6 +305,10 @@ module StorehousesHelper
       {
         $("#release_view_list").setGridParam({url: "/storehouses/view_release?id="
                                                     + location.hash.substr(30)});
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "release_view_list");
       }'.to_json_var
     }]
 
@@ -465,6 +478,10 @@ module StorehousesHelper
             }
           }
         });
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "release_waybills_tree");
       }'.to_json_var
     }]
 

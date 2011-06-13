@@ -54,6 +54,10 @@ module ResourcesHelper
       {
         if(canSelectResource) return true;
         return false;
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "resources_list");
       }'.to_json_var
     }]
 

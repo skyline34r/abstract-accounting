@@ -70,6 +70,10 @@ module RulesHelper
           $("#rules_list").setGridParam({datatype: "json"});
           $("#rules_list").setGridParam({url: "/rules/data?deal_id=" + dealId});
         }
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "rules_list");
       }'.to_json_var
     }]
 

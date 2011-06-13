@@ -34,6 +34,10 @@ module PlacesHelper
       {
         if (canSelectPlace) return true;
         return false;
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "place_list");
       }'.to_json_var
     }]
 
