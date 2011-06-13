@@ -56,6 +56,10 @@ module DealsHelper
       :beforeRequest => 'function()
       {
         $("#deal_rules").attr("disabled", "disabled");
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "deals_list");
       }'.to_json_var
     }]
 

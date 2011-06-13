@@ -83,6 +83,10 @@ module GeneralLedgersHelper
                                                debit: getDebit(),
                                                credit: "null" });
          }
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "data_list");
       }'.to_json_var
     }]
     

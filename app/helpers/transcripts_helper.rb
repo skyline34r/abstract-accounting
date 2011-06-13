@@ -78,7 +78,11 @@ module TranscriptsHelper
       :viewrecords => true,
       :gridview => true,
       :toppager => true,
-      :shrinkToFit => true
+      :shrinkToFit => true,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "transcript_list");
+      }'.to_json_var
     }]
 
     pager = [:navGrid, '#transcripts_pager', {:refresh => false, :add => false,

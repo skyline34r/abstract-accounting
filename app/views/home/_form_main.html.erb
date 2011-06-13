@@ -31,6 +31,14 @@
     cancelRequest = true;
     location.hash = $(this).attr("action").substr(1, $(this).attr("action").length);
   });
+
+  function fixPager(param, grid) {
+    if(param == "records") {
+      var rowNum = $("#" + grid).getGridParam("rowNum");
+      $("#" + grid + "_toppager").find(".ui-pg-selbox").children("[value=" + rowNum + "]")
+                                 .attr("selected", "true");
+    }
+  }
 </script>
 
 <ul id="nav">
