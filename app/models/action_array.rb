@@ -2,8 +2,10 @@ module ActionArray
   def call_sub_attributes name, item
     name.split(".").each do |attr|
       break if item.nil?
-      if !attr.empty?
+      if !attr.empty? and item.methods.include?(attr.to_sym)
         item = item.send(attr)
+      else
+        item = nil
       end
     end
     item
@@ -22,11 +24,15 @@ module ActionArray
               key = key.to_s
             end
             item = self.call_sub_attributes key, item
-            if Hash === value
-              keep = false if value.length > 1 or value.key?(:like)
-              keep = item.to_s.include? value[:like].to_s
+            if !item.nil?
+              if Hash === value
+                keep = false if value.length > 1 or value.key?(:like)
+                keep = item.to_s.include? value[:like].to_s
+              else
+                keep = (item == value)
+              end
             else
-              keep = (item == value)
+              keep = false
             end
           end
         else
@@ -51,17 +57,24 @@ module ActionArray
       end
     end
     return self if !param.nil? and param.empty?
+    p = Proc.new do |a, b|
+      a = param.nil? ? a : self.call_sub_attributes(param, a)
+      b = param.nil? ? b : self.call_sub_attributes(param, b)
+      if a.nil? or (!b.nil? and a < b)
+        -1
+      elsif !a.nil? and !b.nil? and a == b
+        0
+      elsif b.nil? or (!a.nil? and a > b)
+        1
+      end
+    end
     if order == 'asc'
       self.sort! do |a,b|
-        a = param.nil? ? a : self.call_sub_attributes(param, a)
-        b = param.nil? ? b : self.call_sub_attributes(param, b)
-        a  <=> b
+        p.call a, b
       end
     elsif order == 'desc'
       self.sort! do |b,a|
-        a = param.nil? ? a : self.call_sub_attributes(param, a)
-        b = param.nil? ? b : self.call_sub_attributes(param, b)
-        a  <=> b
+        p.call a, b
       end
     end
     self

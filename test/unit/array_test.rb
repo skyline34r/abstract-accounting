@@ -111,4 +111,35 @@ class ArrayTest < ActiveSupport::TestCase
     assert_equal t2, a[1], "Wrong 1 element"
     assert_equal t1, a[2], "Wrong 2 element"
   end
+
+  test "check desc order with bad object" do
+    t1 = Test2.new(Test1.new("hello"))
+    t2 = Test3.new(Test1.new("hello2"), 31)
+    t3 = Test3.new(Test1.new("hello1"), 3)
+    a = [t1, t2, t3]
+    a = a.order 'amount' => 'desc'
+    assert_equal t2, a[0], "Wrong 0 element"
+    assert_equal t3, a[1], "Wrong 1 element"
+    assert_equal t1, a[2], "Wrong 2 element"
+  end
+
+  test "check asc order with bad object" do
+    t1 = 5
+    t2 = Test3.new(Test1.new("hello2"), 31)
+    t3 = Test3.new(Test1.new("hello1"), 3)
+    a = [t1, t2, t3]
+    a = a.order 'amount' => 'asc'
+    assert_equal t1, a[0], "Wrong 0 element"
+    assert_equal t3, a[1], "Wrong 1 element"
+    assert_equal t2, a[2], "Wrong 2 element"
+  end
+
+  test "search by two fields with bad objects" do
+    a = [5,
+         Test3.new(Test1.new("hello1"), 35),
+         Test3.new(Test1.new("hello2"), 3)]
+    assert_equal 3, a.length, "Wrong array length"
+    assert_equal 2, a.where('amount' => {:like => 3}).length, "Wrong length after where"
+    assert_equal 1, a.where('amount' => {:like => 35}).length, "Wrong length after where"
+  end
 end
