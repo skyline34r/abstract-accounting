@@ -15,14 +15,14 @@ module GeneralLedgersHelper
                     t('generalLedger.deal'), t('generalLedger.price'),
                     t('generalLedger.debit'), t('generalLedger.credit')],
       :colModel => [
-        { :name => 'date',     :index => 'date',     :width => 100,
+        { :name => 'date',     :index => 'date',     :width => 80,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return cellvalue.substr(0,10);
                          }'.to_json_var
         },
-        { :name => 'resource', :index => 'resource', :width => 100 },
-        { :name => 'quantity', :index => 'quantity', :width => 100 },
-        { :name => 'DC',       :index => 'DC',       :width => 100, :search => false, :sortable => false,
+        { :name => 'resource', :index => 'resource', :width => 180 },
+        { :name => 'quantity', :index => 'quantity', :width => 70 },
+        { :name => 'DC',       :index => 'DC',       :width => 70, :search => false, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (cellvalue == "debit") return cellvalue;
                            return "credit";
@@ -64,29 +64,35 @@ module GeneralLedgersHelper
       :viewrecords => true,
       :gridview => true,
       :toppager => true,
-      :afterInsertRow => 'function(rowid, rowdata, rowelem)
-      {
-         function getPrice() {
-           if (rowelem[2] == 0) return "0";
-           return (rowelem[5] / rowelem[2]).toFixed(2);
-         }
-         function getDebit() {
-           return (rowelem[2] * rowelem[5] / rowelem[2]).toFixed(2);
-         }
-         if (rowid != "sub") {
-           $("#data_list").addRowData("sub", { date: "",
-                                               resource: "",
-                                               quantity: "",
-                                               DC: "debit",
-                                               deal: rowelem[4],
-                                               price: getPrice(),
-                                               debit: getDebit(),
-                                               credit: "null" });
-         }
-      }'.to_json_var,
       :onPaging => 'function(param)
       {
-        fixPager(param, "data_list");
+        fixPager(param, "data_pager");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        var dataIDs = $("#data_list").getDataIDs();
+        for(var i = 0; i < dataIDs.length; i++) {
+          var rowData = $("#data_list").getRowData(dataIDs[i]);
+          function getPrice() {
+            if (rowData.quantity == 0) return "0";
+            return (rowData.price / rowData.quantity).toFixed(2);
+          }
+          function getDebit() {
+            return (rowData.quantity * rowData.price / rowData.quantity).toFixed(2);
+          }
+          $("#data_list").addRowData("sub", { date: "",
+                                              resource: "",
+                                              quantity: "",
+                                              DC: "debit",
+                                              deal: rowData.deal,
+                                              price: getPrice(),
+                                              debit: getDebit(),
+                                              credit: "null" }, "after", dataIDs[i]);
+        }
+      }'.to_json_var,
+      :beforeSelectRow =>	'function()
+      {
+        return false;
       }'.to_json_var
     }]
     
