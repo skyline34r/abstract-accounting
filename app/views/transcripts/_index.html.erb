@@ -119,7 +119,7 @@
 
 <table id="transcript_table">
   <tr>
-    <td colspan="2" align="right" style="width: 800px">
+    <td colspan="3" align="right" style="width: 800px">
       <input type="button" id="cancel" value="<%=t 'transcript.btn_cancel'%>" disabled="true"
              onclick="cancelTranscript();"/>
       <input type="button" id="change" value="<%=t 'transcript.btn_change'%>" style="display: none"
@@ -128,7 +128,7 @@
     </td>
   </tr>
   <tr>
-    <td id="loadData" colspan="2">
+    <td id="loadData" colspan="3">
       <div id="beforeLoadData">
         <%=t 'transcript.deal'%>
         <input type="button" id="transcript_choose_deal" value="<%=t 'transcript.btn_choose'%>"
@@ -161,12 +161,14 @@
     <td align="right">
       <a id="fromDebit"></a>
       <input type="hidden" id="hFromDebit" value=""/>
+    </td>
+    <td align="right">
       <a id="fromCredit"></a>
       <input type="hidden" id="hFromCredit" value=""/>
     </td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td colspan="3">
       <table id="transcripts_list"></table>
       <div id="transcripts_pager"></div>
     </td>
@@ -178,6 +180,8 @@
     <td align="right">
       <a id="turnoversDebit"></a>
       <input type="hidden" id="hTurnoversDebit" value=""/>
+    </td>
+    <td align="right">
       <a id="turnoversCredit"></a>
       <input type="hidden" id="hTurnoversCredit" value=""/>
     </td>
@@ -189,6 +193,8 @@
     <td align="right">
       <a id="exchangeDebit"></a>
       <input type="hidden" id="hExchangeDebit" value=""/>
+    </td>
+    <td align="right">
       <a id="exchangeCredit"></a>
       <input type="hidden" id="hExchangeCredit" value=""/>
     </td>
@@ -200,6 +206,8 @@
     <td align="right">
       <a id="toDebit"></a>
       <input type="hidden" id="hToDebit" value=""/>
+    </td>
+    <td align="right">
       <a id="toCredit"></a>
       <input type="hidden" id="hToCredit" value=""/>
     </td>
