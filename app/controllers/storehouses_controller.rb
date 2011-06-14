@@ -281,4 +281,9 @@ class StorehousesController < ApplicationController
                                                :id_column => 'product.resource.id')
     end
   end
+
+  def return
+    session[:res_type] = ''
+  end
+
 end

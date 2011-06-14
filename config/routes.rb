@@ -80,6 +80,7 @@ Abstract::Application.routes.draw do
       post 'cancel'
       post 'apply'
       get 'waybill_list'
+      get 'return'
     end
     member do
       get 'waybill_entries_list'

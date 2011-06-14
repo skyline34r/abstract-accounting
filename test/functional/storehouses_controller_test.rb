@@ -145,5 +145,10 @@ class StorehousesControllerTest < ActionController::TestCase
     xml_http_request :get, :new, :filter => "resource"
     assert_response :success
   end
- 
+
+  test "should_get_return_of_storehouse" do
+    xml_http_request :get, :return
+    assert_response :success
+  end
+
 end
