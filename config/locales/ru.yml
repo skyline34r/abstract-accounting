@@ -55,6 +55,7 @@ ru:
     administration: Управление
     user: Пользователи
     role: Роли
+    return: Возврат
   grid:
     btn_find: Поиск
   buttons:
@@ -80,6 +81,7 @@ ru:
     fact: Переводы
     user: Пользователи
     role: Роли
+    return: Возврат
   waybill:
     btn_add: Создать
     btn_release: Выдать
