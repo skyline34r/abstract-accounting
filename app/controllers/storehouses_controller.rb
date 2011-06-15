@@ -321,4 +321,35 @@ class StorehousesController < ApplicationController
                                                :id_column => 'product.resource.id')
     end
   end
+
+  def return_resources
+    storehouse_worker = nil
+    role_ids = Array.new
+    storehouse_roles = Role.where("roles.pages LIKE '%Storehouse%'")
+    storehouse_roles.map do |r|
+      role_ids << r.id
+    end
+    storehouse_users = User.find_all_by_place_id(current_user.place.id)
+    storehouse_users.map do |r|
+      if !(r.role_ids & role_ids).nil?
+        storehouse_worker = r.id
+      end
+    end
+
+    @return = StorehouseReturn.new :created_at => DateTime.now,
+                                   :from => current_user.entity,
+                                   :to => User.find(storehouse_worker).entity,
+                                   :place => User.find(storehouse_worker).place
+
+    if params[:resource_id] != nil then
+      for i in 0..params[:resource_id].length-1
+        @return.add_resource(Product.find_by_resource_id(params[:resource_id][i]),
+                                                         params[:return_amount][i].to_f)
+      end
+    end
+
+    if !@return.save then
+      render :action => 'return'
+    end
+  end
 end

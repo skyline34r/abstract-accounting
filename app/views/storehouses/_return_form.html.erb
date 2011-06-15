@@ -15,13 +15,11 @@
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     $("#storehouse_release_list").saveRow(lastSelId);
-
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&return_amount[]=" + storeHouseData[i];
     }
-/*    ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
-                "&date=" + d.toUTCString() + entries);*/
+    ajaxRequest("/storehouses/return/return_resources?" + entries);
   }
   function saveEdittedReturnRow() {
     if(canSave) {
@@ -40,14 +38,14 @@
 <table>
   <tbody>
     <tr>
-      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReleaseRow();">
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReturnRow();">
         <table id=storehouse_release_list onmouseup="canSave = false;"></table>
         <div id=storehouse_release_pager></div>
       </td>
     </tr>
     <tr>
       <td colspan="2" align="right">
-        <input type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendRelease();"/>
+        <input type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendReturn();"/>
       </td>
     </tr>
   </tbody>
