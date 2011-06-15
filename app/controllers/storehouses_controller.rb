@@ -286,4 +286,39 @@ class StorehousesController < ApplicationController
     session[:res_type] = ''
   end
 
+  def return_list
+    @columns = ['place.tag', 'product.resource.tag',
+                'amount', 'product.unit']
+    @storehouse = Storehouse.taskmaster(current_user.entity,
+                                        current_user.place)
+    if params[:_search]
+      args = Hash.new
+      if !params[:resource].nil?
+        args['product.resource.tag'] = {:like => params[:resource]}
+      end
+      if !params[:amount].nil?
+        args['amount'] = {:like => params[:amount]}
+      end
+      if !params[:unit].nil?
+        args['product.unit'] = {:like => params[:unit]}
+      end
+      @storehouse = @storehouse.where args
+    end
+
+    case params[:sidx]
+      when 'resource'
+        params[:sidx] = 'product.resource.tag'
+      when 'unit'
+        params[:sidx] = 'product.unit'
+    end
+    objects_order_by_from_params @storehouse, params
+
+    @storehouse = @storehouse.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@storehouse, @columns,
+                                               :id_column => 'product.resource.id')
+    end
+  end
 end

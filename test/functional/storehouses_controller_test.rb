@@ -151,4 +151,9 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should_get_return_list" do
+    xml_http_request :get, :return_list
+    assert_response :success
+    assert_not_nil assigns(:storehouse)
+  end
 end
