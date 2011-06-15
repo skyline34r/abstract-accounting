@@ -1,0 +1,60 @@
+<script type="text/javascript">
+  var lastSelId = "";
+  var canSave = true;
+
+  function check_storehouse_waybill(id) {
+   if(!$("#check_" + id).is(":checked")) {
+     $("#storehouse_release_list").setCell(id, 'release',' ');
+   } else {
+     $("#storehouse_release_list").setCell(id, 'release',
+       $("#storehouse_release_list").getCell(id, 'amount'));
+   }
+   $("#storehouse_release_list").setSelection(id);
+  }
+  function sendReturn() {
+    dataPage = new Object();
+    dataPage["dataGrid"] = storeHouseData;
+    $("#storehouse_release_list").saveRow(lastSelId);
+
+    var entries = "";
+    for (var i in storeHouseData) {
+      entries += "&resource_id[]=" + i + "&return_amount[]=" + storeHouseData[i];
+    }
+/*    ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
+                "&date=" + d.toUTCString() + entries);*/
+  }
+  function saveEdittedReturnRow() {
+    if(canSave) {
+      if($("#gbox_storehouse_release_list").html() != null) {
+        $("#storehouse_release_list").saveRow(lastSelId);
+      }
+    }
+  }
+</script>
+
+<%= raw(storehouse_release_jqgrid) %>
+
+<%= form_for(:return, :remote => true) do |f| %>
+<%= f.error_messages %>
+<% end %>
+<table>
+  <tbody>
+    <tr>
+      <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReleaseRow();">
+        <table id=storehouse_release_list onmouseup="canSave = false;"></table>
+        <div id=storehouse_release_pager></div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendRelease();"/>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#storehouse_release_list").filterToolbar({searchOnEnter : false});
+  $("#storehouse_release_list")[0].toggleToolbar();
+</script>

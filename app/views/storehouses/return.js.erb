@@ -1,1 +1,12 @@
-
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.storehouse'%> :: <%=t 'title.return'%>";
+if(dataPage != null) {
+  storeHouseData = dataPage["dataGrid"];
+} else {
+  var storeHouseData = new Object();
+}
+$("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %>");
+$("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/return_form') %>");
+lastSelId = "";
+if(dataPage != null) {
+  storeHouseData = dataPage["dataGrid"];
+}

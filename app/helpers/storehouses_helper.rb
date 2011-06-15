@@ -132,6 +132,9 @@ module StorehousesHelper
       :toppager => true,
       :beforeRequest => 'function()
       {
+        if(location.hash.substr(0,19) == "#storehouses/return") {
+          $("#storehouse_release_list").setGridParam({url: "/storehouses/return/return_list"});
+        }
         if(dataPage != null) {
           storeHouseData = dataPage["dataGrid"];
           $("#storehouse_to").val(dataPage["to"]);
