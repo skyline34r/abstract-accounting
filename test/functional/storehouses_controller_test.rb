@@ -158,19 +158,24 @@ class StorehousesControllerTest < ActionController::TestCase
   end
 
   test "should_return_resource" do
+    p = Place.find_by_tag "Access to storehouse"
+    e = Entity.new :tag => "Entity 2"
+    assert e.save, "Entity is not saved"
+    u = User.new(:email => "test2@mail.com",
+                 :password => "test2_pass",
+                 :password_confirmation => "test2_pass",
+                 :entity_id => e.id,
+                 :role_ids => [roles(:operator).id])
+    u.place = p
+    assert u.save, "User can't be saved"
 
-    wb = Waybill.new(:owner => User.first.entity,
-      :document_id => "12834",
-      :place => User.first.place,
-      :from => "Organization Store",
-      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb = Waybill.new :owner => e, :document_id => "12834", :place => p,
+      :from => "Organization Store", :created => DateTime.civil(2011, 4, 2, 12, 0, 0)
     wb.add_resource assets(:sonyvaio).tag, "th", 100
     assert wb.save, "Waybill is not saved"
 
-    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
-      :owner => User.first.entity,
-      :place => User.first.place,
-      :to => User.first.entity)
+    sr = StorehouseRelease.new :created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :owner => e, :place => p, :to => entities(:sergey)
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
     assert sr.save, "StorehouseRelease not saved"
     assert sr.apply, "Storehouse release is not applied"

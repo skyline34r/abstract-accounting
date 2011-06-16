@@ -672,4 +672,58 @@ class StorehouseTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "check storehouse state after return" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Some warehouse")
+    assert warehouse.save, "Entity not saved"
+    taskmaster = Entity.new :tag => "Taskmaster"
+    assert taskmaster.save, "Entity is not saved"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+      :owner => storekeeper,
+      :place => warehouse,
+      :to => taskmaster)
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "Storehouse release is not applied"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 70, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 70, sh[0].real_amount, "Wrong storehouse amount"
+
+    sr = StorehouseReturn.new :created_at => DateTime.civil(2011, 4, 4, 12, 0, 0),
+        :from => taskmaster,
+        :to => storekeeper,
+        :place => warehouse
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 10
+    assert sr.save, "StorehouseReturn not saved"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 80, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => storekeeper,
+      :place => warehouse,
+      :to => taskmaster)
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 50, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
+  end
 end
