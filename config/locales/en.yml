@@ -25,6 +25,7 @@ en:
     user: User
     role: Role
     return: Return
+    resource_state: Resource state
   grid:
     btn_find: Find
   buttons:
@@ -51,6 +52,7 @@ en:
     user: User
     role: Role
     return: Return
+    resource_state: Resource state
   waybill:
     btn_add: New
     btn_release: Release

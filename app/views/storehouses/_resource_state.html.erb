@@ -1,0 +1,18 @@
+<%= raw(storehouse_return_list_jqgrid) %>
+
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <table id=storehouse_return_list></table>
+        <div id=storehouse_return_pager></div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#storehouse_return_list").filterToolbar({searchOnEnter : false});
+  $("#storehouse_return_list")[0].toggleToolbar();
+</script>

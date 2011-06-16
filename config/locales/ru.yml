@@ -56,6 +56,7 @@ ru:
     user: Пользователи
     role: Роли
     return: Возврат
+    resource_state: Состояние ресурсов
   grid:
     btn_find: Поиск
   buttons:
@@ -82,6 +83,7 @@ ru:
     user: Пользователи
     role: Роли
     return: Возврат
+    resource_state: Состояние ресурсов
   waybill:
     btn_add: Создать
     btn_release: Выдать

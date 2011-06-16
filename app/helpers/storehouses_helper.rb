@@ -512,4 +512,68 @@ module StorehousesHelper
 
   end
 
+  def storehouse_return_list_jqgrid
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/return/return_list',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => [t('storehouse.storehouseList.resource'),
+                    t('storehouse.storehouseList.real_amount'),
+                    t('storehouse.storehouseList.unit')],
+      :colModel => [
+        { :name => 'resource', :index => 'resource', :width => 500,
+          :formatter => 'function (cellvalue, options, rowObject) {
+                           return rowObject[1];
+                         }'.to_json_var },
+        { :name => 'amount',   :index => 'amount',   :width => 200,
+          :formatter => 'function (cellvalue, options, rowObject) {
+                           return rowObject[2];
+                         }'.to_json_var },
+        { :name => 'unit',     :index => 'unit',     :width => 100,
+          :formatter => 'function (cellvalue, options, rowObject) {
+                           return rowObject[3];
+                         }'.to_json_var }
+      ],
+      :pager => '#storehouse_return_pager',
+      :rowNum => 30,
+      :rowList => [30, 50, 100],
+      :sortname => 'resource',
+      :sortorder => 'asc',
+      :viewrecords => true,
+      :height => "100%",
+      :gridview => true,
+      :toppager => true,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "storehouse_return_list");
+      }'.to_json_var
+    }]
+
+    pager = [:navGrid, '#storehouse_return_pager', {:refresh => false, :add => false,
+                                                    :del=> false, :edit => false,
+                                                    :search => false, :view => false, :cloneToTop => true},
+                                                   {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('grid.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#storehouse_return_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#storehouse_return_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#storehouse_return_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#storehouse_return_list_toppager_left', button_find_data]
+
+    jqgrid_api 'storehouse_return_list', grid, options, pager, pager_button_find, pager_button_find1
+
+  end
+
 end
