@@ -111,8 +111,8 @@ class Waybill < ActiveRecord::Base
         end
       else
         a = entity.to_s
-        if !Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a]).nil?
-          self[:from] = Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a])
+        if !Entity.find_by_tag_case_insensitive(a).nil?
+          self[:from] = Entity.find_by_tag_case_insensitive(a)
           self.from_id = self[:from].id
         else
           self[:from] = Entity.new(:tag => a)
