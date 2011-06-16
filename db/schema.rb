@@ -47,8 +47,7 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   add_index "deals", ["entity_id", "tag"], :name => "index_deals_on_entity_id_and_tag", :unique => true
 
   create_table "entities", :force => true do |t|
-    t.string  "tag"
-    t.integer "original_id"
+    t.string "tag"
   end
 
   create_table "facts", :force => true do |t|
@@ -191,5 +190,6 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   end
 
   add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
+  add_index "waybills", ["document_id"], :name => "index_waybills_on_document_id", :unique => true
 
 end

@@ -281,4 +281,75 @@ class StorehousesController < ApplicationController
                                                :id_column => 'product.resource.id')
     end
   end
+
+  def return
+    session[:res_type] = ''
+  end
+
+  def return_list
+    @columns = ['place.tag', 'product.resource.tag',
+                'amount', 'product.unit']
+    @storehouse = Storehouse.taskmaster(current_user.entity,
+                                        current_user.place)
+    if params[:_search]
+      args = Hash.new
+      if !params[:resource].nil?
+        args['product.resource.tag'] = {:like => params[:resource]}
+      end
+      if !params[:amount].nil?
+        args['amount'] = {:like => params[:amount]}
+      end
+      if !params[:unit].nil?
+        args['product.unit'] = {:like => params[:unit]}
+      end
+      @storehouse = @storehouse.where args
+    end
+
+    case params[:sidx]
+      when 'resource'
+        params[:sidx] = 'product.resource.tag'
+      when 'unit'
+        params[:sidx] = 'product.unit'
+    end
+    objects_order_by_from_params @storehouse, params
+
+    @storehouse = @storehouse.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@storehouse, @columns,
+                                               :id_column => 'product.resource.id')
+    end
+  end
+
+  def return_resources
+    storehouse_worker = nil
+    role_ids = Array.new
+    storehouse_roles = Role.where("roles.pages LIKE '%Storehouse%'")
+    storehouse_roles.map do |r|
+      role_ids << r.id
+    end
+    storehouse_users = User.find_all_by_place_id(current_user.place.id)
+    storehouse_users.map do |r|
+      if !(r.role_ids & role_ids).nil?
+        storehouse_worker = r.id
+      end
+    end
+
+    @return = StorehouseReturn.new :created_at => DateTime.now,
+                                   :from => current_user.entity,
+                                   :to => User.find(storehouse_worker).entity,
+                                   :place => User.find(storehouse_worker).place
+
+    if params[:resource_id] != nil then
+      for i in 0..params[:resource_id].length-1
+        @return.add_resource(Product.find_by_resource_id(params[:resource_id][i]),
+                                                         params[:return_amount][i].to_f)
+      end
+    end
+
+    if !@return.save then
+      render :action => 'return'
+    end
+  end
 end

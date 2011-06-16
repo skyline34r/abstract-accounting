@@ -80,6 +80,9 @@ Abstract::Application.routes.draw do
       post 'cancel'
       post 'apply'
       get 'waybill_list'
+      get 'return'
+      get 'return_list'
+      get 'return_resources'
     end
     member do
       get 'waybill_entries_list'
@@ -160,4 +163,6 @@ Abstract::Application.routes.draw do
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#show'
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#cancel'
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#apply'
+  match ':controller/return/:action', :to => 'storehouses#return_list'
+  match ':controller/return/:action', :to => 'storehouses#return_resources'
 end

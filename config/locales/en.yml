@@ -24,6 +24,7 @@ en:
     administration: Administration
     user: User
     role: Role
+    return: Return
   grid:
     btn_find: Find
   buttons:
@@ -49,6 +50,7 @@ en:
     fact: Fact
     user: User
     role: Role
+    return: Return
   waybill:
     btn_add: New
     btn_release: Release
