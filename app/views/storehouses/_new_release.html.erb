@@ -40,7 +40,7 @@
     dataPage["to"] = $("#storehouse_to").val();
     dataPage["date"] = $("#storehouse_date").val();
     var d = new Date($("#storehouse_date").val());
-    d.setHours(12);
+    d.setUTCHours(12);
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];

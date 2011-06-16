@@ -323,13 +323,11 @@ class StorehousesController < ApplicationController
   end
 
   def return_resources
-    storehouse_worker = nil
     role_ids = Array.new
     storehouse_roles = Role.where("roles.pages LIKE '%Storehouse%'")
     storehouse_roles.map do |r|
       role_ids << r.id
     end
-    storehouse_users = User.find_all_by_place_id(current_user.place.id)
     storehouse_worker = User.joins(:roles).
         where('place_id = ? and roles.id in (?)', current_user.place_id, role_ids).first
 
