@@ -336,7 +336,8 @@ class StorehousesController < ApplicationController
       end
     end
 
-    @return = StorehouseReturn.new :created_at => DateTime.now,
+    created = DateTime.now
+    @return = StorehouseReturn.new :created_at => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
                                    :from => current_user.entity,
                                    :to => User.find(storehouse_worker).entity,
                                    :place => User.find(storehouse_worker).place
