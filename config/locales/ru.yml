@@ -310,3 +310,5 @@ ru:
     btn_reset: Очистить
     btn_save: Сохранить
     permitted: Допустимые страницы
+  role_names:
+    taskmaster: Прораб

@@ -279,3 +279,5 @@ en:
     btn_reset: Reset
     btn_save: Save
     permitted: Permitted pages
+  role_names:
+    taskmaster: Taskmaster
