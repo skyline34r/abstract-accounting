@@ -330,9 +330,8 @@ class StorehousesController < ApplicationController
       role_ids << r.id
     end
     storehouse_users = User.find_all_by_place_id(current_user.place.id)
-    storehouse_worker = storehouse_users.detect do |r|
-      not (r.role_ids & role_ids).empty?
-    end
+    storehouse_worker = User.joins(:roles).
+        where('place_id = ? and roles.id in (?)', current_user.place_id, role_ids).first
 
     created = DateTime.now
     @return = StorehouseReturn.new :created_at => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
