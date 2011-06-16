@@ -350,6 +350,8 @@ class StorehousesController < ApplicationController
 
     if !@return.save then
       render :action => 'return'
+    else
+      render :action => 'resource_state'
     end
   end
 
