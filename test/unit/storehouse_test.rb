@@ -584,9 +584,9 @@ class StorehouseTest < ActiveSupport::TestCase
                  "Wrong storehouse length"
   end
 
-  test "check storehouse for taskmaster" do
-    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
-    assert_equal entities(:jdow), stm.entity, "Wrong storehouse entity"
+  test "check storehouse for taskmasters" do
+    stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
+    assert_equal entities(:sergey), stm.entity, "Wrong storehouse entity"
     assert_equal places(:orsha), stm.place, "Wrong storehouse place"
     assert_equal 0, stm.length, "Wrong storehouse length"
 
@@ -615,7 +615,7 @@ class StorehouseTest < ActiveSupport::TestCase
     wb.add_resource "shovel", "th", 50
     assert wb.save, "Waybill is not saved"
 
-    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
     assert_equal 0, stm.length, "Wrong storehouse length"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 12, 12, 0, 0),
@@ -626,11 +626,12 @@ class StorehouseTest < ActiveSupport::TestCase
     assert sr.save, "StorehouseRelease not saved"
     assert sr.apply, "StorehouseRelease not applied"
 
-    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
     assert_equal 1, stm.length, "Wrong storehouse length"
     assert_equal 238, stm[0].amount, "Wrong storehouse amount"
     assert_equal Product.find_by_resource_tag("roof").id, stm[0].product.id,
                  "Wrong storehouse product"
+    assert_equal entities(:jdow).id, stm[0].owner.id, "Wrong storehouse owner"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 13, 12, 0, 0),
       :owner => entities(:sergey),
@@ -640,7 +641,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert sr.save, "StorehouseRelease not saved"
     assert sr.apply, "StorehouseRelease not applied"
 
-    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
     assert_equal 2, stm.length, "Wrong storehouse length"
     stm.each do |entry|
       if entry.product.id == Product.find_by_resource_tag("roof").id
@@ -660,13 +661,27 @@ class StorehouseTest < ActiveSupport::TestCase
     assert sr.save, "StorehouseRelease not saved"
     assert sr.apply, "StorehouseRelease not applied"
 
-    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
-    assert_equal 2, stm.length, "Wrong storehouse length"
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 14, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => places(:orsha),
+      :to => "StorehouseRelease")
+    sr.add_resource Product.find_by_resource_tag("shovel"), 20
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "StorehouseRelease not applied"
+
+    stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
+    assert_equal 3, stm.length, "Wrong storehouse length"
     stm.each do |entry|
       if entry.product.id == Product.find_by_resource_tag("roof").id
         assert_equal 238, entry.amount, "Wrong storehouse amount"
       elsif entry.product.id == Product.find_by_resource_tag("shovel").id
-        assert_equal 110, entry.amount, "Wrong storehouse amount"
+        if entry.owner.id == entities(:jdow).id
+          assert_equal 110, entry.amount, "Wrong storehouse amount"
+        elsif entry.owner.id == Entity.find_by_tag("StorehouseRelease").id
+          assert_equal 20, entry.amount, "Wrong storehouse amount"
+        else
+          assert false, "Unknown entity"
+        end
       else
         assert false, "Wrong storehouse entry"
       end
@@ -702,7 +717,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 70, sh[0].amount, "Wrong storehouse amount"
     assert_equal 70, sh[0].real_amount, "Wrong storehouse amount"
 
-    sh = Storehouse.taskmaster taskmaster, warehouse
+    sh = Storehouse.taskmasters storekeeper, warehouse
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 30, sh[0].amount, "Wrong storehouse amount"
 
@@ -718,7 +733,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 80, sh[0].amount, "Wrong storehouse amount"
     assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
 
-    sh = Storehouse.taskmaster taskmaster, warehouse
+    sh = Storehouse.taskmasters storekeeper, warehouse
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 20, sh[0].amount, "Wrong storehouse amount"
 
@@ -734,7 +749,7 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 50, sh[0].amount, "Wrong storehouse amount"
     assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
 
-    sh = Storehouse.taskmaster taskmaster, warehouse
+    sh = Storehouse.taskmasters storekeeper, warehouse
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 20, sh[0].amount, "Wrong storehouse amount"
   end
