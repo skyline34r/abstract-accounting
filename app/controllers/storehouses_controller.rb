@@ -352,4 +352,8 @@ class StorehousesController < ApplicationController
       render :action => 'return'
     end
   end
+
+  def resource_state
+    session[:res_type] = ''
+  end
 end

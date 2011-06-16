@@ -185,4 +185,9 @@ class StorehousesControllerTest < ActionController::TestCase
 
   end
 
+  test "should_get_resource_state_of_storehouse" do
+    xml_http_request :get, :resource_state
+    assert_response :success
+  end
+
 end

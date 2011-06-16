@@ -83,6 +83,7 @@ Abstract::Application.routes.draw do
       get 'return'
       get 'return_list'
       get 'return_resources'
+      get 'resource_state'
     end
     member do
       get 'waybill_entries_list'
@@ -165,4 +166,5 @@ Abstract::Application.routes.draw do
   match ':controller/releases/:action/:id(.:format)', :to => 'storehouses#apply'
   match ':controller/return/:action', :to => 'storehouses#return_list'
   match ':controller/return/:action', :to => 'storehouses#return_resources'
+  match ':controller/return/:action', :to => 'storehouses#resource_state'
 end
