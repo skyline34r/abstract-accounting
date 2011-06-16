@@ -2,7 +2,8 @@ module ActionArray
   def call_sub_attributes name, item
     name.split(".").each do |attr|
       break if item.nil?
-      if !attr.empty? and item.methods.include?(attr.to_sym)
+      if !attr.empty? and (item.methods.include?(attr.to_sym) or
+          (item.methods.include?(:has_attribute?) and item.has_attribute?(attr)))
         item = item.send(attr)
       else
         item = nil
