@@ -331,9 +331,7 @@ class StorehousesController < ApplicationController
     end
     storehouse_users = User.find_all_by_place_id(current_user.place.id)
     storehouse_users.map do |r|
-      if !(r.role_ids & role_ids).nil?
-        storehouse_worker = r.id
-      end
+      storehouse_worker = r.id if r.role_ids.any? { |role_id| role_ids.include?(role_id) }
     end
 
     created = DateTime.now
