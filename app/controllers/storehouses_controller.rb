@@ -330,15 +330,15 @@ class StorehousesController < ApplicationController
       role_ids << r.id
     end
     storehouse_users = User.find_all_by_place_id(current_user.place.id)
-    storehouse_users.map do |r|
-      storehouse_worker = r.id unless (r.role_ids & role_ids).empty?
+    storehouse_worker = storehouse_users.detect do |r|
+      not (r.role_ids & role_ids).empty?
     end
 
     created = DateTime.now
     @return = StorehouseReturn.new :created_at => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
                                    :from => current_user.entity,
-                                   :to => User.find(storehouse_worker).entity,
-                                   :place => User.find(storehouse_worker).place
+                                   :to => storehouse_worker.entity,
+                                   :place => storehouse_worker.place
 
     if params[:resource_id] != nil then
       for i in 0..params[:resource_id].length-1
