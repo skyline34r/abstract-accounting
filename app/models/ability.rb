@@ -24,7 +24,7 @@ class Ability
                 end
               when "Taskmaster"
                 alias_action :return, :return_list, :return_resources,
-                             :to => :taskmaster
+                             :resource_state, :to => :taskmaster
                 can :manage, StorehouseReturn
                 can :taskmaster, Storehouse
               else

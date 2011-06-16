@@ -148,14 +148,14 @@
             <a href="#storehouses/releases" class="page_link"><%=t 'menu.release'%></a>
           </li>
         <% end %>
-        <% if can?(:manage, StorehouseReturn) and !current_user.place.nil? %>
+        <% if can?(:manage, StorehouseReturn) and !current_user.place.nil? and !current_user.entity.nil?%>
+          <li>
+            <a href="#storehouses/return/resource_state" class="page_link"><%=t 'menu.resource_state'%></a>
+          </li>
           <li>
             <a href="#storehouses/return" class="page_link"><%=t 'menu.return'%></a>
           </li>
         <% end %>
-          <li>
-            <a href="#storehouses/resource_state" class="page_link"><%=t 'menu.resource_state'%></a>
-          </li>
       </ul>
     </li>
   <% end %>
