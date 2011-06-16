@@ -702,6 +702,10 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 70, sh[0].amount, "Wrong storehouse amount"
     assert_equal 70, sh[0].real_amount, "Wrong storehouse amount"
 
+    sh = Storehouse.taskmaster taskmaster, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 30, sh[0].amount, "Wrong storehouse amount"
+
     sr = StorehouseReturn.new :created_at => DateTime.civil(2011, 4, 4, 12, 0, 0),
         :from => taskmaster,
         :to => storekeeper,
@@ -714,6 +718,10 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 80, sh[0].amount, "Wrong storehouse amount"
     assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
 
+    sh = Storehouse.taskmaster taskmaster, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 20, sh[0].amount, "Wrong storehouse amount"
+
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
       :owner => storekeeper,
       :place => warehouse,
@@ -725,5 +733,9 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 50, sh[0].amount, "Wrong storehouse amount"
     assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
+
+    sh = Storehouse.taskmaster taskmaster, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 20, sh[0].amount, "Wrong storehouse amount"
   end
 end

@@ -3,7 +3,7 @@ require "action_array"
 
 class StorehouseEntry
   attr_reader :owner, :place, :product, :real_amount, :amount
-  def initialize(deal, place, amount, product = nil)
+  def initialize(deal, place, amount)
     @amount = 0
     @real_amount = 0
     @product = nil
@@ -15,7 +15,6 @@ class StorehouseEntry
       @product = Product.find_by_resource_id deal.give.id
       @real_amount = deal.state.amount
     end
-    @product = product unless product.nil?
   end
 
   def StorehouseEntry.state(deal, releases = nil)
@@ -102,17 +101,15 @@ class Storehouse < Array
     sr = StorehouseRelease.find_all_by_to_id_and_place_id_and_state entity.id,
       place.id, StorehouseRelease::APPLIED
     sr.each do |release|
-      release.resources.each do |resource|
-        if resources.key?(resource.product.id)
-          resources[resource.product.id] += resource.amount
-        else
-          resources[resource.product.id] = resource.amount
+      release.deal.rules.each do |rule|
+        if !resources.key?(rule.to.id)
+          resources[rule.to.id] = rule.to.state.amount
         end
-      end unless release.resources.nil?
+      end unless release.deal.nil? or release.deal.rules.nil?
     end unless sr.nil?
     s = Storehouse.new entity, place
     resources.each do |key, value|
-      s << StorehouseEntry.new(nil, s.place, value, Product.find(key))
+      s << StorehouseEntry.new(Deal.find(key), s.place, value)
     end
     s
   end
