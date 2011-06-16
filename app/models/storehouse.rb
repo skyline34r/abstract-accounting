@@ -98,6 +98,24 @@ class Storehouse < Array
     a
   end
 
+  def Storehouse.taskmaster entity, place
+    resources = Hash.new
+    sr = StorehouseRelease.find_all_by_to_id_and_place_id_and_state entity.id,
+      place.id, StorehouseRelease::APPLIED
+    sr.each do |release|
+      release.deal.rules.each do |rule|
+        if !resources.key?(rule.to.id)
+          resources[rule.to.id] = rule.to.state.amount
+        end
+      end unless release.deal.nil? or release.deal.rules.nil?
+    end unless sr.nil?
+    s = Storehouse.new entity, place, true, true
+    resources.each do |key, value|
+      s << StorehouseEntry.new(Deal.find(key), s.place, value)
+    end
+    s
+  end
+
   def Storehouse.taskmasters entity, place
     resources = Hash.new
     sr = StorehouseRelease.find_all_by_owner_id_and_place_id_and_state entity.id,

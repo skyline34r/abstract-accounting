@@ -686,6 +686,18 @@ class StorehouseTest < ActiveSupport::TestCase
         assert false, "Wrong storehouse entry"
       end
     end
+
+    stm = Storehouse.taskmaster entities(:jdow), places(:orsha)
+    assert_equal 2, stm.length, "Wrong storehouse length"
+    stm.each do |entry|
+      if entry.product.id == Product.find_by_resource_tag("roof").id
+        assert_equal 238, entry.amount, "Wrong storehouse amount"
+      elsif entry.product.id == Product.find_by_resource_tag("shovel").id
+        assert_equal 110, entry.amount, "Wrong storehouse amount"
+      else
+        assert false, "Wrong storehouse entry"
+      end
+    end
   end
 
   test "check storehouse state after return" do
@@ -721,6 +733,10 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 30, sh[0].amount, "Wrong storehouse amount"
 
+    sh = Storehouse.taskmaster taskmaster, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 30, sh[0].amount, "Wrong storehouse amount"
+
     sr = StorehouseReturn.new :created_at => DateTime.civil(2011, 4, 4, 12, 0, 0),
         :from => taskmaster,
         :to => storekeeper,
@@ -737,6 +753,10 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 20, sh[0].amount, "Wrong storehouse amount"
 
+    sh = Storehouse.taskmaster taskmaster, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 20, sh[0].amount, "Wrong storehouse amount"
+
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
       :owner => storekeeper,
       :place => warehouse,
@@ -750,6 +770,10 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 80, sh[0].real_amount, "Wrong storehouse amount"
 
     sh = Storehouse.taskmasters storekeeper, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 20, sh[0].amount, "Wrong storehouse amount"
+
+    sh = Storehouse.taskmaster taskmaster, warehouse
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 20, sh[0].amount, "Wrong storehouse amount"
   end
