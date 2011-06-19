@@ -17,10 +17,11 @@ class Ability
               when "Storehouse"
                 if user.place.nil?
                   alias_action :index, :view, :show, :releases, :list,
-                               :view_release, :pdf, :to => :storehouse_read
-                  can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
+                               :view_release, :pdf, :return, :return_list,
+                               :resource_state,:to => :storehouse_read
+                  can :storehouse_read, [Storehouse, Waybill, StorehouseRelease, StorehouseReturn]
                 else
-                  can :manage, [Storehouse, Waybill, StorehouseRelease]
+                  can :manage, [Storehouse, Waybill, StorehouseRelease, StorehouseReturn]
                 end
               when "Taskmaster"
                 alias_action :return, :return_list, :return_resources,

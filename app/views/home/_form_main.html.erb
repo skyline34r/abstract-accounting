@@ -129,7 +129,8 @@
   <% end %>
   <% if !current_user.nil? and
       (can?(:view, Storehouse) or can?(:view, Waybill) or
-       can?(:list, StorehouseRelease) or (can?(:manage, StorehouseReturn) and !current_user.place.nil?)) %>
+       can?(:list, StorehouseRelease) or can?(:return_list, StorehouseReturn) or
+       (can?(:manage, StorehouseReturn) and !current_user.place.nil? and !current_user.entity.nil?)) %>
     <li>
       <a href="#"><%=t 'menu.storehouse'%></a>
       <ul>
@@ -148,10 +149,12 @@
             <a href="#storehouses/releases" class="page_link"><%=t 'menu.release'%></a>
           </li>
         <% end %>
-        <% if can?(:manage, StorehouseReturn) and !current_user.place.nil? and !current_user.entity.nil?%>
+        <% if can?(:return_list, StorehouseReturn)%>
           <li>
             <a href="#storehouses/return/resource_state" class="page_link"><%=t 'menu.resource_state'%></a>
           </li>
+        <% end %>
+        <% if can?(:manage, StorehouseReturn) and !current_user.place.nil? and !current_user.entity.nil?%>
           <li>
             <a href="#storehouses/return" class="page_link"><%=t 'menu.return'%></a>
           </li>
