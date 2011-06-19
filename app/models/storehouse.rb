@@ -118,8 +118,8 @@ class Storehouse < Array
 
   def Storehouse.taskmasters entity, place
     resources = Hash.new
-    sr = StorehouseRelease.find_all_by_owner_id_and_place_id_and_state entity.id,
-      place.id, StorehouseRelease::APPLIED
+    sr = StorehouseRelease.find_all_by_owner_and_place_and_state entity,
+      place, StorehouseRelease::APPLIED
     sr.each do |release|
       release.deal.rules.each do |rule|
         if !resources.key?(rule.to.id)
