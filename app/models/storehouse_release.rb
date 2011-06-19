@@ -68,8 +68,8 @@ class StorehouseRelease < ActiveRecord::Base
         end
       else
         a = entity.to_s
-        if !Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a]).nil?
-          self[:to] = Entity.find(:first, :conditions => ["lower(tag) = lower(?)", a])
+        if !Entity.find_by_tag_case_insensitive(a).nil?
+          self[:to] = Entity.find_by_tag_case_insensitive(a)
           self.to_id = self[:to].id
         else
           self[:to] = Entity.new(:tag => a)

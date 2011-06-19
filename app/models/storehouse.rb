@@ -59,27 +59,29 @@ end
 
 class Storehouse < Array
   attr_reader :entity, :place
-  def initialize(entity = nil, place = nil, real_amount = true)
+  def initialize(entity = nil, place = nil, real_amount = true, without_fill = false)
     @entity = entity
     @place = place
     @waybills = nil
 
-    wbs = Waybill.find_by_owner_and_place @entity, @place,
-          :include => { :deal => { :rules => :to }}
-    releases = StorehouseRelease.find_all_by_owner_and_place_and_state @entity, @place,
-          StorehouseRelease::INWORK, :include => {:deal => {:rules => :from}}
-    if !wbs.nil?
-      inner = Hash.new
-      wbs.each do |item|
-        if !item.deal.nil?
-          item.deal.rules.each do |rule|
-            if !inner.has_key?(rule.to.id)
-              amount = StorehouseEntry.state(rule.to, releases)
-              if (real_amount and !rule.to.state.nil? and rule.to.state.amount > 0) or
-                  (!real_amount and amount > 0)
-                self << StorehouseEntry.new(rule.to, item.place, amount)
+    unless without_fill
+      wbs = Waybill.find_by_owner_and_place @entity, @place,
+            :include => { :deal => { :rules => :to }}
+      releases = StorehouseRelease.find_all_by_owner_and_place_and_state @entity, @place,
+            StorehouseRelease::INWORK, :include => {:deal => {:rules => :from}}
+      if !wbs.nil?
+        inner = Hash.new
+        wbs.each do |item|
+          if !item.deal.nil?
+            item.deal.rules.each do |rule|
+              if !inner.has_key?(rule.to.id)
+                amount = StorehouseEntry.state(rule.to, releases)
+                if (real_amount and !rule.to.state.nil? and rule.to.state.amount > 0) or
+                    (!real_amount and amount > 0)
+                  self << StorehouseEntry.new(rule.to, item.place, amount)
+                end
+                inner[rule.to.id] = true
               end
-              inner[rule.to.id] = true
             end
           end
         end
@@ -107,7 +109,25 @@ class Storehouse < Array
         end
       end unless release.deal.nil? or release.deal.rules.nil?
     end unless sr.nil?
-    s = Storehouse.new entity, place
+    s = Storehouse.new entity, place, true, true
+    resources.each do |key, value|
+      s << StorehouseEntry.new(Deal.find(key), s.place, value)
+    end
+    s
+  end
+
+  def Storehouse.taskmasters entity, place
+    resources = Hash.new
+    sr = StorehouseRelease.find_all_by_owner_id_and_place_id_and_state entity.id,
+      place.id, StorehouseRelease::APPLIED
+    sr.each do |release|
+      release.deal.rules.each do |rule|
+        if !resources.key?(rule.to.id)
+          resources[rule.to.id] = rule.to.state.amount
+        end
+      end unless release.deal.nil? or release.deal.rules.nil?
+    end unless sr.nil?
+    s = Storehouse.new entity, place, true, true
     resources.each do |key, value|
       s << StorehouseEntry.new(Deal.find(key), s.place, value)
     end
