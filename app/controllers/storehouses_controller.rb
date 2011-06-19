@@ -289,8 +289,8 @@ class StorehousesController < ApplicationController
   def return_list
     @columns = ['place.tag', 'product.resource.tag',
                 'amount', 'product.unit']
-    @storehouse = Storehouse.taskmaster(current_user.entity,
-                                        current_user.place)
+    @storehouse = Storehouse.taskmasters(current_user.entity,
+                                         current_user.place)
     if params[:_search]
       args = Hash.new
       if !params[:resource].nil?
