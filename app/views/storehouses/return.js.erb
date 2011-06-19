@@ -9,4 +9,5 @@ $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/
 lastSelId = "";
 if(dataPage != null) {
   storeHouseData = dataPage["dataGrid"];
+  $("#storehouse_date").val(dataPage["date"]);
 }

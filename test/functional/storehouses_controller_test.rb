@@ -180,8 +180,10 @@ class StorehousesControllerTest < ActionController::TestCase
     assert sr.save, "StorehouseRelease not saved"
     assert sr.apply, "Storehouse release is not applied"
 
+    created = DateTime.now
     assert_difference('StorehouseReturn.count') do
        xml_http_request :post, :return_resources,
+                        :date => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
                         :resource_id => [assets(:sonyvaio).id],
                         :return_amount => [3]
     end

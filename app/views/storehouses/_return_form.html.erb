@@ -2,6 +2,10 @@
   var lastSelId = "";
   var canSave = true;
 
+  $(function() {
+    $("#storehouse_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
+  });
+
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
      $("#storehouse_release_list").setCell(id, 'release',' ');
@@ -14,12 +18,15 @@
   function sendReturn() {
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
+    dataPage["date"] = $("#storehouse_date").val();
     $("#storehouse_release_list").saveRow(lastSelId);
+    var d = new Date($("#storehouse_date").val());
+    d.setUTCHours(12);
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&return_amount[]=" + storeHouseData[i];
     }
-    ajaxRequest("/storehouses/return/return_resources?" + entries);
+    ajaxRequest("/storehouses/return/return_resources?date=" + d.toUTCString() + entries);
   }
   function saveEdittedReturnRow() {
     if(canSave) {
@@ -37,6 +44,19 @@
 <% end %>
 <table>
   <tbody>
+    <tr align="right">
+      <td colspan="2">
+        * - <%=t 'reqFields'%>
+      </td>
+    </tr>
+    <tr align="left">
+      <td>
+        <%=t 'storehouse.date'%>*:
+      </td>
+      <td align="right">
+        <input type="text" id="storehouse_date" value="" size="50"/>
+      </td>
+    </tr>
     <tr>
       <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReturnRow();">
         <table id=storehouse_release_list onmouseup="canSave = false;"></table>

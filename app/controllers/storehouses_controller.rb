@@ -331,8 +331,7 @@ class StorehousesController < ApplicationController
     storehouse_worker = User.joins(:roles).
         where('place_id = ? and roles.id in (?)', current_user.place_id, role_ids).first
 
-    created = DateTime.now
-    @return = StorehouseReturn.new :created_at => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
+    @return = StorehouseReturn.new :created_at => params[:date],
                                    :from => current_user.entity,
                                    :to => storehouse_worker.entity,
                                    :place => storehouse_worker.place
