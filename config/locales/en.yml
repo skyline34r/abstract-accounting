@@ -107,6 +107,7 @@ en:
       applied: Applied
     date: Date
     to: To
+    from: From
     btn_save: Save
     releaseNewList:
       resource: Resource

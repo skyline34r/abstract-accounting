@@ -184,6 +184,7 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_difference('StorehouseReturn.count') do
        xml_http_request :post, :return_resources,
                         :date => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
+                        :from => entities(:sergey).tag,
                         :resource_id => [assets(:sonyvaio).id],
                         :return_amount => [3]
     end

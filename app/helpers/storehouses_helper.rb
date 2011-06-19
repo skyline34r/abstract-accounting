@@ -139,7 +139,6 @@ module StorehousesHelper
           storeHouseData = dataPage["dataGrid"];
           $("#storehouse_to").val(dataPage["to"]);
           $("#storehouse_date").val(dataPage["date"]);
-          dataPage = null;
         }
       }'.to_json_var,
       :onSelectRow => 'function(id)

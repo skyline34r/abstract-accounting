@@ -8,6 +8,7 @@ $("#body").html("<%= escape_javascript(render :partial => 'storehouses/index') %
 $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/return_form') %>");
 lastSelId = "";
 if(dataPage != null) {
-  storeHouseData = dataPage["dataGrid"];
   $("#storehouse_date").val(dataPage["date"]);
+  $("#storehouse_from").val(dataPage["from"]);
+  dataPage = null;
 }

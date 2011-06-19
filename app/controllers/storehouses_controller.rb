@@ -332,7 +332,7 @@ class StorehousesController < ApplicationController
         where('place_id = ? and roles.id in (?)', current_user.place_id, role_ids).first
 
     @return = StorehouseReturn.new :created_at => params[:date],
-                                   :from => current_user.entity,
+                                   :from => Entity.where(:tag => params[:from]).first,
                                    :to => storehouse_worker.entity,
                                    :place => storehouse_worker.place
 

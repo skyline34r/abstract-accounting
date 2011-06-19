@@ -138,6 +138,7 @@ ru:
       applied: Принято
     date: Дата
     to: Кому
+    from: От
     btn_save: Сохранить
     releaseNewList:
       resource: Ресурс
