@@ -55,9 +55,17 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    @user.place_id = params[:user][:place_id]
-    if !@user.save || !@user.update_attributes(params[:user])
-      render :action => "edit"
+    if !params[:user][:password].nil? && params[:user][:password].length != 0
+      @user.password = params[:user][:password]
+      @user.password_confirmation = params[:user][:password_confirmation]
+      if !@user.save
+        render :action => "edit"
+      end
+    else
+      @user.place_id = params[:user][:place_id]
+      if !@user.save || !@user.update_attributes(params[:user])
+        render :action => "edit"
+      end
     end
   end
 end
