@@ -8,19 +8,19 @@
 
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
-     $("#storehouse_release_list").setCell(id, 'release',' ');
+     $("#storehouse_return_list").setCell(id, 'release',' ');
    } else {
-     $("#storehouse_release_list").setCell(id, 'release',
-       $("#storehouse_release_list").getCell(id, 'amount'));
+     $("#storehouse_return_list").setCell(id, 'release',
+       $("#storehouse_return_list").getCell(id, 'amount'));
    }
-   $("#storehouse_release_list").setSelection(id);
+   $("#storehouse_return_list").setSelection(id);
   }
   function sendReturn() {
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     dataPage["date"] = $("#storehouse_date").val();
     dataPage["from"] = $("#storehouse_from").val();
-    $("#storehouse_release_list").saveRow(lastSelId);
+    $("#storehouse_return_list").saveRow(lastSelId);
     var d = new Date($("#storehouse_date").val());
     d.setUTCHours(12);
     var entries = "";
@@ -32,14 +32,14 @@
   }
   function saveEdittedReturnRow() {
     if(canSave) {
-      if($("#gbox_storehouse_release_list").html() != null) {
-        $("#storehouse_release_list").saveRow(lastSelId);
+      if($("#gbox_storehouse_return_list").html() != null) {
+        $("#storehouse_return_list").saveRow(lastSelId);
       }
     }
   }
 </script>
 
-<%= raw(storehouse_release_jqgrid) %>
+<%= raw(storehouse_return_jqgrid) %>
 
 <%= form_for(:return, :remote => true) do |f| %>
 <%= f.error_messages %>
@@ -69,8 +69,8 @@
     </tr>
     <tr>
       <td colspan="2" onmousedown="canSave = true;" onmouseup="saveEdittedReturnRow();">
-        <table id=storehouse_release_list onmouseup="canSave = false;"></table>
-        <div id=storehouse_release_pager></div>
+        <table id=storehouse_return_list onmouseup="canSave = false;"></table>
+        <div id=storehouse_return_pager></div>
       </td>
     </tr>
     <tr>
@@ -83,6 +83,6 @@
 
 <script type="text/javascript">
   var filter = false;
-  $("#storehouse_release_list").filterToolbar({searchOnEnter : false});
-  $("#storehouse_release_list")[0].toggleToolbar();
+  $("#storehouse_return_list").filterToolbar({searchOnEnter : false});
+  $("#storehouse_return_list")[0].toggleToolbar();
 </script>

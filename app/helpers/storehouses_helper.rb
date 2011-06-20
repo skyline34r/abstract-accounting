@@ -575,4 +575,132 @@ module StorehousesHelper
 
   end
 
+  def storehouse_return_jqgrid
+
+    options = {:on_document_ready => true}
+
+    grid = [{
+      :url => '/storehouses/return/return_list',
+      :datatype => 'json',
+      :mtype => 'GET',
+      :colNames => ['', t('storehouse.releaseNewList.resource'),
+                    t('storehouse.releaseList.place'),
+                    t('storehouse.releaseList.owner'),
+                    t('storehouse.releaseNewList.amount'),
+                    t('storehouse.releaseNewList.release'),
+                    t('storehouse.releaseNewList.unit')],
+      :colModel => [
+        { :name => '',  :index => 'check', :width => 14, :search => false,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(storeHouseData[options.rowId] == undefined) {
+                             return "<input type=\'checkbox\' id=\'check_"
+                               + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                               + options.rowId + "\"); \'>";
+                           }
+                           return "<input type=\'checkbox\' id=\'check_"
+                             + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
+                             + options.rowId + "\"); \' checked>";
+                         }'.to_json_var },
+        { :name => 'resource',  :index => 'resource',   :width => 330,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[1];
+                         }'.to_json_var },
+        { :name => 'place',  :index => 'place',   :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[0];
+                         }'.to_json_var },
+        { :name => 'entity',  :index => 'entity',   :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[4];
+                         }'.to_json_var },
+        { :name => 'amount',  :index => 'amount',   :width => 100,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[2];
+                         }'.to_json_var },
+        { :name => 'release', :index => 'release', :width => 100, :search => false,
+          :editable => true, :sortable => false,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           if(cellvalue == " ") cellvalue = "";
+                           if(cellvalue == rowObject[3]) {
+                             if(storeHouseData[options.rowId] == undefined) {
+                               return "";
+                             }
+                             return storeHouseData[options.rowId];
+                           }
+                           if(isNaN(cellvalue) || (cellvalue == "") ||
+                               (parseInt(cellvalue) <= "0")) {
+                             $("#check_" + options.rowId).removeAttr("checked");
+                             delete storeHouseData[options.rowId];
+                             return "";
+                           }
+                           storeHouseData[options.rowId] = cellvalue;
+                           return cellvalue;
+                         }'.to_json_var },
+        { :name => 'unit',  :index => 'unit',   :width => 55,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[3];
+                         }'.to_json_var },
+
+      ],
+      :pager => '#storehouse_return_pager',
+      :rowNum => 10,
+      :rowList => [10, 20, 30],
+      :sortname => 'product.resource.tag',
+      :sortorder => 'asc',
+      :height => "100%",
+      :viewrecords => true,
+      :editurl => 'clientArray',
+      :cellsubmit => 'clientArray',
+      :gridview => true,
+      :toppager => true,
+      :beforeRequest => 'function()
+      {
+        if(dataPage != null) {
+          storeHouseData = dataPage["dataGrid"];
+          $("#storehouse_to").val(dataPage["to"]);
+          $("#storehouse_date").val(dataPage["date"]);
+        }
+      }'.to_json_var,
+      :onSelectRow => 'function(id)
+      {
+        if(lastSelId != "") {
+          $("#storehouse_return_list").saveRow(lastSelId);
+        }
+        lastSelId = id;
+        if($("#check_" + id).is(":checked")) {
+          $("#storehouse_return_list").editRow(id, true);
+        }
+      }'.to_json_var,
+      :onPaging => 'function(param)
+      {
+        fixPager(param, "storehouse_return_list");
+        $("#storehouse_return_list").saveRow(lastSelId);
+      }'.to_json_var
+    }]
+
+    pager = [:navGrid, '#storehouse_return_pager', {:refresh => false, :add => false,
+                                                    :del=> false, :edit => false,
+                                                    :search => false, :view => false, :cloneToTop => true},
+                                                   {}, {}, {}]
+
+    button_find_data = {
+      :caption => t('grid.btn_find'),
+      :buttonicon => 'ui-icon-search', :onClickButton => 'function() {
+        if(filter) {
+          $("#storehouse_return_list")[0].clearToolbar();
+          filter = false;
+        } else {
+          filter = true;
+        }
+        $("#storehouse_return_list")[0].toggleToolbar();
+      }'.to_json_var }
+
+    pager_button_find = [:navButtonAdd, '#storehouse_return_pager', button_find_data]
+    pager_button_find1 = [:navButtonAdd, '#storehouse_return_list_toppager_left', button_find_data]
+
+    jqgrid_api 'storehouse_return_list', grid, options, pager, pager_button_find, pager_button_find1
+
+  end
+
+
 end
