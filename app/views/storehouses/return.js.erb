@@ -9,6 +9,5 @@ $("#storehouseDiv").html("<%= escape_javascript(render :partial => 'storehouses/
 lastSelId = "";
 if(dataPage != null) {
   $("#storehouse_date").val(dataPage["date"]);
-  $("#storehouse_from").val(dataPage["from"]);
   dataPage = null;
 }

@@ -587,12 +587,15 @@ module StorehousesHelper
                     t('storehouse.releaseList.place'),
                     t('storehouse.releaseList.owner'),
                     t('storehouse.releaseNewList.amount'),
+                    'owner_id',
                     t('storehouse.releaseNewList.release'),
-                    t('storehouse.releaseNewList.unit')],
+                    t('storehouse.releaseNewList.unit'),
+                    'resource_id'],
       :colModel => [
         { :name => '',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(storeHouseData[options.rowId] == undefined) {
+                           if((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
+                              (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
                              return "<input type=\'checkbox\' id=\'check_"
                                + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                                + options.rowId + "\"); \'>";
@@ -617,30 +620,33 @@ module StorehousesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[2];
                          }'.to_json_var },
+        { :name => 'owner_id', :index => 'owner_id', :width => 50, :hidden => true},
         { :name => 'release', :index => 'release', :width => 100, :search => false,
           :editable => true, :sortable => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(cellvalue == " ") cellvalue = "";
-                           if(cellvalue == rowObject[3]) {
-                             if(storeHouseData[options.rowId] == undefined) {
+                           if(cellvalue == rowObject[6]) {
+                             if((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
+                                (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
                                return "";
                              }
-                             return storeHouseData[options.rowId];
+                             return storeHouseData[options.rowId.split("_")[0]][0];
                            }
                            if(isNaN(cellvalue) || (cellvalue == "") ||
                                (parseInt(cellvalue) <= "0")) {
                              $("#check_" + options.rowId).removeAttr("checked");
-                             delete storeHouseData[options.rowId];
+                             delete storeHouseData[options.rowId.split("_")[0]];
                              return "";
                            }
-                           storeHouseData[options.rowId] = cellvalue;
+                           storeHouseData[options.rowId.split("_")[0]] =
+                             [cellvalue, $("#storehouse_return_list").getCell(options.rowId, "owner_id")];
                            return cellvalue;
                          }'.to_json_var },
         { :name => 'unit',  :index => 'unit',   :width => 55,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[3];
                          }'.to_json_var },
-
+        { :name => 'resource_id', :index => 'resource_id', :width => 5, :hidden => true }
       ],
       :pager => '#storehouse_return_pager',
       :rowNum => 10,

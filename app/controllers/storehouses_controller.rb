@@ -287,8 +287,15 @@ class StorehousesController < ApplicationController
   end
 
   def return_list
-    @columns = ['place.tag', 'product.resource.tag',
-                'amount', 'product.unit', 'owner.tag']
+    @columns = ['place.tag', 'product.resource.tag', 'amount',
+                'product.unit', 'owner.tag', 'owner.id']
+
+    StorehouseEntry.class_exec {
+      def uid
+        return self.product.resource.id.to_s + "_" + self.owner.id.to_s
+      end
+    }
+
     @storehouse = Storehouse.taskmasters(current_user.entity,
                                          current_user.place)
     if params[:_search]
@@ -318,7 +325,7 @@ class StorehousesController < ApplicationController
       :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@storehouse, @columns,
-                                               :id_column => 'product.resource.id')
+                                               :id_column => 'uid')
     end
   end
 

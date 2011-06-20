@@ -19,16 +19,15 @@
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     dataPage["date"] = $("#storehouse_date").val();
-    dataPage["from"] = $("#storehouse_from").val();
     $("#storehouse_return_list").saveRow(lastSelId);
     var d = new Date($("#storehouse_date").val());
     d.setUTCHours(12);
     var entries = "";
     for (var i in storeHouseData) {
-      entries += "&resource_id[]=" + i + "&return_amount[]=" + storeHouseData[i];
+      entries += "&resource_id[]=" + i + "&return_amount[]=" +
+                 storeHouseData[i][0] + "&from_id[]=" + storeHouseData[i][1];
     }
-    ajaxRequest("/storehouses/return/return_resources?date=" + d.toUTCString() +
-                "&from=" + $('#storehouse_from').val() + entries);
+    ajaxRequest("/storehouses/return/return_resources?date=" + d.toUTCString() + entries);
   }
   function saveEdittedReturnRow() {
     if(canSave) {
@@ -57,14 +56,6 @@
       </td>
       <td align="right">
         <input type="text" id="storehouse_date" value="" size="50"/>
-      </td>
-    </tr>
-    <tr align="left">
-      <td>
-        <%=t 'storehouse.from'%>*:
-      </td>
-      <td align="right">
-        <input type="text" id="storehouse_from" value="" size="50"/>
       </td>
     </tr>
     <tr>
