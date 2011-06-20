@@ -331,22 +331,23 @@ class StorehousesController < ApplicationController
     storehouse_worker = User.joins(:roles).
         where('place_id = ? and roles.id in (?)', current_user.place_id, role_ids).first
 
-    @return = StorehouseReturn.new :created_at => params[:date],
-                                   :from => Entity.where(:tag => params[:from]).first,
-                                   :to => storehouse_worker.entity,
-                                   :place => storehouse_worker.place
-
-    if params[:resource_id] != nil then
-      for i in 0..params[:resource_id].length-1
-        @return.add_resource(Product.find_by_resource_id(params[:resource_id][i]),
-                                                         params[:return_amount][i].to_f)
+    if !params[:from_id].nil? and !params[:resource_id].nil? and !params[:return_amount].nil?
+      begin
+        StorehouseReturn.transaction do
+          for i in 0..params[:resource_id].length-1
+            @return = StorehouseReturn.new :created_at => params[:date],
+                                           :from => Entity.find(params[:from_id][i]),
+                                           :to => storehouse_worker.entity,
+                                           :place => storehouse_worker.place
+            @return.add_resource(Product.find_by_resource_id(params[:resource_id][i]),
+                                                             params[:return_amount][i].to_f)
+            @return.save!
+          end
+        end
+        render :action => 'resource_state'
+      rescue
+        render :action => 'return'
       end
-    end
-
-    if !@return.save then
-      render :action => 'return'
-    else
-      render :action => 'resource_state'
     end
   end
 
