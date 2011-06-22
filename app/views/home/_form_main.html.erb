@@ -154,7 +154,7 @@
             <a href="#storehouses/return/resource_state" class="page_link"><%=t 'menu.resource_state'%></a>
           </li>
         <% end %>
-        <% if can?(:manage, Storehouse) and !current_user.place.nil? and !current_user.entity.nil?%>
+        <% if can?(:manage, Storehouse)%>
           <li>
             <a href="#storehouses/return" class="page_link"><%=t 'menu.return'%></a>
           </li>

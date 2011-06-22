@@ -52,7 +52,8 @@ class RolesController < ApplicationController
 
   def project_pages
     [ "Place", "Entity" , "Asset", "Money", "Deal", "Fact", "Chart", "Quote",
-      "Balance", "GeneralLedger", "Transcript", "Storehouse", "Taskmaster" ]
+      "Balance", "GeneralLedger", "Transcript", "Storehouse", "Taskmaster",
+      "StorehouseReturn"]
   end
 
 end

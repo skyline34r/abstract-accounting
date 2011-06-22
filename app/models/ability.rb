@@ -21,7 +21,7 @@ class Ability
                                :to => :storehouse_read
                   can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
                 else
-                  can :manage, [Storehouse, Waybill, StorehouseRelease, StorehouseReturn]
+                  can :manage, [Storehouse, Waybill, StorehouseRelease]
                 end
               when "Taskmaster"
                 alias_action :return, :return_list, :resource_state,
