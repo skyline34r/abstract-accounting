@@ -296,8 +296,13 @@ class StorehousesController < ApplicationController
       end
     }
 
-    @storehouse = Storehouse.taskmasters(current_user.entity,
-                                         current_user.place)
+    if can?(:manage, StorehouseReturn)
+      @storehouse = Storehouse.taskmaster(current_user.entity,
+                                          current_user.place)
+    else
+      @storehouse = Storehouse.taskmasters(current_user.entity,
+                                           current_user.place)
+    end
     if params[:_search]
       args = Hash.new
       if !params[:resource].nil?
