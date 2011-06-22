@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110614110306) do
+ActiveRecord::Schema.define(:version => 20110622122801) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -49,6 +49,12 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   create_table "entities", :force => true do |t|
     t.string "tag"
   end
+
+  create_table "entity_reals", :force => true do |t|
+    t.string "tag"
+  end
+
+  add_index "entity_reals", ["tag"], :name => "index_entity_reals_on_tag", :unique => true
 
   create_table "facts", :force => true do |t|
     t.datetime "day"
@@ -190,6 +196,5 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   end
 
   add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
-  add_index "waybills", ["document_id"], :name => "index_waybills_on_document_id", :unique => true
 
 end
