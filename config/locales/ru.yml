@@ -30,6 +30,10 @@ ru:
               blank: "должна быть введена"
             to_id:
               blank: "не указано"
+        user:
+          attributes:
+            email:
+              blank: "должен быть введён"
   reqFields: обязательные поля
   loading: Загрузка...
   menu:

@@ -1,6 +1,13 @@
 <h2><%=t 'devise.sign_in'%></h2>
 
 <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+	<% flash.each do |name, msg| %>
+		<h2><%= t("errors.messages.not_saved") %></h2>
+		<ul>
+			<li><%= content_tag :div, msg, :id => "flash_#{name}" %></li>
+		</ul>
+	<% end %>
+
   <p><%= f.label t('devise.email') %><br />
   <%= f.email_field :email %></p>
 

@@ -1,0 +1,8 @@
+ru:
+  errors:
+    messages:
+      not_saved: "Сохранение не произведено"
+
+  devise:
+    failure:
+      invalid: 'Неправильный адрес или пароль.'
