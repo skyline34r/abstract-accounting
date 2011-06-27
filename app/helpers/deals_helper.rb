@@ -60,6 +60,13 @@ module DealsHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "deals_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#deals_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

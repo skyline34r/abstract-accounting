@@ -131,8 +131,11 @@
     $("#isOfBalance").removeAttr("checked");
     $("#deal_rules").removeAttr("disabled");
   }
-  function showDealIndexForm()
+  function showDealIndexForm(id)
   {
+    if(id != null) {
+      editRowId = id;
+    }
     if(crossPage.length) {
       $("#deal_actions").html("<%= escape_javascript(render :partial => 'deals/form_index') %>");
       $("#deals_list").trigger("reloadGrid");
