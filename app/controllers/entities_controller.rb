@@ -10,18 +10,29 @@ class EntitiesController < ApplicationController
   def view
     @columns = ['tag']
 
-    @entities = Entity.all
+    @entity = Entity.all
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
         args['tag'] = {:like => params[:tag]}
       end
-      @entities = @entities.where args
+      @entity = @entity.where args
     end
-    objects_order_by_from_params @entities, params
-    @entities = @entities.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @entity, params
+    if session[:entity_id].nil?
+      @entities = @entity.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @entities = @entity.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @entities.where(:id => session[:entity_id]).first.nil?
+      session[:entity_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entities, @columns, :id_column => 'id')
     end
@@ -40,6 +51,7 @@ class EntitiesController < ApplicationController
     if !@entity.save
       render :action => "new"
     end
+    session[:entity_id] = @entity.id
   end
 
   def update
@@ -47,6 +59,7 @@ class EntitiesController < ApplicationController
     if !@entity.update_attributes(params[:entity])
       render :action => "edit"
     end
+    session[:entity_id] = @entity.id
   end
   
 end
