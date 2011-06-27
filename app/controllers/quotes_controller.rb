@@ -13,7 +13,7 @@ class QuotesController < ApplicationController
   def view
     @columns = ['money.alpha_code', 'day', 'rate']
 
-    @quotes = Quote.all
+    @quote = Quote.all
     if params[:_search]
       args = Hash.new
       if !params[:resource].nil?
@@ -25,16 +25,27 @@ class QuotesController < ApplicationController
       if !params[:rate].nil?
         args['rate'] = {:like => params[:rate]}
       end
-      @quotes = @quotes.where args
+      @quote = @quote.where args
     end
     case params[:sidx]
        when 'resource'
          params[:sidx] = 'money.alpha_code'
     end
-    objects_order_by_from_params @quotes, params
-    @quotes = @quotes.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @quote, params
+    if session[:quote_id].nil?
+      @quotes = @quote.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @quotes = @quote.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @quotes.where(:id => session[:quote_id]).first.nil?
+      session[:quote_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@quotes, @columns, :id_column => 'id')
     end
@@ -50,6 +61,7 @@ class QuotesController < ApplicationController
     if !@quote.save
       render :action => "new"
     end
+    session[:quote_id] = @quote.id
   end
 
 end

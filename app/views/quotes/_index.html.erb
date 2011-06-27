@@ -38,7 +38,10 @@
     canSelectQuote = false;
     $("#quotes_list").resetSelection();
   }
-  function showQuoteIndexForm() {
+  function showQuoteIndexForm(id) {
+    if(id != null) {
+      editRowId = id;
+    }
     location.hash = "#quotes";
   }
   function beforeQuoteSave()
