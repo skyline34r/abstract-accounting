@@ -10,8 +10,11 @@
     canSelectPlace = false;
     loadPlaceElements();
   }
-  function showPlaceIndexForm()
+  function showPlaceIndexForm(id)
   {
+		if(id != null) {
+			editRowId = id;
+		}
     if(crossPage.length) {
       canSelectPlace = true;
       $("#place_tag").attr("disabled","disabled");
