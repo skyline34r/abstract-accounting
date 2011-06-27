@@ -32,10 +32,10 @@ class ResourcesController < ApplicationController
 
     @money = Money.all
     if (session[:res_type] == 'money')
-      @resources = @money
+      @resource = @money
     else
       @asset = Asset.all
-      @resources = @money + @asset
+      @resource = @money + @asset
     end
 
     if params[:_search]
@@ -46,16 +46,27 @@ class ResourcesController < ApplicationController
       if !params[:type].nil?
         args['class.name'] = {:like => params[:type]}
       end
-      @resources = @resources.where args
+      @resource = @resource.where args
     end
     case params[:sidx]
        when 'type'
          params[:sidx] = 'class.name'
     end
-    objects_order_by_from_params @resources, params
-    @resources = @resources.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @resource, params
+    if session[:resource_id].nil?
+      @resources = @resource.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @resources = @resource.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @resources.where(:uid => session[:resource_id]).first.nil?
+      session[:resource_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'uid')
     end
@@ -82,6 +93,7 @@ class ResourcesController < ApplicationController
     if !@resource.save
       render :action => "new_asset"
     end
+    session[:resource_id] = @resource.class.name + @resource.id.to_s
   end
 
   def create_money
@@ -89,6 +101,7 @@ class ResourcesController < ApplicationController
     if !@resource.save
       render :action => "new_money"
     end
+    session[:resource_id] = @resource.class.name + @resource.id.to_s
   end
 
   def update_asset
@@ -96,6 +109,7 @@ class ResourcesController < ApplicationController
     if !@resource.update_attributes(params[:asset])
       render :action => "edit_asset"
     end
+    session[:resource_id] = @resource.class.name + @resource.id.to_s
   end
 
   def update_money
@@ -103,6 +117,7 @@ class ResourcesController < ApplicationController
     if !@resource.update_attributes(params[:money])
       render :action => "edit_money"
     end
+    session[:resource_id] = @resource.class.name + @resource.id.to_s
   end
 
 end
