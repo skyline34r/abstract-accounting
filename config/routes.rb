@@ -16,6 +16,11 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
+  resources :entity_real do
+    collection do
+      get 'view'
+    end
+  end
   resources :resources do
     member do
       get 'edit_asset'
