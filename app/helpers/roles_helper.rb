@@ -51,6 +51,13 @@ module RolesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "data_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#data_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 
