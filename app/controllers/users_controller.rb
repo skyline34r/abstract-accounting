@@ -7,8 +7,7 @@ class UsersController < ApplicationController
 
   def view
     @columns = ['email', 'entity.tag', 'place.tag', 'role_ids']
-    @users = User.all
-
+    @user = User.all
     if params[:_search]
       args = Hash.new
       if !params[:email].nil?
@@ -20,7 +19,7 @@ class UsersController < ApplicationController
       if !params[:place].nil?
         args['place.tag'] = {:like => params[:place]}
       end
-      @users = @users.where args
+      @user = @user.where args
     end
     case params[:sidx]
       when 'entity'
@@ -28,10 +27,21 @@ class UsersController < ApplicationController
       when 'place'
         params[:sidx] = 'place.tag'
     end
-    objects_order_by_from_params @users, params
-    @users = @users.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @user, params
+    if session[:user_id].nil?
+      @users = @user.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @users = @user.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @users.where(:id => session[:user_id]).first.nil?
+      session[:user_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@users, @columns, :id_column => 'id')
     end
@@ -51,6 +61,7 @@ class UsersController < ApplicationController
     if !@user.save
       render :action => "new"
     end
+    session[:user_id] = @user.id
   end
 
   def update
@@ -67,5 +78,6 @@ class UsersController < ApplicationController
         render :action => "edit"
       end
     end
+    session[:user_id] = @user.id
   end
 end

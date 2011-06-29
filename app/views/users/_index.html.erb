@@ -97,8 +97,11 @@
       loadUserElements();
     }
   }
-  function viewIndexFrom()
+  function viewIndexFrom(id)
   {
+    if(id != null) {
+      editRowId = id;
+    }
     location.hash = "#users";
     dataPage = null;
   }
