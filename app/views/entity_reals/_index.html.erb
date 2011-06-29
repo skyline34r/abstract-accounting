@@ -1,0 +1,82 @@
+<script type="text/javascript">
+  var canSelectEntity = true;
+  var tagEntity = "";
+  function sendTagEntity()
+  {
+    $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
+    saveEntityElements();
+  }
+  function showEntityIndexForm()
+  {
+    if(crossPage.length) {
+      canSelectEntity = true;
+      $("#entity_real_actions").html("<%= escape_javascript(render :partial => 'entities/form_index') %>");
+      $("#entity_real_tag").attr("disabled","disabled");
+      $("#entity_real_list").trigger("reloadGrid");
+      $("#entity_real_tag").val("");
+      cancelRequest = true;
+      location.hash = crossPageLink;
+    } else {
+      location.hash = "#entity_reals";
+    }
+    dataPage = null;
+  }
+  function onCancelEntity()
+  {
+    showEntityIndexForm();
+  }
+  function onResetEntity()
+  {
+    $("#entity_real_tag").val(tagEntity);
+    $("#save_entity_real").attr("disabled","disabled");
+  }
+  function showEntityActionForm(tag)
+  {
+    tagEntity = tag;
+    $("#entity_real_tag").val(tagEntity);
+    $("#entity_real_tag").removeAttr("disabled");
+    $("#entity_real_list").resetSelection();
+    canSelectEntity = false;
+    loadEntityElements();
+  }
+  function saveEntityElements() {
+    dataPage = new Object();
+    dataPage["tag"] = tagEntity;
+  }
+  function loadEntityElements() {
+    if(dataPage != null) {
+      tagEntity = dataPage["tag"];
+      dataPage = null;
+    }
+  }
+</script>
+
+<%= raw(entity_real_jqgrid) %>
+
+<table>
+  <tr>
+    <td colspan="2" id="entity_real_errors"></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table id="entity_real_list"></table>
+      <div id="entity_real_pager"></div>
+    </td>
+  </tr>
+  <tr id="entity_real_actions" align="right">
+    <%= render 'entity_reals/form_index' %>
+  </tr>
+  <tr align="left">
+    <td colspan="2">
+      <%=t 'entity.tag'%>:
+      <input id="entity_real_tag" type="text" value="" size="83" disabled="true"
+             onkeypress="$('#save_entity_real').removeAttr('disabled');"/>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#entity_real_list").filterToolbar({searchOnEnter : false});
+  $("#entity_real_list")[0].toggleToolbar();
+</script>

@@ -16,7 +16,7 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
-  resources :entity_real do
+  resources :entity_reals do
     collection do
       get 'view'
     end

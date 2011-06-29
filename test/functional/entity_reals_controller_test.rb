@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class EntityRealControllerTest < ActionController::TestCase
+class EntityRealsControllerTest < ActionController::TestCase
   setup do
     @entity = entity_reals(:aa)
     sign_in_by_user
