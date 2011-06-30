@@ -44,7 +44,7 @@
     crossPageLink = "entity_reals/new";
     $("#entity_real_body").css("display","none");
     $("#entity_real_p_s_controls").css("display","block");
-    $("#entity_real_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
+    $("#entity_real_page_selection").html("<%= escape_javascript(render :partial => 'entities/select') %>");
 
     $("#entity_real_submit").click(function() {
       showEntityRealPage();
