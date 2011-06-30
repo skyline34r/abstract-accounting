@@ -14,6 +14,7 @@ Abstract::Application.routes.draw do
   resources :entities do
     collection do
       get 'view'
+      get 'select'
     end
   end
   resources :entity_reals do

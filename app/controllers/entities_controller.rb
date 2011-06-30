@@ -27,6 +27,9 @@ class EntitiesController < ApplicationController
     end
   end
 
+  def select
+  end
+
   def new
     @entity = Entity.new
   end
