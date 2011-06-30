@@ -76,8 +76,14 @@ module EntitiesHelper
       :colModel => [
         { :name => '', :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           var checked = "";
+                           if (entityCheckedData[options.rowId.toString()] != undefined)
+                           {
+                             checked = "checked"
+                           }
                            return "<input type=\'checkbox\' id=\'check_" +
-                             options.rowId + "\'>";
+                             options.rowId + "\' onClick=\'onRowChecked(\""
+                             + options.rowId + "\");\' " + checked + ">";
                          }'.to_json_var },
         { :name => 'tag',  :index => 'tag',   :width => 800,
           :formatter => 'function(cellvalue, options, rowObject) {

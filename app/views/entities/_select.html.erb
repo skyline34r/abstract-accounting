@@ -1,3 +1,16 @@
+<script type="text/javascript">
+  var entityCheckedData = new Object();
+  function onRowChecked(id)
+  {
+    if (!$("#check_" + id).is(":checked")) {
+      delete entityCheckedData[id];
+    } else {
+      entityCheckedData[id] = true;
+    }
+    $("#entity_list").setSelection(id);
+  }
+</script>
+
 <%= raw(check_entities_jqgrid) %>
 
 <table>
