@@ -1,77 +1,105 @@
 <script type="text/javascript">
-  var canSelectEntity = true;
-  var tagEntity = "";
-  function sendTagEntity()
+  var tagEntityReal = "";
+  function sendTagEntityReal()
   {
     $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
-    saveEntityElements();
+    saveEntityRealElements();
   }
-  function showEntityIndexForm()
+  function showEntityRealIndexForm()
   {
-    if(crossPage.length) {
-      canSelectEntity = true;
-      $("#entity_real_actions").html("<%= escape_javascript(render :partial => 'entities/form_index') %>");
-      $("#entity_real_tag").attr("disabled","disabled");
-      $("#entity_real_list").trigger("reloadGrid");
-      $("#entity_real_tag").val("");
-      cancelRequest = true;
-      location.hash = crossPageLink;
-    } else {
-      location.hash = "#entity_reals";
-    }
+    location.hash = "#entity_reals";
     dataPage = null;
   }
-  function onCancelEntity()
+  function onCancelEntityReal()
   {
-    showEntityIndexForm();
+    showEntityRealIndexForm();
   }
-  function onResetEntity()
+  function onResetEntityReal()
   {
-    $("#entity_real_tag").val(tagEntity);
+    $("#entity_real_tag").val(tagEntityReal);
     $("#save_entity_real").attr("disabled","disabled");
   }
-  function showEntityActionForm(tag)
+  function showEntityRealActionForm(tag)
   {
-    tagEntity = tag;
-    $("#entity_real_tag").val(tagEntity);
+    tagEntityReal = tag;
+    $("#entity_real_tag").val(tagEntityReal);
     $("#entity_real_tag").removeAttr("disabled");
+    $("#entity_real_choose").removeAttr("disabled");
     $("#entity_real_list").resetSelection();
-    canSelectEntity = false;
-    loadEntityElements();
+    loadEntityRealElements();
   }
-  function saveEntityElements() {
+  function saveEntityRealElements() {
     dataPage = new Object();
-    dataPage["tag"] = tagEntity;
+    dataPage["tag"] = tagEntityReal;
   }
-  function loadEntityElements() {
+  function loadEntityRealElements() {
     if(dataPage != null) {
-      tagEntity = dataPage["tag"];
+      tagEntityReal = dataPage["tag"];
       dataPage = null;
     }
+  }
+  function entityRealChooseSurrogates()
+  {
+    crossPage = "entity_reals";
+    crossPageLink = "entity_reals/new";
+    $("#entity_real_body").css("display","none");
+    $("#entity_real_p_s_controls").css("display","block");
+    $("#entity_real_page_selection").html("<%= escape_javascript(render :partial => 'entities/index') %>");
+
+    $("#entity_real_submit").click(function() {
+      showEntityRealPage();
+    });
+  }
+  function showEntityRealPage()
+  {
+    $("#entity_real_body").css("display","block");
+    $("#entity_real_p_s_controls").css("display","none");
+    $("#entity_real_page_selection").html("");
+    $("#entity_real_submit").unbind("click");
+    crossPage = "";
   }
 </script>
 
 <%= raw(entity_real_jqgrid) %>
 
-<table>
-  <tr>
-    <td colspan="2" id="entity_real_errors"></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <table id="entity_real_list"></table>
-      <div id="entity_real_pager"></div>
-    </td>
-  </tr>
-  <tr id="entity_real_actions" align="right">
-    <%= render 'entity_reals/form_index' %>
-  </tr>
-  <tr align="left">
-    <td colspan="2">
-      <%=t 'entity.tag'%>:
-      <input id="entity_real_tag" type="text" value="" size="83" disabled="true"
+<div id="entity_real_body">
+  <table>
+    <tr>
+        <td colspan="2" id="entity_real_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id="entity_real_list"></table>
+        <div id="entity_real_pager"></div>
+        </td>
+    </tr>
+    <tr id="entity_real_actions" align="right">
+        <%= render 'entity_reals/form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <%=t 'entity.tag'%>:
+        <input id="entity_real_tag" type="text" value="" size="83" disabled="true"
              onkeypress="$('#save_entity_real').removeAttr('disabled');"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <input id="entity_real_choose" type="button" disabled="true"
+             value="<%= t('quote.btn_choose')%>" onclick="entityRealChooseSurrogates()"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<table id="entity_real_p_s_controls" style="display: none">
+  <tr align="right">
+    <td>
+      <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showEntityRealPage();"/>
+      <input type="button" id="entity_real_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
     </td>
+  </tr>
+  <tr id="entity_real_page_selection">
   </tr>
 </table>
 

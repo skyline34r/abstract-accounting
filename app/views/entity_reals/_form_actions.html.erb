@@ -1,13 +1,13 @@
 <td>
   <input name="cancel" type="button" value="<%=t 'entity.btn_cancel'%>"
-    onclick="onCancelEntity();"/>
+    onclick="onCancelEntityReal();"/>
   <input name="reset" type="button" value="<%=t 'entity.btn_reset'%>"
-    onclick="onResetEntity();"/>
+    onclick="onResetEntityReal();"/>
 </td>
 <td style="width: 45px">
   <%= form_for(@entity_real, :remote => true) do |f| %>
   <%= f.submit t('entity.btn_save'), :id => "save_entity_real", :disabled => "true",
-                        :onclick => "sendTagEntity();" %>
+                        :onclick => "sendTagEntityReal();" %>
   <%= f.hidden_field :tag, :id => "hide_entity_real_tag", :value => @entity_real.tag %>
   <% end %>
 </td>

@@ -4,4 +4,4 @@ if($("#body").html().length <= 1) {
 }
 $("#entity_real_errors").html("<%= escape_javascript(render :partial => 'entity_reals/form_errors') %>");
 $("#entity_real_actions").html("<%= escape_javascript(render :partial => 'entity_reals/form_actions') %>");
-showEntityActionForm(unescape($("#hide_entity_real_tag").val()));
+showEntityRealActionForm(unescape($("#hide_entity_real_tag").val()));
