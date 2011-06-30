@@ -77,7 +77,7 @@ module EntitiesHelper
         { :name => '', :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            var checked = "";
-                           if (entityCheckedData[options.rowId.toString()] != undefined)
+                           if (options.rowId.toString() in entityCheckedData)
                            {
                              checked = "checked"
                            }
