@@ -7,7 +7,7 @@ class EntityRealsController < ApplicationController
   end
 
   def view
-    @columns = ['tag']
+    @columns = ['tag', 'entities.empty?']
     @entity_reals = EntityReal.all
     if params[:_search]
       args = Hash.new

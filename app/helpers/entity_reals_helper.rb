@@ -8,9 +8,10 @@ module EntityRealsHelper
       :url => '/entity_reals/view',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => [t('entity.tag')],
+      :colNames => [t('entity.tag'), ''],
       :colModel => [
-        { :name => 'tag',  :index => 'tag',   :width => 800 }
+        { :name => 'tag', :index => 'tag', :width => 800 },
+        { :name => 'empty', :index => 'empty', :hidden => true }
       ],
       :pager => '#entity_real_pager',
       :rowNum => 10,
@@ -25,6 +26,11 @@ module EntityRealsHelper
       {
         $("#entity_real_tag").val($("#entity_real_list").getCell(cell, "tag"));
         $("#change_entity_real").removeAttr("disabled");
+        if ($("#entity_real_list").getCell(cell, "empty") == "false") {
+          $("#entity_real_choose").removeAttr("disabled");
+        } else {
+          $("#entity_real_choose").attr("disabled", "disabled");
+        }
         $("#change_entity_real").parent().parent().attr("action",
             "/entity_reals/" + cell + "/edit");
       }'.to_json_var,
