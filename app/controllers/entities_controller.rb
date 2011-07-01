@@ -30,6 +30,25 @@ class EntitiesController < ApplicationController
   def select
   end
 
+  def surrogates
+    @columns = ['tag']
+    @entities = Entity.find_all_by_real_id(params[:real_id])
+    if params[:_search]
+      args = Hash.new
+      if !params[:tag].nil?
+        args['tag'] = {:like => params[:tag]}
+      end
+      @entities = @entities.where args
+    end
+    objects_order_by_from_params @entities, params
+    @entities = @entities.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@entities, @columns, :id_column => 'id')
+    end
+  end
+
   def new
     @entity = Entity.new
   end

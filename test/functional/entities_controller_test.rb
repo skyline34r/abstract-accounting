@@ -42,4 +42,12 @@ class EntitiesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:entities)
   end
+
+  test "should get surrogates for entity_real" do
+    @entity.real = entity_reals(:aa)
+    assert @entity.save, "Entity is not saved"
+    xml_http_request :get, :surrogates, :real_id => entity_reals(:aa).to_param
+    assert_response :success
+    assert_not_nil assigns(:entities)
+  end
 end
