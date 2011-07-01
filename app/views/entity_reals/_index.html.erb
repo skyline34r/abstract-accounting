@@ -1,14 +1,21 @@
 <script type="text/javascript">
-  var tagEntityReal = "";
+  var canSelectEntityReal = true;
+  dataPage = new Object();
+  dataPage["tag"] = "";
+  dataPage["entity_surrogates"] = new Object();
+  dataPage["base_entity_surrogates"] = new Object();
   function sendTagEntityReal()
   {
     $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
-    saveEntityRealElements();
   }
   function showEntityRealIndexForm()
   {
     location.hash = "#entity_reals";
-    dataPage = null;
+    dataPage = new Object();
+    dataPage["tag"] = "";
+    dataPage["entity_surrogates"] = new Object();
+    dataPage["base_entity_surrogates"] = new Object();
+    canSelectEntityReal = true;
   }
   function onCancelEntityReal()
   {
@@ -16,27 +23,18 @@
   }
   function onResetEntityReal()
   {
-    $("#entity_real_tag").val(tagEntityReal);
+    dataPage["entity_surrogates"] = dataPage["base_entity_surrogates"];
+    $("#entity_real_tag").val(dataPage["tag"]);
     $("#save_entity_real").attr("disabled","disabled");
   }
   function showEntityRealActionForm(tag)
   {
-    tagEntityReal = tag;
-    $("#entity_real_tag").val(tagEntityReal);
+    dataPage["tag"] = tag;
+    $("#entity_real_tag").val(tag);
     $("#entity_real_tag").removeAttr("disabled");
     $("#entity_real_choose").removeAttr("disabled");
     $("#entity_real_list").resetSelection();
-    loadEntityRealElements();
-  }
-  function saveEntityRealElements() {
-    dataPage = new Object();
-    dataPage["tag"] = tagEntityReal;
-  }
-  function loadEntityRealElements() {
-    if(dataPage != null) {
-      tagEntityReal = dataPage["tag"];
-      dataPage = null;
-    }
+    canSelectEntityReal = false;
   }
   function entityRealChooseSurrogates()
   {
@@ -47,6 +45,7 @@
     $("#entity_real_page_selection").html("<%= escape_javascript(render :partial => 'entities/select') %>");
 
     $("#entity_real_submit").click(function() {
+      dataPage["entity_surrogates"] = jQuery.extend(true, {}, entityCheckedData);
       showEntityRealPage();
     });
   }

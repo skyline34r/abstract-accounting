@@ -30,7 +30,7 @@ module EntityRealsHelper
       }'.to_json_var,
       :beforeSelectRow =>	'function()
       {
-        if (canSelectEntity) return true;
+        if (canSelectEntityReal) return true;
         return false;
       }'.to_json_var,
       :onPaging => 'function(param)

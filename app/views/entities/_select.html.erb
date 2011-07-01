@@ -1,5 +1,9 @@
 <script type="text/javascript">
   var entityCheckedData = new Object();
+  if ("entity_surrogates" in dataPage)
+  {
+    entityCheckedData = jQuery.extend(true, {}, dataPage["entity_surrogates"]);
+  }
   function onRowChecked(id)
   {
     if (!$("#check_" + id).is(":checked")) {
