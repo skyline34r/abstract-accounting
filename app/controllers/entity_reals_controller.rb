@@ -35,6 +35,7 @@ class EntityRealsController < ApplicationController
 
   def create
     @entity_real = EntityReal.new(params[:entity_real])
+    @entity_real.entity_ids = params[:entities].collect { |id| id.to_i }
     if !@entity_real.save
       render :action => "new"
     end
