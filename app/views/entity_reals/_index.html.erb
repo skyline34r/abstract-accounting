@@ -7,6 +7,16 @@
   function sendTagEntityReal()
   {
     $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
+    if ("entity_surrogates" in dataPage) {
+      var params = "";
+      for (key in dataPage["entity_surrogates"]) {
+        params += "&entities[]=" + key;
+      }
+      if (params.length > 0) {
+        $("#entity_real_form").attr("action",
+          $("#entity_real_form").attr("action") + "?" + params);
+      }
+    }
   }
   function showEntityRealIndexForm()
   {

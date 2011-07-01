@@ -5,7 +5,7 @@
     onclick="onResetEntityReal();"/>
 </td>
 <td style="width: 45px">
-  <%= form_for(@entity_real, :remote => true) do |f| %>
+  <%= form_for @entity_real, :remote => true, :html => { :id => "entity_real_form" } do |f| %>
   <%= f.submit t('entity.btn_save'), :id => "save_entity_real", :disabled => "true",
                         :onclick => "sendTagEntityReal();" %>
   <%= f.hidden_field :tag, :id => "hide_entity_real_tag", :value => @entity_real.tag %>
