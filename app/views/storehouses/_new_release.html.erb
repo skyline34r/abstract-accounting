@@ -2,6 +2,8 @@
   var listAction = "";
   var lastSelId = "";
   var canSave = true;
+  var storeHouseDataIDs = null;
+  var localExpand = false;
 
   $(function() {
     $("#storehouse_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
@@ -9,14 +11,51 @@
 
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
-     $("#storehouse_release_list").setCell(id, 'release',' ');
+     $("#storehouse_release_list").delRowData(id);
+     if(storeHouseDataIDs.indexOf(id) >= 0) {
+       var pos = storeHouseDataIDs.indexOf(id);
+       while((pos!=0)&&(storeHouseData[storeHouseDataIDs[pos-1]]!=undefined)) {
+         pos -= 1;
+       }
+       var data = { check: "uncheck"
+                  , resource: storeHouseData[id].resource
+                  , amount: storeHouseData[id].amount
+                  , release: " "
+                  , unit: storeHouseData[id].unit };
+       if(pos == 0) {
+         var count = 0;
+         var lastCheckRow = null;
+         for (var i in storeHouseData) {
+           if(count == 0) lastCheckRow = i;
+           count ++;
+         }
+         if(count == 1) {
+           $("#storehouse_release_list").addRowData(id, data, "first");
+         } else {
+           $("#storehouse_release_list").addRowData(id, data, "after", lastCheckRow);
+         }
+       } else {
+         $("#storehouse_release_list").addRowData(id, data, "after", storeHouseDataIDs[pos-1]);
+       }
+     }
+     delete storeHouseData[id];
    } else {
+     var tRowData = $("#storehouse_release_list").getRowData(id);
+     $("#storehouse_release_list").delRowData(id);
+     $("#storehouse_release_list").addRowData(id,
+                                              { check: "check"
+                                              , resource: tRowData.resource
+                                              , amount: tRowData.amount
+                                              , release: tRowData.release
+                                              , unit: tRowData.unit }
+                                              , "first");
      $("#storehouse_release_list").setCell(id, 'release',
        $("#storehouse_release_list").getCell(id, 'amount'));
    }
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
+    var i;
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
     if($("#gbox_release_waybills_tree").html()) {
@@ -24,12 +63,15 @@
         $("#" + lastSubgridTableId).saveRow(lastSelId);
       }
       var tmpData = new Object();
-      for (var i in storeHouseData) {
-        for (var j in storeHouseData[i]) {
-          if(tmpData[j]) {
-            tmpData[j] += parseInt(storeHouseData[i][j]);
+      for (i in storeHouseData) {
+        for (var j in storeHouseData[i].data) {
+          if(!tmpData[j]) {
+            tmpData[j] = new Object();
+          }
+          if(tmpData[j].release) {
+            tmpData[j].release += parseInt(storeHouseData[i].data[j]);
           } else {
-            tmpData[j] = parseInt(storeHouseData[i][j]);
+            tmpData[j].release = parseInt(storeHouseData[i].data[j]);
           }
         }
       }
@@ -42,8 +84,8 @@
     var d = new Date($("#storehouse_date").val());
     d.setUTCHours(12);
     var entries = "";
-    for (var i in storeHouseData) {
-      entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i];
+    for (i in storeHouseData) {
+      entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i].release;
     }
     ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
                 "&date=" + d.toUTCString() + entries);
@@ -58,21 +100,37 @@
     }
   }
   function check_waybill(id) {
+    var i, row_id;
     if(!$("#check_waybill_" + id).is(":checked")) {
-      for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
-        var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
-        $("#check_entry_" + id + "_" + row_id).removeAttr("checked");
-        $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release", " ");
-      }
-      delete storeHouseData[id];
+      uncheckWaybill(id);
     } else {
+      var tRowData = $("#release_waybills_tree").getRowData(id);
+      $("#release_waybills_tree").delRowData(id);
+      $("#release_waybills_tree").addRowData(id,
+                                               { check: "check"
+                                               , document_id: tRowData.document_id
+                                               , created: tRowData.created
+                                               , from: tRowData.from
+                                               , owner: tRowData.owner
+                                               , place: tRowData.place
+                                               , vatin: tRowData.vatin }
+                                               , "first");
       if($("#release_waybills_tree_" + id + "_t").html()) {
-        for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
-          var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+        var subgridData = $("#release_waybills_tree_" + id + "_t").getRowData();
+        var subgridDataIDs = $("#release_waybills_tree_" + id + "_t").getDataIDs();
+        $("#release_waybills_tree_" + id).parent().parent().remove();
+        localExpand = true;
+        $("#release_waybills_tree").expandSubGridRow(id);
+        for(i=0; i<subgridData.length; i++) {
+          $("#release_waybills_tree_" + id + "_t").addRowData(subgridDataIDs[i], subgridData[i]);
+        }
+        for(i=0; i<$("#release_waybills_tree_" + id + "_t").getDataIDs().length; i++) {
+          row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
           $("#check_entry_" + id + "_" + row_id).attr("checked", "checked");
           $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release",
             $("#release_waybills_tree_" + id + "_t").getCell(row_id, "amount"));
         }
+        $("#check_waybill_" + id).attr("checked", "checked");
       } else {
         listAction = "check_waybill";
         $("#release_waybills_tree").expandSubGridRow(id);
@@ -81,23 +139,82 @@
   }
   function check_release_waybill(sub_id, row_id) {
     if(!$("#check_entry_" + sub_id + "_" + row_id).is(":checked")) {
-      $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release", " ");
-      uncheckParentWaybill(sub_id);
+      uncheckParentWaybill(sub_id, row_id);
     } else {
+      var tRowData = $("#release_waybills_tree").getRowData(sub_id);
+      $("#release_waybills_tree").delRowData(sub_id);
+      $("#release_waybills_tree").addRowData(sub_id,
+                                               { check: "check"
+                                               , document_id: tRowData.document_id
+                                               , created: tRowData.created
+                                               , from: tRowData.from
+                                               , owner: tRowData.owner
+                                               , place: tRowData.place
+                                               , vatin: tRowData.vatin
+                                               , options: "local" }
+                                               , "first");
+      var subgridData = $("#release_waybills_tree_" + sub_id + "_t").getRowData();
+      var subgridDataIDs = $("#release_waybills_tree_" + sub_id + "_t").getDataIDs();
+      $("#release_waybills_tree_" + sub_id).parent().parent().remove();
+      localExpand = true;
+      $("#release_waybills_tree").expandSubGridRow(sub_id);
+      for(var i=0; i<subgridData.length; i++) {
+        $("#release_waybills_tree_" + sub_id + "_t").addRowData(subgridDataIDs[i], subgridData[i]);
+      }
       $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release",
         $("#release_waybills_tree_" + sub_id + "_t").getCell(row_id, "amount"));
-      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
       $("#check_waybill_" + sub_id).attr("checked", "checked");
+      $("#check_entry_" + sub_id + "_" + row_id).attr("checked", "checked");
+      $("#release_waybills_tree_" + sub_id + "_t").setSelection(row_id);
     }
   }
-  function uncheckParentWaybill(sub_id) {
+  function uncheckParentWaybill(sub_id, row_id) {
       var dataIDs = $("#release_waybills_tree_" + sub_id + "_t").getDataIDs();
       for(var i=0; i<dataIDs.length; i++) {
         if($("#check_entry_" + sub_id + "_" + dataIDs[i]).is(":checked")) {
+          $("#release_waybills_tree_" + sub_id + "_t").setCell(row_id, "release", " ");
           return;
         }
       }
-      $("#check_waybill_" + sub_id).removeAttr("checked");
+      if(row_id) uncheckWaybill(sub_id);
+  }
+  function uncheckWaybill(id) {
+    $("#release_waybills_tree").delRowData(id);
+    $("#release_waybills_tree_" + id).parent().parent().remove();
+    if(storeHouseDataIDs.indexOf(id) >= 0) {
+      var pos = storeHouseDataIDs.indexOf(id);
+      while((pos!=0)&&(storeHouseData[storeHouseDataIDs[pos-1]]!=undefined)) {
+        pos -= 1;
+      }
+      var data = { check: "uncheck"
+                 , document_id: storeHouseData[id].document_id
+                 , created: storeHouseData[id].created
+                 , from: storeHouseData[id].from
+                 , owner: storeHouseData[id].owner
+                 , place: storeHouseData[id].place
+                 , vatin: storeHouseData[id].vatin };
+      if(pos == 0) {
+        var count = 0;
+        var lastCheckRow = null;
+        for (i in storeHouseData) {
+          if(count == 0) lastCheckRow = i;
+          count ++;
+        }
+        if(count == 1) {
+          $("#release_waybills_tree").addRowData(id, data, "first");
+        } else {
+          $("#release_waybills_tree").addRowData(id, data, "after", lastCheckRow);
+        }
+      } else {
+        $("#release_waybills_tree").addRowData(id, data, "after", storeHouseDataIDs[pos-1]);
+      }
+    }
+    for(var i=0; i<$("#release_waybills_tree_" + id + "_t").getRowData().length; i++) {
+      var row_id = $("#release_waybills_tree_" + id + "_t").getDataIDs()[i];
+      $("#check_entry_" + id + "_" + row_id).removeAttr("checked");
+      $("#release_waybills_tree_" + id + "_t").setCell(row_id, "release", " ");
+    }
+    delete storeHouseData[id];
   }
 </script>
 
