@@ -747,7 +747,7 @@ module StorehousesHelper
       :pager => '#storehouse_return_pager',
       :rowNum => 10,
       :rowList => [10, 20, 30],
-      :sortname => 'product.resource.tag',
+      :sortname => 'resource',
       :sortorder => 'asc',
       :height => "100%",
       :viewrecords => true,
