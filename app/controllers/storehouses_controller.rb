@@ -296,7 +296,7 @@ class StorehousesController < ApplicationController
       end
     }
 
-    if !can?(:manage, StorehouseReturn)
+    if can?(:manage, StorehouseReturn)
       @storehouse = Storehouse.taskmaster(current_user.entity,
                                           current_user.place)
     else

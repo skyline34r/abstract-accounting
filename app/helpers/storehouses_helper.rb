@@ -688,10 +688,11 @@ module StorehousesHelper
                     t('storehouse.releaseNewList.unit'),
                     'resource_id'],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14, :search => false,
+        { :name => 'check',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
-                              (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
+                           if((((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
+                                (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) &&
+                               (!rowObject.check)) || (rowObject.check == "uncheck")) {
                              return "<input type=\'checkbox\' id=\'check_"
                                + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                                + options.rowId + "\"); \'>";
@@ -702,18 +703,30 @@ module StorehousesHelper
                          }'.to_json_var },
         { :name => 'resource',  :index => 'resource',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.resource != undefined) {
+                             return rowObject.resource;
+                           }
                            return rowObject[1];
                          }'.to_json_var },
         { :name => 'place',  :index => 'place',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.place != undefined) {
+                             return rowObject.place;
+                           }
                            return rowObject[0];
                          }'.to_json_var },
         { :name => 'entity',  :index => 'entity',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.entity != undefined) {
+                             return rowObject.entity;
+                           }
                            return rowObject[4];
                          }'.to_json_var },
         { :name => 'amount',  :index => 'amount',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.amount != undefined) {
+                             return rowObject.amount;
+                           }
                            return rowObject[2];
                          }'.to_json_var },
         { :name => 'owner_id', :index => 'owner_id', :width => 50, :hidden => true},
@@ -726,7 +739,7 @@ module StorehousesHelper
                                 (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
                                return "";
                              }
-                             return storeHouseData[options.rowId.split("_")[0]][0];
+                             return storeHouseData[options.rowId.split("_")[0]].release[0];
                            }
                            if(isNaN(cellvalue) || (cellvalue == "") ||
                                (parseInt(cellvalue) <= "0")) {
@@ -734,19 +747,41 @@ module StorehousesHelper
                              delete storeHouseData[options.rowId.split("_")[0]];
                              return "";
                            }
-                           storeHouseData[options.rowId.split("_")[0]] =
-                             [cellvalue, $("#storehouse_return_list").getCell(options.rowId, "owner_id")];
+                           if(storeHouseData[options.rowId.split("_")[0]] == undefined) {
+                             storeHouseData[options.rowId.split("_")[0]] = new Object();
+                             storeHouseData[options.rowId.split("_")[0]].resource =
+                               $("#storehouse_return_list").getCell(options.rowId, "resource");
+                             storeHouseData[options.rowId.split("_")[0]].place =
+                               $("#storehouse_return_list").getCell(options.rowId, "place");
+                             storeHouseData[options.rowId.split("_")[0]].entity =
+                               $("#storehouse_return_list").getCell(options.rowId, "entity");
+                             storeHouseData[options.rowId.split("_")[0]].amount =
+                               $("#storehouse_return_list").getCell(options.rowId, "amount");
+                             storeHouseData[options.rowId.split("_")[0]].owner_id =
+                               $("#storehouse_return_list").getCell(options.rowId, "owner_id");
+                             storeHouseData[options.rowId.split("_")[0]].unit =
+                               $("#storehouse_return_list").getCell(options.rowId, "unit");
+                             storeHouseData[options.rowId.split("_")[0]].resource_id =
+                               $("#storehouse_return_list").getCell(options.rowId, "resource_id");
+                           }
+                           if($("#storehouse_return_list").getCell(options.rowId, "owner_id")) {
+                             storeHouseData[options.rowId.split("_")[0]].release =
+                               [cellvalue, $("#storehouse_return_list").getCell(options.rowId, "owner_id")];
+                           }
                            return cellvalue;
                          }'.to_json_var },
         { :name => 'unit',  :index => 'unit',   :width => 55,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.unit != undefined) {
+                             return rowObject.unit;
+                           }
                            return rowObject[3];
                          }'.to_json_var },
         { :name => 'resource_id', :index => 'resource_id', :width => 5, :hidden => true }
       ],
       :pager => '#storehouse_return_pager',
-      :rowNum => 10,
-      :rowList => [10, 20, 30],
+      :rowNum => 4,
+      :rowList => [4, 20, 30],
       :sortname => 'resource',
       :sortorder => 'asc',
       :height => "100%",
@@ -777,6 +812,26 @@ module StorehousesHelper
       {
         fixPager(param, "storehouse_return_list");
         $("#storehouse_return_list").saveRow(lastSelId);
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        storeHouseDataIDs = $("#storehouse_return_list").getDataIDs();
+        for (var i in storeHouseData) {
+          for (var j=0; j<storeHouseDataIDs.length; j++) {
+            if(i == storeHouseDataIDs[j].split("_")[0]) $("#storehouse_return_list").delRowData(storeHouseDataIDs[j]);
+          }
+          $("#storehouse_return_list").addRowData(i.toString() + "_" + storeHouseData[i].release[1]
+                                                 , { check: "check"
+                                                   , resource: storeHouseData[i].resource
+                                                   , place: storeHouseData[i].place
+                                                   , entity: storeHouseData[i].entity
+                                                   , amount: storeHouseData[i].amount
+                                                   , owner_id: storeHouseData[i].owner_id
+                                                   , release: storeHouseData[i].release[0]
+                                                   , unit: storeHouseData[i].unit
+                                                   , resource_id: storeHouseData[i].resource_id }
+                                                   , "first");
+        }
       }'.to_json_var
     }]
 
