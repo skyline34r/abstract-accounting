@@ -68,6 +68,7 @@ ru:
   grid:
     btn_find: Поиск
   buttons:
+    btn_back: Возврат
     btn_submit: Подтвердить
     btn_discard: Отменить
   title:

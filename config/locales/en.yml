@@ -29,6 +29,7 @@ en:
   grid:
     btn_find: Find
   buttons:
+    btn_back: Back
     btn_submit: Submit
     btn_discard: Discard
   title:

@@ -31,6 +31,9 @@ module EntityRealsHelper
         } else {
           $("#entity_real_choose").attr("disabled", "disabled");
         }
+        $("#entity_real_choose").click(function() {
+          entityRealChooseSurrogates(cell);
+        });
         $("#change_entity_real").parent().parent().attr("action",
             "/entity_reals/" + cell + "/edit");
       }'.to_json_var,

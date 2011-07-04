@@ -172,5 +172,20 @@
   <% end %>
 </ul>
 
-<div id="body">
-</div>
+<table>
+  <tr align="right">
+    <td>
+      <input id="home_btn_back" type="button" style="visibility: hidden"
+             value="<%= t('buttons.btn_back')%>"/>
+      <input id="home_btn_discard" type="button" style="visibility: hidden"
+             value="<%= t('buttons.btn_discard')%>"/>
+      <input id="home_btn_submit" type="button" style="visibility: hidden"
+             value="<%= t('buttons.btn_submit')%>"/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="body"></div>
+    </td>
+  </tr>
+</table>

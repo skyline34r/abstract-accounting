@@ -28,9 +28,14 @@ class EntitiesController < ApplicationController
   end
 
   def select
-    @list_url = entities_surrogates_url :real_id => params[:real_id]
     @with_check = false
-    @with_check = true unless params[:type].nil?
+    unless params[:real_id].nil?
+      @list_url = entities_surrogates_url :real_id => params[:real_id]
+      @with_check = true if params[:type] == "edit"
+    else
+      @list_url = view_entities_url
+      @with_check = true if params[:type].nil?
+    end
   end
 
   def surrogates
