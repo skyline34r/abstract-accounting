@@ -65,26 +65,15 @@ module EntitiesHelper
 
   end
 
-  def check_entities_jqgrid
+  def check_entities_jqgrid(data_url)
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/entities/view',
+      :url => data_url,
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => ['', t('entity.tag')],
+      :colNames => [t('entity.tag')],
       :colModel => [
-        { :name => '', :index => 'check', :width => 14, :search => false,
-          :formatter => 'function(cellvalue, options, rowObject) {
-                           var checked = "";
-                           if (options.rowId.toString() in entityCheckedData)
-                           {
-                             checked = "checked"
-                           }
-                           return "<input type=\'checkbox\' id=\'check_" +
-                             options.rowId + "\' onClick=\'onRowChecked(\""
-                             + options.rowId + "\");\' " + checked + ">";
-                         }'.to_json_var },
         { :name => 'tag',  :index => 'tag',   :width => 800,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[0];
@@ -116,6 +105,22 @@ module EntitiesHelper
         fixPager(param, "entity_list");
       }'.to_json_var
     }]
+
+    if @with_check
+      grid[0][:colNames].insert(0, '')
+      grid[0][:colModel].insert(0, { :name => '', :index => 'check',
+                                     :width => 14, :search => false,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           var checked = "";
+                           if (options.rowId.toString() in entityCheckedData)
+                           {
+                             checked = "checked"
+                           }
+                           return "<input type=\'checkbox\' id=\'check_" +
+                             options.rowId + "\' onClick=\'onRowChecked(\""
+                             + options.rowId + "\");\' " + checked + ">";
+                         }'.to_json_var })
+    end
 
     pager = [:navGrid, '#entity_pager', {:refresh => false, :add => false,
                                          :del=> false, :edit => false,

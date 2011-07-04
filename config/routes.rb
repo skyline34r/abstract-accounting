@@ -14,7 +14,6 @@ Abstract::Application.routes.draw do
   resources :entities do
     collection do
       get 'view'
-      get 'select'
     end
   end
   resources :entity_reals do
@@ -117,7 +116,11 @@ Abstract::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match 'entity_reals/:real_id/surrogates' => 'entities#surrogates', :as => :entity_surrogates
+  match 'entities/surrogates/:real_id' => 'entities#surrogates',
+        :as => :entities_surrogates
+  match 'entity_reals/:real_id/surrogates(/:type)' => 'entities#select',
+        :as => :entity_real_surrogates,
+        :constraints => { :type => /edit|new/ }
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products

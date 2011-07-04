@@ -28,6 +28,9 @@ class EntitiesController < ApplicationController
   end
 
   def select
+    @list_url = entities_surrogates_url :real_id => params[:real_id]
+    @with_check = false
+    @with_check = true unless params[:type].nil?
   end
 
   def surrogates
