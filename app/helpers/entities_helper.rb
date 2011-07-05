@@ -118,11 +118,11 @@ module EntitiesHelper
                            var checked = "";
                            if (firstOpen) {
                              if (rowObject[1] == false) {
-                               dataPage["base_entity_surrogates"][options.rowId.toString()] = true;
-                               dataPage["entity_surrogates"][options.rowId.toString()] = true;
+                               getPageSessionData(crossPage, "surrogates")[options.rowId.toString()] = true;
+                               getPageSessionData(crossPage, "base_surrogates")[options.rowId.toString()] = true;
                                checked = "checked";
                              }
-                           } else if (options.rowId.toString() in dataPage["entity_surrogates"]) {
+                           } else if (options.rowId.toString() in getPageSessionData(crossPage, "surrogates")) {
                              checked = "checked";
                            }
                            return "<input type=\'checkbox\' id=\'check_" +

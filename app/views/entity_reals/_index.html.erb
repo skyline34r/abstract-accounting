@@ -1,21 +1,30 @@
 <script type="text/javascript">
   var canSelectEntityReal = true;
   var actionMode = "";
-  if (crossPage != "entity_reals") {
-    dataPage = new Object();
-    dataPage["tag"] = "";
-    dataPage["entity_surrogates"] = new Object();
-    dataPage["base_entity_surrogates"] = new Object();
-  } else {
+  if (crossPage == "entity_reals") {
     crossPage = "";
+  } else {
+    clearPageSession("entity_reals");
+    $("#entity_real_choose").click(function() { entityRealChooseSurrogates(-1); });
+  }
+  function showEntityRealIndexForm()
+  {
+    location.hash = "#entity_reals";
+    clearPageSession("entity_reals");
+    actionMode = "";
   }
   function sendTagEntityReal()
   {
     $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
-    if ("entity_surrogates" in dataPage) {
+    if (hasPageSessionData("entity_reals", "surrogates")) {
       var params = "";
-      for (key in dataPage["entity_surrogates"]) {
-        params += "&entities[]=" + key;
+      var surrogates = getPageSessionData("entity_reals", "surrogates");
+      if (Object.keys(surrogates).length > 0) {
+        for (key in surrogates) {
+          params += "&entities[]=" + key;
+        }
+      } else {
+        params += "&entities[]=empty";
       }
       if (params.length > 0) {
         $("#entity_real_form").attr("action",
@@ -23,32 +32,30 @@
       }
     }
   }
-  function showEntityRealIndexForm()
-  {
-    location.hash = "#entity_reals";
-    dataPage = new Object();
-    dataPage["tag"] = "";
-    dataPage["entity_surrogates"] = new Object();
-    dataPage["base_entity_surrogates"] = new Object();
-    canSelectEntityReal = true;
-    actionMode = "";
-  }
   function onCancelEntityReal()
   {
     showEntityRealIndexForm();
   }
   function onResetEntityReal()
   {
-    dataPage["entity_surrogates"] = dataPage["base_entity_surrogates"];
-    $("#entity_real_tag").val(dataPage["tag"]);
+    if (hasPageSessionData("entity_reals", "base_surrogates")) {
+      if (hasPageSessionData("entity_reals", "history_surrogates")) {
+        deletePageSessionData("entity_reals", "history_surrogates");
+      }
+      setPageSessionData("entity_reals", "surrogates",
+        jQuery.extend(true, {},
+          getPageSessionData("entity_reals", "base_surrogates")));
+    }
+    $("#entity_real_tag").val(getPageSessionData("entity_reals", "tag"));
     $("#save_entity_real").attr("disabled","disabled");
   }
   function showEntityRealActionForm(tag, action)
   {
-    if ("tag" in dataPage && dataPage["tag"].length > 0) {
-      tag = dataPage["tag"];
+    if (hasPageSessionData("entity_reals", "tag") &&
+            getPageSessionData("entity_reals", "tag").length > 0) {
+      tag = getPageSessionData("entity_reals", "tag");
     } else {
-      dataPage["tag"] = tag;
+      setPageSessionData("entity_reals", "tag", tag);
     }
     $("#entity_real_tag").val(tag);
     $("#entity_real_tag").removeAttr("disabled");
@@ -57,60 +64,63 @@
     canSelectEntityReal = false;
     actionMode = action;
   }
+  function doCrossPage(aPageName, aDiscard, aSubmit, aPageUrl) {
+    crossPage = aPageName;
+    $("#home_btn_discard").css("visibility", "visible");
+    $("#home_btn_submit").css("visibility", "visible");
+    $("#home_btn_discard").unbind("click");
+    $("#home_btn_discard").click(aDiscard);
+    $("#home_btn_submit").unbind("click");
+    $("#home_btn_submit").click(aSubmit);
+    location.href = aPageUrl;
+  }
+  function crossPageClickFn(aBackUrl, aFN) {
+    return function() {
+      $("#home_btn_discard").css("visibility", "hidden");
+      $("#home_btn_submit").css("visibility", "hidden");
+      $("#body").html("");
+      aFN();
+      location.href = aBackUrl;
+    };
+  }
   function entityRealChooseSurrogates(id)
   {
+    var discardFn = function() {
+      if (hasPageSessionData("entity_reals", "history_surrogates")) {
+        setPageSessionData("entity_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "history_surrogates")));
+      } else {
+        setPageSessionData("entity_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "base_surrogates")));
+      }
+    };
+    var submitFn = function() {
+      setPageSessionData("entity_reals", "history_surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "surrogates")));
+    };
     if (actionMode == "new") {
-      dataPage["tag"] = $("#entity_real_tag").val();
-      crossPage = "entity_reals";
-      $("#home_btn_discard").css("visibility", "visible");
-      $("#home_btn_submit").css("visibility", "visible");
-      $("#home_btn_discard").click(function() {
-        $("#home_btn_discard").css("visibility", "hidden");
-        $("#home_btn_submit").css("visibility", "hidden");
-        $("#body").html("");
-        location.href = '#entity_reals/new';
-      });
-      $("#home_btn_submit").click(function() {
-        $("#home_btn_discard").css("visibility", "hidden");
-        $("#home_btn_submit").css("visibility", "hidden");
-        $("#body").html("");
-        location.href = '#entity_reals/new';
-      });
-      location.href = "#entity_reals/surrogates/new";
+      setPageSessionData("entity_reals", "tag", $("#entity_real_tag").val());
+      doCrossPage("entity_reals",
+                  crossPageClickFn('#entity_reals/new', discardFn),
+                  crossPageClickFn('#entity_reals/new', submitFn),
+                  "#entity_reals/surrogates/new");
     } else if (actionMode == "edit") {
-      dataPage["tag"] = $("#entity_real_tag").val();
-      crossPage = "entity_reals";
-      $("#home_btn_discard").css("visibility", "visible");
-      $("#home_btn_submit").css("visibility", "visible");
-      $("#home_btn_discard").click(function() {
-        $("#home_btn_discard").css("visibility", "hidden");
-        $("#home_btn_submit").css("visibility", "hidden");
-        $("#body").html("");
-        location.href = '#entity_reals/' + id + '/edit';
-      });
-      $("#home_btn_submit").click(function() {
-        $("#home_btn_discard").css("visibility", "hidden");
-        $("#home_btn_submit").css("visibility", "hidden");
-        $("#body").html("");
-        location.href = '#entity_reals/' + id + '/edit';
-      });
-      location.href = '#entity_reals/' + id + "/surrogates/edit";
+      setPageSessionData("entity_reals", "tag", $("#entity_real_tag").val());
+      doCrossPage("entity_reals",
+                  crossPageClickFn('#entity_reals/' + id + '/edit', discardFn),
+                  crossPageClickFn('#entity_reals/' + id + '/edit', submitFn),
+                  '#entity_reals/' + id + "/surrogates/edit");
     } else {
       $("#home_btn_back").css("visibility", "visible");
       $("#home_btn_back").click(function() {
-        location.href = '#entity_reals';
         $("#home_btn_back").css("visibility", "hidden");
+        location.href = '#entity_reals';
       });
       location.href = '#entity_reals/' + id + "/surrogates";
     }
-  }
-  function showEntityRealPage()
-  {
-    $("#entity_real_body").css("display","block");
-    $("#entity_real_p_s_controls").css("display","none");
-    $("#entity_real_page_selection").html("");
-    $("#entity_real_submit").unbind("click");
-    crossPage = "";
   }
 </script>
 
@@ -140,22 +150,11 @@
     <tr align="left">
       <td colspan="2">
         <input id="entity_real_choose" type="button" disabled="true"
-             value="<%= t('quote.btn_choose')%>" onclick="entityRealChooseSurrogates(-1)"/>
+             value="<%= t('quote.btn_choose')%>"/>
       </td>
     </tr>
   </table>
 </div>
-
-<table id="entity_real_p_s_controls" style="display: none">
-  <tr align="right">
-    <td>
-      <input type="button" value="<%= t('buttons.btn_discard')%>" onclick="showEntityRealPage();"/>
-      <input type="button" id="entity_real_submit" value="<%= t('buttons.btn_submit')%>" onclick=""/>
-    </td>
-  </tr>
-  <tr id="entity_real_page_selection">
-  </tr>
-</table>
 
 <script type="text/javascript">
   var filter = false;

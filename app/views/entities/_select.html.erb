@@ -1,23 +1,18 @@
 <script type="text/javascript">
   var firstOpen = false;
-  if (!("entity_surrogates" in dataPage))
-  {
-    dataPage["entity_surrogates"] = new Object();
-  }
-  if (!("base_entity_surrogates" in dataPage))
-  {
-    dataPage["base_entity_surrogates"] = new Object();
-  }
-  if (Object.keys(dataPage["entity_surrogates"]).length == 0 &&
-      Object.keys(dataPage["entity_surrogates"]).length == 0) {
-    firstOpen = true;
+  if (crossPage) {
+    if (!hasPageSessionData(crossPage, "surrogates")) {
+      firstOpen = true;
+      setPageSessionData(crossPage, "surrogates", new Object());
+      setPageSessionData(crossPage, "base_surrogates", new Object());
+    }
   }
   function onRowChecked(id)
   {
     if (!$("#check_" + id).is(":checked")) {
-      delete dataPage["entity_surrogates"][id];
+      delete getPageSessionData(crossPage, "surrogates")[id];
     } else {
-      dataPage["entity_surrogates"][id] = true;
+      getPageSessionData(crossPage, "surrogates")[id] = true;
     }
     $("#entity_list").setSelection(id);
   }

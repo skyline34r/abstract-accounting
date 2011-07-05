@@ -4,6 +4,24 @@
   var crossPageLink = "";
   var cancelRequest = false;
 
+  function clearPageSession(model) {
+    dataPage = new Object();
+    dataPage[model] = new Object();
+  }
+  function hasPageSessionData(model, attr) {
+    return (model in dataPage) && (attr in dataPage[model]);
+  }
+  function getPageSessionData(model, attr) {
+    if (hasPageSessionData(model, attr)) return dataPage[model][attr];
+    return null;
+  }
+  function setPageSessionData(model, attr, value) {
+    dataPage[model][attr] = value;
+  }
+  function deletePageSessionData(model, attr) {
+    delete dataPage[model][attr];
+  }
+
   $(window).bind("hashchange", function() {
     if(!cancelRequest) {
       ajaxRequest(location.hash.substr(1, location.hash.length));

@@ -35,9 +35,10 @@ class EntityRealsController < ApplicationController
 
   def create
     @entity_real = EntityReal.new(params[:entity_real])
-    @entity_real.entity_ids = params[:entities].collect { |id| id.to_i } unless
-        params[:entities].nil?
-    if !@entity_real.save
+    @entity_real.entity_ids = params[:entities].collect { |id| id.to_i } if
+        !params[:entities].nil? and !params[:entities].empty? and
+            params[:entities][0] != "empty"
+    unless @entity_real.save
       render :action => "new"
     end
   end
@@ -45,9 +46,13 @@ class EntityRealsController < ApplicationController
   def update
     @entity_real = EntityReal.find(params[:id])
     unless params[:entities].nil?
-      @entity_real.entity_ids = params[:entities].collect { |id| id.to_i }
+      if !params[:entities].empty? and params[:entities][0] != "empty"
+        @entity_real.entity_ids = params[:entities].collect { |id| id.to_i }
+      elsif params[:entities][0] == "empty"
+        @entity_real.entities.clear
+      end
     end
-    unless @entity_real.update_attributes(params[:entity_real])
+    unless @entity_real.save and @entity_real.update_attributes(params[:entity_real])
       render :action => "edit"
     end
   end
