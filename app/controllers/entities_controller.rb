@@ -10,7 +10,8 @@ class EntitiesController < ApplicationController
   def view
     @columns = ['tag']
 
-    @entities = Entity.all
+    @entities = Entity.all if params[:filter].nil?
+    @entities = Entity.where('real_id is NULL') if params[:filter] == "unassigned"
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
@@ -33,8 +34,8 @@ class EntitiesController < ApplicationController
       @list_url = entities_surrogates_url :real_id => params[:real_id]
       @with_check = true if params[:type] == "edit"
     else
-      @list_url = view_entities_url
-      @with_check = true if params[:type].nil?
+      @list_url = view_entities_url + "?filter=unassigned"
+      @with_check = true
     end
   end
 
