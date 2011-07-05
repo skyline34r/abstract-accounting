@@ -74,7 +74,6 @@
         $("#home_btn_discard").css("visibility", "hidden");
         $("#home_btn_submit").css("visibility", "hidden");
         $("#body").html("");
-        dataPage["entity_surrogates"] = jQuery.extend(true, {}, entityCheckedData);
         location.href = '#entity_reals/new';
       });
       location.href = "#entity_reals/surrogates/new";
@@ -93,7 +92,6 @@
         $("#home_btn_discard").css("visibility", "hidden");
         $("#home_btn_submit").css("visibility", "hidden");
         $("#body").html("");
-        dataPage["entity_surrogates"] = jQuery.extend(true, {}, entityCheckedData);
         location.href = '#entity_reals/' + id + '/edit';
       });
       location.href = '#entity_reals/' + id + "/surrogates/edit";

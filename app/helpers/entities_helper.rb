@@ -116,11 +116,13 @@ module EntitiesHelper
                                      :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            var checked = "";
-                           if (options.rowId.toString() in entityCheckedData)
-                           {
-                             checked = "checked";
-                           } else if (rowObject[1] == false) {
-                             entityCheckedData[options.rowId.toString()] = true;
+                           if (firstOpen) {
+                             if (rowObject[1] == false) {
+                               dataPage["base_entity_surrogates"][options.rowId.toString()] = true;
+                               dataPage["entity_surrogates"][options.rowId.toString()] = true;
+                               checked = "checked";
+                             }
+                           } else if (options.rowId.toString() in dataPage["entity_surrogates"]) {
                              checked = "checked";
                            }
                            return "<input type=\'checkbox\' id=\'check_" +

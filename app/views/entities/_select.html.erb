@@ -1,15 +1,23 @@
 <script type="text/javascript">
-  var entityCheckedData = new Object();
-  if ("entity_surrogates" in dataPage)
+  var firstOpen = false;
+  if (!("entity_surrogates" in dataPage))
   {
-    entityCheckedData = jQuery.extend(true, {}, dataPage["entity_surrogates"]);
+    dataPage["entity_surrogates"] = new Object();
+  }
+  if (!("base_entity_surrogates" in dataPage))
+  {
+    dataPage["base_entity_surrogates"] = new Object();
+  }
+  if (Object.keys(dataPage["entity_surrogates"]).length == 0 &&
+      Object.keys(dataPage["entity_surrogates"]).length == 0) {
+    firstOpen = true;
   }
   function onRowChecked(id)
   {
     if (!$("#check_" + id).is(":checked")) {
-      delete entityCheckedData[id];
+      delete dataPage["entity_surrogates"][id];
     } else {
-      entityCheckedData[id] = true;
+      dataPage["entity_surrogates"][id] = true;
     }
     $("#entity_list").setSelection(id);
   }
