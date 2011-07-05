@@ -32,7 +32,10 @@ class EntitiesController < ApplicationController
     @with_check = false
     unless params[:real_id].nil?
       @list_url = entities_surrogates_url :real_id => params[:real_id]
-      @with_check = true if params[:type] == "edit"
+      if params[:type] == "edit"
+        @with_check = true
+        @list_url += "?filter=unassigned"
+      end
     else
       @list_url = view_entities_url + "?filter=unassigned"
       @with_check = true
@@ -40,8 +43,9 @@ class EntitiesController < ApplicationController
   end
 
   def surrogates
-    @columns = ['tag']
-    @entities = Entity.find_all_by_real_id(params[:real_id])
+    @columns = ['tag', 'real.nil?']
+    @entities = Entity.find_all_by_real_id(params[:real_id]) if params[:filter].nil?
+    @entities = Entity.where('real_id = ? OR real_id is NULL', params[:real_id]) if params[:filter] == "unassigned"
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?

@@ -72,12 +72,16 @@ module EntitiesHelper
       :url => data_url,
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => [t('entity.tag')],
+      :colNames => [t('entity.tag'), ''],
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800,
           :formatter => 'function(cellvalue, options, rowObject) {
                            return rowObject[0];
-                         }'.to_json_var }
+                         }'.to_json_var },
+        { :name => 'empty', :index => 'empty', :hidden => true,
+          :formatter => 'function(cellvalue, options, rowObject) {
+                           return rowObject[1];
+                         }'.to_json_var}
       ],
       :pager => '#entity_pager',
       :rowNum => 10,
@@ -114,7 +118,10 @@ module EntitiesHelper
                            var checked = "";
                            if (options.rowId.toString() in entityCheckedData)
                            {
-                             checked = "checked"
+                             checked = "checked";
+                           } else if (rowObject[1] == false) {
+                             entityCheckedData[options.rowId.toString()] = true;
+                             checked = "checked";
                            }
                            return "<input type=\'checkbox\' id=\'check_" +
                              options.rowId + "\' onClick=\'onRowChecked(\""
