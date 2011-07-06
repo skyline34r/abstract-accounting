@@ -25,6 +25,8 @@ module EntityRealsHelper
       :onSelectRow => 'function(cell)
       {
         $("#entity_real_tag").val($("#entity_real_list").getCell(cell, "tag"));
+        setPageSessionData("entity_reals", "base_tag",
+            $("#entity_real_list").getCell(cell, "tag"));
         $("#change_entity_real").removeAttr("disabled");
         if ($("#entity_real_list").getCell(cell, "empty") == "false") {
           $("#entity_real_choose").removeAttr("disabled");

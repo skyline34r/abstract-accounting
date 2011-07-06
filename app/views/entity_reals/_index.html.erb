@@ -5,12 +5,16 @@
     crossPage = "";
   } else {
     clearPageSession("entity_reals");
+    setPageSessionData("entity_reals", "base_tag", "");
+    setPageSessionData("entity_reals", "tag", "");
     $("#entity_real_choose").click(function() { entityRealChooseSurrogates(-1); });
   }
   function showEntityRealIndexForm()
   {
     location.hash = "#entity_reals";
     clearPageSession("entity_reals");
+    setPageSessionData("entity_reals", "base_tag", "");
+    setPageSessionData("entity_reals", "tag", "");
     actionMode = "";
   }
   function sendTagEntityReal()
@@ -46,15 +50,15 @@
         jQuery.extend(true, {},
           getPageSessionData("entity_reals", "base_surrogates")));
     }
-    $("#entity_real_tag").val(getPageSessionData("entity_reals", "tag"));
+    $("#entity_real_tag").val(getPageSessionData("entity_reals", "base_tag"));
     $("#save_entity_real").attr("disabled","disabled");
   }
   function showEntityRealActionForm(tag, action)
   {
-    if (hasPageSessionData("entity_reals", "tag") &&
-            getPageSessionData("entity_reals", "tag").length > 0) {
+    if (getPageSessionData("entity_reals", "tag").length > 0) {
       tag = getPageSessionData("entity_reals", "tag");
     } else {
+      setPageSessionData("entity_reals", "base_tag", tag);
       setPageSessionData("entity_reals", "tag", tag);
     }
     $("#entity_real_tag").val(tag);
