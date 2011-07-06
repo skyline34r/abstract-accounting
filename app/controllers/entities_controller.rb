@@ -9,9 +9,13 @@ class EntitiesController < ApplicationController
 
   def view
     @columns = ['tag']
-
-    @entities = Entity.all if params[:filter].nil?
-    @entities = Entity.where('real_id is NULL') if params[:filter] == "unassigned"
+    ordered_entities = nil
+    unless params[:sidx].nil?
+      ordered_entities = Entity.order(params[:sidx] + " " + params[:sord].upcase)
+    end
+    @entities = (ordered_entities.nil? ? Entity.all : ordered_entities.all) if params[:filter].nil?
+    @entities = (ordered_entities.nil? ? Entity.where('real_id is NULL') :
+        ordered_entities.where('real_id is NULL')) if params[:filter] == "unassigned"
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
@@ -19,7 +23,6 @@ class EntitiesController < ApplicationController
       end
       @entities = @entities.where args
     end
-    objects_order_by_from_params @entities, params
     @entities = @entities.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
@@ -44,8 +47,16 @@ class EntitiesController < ApplicationController
 
   def surrogates
     @columns = ['tag', 'real.nil?']
-    @entities = Entity.find_all_by_real_id(params[:real_id]) if params[:filter].nil?
-    @entities = Entity.where('real_id = ? OR real_id is NULL', params[:real_id]) if params[:filter] == "unassigned"
+    ordered_entities = nil
+    unless params[:sidx].nil?
+      ordered_entities = Entity.order(params[:sidx] + " " + params[:sord].upcase)
+    end
+    @entities = (ordered_entities.nil? ?
+        Entity.find_all_by_real_id(params[:real_id]) :
+        ordered_entities.find_all_by_real_id(params[:real_id])) if params[:filter].nil?
+    @entities = (ordered_entities.nil? ?
+        Entity.where('real_id = ? OR real_id is NULL', params[:real_id]) :
+        ordered_entities.where('real_id = ? OR real_id is NULL', params[:real_id])) if params[:filter] == "unassigned"
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
@@ -53,7 +64,6 @@ class EntitiesController < ApplicationController
       end
       @entities = @entities.where args
     end
-    objects_order_by_from_params @entities, params
     @entities = @entities.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
