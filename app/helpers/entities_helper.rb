@@ -129,6 +129,12 @@ module EntitiesHelper
                              options.rowId + "\' onClick=\'onRowChecked(\""
                              + options.rowId + "\");\' " + checked + ">";
                          }'.to_json_var })
+      grid[0][:loadComplete] = 'function(data)
+      {
+        if (firstOpen) {
+          firstOpen = false;
+        }
+      }'.to_json_var
     end
 
     pager = [:navGrid, '#entity_pager', {:refresh => false, :add => false,
