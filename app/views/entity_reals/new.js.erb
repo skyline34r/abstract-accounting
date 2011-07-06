@@ -8,3 +8,6 @@ showEntityRealActionForm("", "new");
 $("#entity_real_choose").click(function() {
   entityRealChooseSurrogates(-1);
 });
+if (getPageSessionData("entity_reals", "tag").length > 0) {
+  $('#save_entity_real').removeAttr('disabled');
+}

@@ -8,3 +8,8 @@ showEntityRealActionForm(unescape($("#hide_entity_real_tag").val()), "edit");
 $("#entity_real_choose").click(function() {
   entityRealChooseSurrogates(<%=@entity_real.id%>);
 });
+if (!compareHashKeys(getPageSessionData("entity_reals", "surrogates"),
+    getPageSessionData("entity_reals", "base_surrogates")) ||
+    getPageSessionData("entity_reals", "tag") != getPageSessionData("entity_reals", "base_tag")) {
+  $('#save_entity_real').removeAttr('disabled');
+}
