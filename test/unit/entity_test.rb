@@ -12,9 +12,11 @@ class EntityTest < ActiveSupport::TestCase
 
   test "entity real saved for entity" do
     e = entities(:abstract)
+    assert_equal e.real_tag, entities(:abstract).tag, "Invalid real tag"
     e.real = entity_reals(:aa)
     assert e.valid?, "Valid entity with real"
     assert e.save, "Entity is not updated"
+    assert_equal e.real_tag, entity_reals(:aa).tag, "Invalid real tag"
 
     e = Entity.find_by_tag "abstract"
     assert_equal entity_reals(:aa).id, e.real_id, "Invalid real id"
