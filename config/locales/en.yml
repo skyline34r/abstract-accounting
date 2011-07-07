@@ -7,6 +7,8 @@ en:
     manage: Manage
     place: Place
     entity: Entity
+    surrogate: Surrogates
+    entity_real: Real
     resource: Resource
     chart: Chart
     quote: Quote

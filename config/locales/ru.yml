@@ -46,6 +46,8 @@ ru:
     manage: Состояние
     place: Объекты
     entity: Лица
+    surrogate: Лица-сурогаты
+    entity_real: Оригинальные лица
     resource: Ресурсы
     chart: План счетов
     quote: Курс

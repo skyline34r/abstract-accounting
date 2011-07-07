@@ -82,7 +82,18 @@
         <% end %>
         <% if can? :read, Entity %>
           <li>
-            <a href="#entities" class="page_link"><%=t 'menu.entity'%></a>
+            <a href="#entities" class="page_link">
+              <% if can? :read, EntityReal %>
+                <%=t 'menu.surrogate'%>
+              <% else %>
+                <%=t 'menu.entity'%>
+              <% end %>
+            </a>
+          </li>
+        <% end %>
+        <% if can? :read, EntityReal %>
+          <li>
+            <a href="#entity_reals" class="page_link"><%=t 'menu.entity_real'%></a>
           </li>
         <% end %>
         <% if can? :read, Asset, Money %>
