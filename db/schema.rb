@@ -10,7 +10,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110622131839) do
+ActiveRecord::Schema.define(:version => 20110707135703) do
+
+  create_table "asset_reals", :force => true do |t|
+    t.string "tag"
+  end
+
+  add_index "asset_reals", ["tag"], :name => "index_asset_reals_on_tag", :unique => true
 
   create_table "assets", :force => true do |t|
     t.string "tag"
