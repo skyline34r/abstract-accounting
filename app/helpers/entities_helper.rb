@@ -7,12 +7,13 @@ module EntitiesHelper
     options = {:on_document_ready => true}
 
     grid = [{
-      :url => '/entities/view',
+      :url => '/entities/view?columns=full',
       :datatype => 'json',
       :mtype => 'GET',
-      :colNames => [t('entity.tag')],
+      :colNames => [t('entity.tag'), t('entity.real')],
       :colModel => [
-        { :name => 'tag',  :index => 'tag',   :width => 800 }
+        { :name => 'tag',  :index => 'tag',   :width => 400 },
+        { :name => 'real',  :index => 'real',   :width => 400 }
       ],
       :pager => '#entity_pager',
       :rowNum => 10,

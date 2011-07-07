@@ -9,13 +9,28 @@ class EntitiesController < ApplicationController
 
   def view
     @columns = ['tag']
-    base_entities = nil
-    unless params[:sidx].nil?
-      base_entities = Entity.order(params[:sidx] + " " + params[:sord].upcase)
+    if !params[:columns].nil? and params[:columns] == 'full'
+      @columns << 'real.tag'
     end
-    unless params[:_search].nil? or params[:tag].nil?
-      base_entities = (base_entities.nil? ? Entity.where('lower(tag) LIKE ?', "%#{params[:tag].downcase}%") :
-          base_entities.where('lower(tag) LIKE ?', "%#{params[:tag].downcase}%"))
+    base_entities = nil
+    real_included = false
+    unless params[:sidx].nil?
+      if params[:sidx] == 'tag'
+        base_entities = Entity.order('entities.' + params[:sidx] + " " + params[:sord].upcase)
+      elsif params[:sidx] == 'real'
+        real_included = true
+        base_entities = Entity.includes(:real).
+            order('entity_reals.tag ' + params[:sord].upcase)
+      end
+    end
+    unless params[:_search].nil?
+      base_entities = (base_entities.nil? ? Entity.where('lower(entities.tag) LIKE ?', "%#{params[:tag].downcase}%") :
+          base_entities.where('lower(entities.tag) LIKE ?', "%#{params[:tag].downcase}%")) unless params[:tag].nil?
+      unless params[:real].nil?
+        base_entities = (base_entities.nil? ? Entity.includes(:real) :
+          base_entities.includes(:real)) unless real_included
+        base_entities = base_entities.where('lower(entity_reals.tag) LIKE ?', "%#{params[:real].downcase}%")
+      end
     end
     @entities = (base_entities.nil? ? Entity.all : base_entities.all) if params[:filter].nil?
     @entities = (base_entities.nil? ? Entity.where('real_id is NULL') :

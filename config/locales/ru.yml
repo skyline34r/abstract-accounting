@@ -224,6 +224,7 @@ ru:
     parsererror: Синтаксическая ошибка запроса!
   entity:
     tag: Название
+    real: Подлинное название
     btn_new: Создать
     btn_change: Изменить
     btn_cancel: Отмена
