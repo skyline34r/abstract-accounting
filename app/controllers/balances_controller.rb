@@ -19,7 +19,7 @@ class BalancesController < ApplicationController
         return alpha_code
       end
     }
-    @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount',
+    @columns = ['deal.tag', 'deal.entity.real_tag', 'deal.give.tag', 'amount',
                 'value', 'side']
     if date == ''
       @balances = BalanceSheet.new DateTime.now
@@ -36,7 +36,7 @@ class BalancesController < ApplicationController
         args['deal.tag'] = {:like => params[:deal]}
       end
       if !params[:entity].nil?
-        args['deal.entity.tag'] = {:like => params[:entity]}
+        args['deal.entity.real_tag'] = {:like => params[:entity]}
       end
       if !params[:resource].nil?
         args['deal.give.tag'] = {:like => params[:resource]}
@@ -47,7 +47,7 @@ class BalancesController < ApplicationController
       when 'deal'
         params[:sidx] = 'deal.tag'
       when 'entity'
-        params[:sidx] = 'deal.entity.tag'
+        params[:sidx] = 'deal.entity.real_tag'
       when 'resource'
         params[:sidx] = 'deal.give.tag'
     end

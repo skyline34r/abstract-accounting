@@ -15,7 +15,7 @@ class DealsController < ApplicationController
         return alpha_code
       end
     }
-    @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
+    @columns = ['tag', 'entity.real_tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name', 'isOffBalance']
     @deals = Deal.all
     if params[:_search]
@@ -24,13 +24,13 @@ class DealsController < ApplicationController
         args['tag'] = {:like => params[:tag]}
       end
       if !params[:entity].nil?
-        args['entity.tag'] = {:like => params[:entity]}
+        args['entity.real_tag'] = {:like => params[:entity]}
       end
       @deals = @deals.where args
     end
     case params[:sidx]
        when 'entity'
-         params[:sidx] = 'entity.tag'
+         params[:sidx] = 'entity.real_tag'
     end
     objects_order_by_from_params @deals, params
     @deals = @deals.paginate(

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def view
-    @columns = ['email', 'entity.tag', 'place.tag', 'role_ids']
+    @columns = ['email', 'entity.real_tag', 'place.tag', 'role_ids']
     @users = User.all
 
     if params[:_search]
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
         args['email'] = {:like => params[:email]}
       end
       if !params[:entity].nil?
-        args['entity.tag'] = {:like => params[:entity]}
+        args['entity.real_tag'] = {:like => params[:entity]}
       end
       if !params[:place].nil?
         args['place.tag'] = {:like => params[:place]}
@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     end
     case params[:sidx]
       when 'entity'
-        params[:sidx] = 'entity.tag'
+        params[:sidx] = 'entity.real_tag'
       when 'place'
         params[:sidx] = 'place.tag'
     end
