@@ -3,6 +3,7 @@ class Asset < ActiveRecord::Base
   validates_uniqueness_of :tag
   has_many :deal_gives, :class_name => "Deal", :as => :give
   has_many :deal_takes, :class_name => "Deal", :as => :take
+  belongs_to :real, :class_name => "AssetReal"
 end
 
 class Money < ActiveRecord::Base
