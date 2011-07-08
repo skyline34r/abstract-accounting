@@ -1,0 +1,7 @@
+<td>
+  <%= button_to t('resource.btn_new'), new_asset_real_path, :method => :get, :remote => true %>
+</td>
+<td style="width: 45px">
+  <%= button_to t('resource.btn_change'), edit_asset_real_path(0), :id => "change_asset_real",
+      :method => :get, :remote => true, :disabled => true %>
+</td>

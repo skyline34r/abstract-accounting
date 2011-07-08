@@ -4,6 +4,7 @@ ru:
       waybill: накладная
       storehouse_release: список выдачи
       entity_real: лицо
+      asset_real: подлиннеые активы
     attributes:
       waybill:
         resources: Ресурсы
@@ -13,6 +14,8 @@ ru:
         created: Дата
         to_id: Кому
       entity_real:
+        tag: Название
+      asset_real:
         tag: Название
     errors:
       template:
@@ -34,6 +37,11 @@ ru:
             to_id:
               blank: "не указано"
         entity_real:
+          attributes:
+            tag:
+              taken: "уже существует"
+              blank: "должно быть введено"
+        asset_real:
           attributes:
             tag:
               taken: "уже существует"

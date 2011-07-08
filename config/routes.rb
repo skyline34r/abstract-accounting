@@ -36,6 +36,11 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
+  resources :asset_reals do
+    collection do
+      get 'view'
+    end
+  end
   resources :deals do
     collection do
       get 'view'

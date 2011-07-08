@@ -1,0 +1,15 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.resource'%> :: <%=t 'title.edit'%>";
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'asset_reals/index') %>");
+}
+$("#asset_real_errors").html("<%= escape_javascript(render :partial => 'asset_reals/form_errors') %>");
+$("#asset_real_actions").html("<%= escape_javascript(render :partial => 'asset_reals/form_actions') %>");
+showAssetRealActionForm(unescape($("#hide_asset_real_tag").val()), "edit");
+$("#asset_real_choose").click(function() {
+  assetRealChooseSurrogates(<%=@asset_real.id%>);
+});
+if (!compareHashKeys(getPageSessionData("asset_reals", "surrogates"),
+    getPageSessionData("asset_reals", "base_surrogates")) ||
+    getPageSessionData("asset_reals", "tag") != getPageSessionData("asset_reals", "base_tag")) {
+  $('#save_asset_real').removeAttr('disabled');
+}
