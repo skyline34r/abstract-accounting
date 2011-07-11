@@ -87,7 +87,7 @@ class WaybillsController < ApplicationController
   end
 
   def show
-    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
     @entries = Waybill.find(params[:id]).resources
     @entries = @entries.paginate(
       :page     => params[:page],

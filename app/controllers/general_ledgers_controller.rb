@@ -15,7 +15,7 @@ class GeneralLedgersController < ApplicationController
         return alpha_code
       end
     }
-    @columns = ['fact.day', 'fact.resource.tag', 'fact.amount', 'fact.from.tag',
+    @columns = ['fact.day', 'fact.resource.real_tag', 'fact.amount', 'fact.from.tag',
                 'fact.to.tag', 'value', 'earnings']
     @general_ledgers = GeneralLedger.new
     if params[:_search]
@@ -24,7 +24,7 @@ class GeneralLedgersController < ApplicationController
         args['fact.day'] = {:like => params[:date]}
       end
       if !params[:resource].nil?
-        args['fact.resource.tag'] = {:like => params[:resource]}
+        args['fact.resource.real_tag'] = {:like => params[:resource]}
       end
       if !params[:quantity].nil?
         args['fact.amount'] = {:like => params[:quantity]}
@@ -35,7 +35,7 @@ class GeneralLedgersController < ApplicationController
       when 'date'
          params[:sidx] = 'fact.day'
       when 'resource'
-         params[:sidx] = 'fact.resource.tag'
+         params[:sidx] = 'fact.resource.real_tag'
       when 'quantity'
         params[:sidx] = 'fact.amount'
     end
