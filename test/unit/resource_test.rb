@@ -39,4 +39,17 @@ class ResourceTest < ActiveSupport::TestCase
     assert a.save, "Asset is not saved"
     assert_equal 2, asset_reals(:abstractasi).assets(true).length, "Invalid assets length"
   end
+
+  test "check asset real_tag" do
+    a = assets(:aasiishare)
+    a.real = asset_reals(:abstractasi)
+    assert a.save, "Asset is not updated"
+
+    assert_equal a.real_tag, asset_reals(:abstractasi).tag, "Wrong real tag"
+    assert_equal assets(:sonyvaio).tag, assets(:sonyvaio).real_tag, "Wrong asset real tag"
+  end
+
+  test "check money real_tag" do
+    assert_equal money(:rub).alpha_code, money(:rub).real_tag, "Wrong money real tag"
+  end
 end
