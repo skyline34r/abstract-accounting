@@ -84,7 +84,7 @@
           <li>
             <a href="#entities" class="page_link">
               <% if can? :read, EntityReal %>
-                <%=t 'menu.surrogate'%>
+                <%=t 'menu.entity.surrogate'%>
               <% else %>
                 <%=t 'menu.entity'%>
               <% end %>
@@ -98,7 +98,18 @@
         <% end %>
         <% if can? :read, Asset, Money %>
           <li>
-            <a href="#resources" class="page_link"><%=t 'menu.resource'%></a>
+            <a href="#resources" class="page_link">
+              <% if can? :read, AssetReal %>
+                <%=t 'menu.asset.surrogate'%>
+              <% else %>
+                <%=t 'menu.resource'%>
+              <% end %>
+            </a>
+          </li>
+        <% end %>
+        <% if can? :read, AssetReal %>
+          <li>
+            <a href="#asset_reals" class="page_link"><%=t 'menu.asset_real'%></a>
           </li>
         <% end %>
         <% if can? :read, Chart %>

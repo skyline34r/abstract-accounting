@@ -53,10 +53,14 @@ ru:
     logout: Выход
     manage: Состояние
     place: Объекты
-    entity: Лица
-    surrogate: Лица-сурогаты
+    entity:
+      original: Лица
+      surrogate: Суррогаты для лиц
     entity_real: Оригинальные лица
     resource: Ресурсы
+    asset:
+      surrogate: Сурогаты для активов
+    asset_real: Оригинальные активы
     chart: План счетов
     quote: Курс
     process: Операции

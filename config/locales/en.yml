@@ -6,10 +6,14 @@ en:
     logout: Logout
     manage: Manage
     place: Place
-    entity: Entity
-    surrogate: Surrogates
-    entity_real: Real
+    entity:
+      original: Entity
+      surrogate: Entity surrogates
+    entity_real: Real entities
     resource: Resource
+    asset:
+      surrogate: Asset surrogates
+    asset_real: Real assets
     chart: Chart
     quote: Quote
     process: Process
