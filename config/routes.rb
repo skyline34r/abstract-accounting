@@ -128,6 +128,13 @@ Abstract::Application.routes.draw do
         :constraints => { :type => /edit/ }
   match 'entity_reals/surrogates/new' => 'entities#select'
 
+  match 'resources/assets/surrogates/:real_id' => 'resources#asset_surrogates',
+        :as => :asset_surrogates
+  match 'asset_reals/:real_id/surrogates(/:type)' => 'resources#asset_select',
+        :as => :asset_real_surrogates,
+        :constraints => { :type => /edit/ }
+  match 'asset_reals/surrogates/new' => 'resources#asset_select'
+
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
