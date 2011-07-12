@@ -777,4 +777,128 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 1, sh.length, "Wrong storehouse length"
     assert_equal 20, sh[0].amount, "Wrong storehouse amount"
   end
+
+  test "group storehouses entry by resource" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Some warehouse")
+    assert warehouse.save, "Entity not saved"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb.save, "Waybill is not saved"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "12345",
+      :place => warehouse,
+      :from => "Organization Store 2",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb.add_resource "sony VAI O", "th", 150
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    assert_equal 100, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 100, sh[0].real_amount, "Wrong storehouse amount"
+    assert_equal assets(:sonyvaio).tag, sh[0].product.resource.real_tag, "Wrong resource tag"
+    assert_equal 150, sh[1].amount, "Wrong storehouse amount"
+    assert_equal 150, sh[1].real_amount, "Wrong storehouse amount"
+    assert_equal "sony VAI O", sh[1].product.resource.real_tag, "Wrong resource tag"
+
+    a = asset_reals(:notebooksv)
+    a.assets << Asset.find_by_tag("sony VAI O")
+    a.assets << assets(:sonyvaio)
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    assert_equal 250, sh[0].amount, "Wrong storehouse amount"
+    assert_equal 250, sh[0].real_amount, "Wrong storehouse amount"
+    assert_equal asset_reals(:notebooksv).tag, sh[0].product.resource.real_tag, "Wrong resource tag"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "123456",
+      :place => warehouse,
+      :from => "Organization Store 3",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource "sony 3D", "th", 50
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh.each do |entry|
+      if entry.owner.id == storekeeper.id
+        if asset_reals(:notebooksv).tag == entry.product.resource.real_tag
+          assert_equal 250, entry.amount, "Wrong storehouse amount"
+          assert_equal 250, entry.real_amount, "Wrong storehouse amount"
+        elsif "sony 3D" == entry.product.resource.real_tag
+          assert_equal 50, entry.amount, "Wrong storehouse amount"
+          assert_equal 50, entry.real_amount, "Wrong storehouse amount"
+        else
+          assert false, "Unknown resource"
+        end
+      else
+        assert false, "Unknown owner id"
+      end
+    end
+
+    sh = Storehouse.new
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh.each do |entry|
+      if entry.owner.id == storekeeper.id
+        if asset_reals(:notebooksv).tag == entry.product.resource.real_tag
+          assert_equal 250, entry.amount, "Wrong storehouse amount"
+          assert_equal 250, entry.real_amount, "Wrong storehouse amount"
+        elsif "sony 3D" == entry.product.resource.real_tag
+          assert_equal 50, entry.amount, "Wrong storehouse amount"
+          assert_equal 50, entry.real_amount, "Wrong storehouse amount"
+        else
+          assert false, "Unknown resource"
+        end
+      else
+        assert false, "Unknown owner id"
+      end
+    end
+
+    storekeeper2 = Entity.new(:tag => "Storekeeper2")
+    assert storekeeper2.save, "Entity not saved"
+    warehouse2 = Place.new(:tag => "Some warehouse2")
+    assert warehouse2.save, "Entity not saved"
+
+    wb = Waybill.new(:owner => storekeeper2,
+      :document_id => "128347",
+      :place => warehouse2,
+      :from => "Organization Store 5",
+      :created => DateTime.civil(2011, 4, 8, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb.save, "Waybill is not saved"
+
+    sh = Storehouse.new
+    assert_equal 3, sh.length, "Wrong storehouse length"
+    sh.each do |entry|
+      if entry.owner.id == storekeeper.id
+        if asset_reals(:notebooksv).tag == entry.product.resource.real_tag
+          assert_equal 250, entry.amount, "Wrong storehouse amount"
+          assert_equal 250, entry.real_amount, "Wrong storehouse amount"
+        elsif "sony 3D" == entry.product.resource.real_tag
+          assert_equal 50, entry.amount, "Wrong storehouse amount"
+          assert_equal 50, entry.real_amount, "Wrong storehouse amount"
+        else
+          assert false, "Unknown resource"
+        end
+      elsif entry.owner.id == storekeeper2.id
+        if asset_reals(:notebooksv).tag == entry.product.resource.real_tag
+          assert_equal 100, entry.amount, "Wrong storehouse amount"
+          assert_equal 100, entry.real_amount, "Wrong storehouse amount"
+        else
+          assert false, "Unknown resource"
+        end
+      else
+        assert false, "Unknown owner id"
+      end
+    end
+  end
 end

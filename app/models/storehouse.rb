@@ -2,7 +2,7 @@ require "resource"
 require "action_array"
 
 class StorehouseEntry
-  attr_reader :owner, :place, :product, :real_amount, :amount
+  attr_reader :owner, :deal, :place, :product, :real_amount, :amount
   def initialize(deal, place, amount)
     @amount = 0
     @real_amount = 0
@@ -10,11 +10,20 @@ class StorehouseEntry
     @owner = nil
     @place = place
     @amount = amount
+    @deal = deal
     if !deal.nil?
       @owner = deal.entity
       @product = Product.find_by_resource_id deal.give.id
       @real_amount = deal.state.amount
     end
+  end
+
+  def add_amount amount
+    @amount += amount
+  end
+
+  def add_real_amount real_amount
+    @real_amount += real_amount
   end
 
   def StorehouseEntry.state(deal, releases = nil)
@@ -86,6 +95,7 @@ class Storehouse < Array
           end
         end
       end
+      self.group_by_real_resource
     end
   end
 
@@ -168,5 +178,37 @@ class Storehouse < Array
       end
     end
     nil
+  end
+
+  def group_by_real_resource
+    group = Hash.new
+    origins = Array.new
+    self.each do |item|
+      unless item.product.resource.real.nil?
+        rid = item.product.resource.real.id
+        if group.has_key?(rid)
+          if group[rid].has_key?(item.owner.id)
+            group[rid][item.owner.id].add_amount item.amount
+            group[rid][item.owner.id].add_real_amount item.real_amount
+          else
+            group[rid][item.owner.id] = item
+          end
+        else
+          group[rid] = Hash.new
+          group[rid][item.owner.id] = item
+        end
+      else
+        origins << item
+      end
+    end
+    self.clear
+    origins.each do |item|
+      self << item
+    end
+    group.each_value do |hash|
+      hash.each_value do |value|
+        self << value
+      end
+    end
   end
 end
