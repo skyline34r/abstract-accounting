@@ -901,4 +901,78 @@ class StorehouseTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "group storehouses entry by resource and check waybills" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Some warehouse")
+    assert warehouse.save, "Entity not saved"
+
+    wb1 = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb1.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb1.save, "Waybill is not saved"
+
+    wb2 = Waybill.new(:owner => storekeeper,
+      :document_id => "12345",
+      :place => warehouse,
+      :from => "Organization Store 2",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb2.add_resource "sony VAI O", "th", 150
+    assert wb2.save, "Waybill is not saved"
+
+    a = asset_reals(:notebooksv)
+    a.assets << Asset.find_by_tag("sony VAI O")
+    a.assets << assets(:sonyvaio)
+
+    wb3 = Waybill.new(:owner => storekeeper,
+      :document_id => "123456",
+      :place => warehouse,
+      :from => "Organization Store 3",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb3.add_resource "sony 3D", "th", 50
+    assert wb3.save, "Waybill is not saved"
+
+    sh = Storehouse.new storekeeper, warehouse
+    assert_equal 2, sh.length, "Wrong entries count"
+    wbs = sh.waybills
+    assert_equal 3, wbs.length, "Wrong waybills count"
+    wbs.each do |item|
+      assert item.instance_of?(StorehouseWaybill), "Unknown instance"
+      assert !item.resources.nil?, "Wrong resources"
+      if item.waybill.id == wb1.id
+        assert_equal 1, item.resources.length, "Wrong resources count"
+        item.resources.each do |sw|
+          if sw.product.resource.real_tag == asset_reals(:notebooksv).tag
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.waybill.id == wb2.id
+        assert_equal 1, item.resources.length, "Wrong resources count"
+        item.resources.each do |sw|
+          if sw.product.resource.real_tag == asset_reals(:notebooksv).tag
+            assert_equal 150, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.waybill.id == wb3.id
+        assert_equal 1, item.resources.length, "Wrong resources count"
+        item.resources.each do |sw|
+          if sw.product.resource.tag == "sony 3D"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+  end
 end

@@ -151,8 +151,10 @@ class Storehouse < Array
       amount = sh_entry.amount
       Waybill.order("created DESC").find_by_owner_and_place(@entity, @place).each do |waybill|
         waybill.resources.each do |resource|
-          if sh_entry.product.id == resource.product.id
-            if !waybills.key?(waybill.id)
+          if sh_entry.product.id == resource.product.id or
+              (!sh_entry.product.resource.real.nil? and !resource.product.resource.real.nil? and
+                sh_entry.product.resource.real.id == resource.product.resource.real.id)
+            unless waybills.key?(waybill.id)
               waybills[waybill.id] = StorehouseWaybill.new(waybill)
             end
             if amount <= resource.amount
