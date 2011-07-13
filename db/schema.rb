@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110614110306) do
+ActiveRecord::Schema.define(:version => 20110712124102) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -179,6 +179,17 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
+  create_table "versions", :force => true do |t|
+    t.string   "item_type",  :null => false
+    t.integer  "item_id",    :null => false
+    t.string   "event",      :null => false
+    t.integer  "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
+
   create_table "waybills", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "place_id"
@@ -190,6 +201,5 @@ ActiveRecord::Schema.define(:version => 20110614110306) do
   end
 
   add_index "waybills", ["deal_id"], :name => "index_waybills_on_deal_id", :unique => true
-  add_index "waybills", ["document_id"], :name => "index_waybills_on_document_id", :unique => true
 
 end

@@ -59,6 +59,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     orm_adapter (0.0.5)
+    paper_trail (2.2.6)
+      rails (~> 3)
     pdf-reader (0.9.2)
       Ascii85 (>= 0.9)
     polyglot (0.3.1)
@@ -110,6 +112,7 @@ DEPENDENCIES
   dynamic_form
   jqgrid_for_rails
   jquery-rails!
+  paper_trail (~> 2)
   prawn
   prawnto
   rails (= 3.0.3)

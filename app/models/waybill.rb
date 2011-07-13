@@ -83,6 +83,8 @@ class WaybillEntry
 end
 
 class Waybill < ActiveRecord::Base
+  has_paper_trail
+
   #validations
   validates :document_id, :presence => true
   validates :owner_id, :presence => true

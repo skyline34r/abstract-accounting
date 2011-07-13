@@ -1,4 +1,6 @@
 class Deal < ActiveRecord::Base
+  has_paper_trail
+
   validates :tag, :rate, :presence => true
   belongs_to :entity
   belongs_to :give, :polymorphic => true

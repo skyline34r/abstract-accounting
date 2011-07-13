@@ -9,6 +9,8 @@ class FactValidator
 end
 
 class Fact < ActiveRecord::Base
+  has_paper_trail
+
   validates :day, :amount, :resource, :to, :presence => true
   validates_with FactValidator
   belongs_to :resource, :polymorphic => true

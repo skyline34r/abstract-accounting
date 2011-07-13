@@ -1,6 +1,8 @@
 require "closable"
 
 class Income < ActiveRecord::Base
+  has_paper_trail
+
   validates :start, :side, :value, :presence => true
   validates :start, :uniqueness => true
   validates :side, :inclusion => { :in => %w{passive active} }

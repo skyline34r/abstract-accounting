@@ -1,4 +1,6 @@
 class Rule < ActiveRecord::Base
+  has_paper_trail
+
   validates :deal, :from, :to, :rate,
     :presence => true
   validates_inclusion_of :fact_side, :in => [ true, false ]

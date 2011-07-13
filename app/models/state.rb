@@ -2,6 +2,8 @@ require "state_action"
 require "closable"
 
 class State < ActiveRecord::Base
+  has_paper_trail
+
   validates :amount, :start, :side, :deal, :presence => true
   validates_inclusion_of :side, :in => ["passive", "active"] #[1, 0]
   validates_uniqueness_of :start, :scope => :deal_id

@@ -15,6 +15,7 @@ gem 'cancan'
 gem 'dynamic_form'
 gem 'prawn'
 gem 'prawnto'
+gem 'paper_trail', '~> 2'
 
 # Use unicorn as the web server
 # gem 'unicorn'

@@ -38,6 +38,7 @@ class StorehouseReleaseValidator < ActiveModel::Validator
 end
 
 class StorehouseRelease < ActiveRecord::Base
+  has_paper_trail
   #States
   INWORK = 1
   CANCELED = 2
@@ -57,10 +58,13 @@ class StorehouseRelease < ActiveRecord::Base
   belongs_to :to, :class_name => 'Entity'
   belongs_to :deal
 
+  alias_method :original_to=, :to=
+  alias_method :original_to, :to
   def to=(entity)
     if !entity.nil?
       if entity.instance_of?(Entity)
-        self[:to] = entity
+        #self[:to] = entity
+        self.original_to = entity
         if entity.new_record?
           self.to_id = -1
         else
@@ -69,10 +73,12 @@ class StorehouseRelease < ActiveRecord::Base
       else
         a = entity.to_s
         if !Entity.find_by_tag_case_insensitive(a).nil?
-          self[:to] = Entity.find_by_tag_case_insensitive(a)
-          self.to_id = self[:to].id
+          #self[:to] = Entity.find_by_tag_case_insensitive(a)
+          self.original_to = Entity.find_by_tag_case_insensitive(a)
+          self.to_id = self.original_to#self[:to].id
         else
-          self[:to] = Entity.new(:tag => a)
+          #self[:to] = Entity.new(:tag => a)
+          self.original_to = Entity.new(:tag => a)
           self.to_id = -1
         end
       end
@@ -80,10 +86,14 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def to
-    if self[:to].nil? and !self.to_id.nil? and self.to_id > -1
-      self[:to] = Entity.find(self.to_id)
+    #if self[:to].nil? and !self.to_id.nil? and self.to_id > -1
+    #  self[:to] = Entity.find(self.to_id)
+    #end
+    #self[:to]
+    if self.original_to.nil? and !self.to_id.nil? and self.to_id > -1
+      self.original_to = Entity.find(self.to_id)
     end
-    self[:to]
+    self.original_to
   end
 
   def add_resource product, amount
