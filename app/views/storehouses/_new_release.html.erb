@@ -87,6 +87,7 @@
     for (i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i].release;
     }
+    $("#save_button").attr("disabled", "disabled");
     ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
                 "&date=" + d.toUTCString() + entries);
   }
@@ -267,7 +268,7 @@
     </tr>
     <tr>
       <td colspan="2" align="right">
-        <input type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendRelease();"/>
+        <input id="save_button" type="button" value="<%=t 'storehouse.btn_save'%>" onclick="sendRelease();"/>
       </td>
     </tr>
   </tbody>
