@@ -147,16 +147,6 @@
 							<a href="#storehouses/releases" class="page_link"><%=t 'menu.release'%></a>
 						</li>
 					<% end %>
-					<% if can?(:manage, StorehouseReturn) %>
-						<li>
-							<a href="#storehouses/return/resource_state" class="page_link"><%=t 'menu.resource_state'%></a>
-						</li>
-					<% end %>
-					<% if can?(:manage, Storehouse)%>
-						<li>
-							<a href="#storehouses/return" class="page_link"><%=t 'menu.return'%></a>
-						</li>
-					<% end %>
 				</ul>
 			</li>
 		<% end %>
