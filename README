@@ -44,3 +44,7 @@ Run "rails generate jquery:install --ui --jqgrid"
 Write in environment.rb gmail username and password
 Write in config.yml super admin email and password
 Run "rake db:seed"
+
+ATTENTION!!!: From 14/07/2011 we destroy journal for facts.
+It replaced by paper_trail. You must run rake versions:create,
+for convert journal and create version for existing data.
