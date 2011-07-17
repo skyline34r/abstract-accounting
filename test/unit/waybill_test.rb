@@ -527,4 +527,55 @@ class WaybillTest < ActiveSupport::TestCase
     assert !wb.has_in_the_storehouse?, "Waybill is in the warehouse"
     assert wb1.has_in_the_storehouse?, "Waybill is not in the warehouse"
   end
+
+  test "destroy wrong waybill" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Moscow")
+    assert warehouse.save, "Place not saved"
+
+    wb = Waybill.new(:document_id => "12345",
+      :owner => storekeeper,
+      :place => warehouse,
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 500
+    assert wb.save, "Waybill is not saved"
+
+    wb = Waybill.new(:document_id => "12345",
+      :owner => storekeeper,
+      :place => warehouse,
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb.add_resource "roof", "m2", 500
+    assert wb.save, "Waybill is not saved"
+
+    wb1 = Waybill.new(:document_id => "12345",
+      :owner => storekeeper,
+      :place => warehouse,
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb1.add_resource "roof", "m2", 500
+    assert wb1.save, "Waybill is not saved"
+
+    assert_equal 1, wb.resources.length, "Wrong resources count"
+    deal = wb.resources[0].storehouse_deal storekeeper
+    assert_not_nil deal, "Warehouse deal is nil"
+    assert !deal.new_record?, "Deal is new"
+    st = deal.state
+    assert_equal 1500, st.amount, "Wrong deal amount"
+
+    assert wb.disable("dublicate waybill"), "Waybill is not disabled"
+    assert !wb.disable("daad"), "Waybill is disabled"
+    wbd = Waybill.find(wb.id)
+    assert_equal "dublicate waybill", wbd.comment, "Wrong waybill comment"
+    assert_not_nil wbd.disable_deal, "Wrong disable deal"
+
+    assert_equal 1, wb.resources.length, "Wrong resources count"
+    deal = wb.resources[0].storehouse_deal storekeeper
+    assert_not_nil deal, "Warehouse deal is nil"
+    assert !deal.new_record?, "Deal is new"
+    st = deal.state
+    assert_equal 1000, st.amount, "Wrong deal amount"
+  end
 end

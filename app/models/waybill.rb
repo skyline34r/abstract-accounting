@@ -101,6 +101,7 @@ class Waybill < ActiveRecord::Base
   belongs_to :place
   belongs_to :from, :class_name => 'Entity'
   belongs_to :deal
+  belongs_to :disable_deal, :class_name => 'Deal'
 
   def from=(entity)
     if !entity.nil?
@@ -146,6 +147,13 @@ class Waybill < ActiveRecord::Base
       end
     end
     @entries
+  end
+
+  def disable arg_comment
+    return false unless self.disable_deal.nil?
+    return false if self.deal.nil? or arg_comment.nil?
+    self.comment = arg_comment
+    self.save
   end
 
   after_initialize :waybill_initialize
@@ -202,6 +210,26 @@ class Waybill < ActiveRecord::Base
               :from => nil,
               :to => self.deal,
               :resource => self.deal.give).save
+    elsif self.comment_changed?
+      shipment = Storehouse.shipment
+      deal = Deal.new :tag => "Waybill disabled shipment #" + self.id.to_s,
+          :rate => 1.0, :entity => self.owner, :give => shipment,
+          :take => shipment, :isOffBalance => true
+      return false unless deal.save
+      idx = 0
+      self.deal.rules.each do |rule|
+        return false unless deal.rules.create(:tag => deal.tag + "; rule" + idx.to_s,
+          :from => rule.to, :to => rule.from, :fact_side => false,
+          :change_side => true, :rate => rule.rate)
+        idx += 1
+      end
+      dt_now = DateTime.now
+      self.disable_deal = deal
+      return false unless Fact.new(:amount => 1.0,
+              :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+              :from => nil,
+              :to => self.disable_deal,
+              :resource => self.disable_deal.give).save
     else
       return false
     end
