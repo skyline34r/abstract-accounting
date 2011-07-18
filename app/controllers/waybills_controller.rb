@@ -97,4 +97,17 @@ class WaybillsController < ApplicationController
       render :json => abstract_json_for_jqgrid(@entries, @columns)
     end
   end
+
+  def edit
+    @waybill = Waybill.not_disabled.find(params[:id])
+  end
+
+  def disable
+    @waybill = Waybill.not_disabled.find(params[:id])
+    if @waybill.disable(params[:waybill][:comment])
+      render :action => :index
+    else
+      render :action => :edit
+    end
+  end
 end

@@ -1,0 +1,25 @@
+<%= form_for @waybill, :url => {:action => "disable"}, :remote => true do |f| %>
+<%= f.error_messages %>
+<table id="waybill_add_list">
+  <tbody>
+    <tr align="right">
+      <td colspan="2">
+        * - <%=t 'reqFields'%>
+      </td>
+    </tr>
+    <tr align="left">
+      <td>
+        <%=t 'waybill.comment'%>*:
+      </td>
+      <td align="right">
+        <%= f.text_area :comment, :size => "60x12"  %>
+      </td>
+    </tr>
+    <tr align="right">
+      <td colspan="2" style="width: 45px">
+        <%= f.submit t('waybill.btn_save'), :id => "save_waybill" %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<% end %>

@@ -66,12 +66,15 @@ en:
       resource: Resource
       amount: Amount
       unit: Unit
-    number: Waybill
+    number: Waybill number
     date: Date
     organization: From
     vatin: Vatin
     entry: Entries
+    comment: Commentary
     btn_save: Save
+    btn_cancel: Cancel
+    btn_disable: Disable
     entryList:
       resource: Resource
       amount: Amount

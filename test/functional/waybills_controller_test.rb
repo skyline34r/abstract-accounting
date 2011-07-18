@@ -67,4 +67,31 @@ class WaybillsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get edit" do
+    wb = Waybill.new(:document_id => "123456",
+                     :created => DateTime.now, :owner => entities(:sergey),
+                     :from => entities(:abstract),
+                     :place => places(:orsha),
+                     :vatin => '500100732259')
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Can't save waybill with entries"
+    xml_http_request :get, :edit, :id => wb.to_param
+    assert_response :success
+  end
+
+  test "should destroy waybill" do
+    wb = Waybill.new(:document_id => "123456",
+                     :created => DateTime.now, :owner => entities(:sergey),
+                     :from => entities(:abstract),
+                     :place => places(:orsha),
+                     :vatin => '500100732259')
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Can't save waybill with entries"
+    assert_difference 'Waybill.disabled.count' do
+      xml_http_request :put, :disable, :id => wb.to_param,
+                       :waybill => { :comment => "dublicate waybill" }
+    end
+    assert_equal wb.id, Waybill.disabled.first.id, "Wrong disabled waybill"
+  end
+
 end

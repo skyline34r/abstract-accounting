@@ -106,7 +106,10 @@ ru:
     organization: От
     vatin: ИНН
     entry: Позиции
+    comment: Комментарий
     btn_save: Сохранить
+    btn_cancel: Отменить
+    btn_disable: Недействительный
     entryList:
       resource: Ресурс
       amount: Количество
