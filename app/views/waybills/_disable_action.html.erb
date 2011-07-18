@@ -2,6 +2,11 @@
 <%= f.error_messages %>
 <table id="waybill_add_list">
   <tbody>
+    <tr align="left">
+      <td colspan="2">
+        <%= t 'waybill.disable', :document_id => @waybill.document_id %>
+      </td>
+    </tr>
     <tr align="right">
       <td colspan="2">
         * - <%=t 'reqFields'%>
