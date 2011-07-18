@@ -219,13 +219,13 @@ class Waybill < ActiveRecord::Base
     elsif self.comment_changed?
       shipment = Storehouse.shipment
       deal = Deal.new :tag => "Waybill disabled shipment #" + self.id.to_s,
-          :rate => 1.0, :entity => self.owner(true), :give => shipment,
+          :rate => 1.0, :entity_id => self.owner_id, :give => shipment,
           :take => shipment, :isOffBalance => true
       return false unless deal.save
       idx = 0
       self.deal.rules.each do |rule|
         return false unless deal.rules.create(:tag => deal.tag + "; rule" + idx.to_s,
-          :from => rule.to, :to => rule.from, :fact_side => false,
+          :from_id => rule.to_id, :to_id => rule.from_id, :fact_side => false,
           :change_side => true, :rate => rule.rate)
         idx += 1
       end

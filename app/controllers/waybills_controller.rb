@@ -99,10 +99,12 @@ class WaybillsController < ApplicationController
   end
 
   def edit
+    authorize! :destroy, Waybill
     @waybill = Waybill.not_disabled.find(params[:id])
   end
 
   def disable
+    authorize! :destroy, Waybill
     @waybill = Waybill.not_disabled.find(params[:id])
     if @waybill.disable(params[:waybill][:comment])
       render :action => :index

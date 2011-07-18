@@ -54,6 +54,8 @@ en:
     return: Return
     resource_state: Resource state
   waybill:
+    roles:
+      disable: Disable waybill
     disable: "Waybill with document id: %{document_id} will be disabled"
     btn_add: New
     btn_release: Release
