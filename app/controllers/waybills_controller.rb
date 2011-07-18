@@ -40,7 +40,7 @@ class WaybillsController < ApplicationController
     @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
                 'place.tag', 'has_in_the_storehouse?']
 
-    @waybills = Waybill.find_by_owner_and_place(current_user.entity,
+    @waybills = Waybill.not_disabled.find_by_owner_and_place(current_user.entity,
                                                 current_user.place)
 
     if params[:_search]
