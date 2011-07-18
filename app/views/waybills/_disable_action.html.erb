@@ -25,8 +25,9 @@
     <tr align="right">
       <td colspan="2" style="width: 45px">
         <input type="button" id="waybill_cancel" value="<%=t 'waybill.btn_cancel'%>"
-             onclick="location.hash = '#waybills';" />
-        <%= f.submit t('waybill.btn_save'), :id => "save_waybill"%>
+             onclick="location.hash = '#waybills';$('#save_waybill').attr('disabled', 'disabled');" />
+        <%= f.submit t('waybill.btn_save'), :id => "save_waybill",
+                     :onclick => "$('#save_waybill').attr('disabled', 'disabled');"%>
       </td>
     </tr>
   </tbody>
