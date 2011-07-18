@@ -212,14 +212,14 @@ class Waybill < ActiveRecord::Base
       end
       self.deal_id = self.deal.id
       return false if !Fact.new(:amount => 1.0,
-              :day => self.created,
+              :day => DateTime.civil(self.created.year, self.created.month, self.created.day, 12, 0, 0),
               :from => nil,
               :to => self.deal,
               :resource => self.deal.give).save
     elsif self.comment_changed?
       shipment = Storehouse.shipment
       deal = Deal.new :tag => "Waybill disabled shipment #" + self.id.to_s,
-          :rate => 1.0, :entity => self.owner, :give => shipment,
+          :rate => 1.0, :entity => self.owner(true), :give => shipment,
           :take => shipment, :isOffBalance => true
       return false unless deal.save
       idx = 0
