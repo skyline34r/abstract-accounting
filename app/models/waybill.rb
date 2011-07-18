@@ -155,7 +155,7 @@ class Waybill < ActiveRecord::Base
   end
 
   def disable arg_comment
-    self.errors[:comment] << "Comment must be not null" if arg_comment.nil? or arg_comment.empty?
+    self.errors[:comment] << "mustn't be empty'" if arg_comment.nil? or arg_comment.empty?
     self.errors[:disable] << "Record already disabled" unless self.disable_deal.nil?
     return false unless self.errors.empty?
     self.comment = arg_comment

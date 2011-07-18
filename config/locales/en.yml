@@ -56,6 +56,9 @@ en:
   waybill:
     btn_add: New
     btn_release: Release
+    errors:
+      comment:
+        blank: must not be empty
     tree:
       document_id: Waybill
       date: Date
