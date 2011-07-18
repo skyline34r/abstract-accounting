@@ -103,10 +103,15 @@ class Waybill < ActiveRecord::Base
   belongs_to :deal
   belongs_to :disable_deal, :class_name => 'Deal'
 
+  scope :not_disabled, where("disable_deal_id IS NULL")
+  scope :disabled, where("disable_deal_id IS NOT NULL")
+
+  alias_method :original_from=, :from=
+  alias_method :original_from, :from
   def from=(entity)
     if !entity.nil?
       if entity.instance_of?(Entity)
-        self[:from] = entity
+        self.original_from = entity
         if entity.new_record?
           self.from_id = -1
         else
@@ -115,10 +120,10 @@ class Waybill < ActiveRecord::Base
       else
         a = entity.to_s
         if !Entity.find_by_tag_case_insensitive(a).nil?
-          self[:from] = Entity.find_by_tag_case_insensitive(a)
-          self.from_id = self[:from].id
+          self.original_from = Entity.find_by_tag_case_insensitive(a)
+          self.from_id = self.original_from.id
         else
-          self[:from] = Entity.new(:tag => a)
+          self.original_from = Entity.new(:tag => a)
           self.from_id = -1
         end
       end
@@ -126,10 +131,10 @@ class Waybill < ActiveRecord::Base
   end
 
   def from
-    if self[:from].nil? and !self.from_id.nil? and self.from_id > -1
-      self[:from] = Entity.find(self.from_id)
+    if self.original_from.nil? and !self.from_id.nil? and self.from_id > -1
+      self.original_from = Entity.find(self.from_id)
     end
-    self[:from]
+    self.original_from
   end
 
   def add_resource name, unit, amount
