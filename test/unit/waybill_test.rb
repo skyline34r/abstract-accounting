@@ -577,6 +577,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !deal.new_record?, "Deal is new"
     st = deal.state
     assert_equal 1000, st.amount, "Wrong deal amount"
+
+    assert !wb1.disable(nil), "Waybill is disabled"
+    assert !wb1.disable(''), "Waybill is disabled"
   end
 
   test "check not disabled waybills" do
