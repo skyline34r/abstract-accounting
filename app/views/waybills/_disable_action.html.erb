@@ -1,4 +1,6 @@
-<%= form_for @waybill, :url => {:action => "disable"}, :remote => true do |f| %>
+<%= form_for @waybill, :html => {:id => 'waybill_disable_form'},
+             :url => {:action => "disable"},
+             :remote => true do |f| %>
 <%= f.error_messages %>
 <table id="waybill_add_list">
   <tbody>
@@ -22,7 +24,9 @@
     </tr>
     <tr align="right">
       <td colspan="2" style="width: 45px">
-        <%= f.submit t('waybill.btn_save'), :id => "save_waybill" %>
+        <input type="button" id="waybill_cancel" value="<%=t 'waybill.btn_cancel'%>"
+             onclick="location.hash = '#waybills';" />
+        <%= f.submit t('waybill.btn_save'), :id => "save_waybill"%>
       </td>
     </tr>
   </tbody>
