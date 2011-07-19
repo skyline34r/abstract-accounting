@@ -1,6 +1,7 @@
 <script type="text/javascript">
   var lastSelId = "";
   var canSave = true;
+  var storeHouseDataIDs = null;
 
   $(function() {
     $("#storehouse_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
@@ -8,8 +9,52 @@
 
   function check_storehouse_waybill(id) {
    if(!$("#check_" + id).is(":checked")) {
-     $("#storehouse_return_list").setCell(id, 'release',' ');
+     $("#storehouse_return_list").delRowData(id);
+     if(storeHouseDataIDs.indexOf(id) >= 0) {
+       var pos = storeHouseDataIDs.indexOf(id);
+       while((pos!=0)&&(storeHouseData[storeHouseDataIDs[pos-1]]!=undefined)) {
+         pos -= 1;
+       }
+       var data = { check: "uncheck"
+                  , resource: storeHouseData[id.split("_")[0]].resource
+                  , place: storeHouseData[id.split("_")[0]].place
+                  , entity: storeHouseData[id.split("_")[0]].entity
+                  , amount: storeHouseData[id.split("_")[0]].amount
+                  , owner_id: storeHouseData[id.split("_")[0]].owner_id
+                  , release: " "
+                  , unit: storeHouseData[id.split("_")[0]].unit
+                  , resource_id: storeHouseData[id.split("_")[0]].resource_id };
+       if(pos == 0) {
+         var count = 0;
+         var lastCheckRow = null;
+         for (var i in storeHouseData) {
+           if(count == 0) lastCheckRow = i;
+           count ++;
+         }
+         if(count == 1) {
+           $("#storehouse_return_list").addRowData(id, data, "first");
+         } else {
+           $("#storehouse_return_list").addRowData(id, data, "after", lastCheckRow);
+         }
+       } else {
+         $("#storehouse_return_list").addRowData(id, data, "after", storeHouseDataIDs[pos-1]);
+       }
+     }
+     delete storeHouseData[id];
    } else {
+     var tRowData = $("#storehouse_return_list").getRowData(id);
+     $("#storehouse_return_list").delRowData(id);
+     $("#storehouse_return_list").addRowData(id,
+                                              { check: "check"
+                                              , resource: tRowData.resource
+                                              , place: tRowData.place
+                                              , entity: tRowData.entity
+                                              , amount: tRowData.amount
+                                              , owner_id: tRowData.owner_id
+                                              , release: tRowData.release
+                                              , unit: tRowData.unit
+                                              , resource_id: tRowData.resource_id }
+                                              , "first");
      $("#storehouse_return_list").setCell(id, 'release',
        $("#storehouse_return_list").getCell(id, 'amount'));
    }
@@ -25,7 +70,7 @@
     var entries = "";
     for (var i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&return_amount[]=" +
-                 storeHouseData[i][0] + "&from_id[]=" + storeHouseData[i][1];
+                 storeHouseData[i].release[0] + "&from_id[]=" + storeHouseData[i].release[1];
     }
     ajaxRequest("/storehouses/return/return_resources?date=" + d.toUTCString() + entries);
   }

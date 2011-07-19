@@ -23,8 +23,11 @@
     $("#resources_list").resetSelection();
     canSelectResource = false;
   }
-  function showResourceIndexForm()
+  function showResourceIndexForm(id)
   {
+    if(id != null) {
+      editRowId = id;
+    }
     if(crossPage.length) {
       canSelectResource = true;
       $("#resource_actions").html("<%= escape_javascript(render :partial => 'resources/form_index') %>");

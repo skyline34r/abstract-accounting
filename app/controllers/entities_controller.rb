@@ -35,9 +35,21 @@ class EntitiesController < ApplicationController
     @entities = (base_entities.nil? ? Entity.all : base_entities.all) if params[:filter].nil?
     @entities = (base_entities.nil? ? Entity.where('real_id is NULL') :
         base_entities.where('real_id is NULL')) if params[:filter] == "unassigned"
-    @entities = @entities.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+
+    if session[:entity_id].nil?
+      @entities = @entities.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @entities = @entities.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @entities.where(:id => session[:entity_id]).first.nil?
+      session[:entity_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entities, @columns, :id_column => 'id')
     end
@@ -94,6 +106,7 @@ class EntitiesController < ApplicationController
     if !@entity.save
       render :action => "new"
     end
+    session[:entity_id] = @entity.id
   end
 
   def update
@@ -101,6 +114,7 @@ class EntitiesController < ApplicationController
     if !@entity.update_attributes(params[:entity])
       render :action => "edit"
     end
+    session[:entity_id] = @entity.id
   end
   
 end

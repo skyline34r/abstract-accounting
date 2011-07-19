@@ -58,6 +58,13 @@ module ResourcesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "resources_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#resources_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

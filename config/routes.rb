@@ -76,6 +76,10 @@ Abstract::Application.routes.draw do
     end
   end
   resources :waybills do
+    member do
+      get 'edit'
+      put 'disable'
+    end
     collection do
       get 'view'
     end

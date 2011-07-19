@@ -22,12 +22,15 @@ class Ability
                   can :storehouse_read, [Storehouse, Waybill, StorehouseRelease]
                 else
                   can :manage, [Storehouse, Waybill, StorehouseRelease]
+                  cannot :destroy, Waybill
                 end
               when "Taskmaster"
                 alias_action :return, :return_list, :resource_state,
                              :to => :taskmaster
                 can :taskmaster, Storehouse
                 can :manage, StorehouseReturn
+              when "WaybillDisable"
+                can :destroy, Waybill
               else
                 can :manage, eval(p.chomp(','))
             end

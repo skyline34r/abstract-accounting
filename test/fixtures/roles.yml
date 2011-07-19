@@ -10,4 +10,4 @@ user:
 
 operator:
  name: "Operator"
- pages: "Entity,EntityReal,Asset,AssetReal,Money,Deal,Fact,Chart,Quote,Balance,GeneralLedger,Transcript,Storehouse,Place"
+ pages: "Entity,EntityReal,Asset,AssetReal,Money,Deal,Fact,Chart,Quote,Balance,GeneralLedger,Transcript,Storehouse,WaybillDisable,Place"

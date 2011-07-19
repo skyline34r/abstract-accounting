@@ -74,7 +74,7 @@ class Storehouse < Array
     @waybills = nil
 
     unless without_fill
-      wbs = Waybill.find_by_owner_and_place @entity, @place,
+      wbs = Waybill.not_disabled.find_by_owner_and_place @entity, @place,
             :include => { :deal => { :rules => :to }}
       releases = StorehouseRelease.find_all_by_owner_and_place_and_state @entity, @place,
             StorehouseRelease::INWORK, :include => {:deal => {:rules => :from}}
@@ -149,7 +149,7 @@ class Storehouse < Array
     waybills = Hash.new
     self.each do |sh_entry|
       amount = sh_entry.amount
-      Waybill.order("created DESC").find_by_owner_and_place(@entity, @place).each do |waybill|
+      Waybill.not_disabled.order("created DESC").find_by_owner_and_place(@entity, @place).each do |waybill|
         waybill.resources.each do |resource|
           if sh_entry.product.id == resource.product.id or
               (!sh_entry.product.resource.real.nil? and !resource.product.resource.real.nil? and

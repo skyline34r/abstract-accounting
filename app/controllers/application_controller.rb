@@ -53,4 +53,8 @@ class ApplicationController < ActionController::Base
     User.current = current_user.entity
   end
 
+  def user_for_paper_trail
+    current_user.nil? ? -1 : current_user.id
+  end
+
 end

@@ -40,7 +40,7 @@ class WaybillsController < ApplicationController
     @columns = ['document_id', 'created', 'from.real_tag', 'owner.real_tag', 'vatin',
                 'place.tag', 'has_in_the_storehouse?']
 
-    @waybills = Waybill.find_by_owner_and_place(current_user.entity,
+    @waybills = Waybill.not_disabled.find_by_owner_and_place(current_user.entity,
                                                 current_user.place)
 
     if params[:_search]
@@ -95,6 +95,21 @@ class WaybillsController < ApplicationController
       :order    => order_by_from_params(params))
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entries, @columns)
+    end
+  end
+
+  def edit
+    authorize! :destroy, Waybill
+    @waybill = Waybill.not_disabled.find(params[:id])
+  end
+
+  def disable
+    authorize! :destroy, Waybill
+    @waybill = Waybill.not_disabled.find(params[:id])
+    if @waybill.disable(params[:waybill][:comment])
+      render :action => :index
+    else
+      render :action => :edit
     end
   end
 end

@@ -83,6 +83,8 @@ class WaybillEntry
 end
 
 class Waybill < ActiveRecord::Base
+  has_paper_trail
+
   #validations
   validates :document_id, :presence => true
   validates :owner_id, :presence => true
@@ -99,11 +101,17 @@ class Waybill < ActiveRecord::Base
   belongs_to :place
   belongs_to :from, :class_name => 'Entity'
   belongs_to :deal
+  belongs_to :disable_deal, :class_name => 'Deal'
 
+  scope :not_disabled, where("disable_deal_id IS NULL")
+  scope :disabled, where("disable_deal_id IS NOT NULL")
+
+  alias_method :original_from=, :from=
+  alias_method :original_from, :from
   def from=(entity)
     if !entity.nil?
       if entity.instance_of?(Entity)
-        self[:from] = entity
+        self.original_from = entity
         if entity.new_record?
           self.from_id = -1
         else
@@ -112,10 +120,10 @@ class Waybill < ActiveRecord::Base
       else
         a = entity.to_s
         if !Entity.find_by_tag_case_insensitive(a).nil?
-          self[:from] = Entity.find_by_tag_case_insensitive(a)
-          self.from_id = self[:from].id
+          self.original_from = Entity.find_by_tag_case_insensitive(a)
+          self.from_id = self.original_from.id
         else
-          self[:from] = Entity.new(:tag => a)
+          self.original_from = Entity.new(:tag => a)
           self.from_id = -1
         end
       end
@@ -123,10 +131,10 @@ class Waybill < ActiveRecord::Base
   end
 
   def from
-    if self[:from].nil? and !self.from_id.nil? and self.from_id > -1
-      self[:from] = Entity.find(self.from_id)
+    if self.original_from.nil? and !self.from_id.nil? and self.from_id > -1
+      self.original_from = Entity.find(self.from_id)
     end
-    self[:from]
+    self.original_from
   end
 
   def add_resource name, unit, amount
@@ -144,6 +152,14 @@ class Waybill < ActiveRecord::Base
       end
     end
     @entries
+  end
+
+  def disable arg_comment
+    self.errors[:comment] << "mustn't be empty'" if arg_comment.nil? or arg_comment.empty?
+    self.errors[:disable] << "Record already disabled" unless self.disable_deal.nil?
+    return false unless self.errors.empty?
+    self.comment = arg_comment
+    self.save
   end
 
   after_initialize :waybill_initialize
@@ -196,10 +212,30 @@ class Waybill < ActiveRecord::Base
       end
       self.deal_id = self.deal.id
       return false if !Fact.new(:amount => 1.0,
-              :day => self.created,
+              :day => DateTime.civil(self.created.year, self.created.month, self.created.day, 12, 0, 0),
               :from => nil,
               :to => self.deal,
               :resource => self.deal.give).save
+    elsif self.comment_changed?
+      shipment = Storehouse.shipment
+      deal = Deal.new :tag => "Waybill disabled shipment #" + self.id.to_s,
+          :rate => 1.0, :entity_id => self.owner_id, :give => shipment,
+          :take => shipment, :isOffBalance => true
+      return false unless deal.save
+      idx = 0
+      self.deal.rules.each do |rule|
+        return false unless deal.rules.create(:tag => deal.tag + "; rule" + idx.to_s,
+          :from_id => rule.to_id, :to_id => rule.from_id, :fact_side => false,
+          :change_side => true, :rate => rule.rate)
+        idx += 1
+      end
+      dt_now = DateTime.now
+      self.disable_deal = deal
+      return false unless Fact.new(:amount => 1.0,
+              :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+              :from => nil,
+              :to => self.disable_deal,
+              :resource => self.disable_deal.give).save
     else
       return false
     end

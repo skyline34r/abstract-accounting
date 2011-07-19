@@ -111,7 +111,7 @@
       if($("#rule_off_off").attr("checked")) { change_side = false; fact_side = false; }
       if($("#rule_off_on").attr("checked")) { change_side = false; fact_side = true; }
       if(ruleCellId < 0) {
-        $('#rules_list').addRowData($('#rules_list').getDataIDs().length,
+        $('#rules_list').addRowData($('#rules_list').getGridParam("data").length,
                                       { tag: $("#rule_tag").val()
                                       , to_id: $("#rule_to_id").val()
                                       , to_tag: $("#rule_to_tag").val()
@@ -132,6 +132,17 @@
                                       , fact_side: fact_side });
       }
       cancelRule();
+      if(ruleCellId < 0) {
+        editRowId = $('#rules_list').getDataIDs()[$('#rules_list').getDataIDs().length-1];
+      } else {
+        editRowId = ruleCellId;
+      }
+      $("#rules_list").trigger('reloadGrid');
+      while(jQuery.inArray(editRowId, $("#rules_list").getDataIDs()) < 0) {
+        $("#rules_list").setGridParam({page: parseInt($("#rules_list").getGridParam("page"))+1});
+        $("#rules_list").trigger('reloadGrid');
+      }
+      editRowId = null;
     }
   }
   function changeRule()

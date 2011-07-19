@@ -27,6 +27,7 @@
     $("#hide_waybill_from").val(escape($("#waybill_organization").val()));
     $("#new_waybill").attr("action", "/waybills?" + entries);
     saveWaybillElements();
+    $("#save_waybill").attr("disabled", "disabled");
   }
 
   function saveEdittedRow() {

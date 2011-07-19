@@ -20,6 +20,7 @@ class PlacesController < ApplicationController
     if !@place.save
       render :action => "new"
     end
+    session[:place_id] = @place.id
   end
 
   def update
@@ -27,23 +28,35 @@ class PlacesController < ApplicationController
     if !@place.update_attributes(params[:place])
       render :action => "edit"
     end
+    session[:place_id] = @place.id
   end
 
   def view
     @columns = ['tag']
 
-    @places = Place.all
+    @place = Place.all
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
         args['tag'] = {:like => params[:tag]}
       end
-      @places = @places.where args
+      @place = @place.where args
     end
-    objects_order_by_from_params @places, params
-    @places = @places.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @place, params
+    if session[:place_id].nil?
+      @places = @place.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @places = @place.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @places.where(:id => session[:place_id]).first.nil?
+      session[:place_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@places, @columns, :id_column => 'id')
     end

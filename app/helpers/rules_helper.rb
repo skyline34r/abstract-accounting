@@ -74,6 +74,14 @@ module RulesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "rules_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          if(jQuery.inArray(editRowId, $("#rules_list").getDataIDs()) >= 0) {
+            $("#rules_list").setSelection(editRowId);
+          }
+        }
       }'.to_json_var
     }]
 

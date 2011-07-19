@@ -9,18 +9,29 @@ class RolesController < ApplicationController
   def view
     @columns = ['name', 'pages']
 
-    @roles = Role.all
+    @role = Role.all
     if params[:_search]
       args = Hash.new
       if !params[:name].nil?
         args['name'] = {:like => params[:name]}
       end
-      @roles = @roles.where args
+      @role = @role.where args
     end
-    objects_order_by_from_params @roles, params
-    @roles = @roles.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @role, params
+    if session[:role_id].nil?
+      @roles = @role.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @roles = @role.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @roles.where(:id => session[:role_id]).first.nil?
+      session[:role_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@roles, @columns, :id_column => 'id')
     end
@@ -41,6 +52,7 @@ class RolesController < ApplicationController
     if !@role.save
       render :action => "new"
     end
+    session[:role_id] = @role.id
   end
 
   def update
@@ -48,12 +60,14 @@ class RolesController < ApplicationController
     if !@role.update_attributes(params[:role])
       render :action => "edit"
     end
+    session[:role_id] = @role.id
   end
 
   def project_pages
-    [ "Place", "Entity", "EntityReal", "Asset", "AssetReal", "Money", "Deal", "Fact", "Chart", "Quote",
-      "Balance", "GeneralLedger", "Transcript", "Storehouse", "Taskmaster",
-      "StorehouseReturn"]
+    [ "Place", "Entity", "EntityReal", "Asset", "AssetReal", "Money",
+      "Deal", "Fact", "Chart", "Quote",
+      "Balance", "GeneralLedger", "Transcript", "Storehouse",
+      "WaybillDisable", "Taskmaster", "StorehouseReturn"]
   end
 
 end

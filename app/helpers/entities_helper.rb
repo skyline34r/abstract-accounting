@@ -39,6 +39,13 @@ module EntitiesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "entity_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#entity_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

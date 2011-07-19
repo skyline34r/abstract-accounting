@@ -9,6 +9,7 @@ ru:
       waybill:
         resources: Ресурсы
         created: Дата
+        comment: Комментарий
       storehouse_release:
         resources: Ресурсы
         created: Дата
@@ -46,6 +47,10 @@ ru:
             tag:
               taken: "уже существует"
               blank: "должно быть введено"
+        user:
+          attributes:
+            email:
+              blank: "должен быть введён"
   reqFields: обязательные поля
   loading: Загрузка...
   menu:
@@ -108,8 +113,14 @@ ru:
     return: Возврат
     resource_state: Состояние ресурсов
   waybill:
+    roles:
+      disable: Отмена накладных
+    disable: "Накладная с номером: %{document_id} будет отмечена как неиспользуемая"
     btn_add: Создать
     btn_release: Выдать
+    errors:
+      comment:
+        blank: не должен быть пустым
     tree:
       document_id: Номер накладной
       date: Дата
@@ -125,7 +136,10 @@ ru:
     organization: От
     vatin: ИНН
     entry: Позиции
+    comment: Комментарий
     btn_save: Сохранить
+    btn_cancel: Отменить
+    btn_disable: Недействительный
     entryList:
       resource: Ресурс
       amount: Количество

@@ -128,6 +128,8 @@ module WaybillsHelper
       {
         if((canManageWaybill == "true") &&
            ($("#waybills_tree").getCell(row_id, "in_storehouse") == "true")) {
+          $("#waybills_release").unbind("click");
+          $("#waybills_release_1").unbind("click");
           $("#waybills_release").click(function() {
             location.hash = "#storehouses/releases/new?filter=waybill&waybill=" + row_id;
           });
@@ -140,6 +142,16 @@ module WaybillsHelper
           $("#waybills_release").attr("disabled","disabled");
           $("#waybills_release_1").attr("disabled","disabled");
         }
+        $("#waybills_disable").unbind("click");
+        $("#waybills_disable_1").unbind("click");
+        $("#waybills_disable").click(function() {
+          location.hash = "#waybills/" + row_id + "/edit";
+        });
+        $("#waybills_disable_1").click(function() {
+          location.hash = "#waybills/" + row_id + "/edit";
+        });
+        $("#waybills_disable").removeAttr("disabled");
+        $("#waybills_disable_1").removeAttr("disabled");
       }'.to_json_var,
       :onPaging => 'function(param)
       {

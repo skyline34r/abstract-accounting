@@ -1,4 +1,6 @@
 class Quote < ActiveRecord::Base
+  has_paper_trail
+
   validates :money, :day, :rate, :diff, :presence => true
   validates_uniqueness_of :money_id, :scope => :day
   belongs_to :money

@@ -17,7 +17,7 @@ class DealsController < ApplicationController
     }
     @columns = ['tag', 'entity.real_tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name', 'isOffBalance']
-    @deals = Deal.all
+    @deal = Deal.all
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
@@ -26,16 +26,27 @@ class DealsController < ApplicationController
       if !params[:entity].nil?
         args['entity.real_tag'] = {:like => params[:entity]}
       end
-      @deals = @deals.where args
+      @deal = @deal.where args
     end
     case params[:sidx]
        when 'entity'
          params[:sidx] = 'entity.real_tag'
     end
-    objects_order_by_from_params @deals, params
-    @deals = @deals.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params @deal, params
+    if session[:deal_id].nil?
+      @deals = @deal.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @deals = @deal.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @deals.where(:id => session[:deal_id]).first.nil?
+      session[:deal_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@deals, @columns, :id_column => 'id')
     end
@@ -63,6 +74,7 @@ class DealsController < ApplicationController
         end
       end
     end
+    session[:deal_id] = @deal.id
   end
   
 end

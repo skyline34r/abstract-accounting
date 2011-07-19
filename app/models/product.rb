@@ -1,6 +1,8 @@
 require "resource"
 
 class Product < ActiveRecord::Base
+  has_paper_trail
+
   validates :unit, :presence => true
   validates :resource_id, :uniqueness => true, :presence => true
   belongs_to :resource, :class_name => 'Asset', :autosave => true

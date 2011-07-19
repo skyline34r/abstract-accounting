@@ -75,9 +75,10 @@ module StorehousesHelper
                     t('storehouse.releaseNewList.release'),
                     t('storehouse.releaseNewList.unit')],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14, :search => false,
+        { :name => 'check',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(storeHouseData[options.rowId] == undefined) {
+                           if(((storeHouseData[options.rowId] == undefined)&&(!rowObject.check)) ||
+                              (rowObject.check == "uncheck")) {
                              return "<input type=\'checkbox\' id=\'check_"
                                + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                                + options.rowId + "\"); \'>";
@@ -88,10 +89,16 @@ module StorehousesHelper
                          }'.to_json_var },
         { :name => 'resource',  :index => 'resource',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.resource != undefined) {
+                             return rowObject.resource;
+                           }
                            return rowObject[1];
                          }'.to_json_var },
         { :name => 'amount',  :index => 'amount',   :width => 200,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.amount != undefined) {
+                             return rowObject.amount;
+                           }
                            return rowObject[2];
                          }'.to_json_var },
         { :name => 'release', :index => 'release', :width => 200, :search => false,
@@ -102,7 +109,7 @@ module StorehousesHelper
                              if(storeHouseData[options.rowId] == undefined) {
                                return "";
                              }
-                             return storeHouseData[options.rowId];
+                             return storeHouseData[options.rowId].release;
                            }
                            if(isNaN(cellvalue) || (cellvalue == "") ||
                                (parseInt(cellvalue) <= "0")) {
@@ -110,11 +117,23 @@ module StorehousesHelper
                              delete storeHouseData[options.rowId];
                              return "";
                            }
-                           storeHouseData[options.rowId] = cellvalue;
+                           if(storeHouseData[options.rowId] == undefined) {
+                             storeHouseData[options.rowId] = new Object();
+                             storeHouseData[options.rowId].resource =
+                               $("#storehouse_release_list").getCell(options.rowId, "resource");
+                             storeHouseData[options.rowId].amount =
+                               $("#storehouse_release_list").getCell(options.rowId, "amount");
+                             storeHouseData[options.rowId].unit =
+                               $("#storehouse_release_list").getCell(options.rowId, "unit");
+                           }
+                           storeHouseData[options.rowId].release = cellvalue;
                            return cellvalue;
                          }'.to_json_var },
         { :name => 'unit',  :index => 'unit',   :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.unit != undefined) {
+                             return rowObject.unit;
+                           }
                            return rowObject[3];
                          }'.to_json_var },
 
@@ -155,6 +174,22 @@ module StorehousesHelper
       {
         fixPager(param, "storehouse_release_list");
         $("#storehouse_release_list").saveRow(lastSelId);
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        storeHouseDataIDs = $("#storehouse_release_list").getDataIDs();
+        for (var i in storeHouseData) {
+          if(jQuery.inArray(i, $("#storehouse_release_list").getDataIDs()) >= 0) {
+            $("#storehouse_release_list").delRowData(i);
+          }
+          $("#storehouse_release_list").addRowData(i,
+                                                   { check: "check"
+                                                   , resource: storeHouseData[i].resource
+                                                   , amount: storeHouseData[i].amount
+                                                   , release: storeHouseData[i].release
+                                                   , unit: storeHouseData[i].unit }
+                                                   , "first");
+        }
       }'.to_json_var
     }]
 
@@ -331,39 +366,58 @@ module StorehousesHelper
                     t('waybill.tree.organization'), t('waybill.tree.owner'),
                     t('waybill.tree.vatin'), t('waybill.tree.place')],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14, :search => false,
+        { :name => 'check',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if(storeHouseData[options.rowId] != null) {
+                           if(((storeHouseData[options.rowId] == undefined)&&(!rowObject.check)) ||
+                              (rowObject.check == "uncheck")) {
                              return "<input type=\'checkbox\' id=\'check_waybill_"
                                + options.rowId + "\' onClick=\'check_waybill(\""
-                               + options.rowId + "\"); \' checked>";
+                               + options.rowId + "\"); \'>";
                            }
                            return "<input type=\'checkbox\' id=\'check_waybill_"
                              + options.rowId + "\' onClick=\'check_waybill(\""
-                             + options.rowId + "\"); \'>";
+                             + options.rowId + "\"); \' checked>";
                          }'.to_json_var },
         { :name => 'document_id', :index => 'document_id', :width => 110,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.document_id != undefined) {
+                             return rowObject.document_id;
+                           }
                            return rowObject[0];
                          }'.to_json_var },
         { :name => 'created', :index => 'created', :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.created != undefined) {
+                             return rowObject.created;
+                           }
                            return rowObject[1].substr(0,10);
                          }'.to_json_var },
         { :name => 'from', :index => 'from', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.from != undefined) {
+                             return rowObject.from;
+                           }
                            return rowObject[2];
                          }'.to_json_var },
         { :name => 'owner', :index => 'owner', :width => 180,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.owner != undefined) {
+                             return rowObject.owner;
+                           }
                            return rowObject[3];
                          }'.to_json_var },
         { :name => 'place', :index => 'place', :width => 146,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.place != undefined) {
+                             return rowObject.place;
+                           }
                            return rowObject[4];
                          }'.to_json_var },
         { :name => 'vatin', :index => 'vatin', :width => 90,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.vatin != undefined) {
+                             return rowObject.vatin;
+                           }
                            return rowObject[5];
                          }'.to_json_var }
       ],
@@ -385,83 +439,125 @@ module StorehousesHelper
       }'.to_json_var,
       :loadComplete => 'function()
       {
+        storeHouseDataIDs = $("#release_waybills_tree").getDataIDs();
         if(listAction != "") {
           var _id = listAction;
           listAction = "check_waybill";
           $("#check_waybill_" + _id).attr("checked", "checked");
           $("#release_waybills_tree").expandSubGridRow(_id);
+        } else {
+          for (var i in storeHouseData) {
+            if(jQuery.inArray(i, $("#release_waybills_tree").getDataIDs()) >= 0) {
+              $("#release_waybills_tree").delRowData(i);
+            }
+            $("#release_waybills_tree").addRowData(i, { check: "check"
+                                                      , document_id: storeHouseData[i].document_id
+                                                      , created: storeHouseData[i].created
+                                                      , from: storeHouseData[i].from
+                                                      , owner: storeHouseData[i].owner
+                                                      , place: storeHouseData[i].place
+                                                      , vatin: storeHouseData[i].vatin }
+                                                      , "first");
+          }
         }
       }'.to_json_var,
       :subGrid => true,
       :subGridRowExpanded => 'function(subgrid_id, row_id)
       {
-        var subgrid_table_id;
-        subgrid_table_id = subgrid_id + "_t";
-
-        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id +
-          "\" onmouseup=\"canSave = false;\"></table>");
+        var subgrid_table_id = subgrid_id + "_t";
+        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id + "\" onmouseup=\"canSave = false;\"></table>");
+        var url, datatype, mtype, modelResource, modelAmount, modelUnit;
+        if(localExpand) {
+          url = null;
+          datatype = "local";
+          mtype = null;
+          modelResource = { name: "resource", index: "resource", width: 300, sortable: false };
+          modelAmount = { name: "amount", index: "amount", width: 93, sortable: false, resizable: false };
+          modelUnit = { name: "unit", index: "unit", width: 93, sortable: false, resizable: false };
+          localExpand = false;
+        } else {
+          url = "/storehouses/" + row_id + "/waybill_entries_list";
+          datatype = "json";
+          mtype = "GET";
+          modelResource = { name: "resource", index: "resource", width: 300, sortable: false,
+                            resizable: false, formatter: function (cellvalue, options, rowObject) {
+                              return rowObject[0];
+                            }};
+          modelAmount = { name: "amount", index: "amount", width: 93, sortable: false,
+                          resizable: false, formatter: function (cellvalue, options, rowObject) {
+                            return rowObject[1];
+                          }};
+          modelUnit = { name: "unit", index: "unit", width: 93, sortable: false,
+                        resizable: false, formatter: function (cellvalue, options, rowObject) {
+                          return rowObject[2];
+                        }};
+        }
         $("#"+subgrid_table_id).jqGrid({
-          url: "/storehouses/" + row_id + "/waybill_entries_list",
-          datatype: "json",
-          mtype: "GET",
+          url: url,
+          datatype: datatype,
+          mtype: mtype,
           colNames: ["", getReleaseEntryColumn("resource"), getReleaseEntryColumn("amount"),
                      getReleaseEntryColumn("release"), getReleaseEntryColumn("unit")],
-          colModel: [
-              { name: "", index: "", width: 14, sortable: false, resizable: false,
-                formatter: function (cellvalue, options, rowObject) {
-                  if((listAction == "check_waybill") || ((storeHouseData[row_id] != null) &&
-                     (storeHouseData[row_id][options.rowId] != null))) {
-                    return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
-                               + options.rowId + "\' onClick=\'check_release_waybill(\""
-                               + row_id + "\", \"" + options.rowId + "\"); \' checked>";
-                  }
-                  return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
-                             + options.rowId + "\' onClick=\'check_release_waybill(\""
-                               + row_id + "\", \"" + options.rowId + "\"); \'>";
-                }},
-              { name: "resource", index: "resource", width: 300, sortable: false,
-                resizable: false, formatter: function (cellvalue, options, rowObject) {
-                  return rowObject[0];
-                }},
-              { name: "amount", index: "amount", width: 93, sortable: false,
-                resizable: false, formatter: function (cellvalue, options, rowObject) {
-                  return rowObject[1];
-                }},
-              { name: "release", index: "release", width: 93, sortable: false, editable: true,
-                resizable: false, formatter: function (cellvalue, options, rowObject) {
-                  if(cellvalue == " ") cellvalue = "";
-                  if(listAction == "check_waybill") {
-                    cellvalue = rowObject[1];
-                  }
-                  if(isNaN(cellvalue)) {
-                    if((storeHouseData[row_id] == null) ||
-                       (storeHouseData[row_id][options.rowId] == null)) {
-                      return "";
-                    }
-                    return storeHouseData[row_id][options.rowId];
-                  }
-                  if((cellvalue == "") || (parseInt(cellvalue) <= "0")) {
-                    $("#check_entry_" + row_id + "_" + options.rowId).removeAttr("checked");
-                    uncheckParentWaybill(row_id);
-                    if(storeHouseData[row_id] != null) {
-                      delete storeHouseData[row_id][options.rowId];
-                      if(storeHouseData[row_id].toSource().length == 4) {
-                        delete storeHouseData[row_id];
-                      }
-                    }
-                    return "";
-                  }
-                  if(storeHouseData[row_id] == null) {
-                    storeHouseData[row_id] = new Object();
-                  }
-                  storeHouseData[row_id][options.rowId] = cellvalue;
-                  return cellvalue;
-                }},
-              { name: "resource", index: "unit", width: 93, sortable: false,
-                resizable: false, formatter: function (cellvalue, options, rowObject) {
-                  return rowObject[2];
-                }}
-              ],
+          colModel: [{ name: "check", index: "check", width: 14, sortable: false, resizable: false,
+                        formatter: function (cellvalue, options, rowObject) {// alert(storeHouseData.toSource());
+                          if((listAction == "check_waybill") || ((storeHouseData[row_id] != null) &&
+                             (storeHouseData[row_id].data != null) &&
+                             (storeHouseData[row_id].data[options.rowId] != null))) {
+                            return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                                       + options.rowId + "\' onClick=\'check_release_waybill(\""
+                                       + row_id + "\", \"" + options.rowId + "\"); \' checked>";
+                          }
+                          return "<input type=\'checkbox\' id=\'check_entry_" + row_id + "_"
+                                     + options.rowId + "\' onClick=\'check_release_waybill(\""
+                                       + row_id + "\", \"" + options.rowId + "\"); \'>";
+                        }},
+                     modelResource,
+                     modelAmount,
+                     { name: "release", index: "release", width: 93, sortable: false, editable: true,
+                       resizable: false, formatter: function (cellvalue, options, rowObject) {
+                         if(listAction == "check_waybill") {
+                           cellvalue = rowObject[1];
+                         }
+                         if(isNaN(cellvalue)) {
+                           if((storeHouseData[row_id] == null) || (storeHouseData[row_id].data == null) ||
+                              (storeHouseData[row_id].data[options.rowId] == null)) {
+                             return "";
+                           }
+                           return storeHouseData[row_id].data[options.rowId];
+                         }
+                         if((cellvalue == "") || (parseInt(cellvalue) <= "0") || (cellvalue == " ")) {
+                           if(cellvalue == " ") cellvalue = "";
+                           $("#check_entry_" + row_id + "_" + options.rowId).removeAttr("checked");
+                           uncheckParentWaybill(row_id);
+                           if((storeHouseData[row_id] != null) && (storeHouseData[row_id].data != null)){
+                             delete storeHouseData[row_id].data[options.rowId];
+                             if(storeHouseData[row_id].data.toSource().length == 4) {
+                               delete storeHouseData[row_id];
+                             }
+                           }
+                           return "";
+                         }
+                         if(storeHouseData[row_id] == null) {
+                           storeHouseData[row_id] = new Object();
+                           storeHouseData[row_id].data = new Object();
+                           storeHouseData[row_id].document_id =
+                             $("#release_waybills_tree").getCell(row_id, "document_id");
+                           storeHouseData[row_id].created =
+                             $("#release_waybills_tree").getCell(row_id, "created");
+                           storeHouseData[row_id].from =
+                             $("#release_waybills_tree").getCell(row_id, "from");
+                           storeHouseData[row_id].owner =
+                             $("#release_waybills_tree").getCell(row_id, "owner");
+                           storeHouseData[row_id].place =
+                             $("#release_waybills_tree").getCell(row_id, "place");
+                           storeHouseData[row_id].vatin =
+                             $("#release_waybills_tree").getCell(row_id, "vatin");
+                         }
+                         storeHouseData[row_id].data[options.rowId] = cellvalue;
+                         return cellvalue;
+                     }},
+                     modelAmount
+                    ],
           height: "100%",
           editurl: "clientArray",
           cellsubmit: "clientArray",
@@ -592,10 +688,11 @@ module StorehousesHelper
                     t('storehouse.releaseNewList.unit'),
                     'resource_id'],
       :colModel => [
-        { :name => '',  :index => 'check', :width => 14, :search => false,
+        { :name => 'check',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           if((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
-                              (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
+                           if((((storeHouseData[options.rowId.split("_")[0]] == undefined) ||
+                                (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) &&
+                               (!rowObject.check)) || (rowObject.check == "uncheck")) {
                              return "<input type=\'checkbox\' id=\'check_"
                                + options.rowId + "\' onClick=\'check_storehouse_waybill(\""
                                + options.rowId + "\"); \'>";
@@ -606,18 +703,30 @@ module StorehousesHelper
                          }'.to_json_var },
         { :name => 'resource',  :index => 'resource',   :width => 330,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.resource != undefined) {
+                             return rowObject.resource;
+                           }
                            return rowObject[1];
                          }'.to_json_var },
         { :name => 'place',  :index => 'place',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.place != undefined) {
+                             return rowObject.place;
+                           }
                            return rowObject[0];
                          }'.to_json_var },
         { :name => 'entity',  :index => 'entity',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.entity != undefined) {
+                             return rowObject.entity;
+                           }
                            return rowObject[4];
                          }'.to_json_var },
         { :name => 'amount',  :index => 'amount',   :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.amount != undefined) {
+                             return rowObject.amount;
+                           }
                            return rowObject[2];
                          }'.to_json_var },
         { :name => 'owner_id', :index => 'owner_id', :width => 50, :hidden => true},
@@ -630,7 +739,7 @@ module StorehousesHelper
                                 (storeHouseData[options.rowId.split("_")[0]][1] != rowObject[5])) {
                                return "";
                              }
-                             return storeHouseData[options.rowId.split("_")[0]][0];
+                             return storeHouseData[options.rowId.split("_")[0]].release[0];
                            }
                            if(isNaN(cellvalue) || (cellvalue == "") ||
                                (parseInt(cellvalue) <= "0")) {
@@ -638,20 +747,42 @@ module StorehousesHelper
                              delete storeHouseData[options.rowId.split("_")[0]];
                              return "";
                            }
-                           storeHouseData[options.rowId.split("_")[0]] =
-                             [cellvalue, $("#storehouse_return_list").getCell(options.rowId, "owner_id")];
+                           if(storeHouseData[options.rowId.split("_")[0]] == undefined) {
+                             storeHouseData[options.rowId.split("_")[0]] = new Object();
+                             storeHouseData[options.rowId.split("_")[0]].resource =
+                               $("#storehouse_return_list").getCell(options.rowId, "resource");
+                             storeHouseData[options.rowId.split("_")[0]].place =
+                               $("#storehouse_return_list").getCell(options.rowId, "place");
+                             storeHouseData[options.rowId.split("_")[0]].entity =
+                               $("#storehouse_return_list").getCell(options.rowId, "entity");
+                             storeHouseData[options.rowId.split("_")[0]].amount =
+                               $("#storehouse_return_list").getCell(options.rowId, "amount");
+                             storeHouseData[options.rowId.split("_")[0]].owner_id =
+                               $("#storehouse_return_list").getCell(options.rowId, "owner_id");
+                             storeHouseData[options.rowId.split("_")[0]].unit =
+                               $("#storehouse_return_list").getCell(options.rowId, "unit");
+                             storeHouseData[options.rowId.split("_")[0]].resource_id =
+                               $("#storehouse_return_list").getCell(options.rowId, "resource_id");
+                           }
+                           if($("#storehouse_return_list").getCell(options.rowId, "owner_id")) {
+                             storeHouseData[options.rowId.split("_")[0]].release =
+                               [cellvalue, $("#storehouse_return_list").getCell(options.rowId, "owner_id")];
+                           }
                            return cellvalue;
                          }'.to_json_var },
         { :name => 'unit',  :index => 'unit',   :width => 55,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if(rowObject.unit != undefined) {
+                             return rowObject.unit;
+                           }
                            return rowObject[3];
                          }'.to_json_var },
         { :name => 'resource_id', :index => 'resource_id', :width => 5, :hidden => true }
       ],
       :pager => '#storehouse_return_pager',
-      :rowNum => 10,
-      :rowList => [10, 20, 30],
-      :sortname => 'product.resource.tag',
+      :rowNum => 4,
+      :rowList => [4, 20, 30],
+      :sortname => 'resource',
       :sortorder => 'asc',
       :height => "100%",
       :viewrecords => true,
@@ -681,6 +812,26 @@ module StorehousesHelper
       {
         fixPager(param, "storehouse_return_list");
         $("#storehouse_return_list").saveRow(lastSelId);
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        storeHouseDataIDs = $("#storehouse_return_list").getDataIDs();
+        for (var i in storeHouseData) {
+          for (var j=0; j<storeHouseDataIDs.length; j++) {
+            if(i == storeHouseDataIDs[j].split("_")[0]) $("#storehouse_return_list").delRowData(storeHouseDataIDs[j]);
+          }
+          $("#storehouse_return_list").addRowData(i.toString() + "_" + storeHouseData[i].release[1]
+                                                 , { check: "check"
+                                                   , resource: storeHouseData[i].resource
+                                                   , place: storeHouseData[i].place
+                                                   , entity: storeHouseData[i].entity
+                                                   , amount: storeHouseData[i].amount
+                                                   , owner_id: storeHouseData[i].owner_id
+                                                   , release: storeHouseData[i].release[0]
+                                                   , unit: storeHouseData[i].unit
+                                                   , resource_id: storeHouseData[i].resource_id }
+                                                   , "first");
+        }
       }'.to_json_var
     }]
 

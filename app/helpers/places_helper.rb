@@ -38,6 +38,13 @@ module PlacesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "place_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#place_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

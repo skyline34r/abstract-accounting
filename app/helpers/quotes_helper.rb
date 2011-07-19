@@ -43,6 +43,13 @@ module QuotesHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "quotes_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#quotes_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
     
