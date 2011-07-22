@@ -6,6 +6,26 @@ class StorehouseReturnEntry < WaybillEntry
     return 0 if storage_deal.nil? or storage_deal.state(date).nil?
     storage_deal.state(date).amount
   end
+  def warehouse_state(entity, place, date)
+    storage_deal = self.storehouse_deal entity
+    return 0 if storage_deal.nil?
+    date = date + 1
+    rules = Rule.where("rules.to_id = ?", storage_deal.id).
+              joins("INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id").
+              where("storehouse_releases.created <= ? AND storehouse_releases.state = ?", date, StorehouseRelease::APPLIED)
+    unless place.nil?
+      rules.where("storehouse_releases.place_id = ?", place.id)
+    end
+    st = rules.sum("rules.rate")
+    rules = Rule.where("rules.from_id = ?", storage_deal.id).
+              joins("INNER JOIN storehouse_returns ON storehouse_returns.deal_id = rules.deal_id").
+              where("storehouse_returns.created_at <= ?", date)
+    unless place.nil?
+      rules.where("storehouse_returns.place_id = ?", place.id)
+    end
+    st -= rules.sum("rules.rate")
+    st
+  end
 end
 
 class StorehouseReturnValidator < ActiveModel::Validator
@@ -15,7 +35,7 @@ class StorehouseReturnValidator < ActiveModel::Validator
       d = item.storehouse_deal record.from
       record.errors[:resources] = "invalid resource" if d.nil?
       record.errors[:resources] = "invalid amount" if !d.nil? and
-          (item.amount > item.state(record.from, record.created_at) or
+          (item.amount > item.warehouse_state(record.from, record.place, record.created_at) or
               item.amount <= 0)
     end
   end
@@ -74,8 +94,9 @@ class StorehouseReturn < ActiveRecord::Base
           :change_side => true, :rate => item.amount).nil?
       end
       self.deal_id = self.deal.id
+      dt_now = DateTime.now
       return false if !Fact.new(:amount => 1.0,
-              :day => self.created_at,
+              :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
               :from => nil,
               :to => self.deal,
               :resource => self.deal.give).save

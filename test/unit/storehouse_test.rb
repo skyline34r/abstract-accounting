@@ -69,7 +69,9 @@ class StorehouseTest < ActiveSupport::TestCase
              :take => money(:rub), :rate => 15.0)
     assert dTo.save, "Deal is not created"
 
-    assert Fact.new(:amount => 600, :day => DateTime.civil(2011, 5, 5, 12, 0, 0),
+    dt_now = DateTime.now
+    assert Fact.new(:amount => 600,
+        :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
         :resource => Asset.find_by_tag("underlayer"),
         :from => Deal.find_all_by_entity_id_and_give_id_and_take_id(entities(:sergey),
           Asset.find_by_tag("underlayer"), Asset.find_by_tag("underlayer")).first,

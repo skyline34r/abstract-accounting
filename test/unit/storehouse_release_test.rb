@@ -2,12 +2,14 @@ require 'test_helper'
 
 class StorehouseReleaseTest < ActiveSupport::TestCase
   def setup
-    assert Entity.new(:tag => "Storekeeper").save, "Entity not saved"
-    assert Place.new(:tag => "Some test place").save, "Entity not saved"
+    @storekeeper = Entity.new(:tag => "Storekeeper")
+    assert @storekeeper.save, "Entity not saved"
+    @warehouse = Place.new(:tag => "Some test place")
+    assert @warehouse.save, "Entity not saved"
     
     wb = Waybill.new(:owner => entities(:sergey),
       :document_id => "12834",
-      :place => Place.find_by_tag("Some test place"),
+      :place => @warehouse,
       :from => "Test Organization Store",
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
     wb.add_resource assets(:sonyvaio).tag, "th", 10
@@ -633,5 +635,73 @@ class StorehouseReleaseTest < ActiveSupport::TestCase
       :to => "Test entity to")
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 105
     assert sr.invalid?, "StorehouseRelease is valid"
+  end
+
+  test "check warehouse state" do
+    ste = StorehouseReleaseEntry.new(Product.find_by_resource_id(assets(:sonyvaio)), 3)
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 4, 12, 0, 0)
+    assert_equal 10, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 3, 12, 0, 0)
+    assert_equal 0, amount, "Wrong warehouse amount"
+
+    wb = Waybill.new(:owner => entities(:sergey),
+      :document_id => "12834",
+      :place => @warehouse,
+      :from => "Test Organization Store",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Waybill is not saved"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 4, 12, 0, 0)
+    assert_equal 10, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+
+    warehouse2 = Place.new :tag => 'Warehouse2'
+    assert warehouse2.save, "Place not saved"
+    wb = Waybill.new(:owner => @storekeeper,
+      :document_id => "128345",
+      :place => warehouse2,
+      :from => "Test Organization Store",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 10
+    assert wb.save, "Waybill is not saved"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state @storekeeper, warehouse2, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 10, amount, "Wrong warehouse state"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => @warehouse,
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 3
+    assert sr.save, "Storehouse release is not saved"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 6, 12, 0, 0)
+    assert_equal 17, amount, "Wrong warehouse state"
+
+    assert sr.apply, "Storehouse release is not applied"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 6, 12, 0, 0)
+    assert_equal 17, amount, "Wrong warehouse state"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => @warehouse,
+      :to => "Test entity to")
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 3
+    assert sr.save, "Storehouse release is not saved"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 6, 12, 0, 0)
+    assert_equal 14, amount, "Wrong warehouse state"
+
+    assert sr.cancel, "Storehouse release is not canceled"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 20, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state entities(:sergey), @warehouse, DateTime.civil(2011, 4, 6, 12, 0, 0)
+    assert_equal 17, amount, "Wrong warehouse state"
   end
 end

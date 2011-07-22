@@ -16,6 +16,27 @@ class StorehouseReleaseEntry < WaybillEntry
     end
     start_state
   end
+
+  def warehouse_state entity, place, date
+    storage_deal = self.storehouse_deal entity
+    return 0 if storage_deal.nil?
+    date = date + 1
+    rules = Rule.where("rules.to_id = ?", storage_deal.id).
+            joins("INNER JOIN waybills ON waybills.deal_id = rules.deal_id").
+            where("waybills.created <= ?", date)
+    unless place.nil?
+      rules.where("waybills.place_id = ?", place.id)
+    end
+    state = rules.sum("rules.rate")
+    rules = Rule.where("rules.from_id = ?", storage_deal.id).
+            joins("INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id").
+            where("storehouse_releases.created <= ? AND storehouse_releases.state != ?", date, StorehouseRelease::CANCELED)
+    unless place.nil?
+      rules.where("storehouse_releases.place_id = ?", place.id)
+    end
+    state -= rules.sum("rules.rate")
+    state
+  end
 end
 
 class StorehouseReleaseValidator < ActiveModel::Validator
@@ -26,7 +47,7 @@ class StorehouseReleaseValidator < ActiveModel::Validator
         d = item.storehouse_deal record.owner
         record.errors[:resources] = "invalid resource" if d.nil?
         record.errors[:resources] = "invalid amount" if !d.nil? and
-            (item.amount > item.state(record.owner, record.place, record.created) or
+            (item.amount > item.warehouse_state(record.owner, record.place, record.created) or
                 item.amount <= 0)
       end
     else
@@ -63,7 +84,6 @@ class StorehouseRelease < ActiveRecord::Base
   def to=(entity)
     if !entity.nil?
       if entity.instance_of?(Entity)
-        #self[:to] = entity
         self.original_to = entity
         if entity.new_record?
           self.to_id = -1
@@ -73,11 +93,9 @@ class StorehouseRelease < ActiveRecord::Base
       else
         a = entity.to_s
         if !Entity.find_by_tag_case_insensitive(a).nil?
-          #self[:to] = Entity.find_by_tag_case_insensitive(a)
           self.original_to = Entity.find_by_tag_case_insensitive(a)
           self.to_id = self.original_to#self[:to].id
         else
-          #self[:to] = Entity.new(:tag => a)
           self.original_to = Entity.new(:tag => a)
           self.to_id = -1
         end
@@ -86,10 +104,6 @@ class StorehouseRelease < ActiveRecord::Base
   end
 
   def to
-    #if self[:to].nil? and !self.to_id.nil? and self.to_id > -1
-    #  self[:to] = Entity.find(self.to_id)
-    #end
-    #self[:to]
     if self.original_to.nil? and !self.to_id.nil? and self.to_id > -1
       self.original_to = Entity.find(self.to_id)
     end
@@ -119,8 +133,9 @@ class StorehouseRelease < ActiveRecord::Base
 
   def apply
     if self.state == INWORK and !self.deal.nil?
+      dt_now = DateTime.now
       return false unless Fact.new(:amount => 1.0,
-            :day => self.created,
+            :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
             :from => nil,
             #if using self.deal - instance_of?("Deal") return false
             :to => Deal.find(self.deal.id),
