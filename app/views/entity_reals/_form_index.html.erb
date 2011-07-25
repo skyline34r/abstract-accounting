@@ -1,0 +1,7 @@
+<td>
+  <%= button_to t('entity.btn_new'), new_entity_real_path, :method => :get, :remote => true %>
+</td>
+<td style="width: 45px">
+  <%= button_to t('entity.btn_change'), edit_entity_real_path(0), :id => "change_entity_real",
+      :method => :get, :remote => true, :disabled => true %>
+</td>

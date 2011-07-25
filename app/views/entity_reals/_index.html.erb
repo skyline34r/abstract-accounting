@@ -1,0 +1,180 @@
+<script type="text/javascript">
+  var canSelectEntityReal = true;
+  var actionMode = "";
+  if (crossPage == "entity_reals") {
+    crossPage = "";
+  } else {
+    clearPageSession("entity_reals");
+    setPageSessionData("entity_reals", "base_tag", "");
+    setPageSessionData("entity_reals", "tag", "");
+    $("#entity_real_choose").click(function() { entityRealChooseSurrogates(-1); });
+  }
+  function showEntityRealIndexForm()
+  {
+    location.hash = "#entity_reals";
+    clearPageSession("entity_reals");
+    setPageSessionData("entity_reals", "base_tag", "");
+    setPageSessionData("entity_reals", "tag", "");
+    actionMode = "";
+  }
+  function sendTagEntityReal()
+  {
+    $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
+    if (hasPageSessionData("entity_reals", "surrogates")) {
+      var params = "";
+      var surrogates = getPageSessionData("entity_reals", "surrogates");
+      if (Object.keys(surrogates).length > 0) {
+        for (key in surrogates) {
+          params += "&entities[]=" + key;
+        }
+      } else {
+        params += "&entities[]=empty";
+      }
+      if (params.length > 0) {
+        $("#entity_real_form").attr("action",
+          $("#entity_real_form").attr("action") + "?" + params);
+      }
+    }
+  }
+  function onCancelEntityReal()
+  {
+    showEntityRealIndexForm();
+  }
+  function onResetEntityReal()
+  {
+    if (hasPageSessionData("entity_reals", "base_surrogates")) {
+      if (hasPageSessionData("entity_reals", "history_surrogates")) {
+        deletePageSessionData("entity_reals", "history_surrogates");
+      }
+      setPageSessionData("entity_reals", "surrogates",
+        jQuery.extend(true, {},
+          getPageSessionData("entity_reals", "base_surrogates")));
+    }
+    $("#entity_real_tag").val(getPageSessionData("entity_reals", "base_tag"));
+    $("#save_entity_real").attr("disabled","disabled");
+  }
+  function showEntityRealActionForm(tag, action)
+  {
+    if (getPageSessionData("entity_reals", "tag").length > 0) {
+      tag = getPageSessionData("entity_reals", "tag");
+    } else {
+      setPageSessionData("entity_reals", "base_tag", tag);
+      setPageSessionData("entity_reals", "tag", tag);
+    }
+    $("#entity_real_tag").val(tag);
+    $("#entity_real_tag").removeAttr("disabled");
+    $("#entity_real_choose").removeAttr("disabled");
+    $("#entity_real_list").resetSelection();
+    canSelectEntityReal = false;
+    actionMode = action;
+  }
+  function doCrossPage(aPageName, aDiscard, aSubmit, aPageUrl) {
+    crossPage = aPageName;
+    $("#home_btn_discard").css("visibility", "visible");
+    $("#home_btn_submit").css("visibility", "visible");
+    $("#home_btn_discard").unbind("click");
+    $("#home_btn_discard").click(aDiscard);
+    $("#home_btn_submit").unbind("click");
+    $("#home_btn_submit").click(aSubmit);
+    location.href = aPageUrl;
+  }
+  function crossPageClickFn(aBackUrl, aFN) {
+    return function() {
+      $("#home_btn_discard").css("visibility", "hidden");
+      $("#home_btn_submit").css("visibility", "hidden");
+      $("#body").html("");
+      aFN();
+      location.href = aBackUrl;
+    };
+  }
+  function compareHashKeys(o1, o2) {
+    for(var p in o1){
+      if(!o2.hasOwnProperty(p)){
+        return false;
+      }
+    }
+    for(var p in o2){
+      if(!o1.hasOwnProperty(p)){
+        return false;
+      }
+    }
+    return true;
+  }
+  function entityRealChooseSurrogates(id)
+  {
+    var discardFn = function() {
+      if (hasPageSessionData("entity_reals", "history_surrogates")) {
+        setPageSessionData("entity_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "history_surrogates")));
+      } else {
+        setPageSessionData("entity_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "base_surrogates")));
+      }
+    };
+    var submitFn = function() {
+      setPageSessionData("entity_reals", "history_surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("entity_reals", "surrogates")));
+    };
+    if (actionMode == "new") {
+      setPageSessionData("entity_reals", "tag", $("#entity_real_tag").val());
+      doCrossPage("entity_reals",
+                  crossPageClickFn('#entity_reals/new', discardFn),
+                  crossPageClickFn('#entity_reals/new', submitFn),
+                  "#entity_reals/surrogates/new");
+    } else if (actionMode == "edit") {
+      setPageSessionData("entity_reals", "tag", $("#entity_real_tag").val());
+      doCrossPage("entity_reals",
+                  crossPageClickFn('#entity_reals/' + id + '/edit', discardFn),
+                  crossPageClickFn('#entity_reals/' + id + '/edit', submitFn),
+                  '#entity_reals/' + id + "/surrogates/edit");
+    } else {
+      $("#home_btn_back").css("visibility", "visible");
+      $("#home_btn_back").click(function() {
+        $("#home_btn_back").css("visibility", "hidden");
+        location.href = '#entity_reals';
+      });
+      location.href = '#entity_reals/' + id + "/surrogates";
+    }
+  }
+</script>
+
+<%= raw(entity_real_jqgrid) %>
+
+<div id="entity_real_body">
+  <table>
+    <tr>
+        <td colspan="2" id="entity_real_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id="entity_real_list"></table>
+        <div id="entity_real_pager"></div>
+        </td>
+    </tr>
+    <tr id="entity_real_actions" align="right">
+        <%= render 'entity_reals/form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <%=t 'entity.tag'%>:
+        <input id="entity_real_tag" type="text" value="" size="83" disabled="true"
+             onkeypress="$('#save_entity_real').removeAttr('disabled');"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <input id="entity_real_choose" type="button" disabled="true"
+             value="<%= t('quote.btn_choose')%>"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#entity_real_list").filterToolbar({searchOnEnter : false});
+  $("#entity_real_list")[0].toggleToolbar();
+</script>

@@ -14,11 +14,11 @@ class StorehousesController < ApplicationController
   def view
     if params[:release].nil?
       real_amount = true
-      @columns = ['place.tag', 'product.resource.tag', 'real_amount',
+      @columns = ['place.tag', 'product.resource.real_tag', 'real_amount',
                   'amount', 'product.unit']
     else
       real_amount = false
-      @columns = ['place.tag', 'product.resource.tag',
+      @columns = ['place.tag', 'product.resource.real_tag',
                   'amount', 'product.unit']
     end
     
@@ -30,7 +30,7 @@ class StorehousesController < ApplicationController
         args['place.tag'] = {:like => params[:place]}
       end
       if !params[:resource].nil?
-        args['product.resource.tag'] = {:like => params[:resource]}
+        args['product.resource.real_tag'] = {:like => params[:resource]}
       end
       if !params[:real_amount].nil?
         args['real_amount'] = {:like => params[:real_amount]}
@@ -48,7 +48,7 @@ class StorehousesController < ApplicationController
       when 'place'
         params[:sidx] = 'place.tag'
       when 'resource'
-        params[:sidx] = 'product.resource.tag'
+        params[:sidx] = 'product.resource.real_tag'
       when 'unit'
         params[:sidx] = 'product.unit'
     end
@@ -90,7 +90,7 @@ class StorehousesController < ApplicationController
   end
 
   def list
-    @columns = ['created', 'owner.tag', 'to.tag', 'place.tag', 'state']
+    @columns = ['created', 'owner.real_tag', 'to.real_tag', 'place.tag', 'state']
     state = nil
     if params[:state] == "1"
       state = StorehouseRelease::INWORK
@@ -109,10 +109,10 @@ class StorehousesController < ApplicationController
         args['created'] = {:like => params[:created]}
       end
       if !params[:owner].nil?
-        args['owner.tag'] = {:like => params[:owner]}
+        args['owner.real_tag'] = {:like => params[:owner]}
       end
       if !params[:to].nil?
-        args['to.tag'] = {:like => params[:to]}
+        args['to.real_tag'] = {:like => params[:to]}
       end
       if !params[:place].nil?
         args['place.tag'] = {:like => params[:place]}
@@ -122,9 +122,9 @@ class StorehousesController < ApplicationController
 
     case params[:sidx]
       when 'owner'
-        params[:sidx] = 'owner.tag'
+        params[:sidx] = 'owner.real_tag'
       when 'to'
-        params[:sidx] = 'to.tag'
+        params[:sidx] = 'to.real_tag'
       when 'place'
         params[:sidx] = 'place.tag'
     end
@@ -149,7 +149,7 @@ class StorehousesController < ApplicationController
   end
 
   def view_release
-    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
     release = StorehouseRelease.find(params[:id])
     @resources = release.resources
     objects_order_by_from_params @resources, params
@@ -214,8 +214,8 @@ class StorehousesController < ApplicationController
   end
 
   def waybill_list
-    @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.tag',
-                'waybill.owner.tag', 'waybill.vatin', 'waybill.place.tag']
+    @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.real_tag',
+                'waybill.owner.real_tag', 'waybill.vatin', 'waybill.place.tag']
     @waybills = Storehouse.new(current_user.entity,
                                current_user.place).waybills
 
@@ -228,10 +228,10 @@ class StorehousesController < ApplicationController
         args['waybill.created'] = {:like => params[:created]}
       end
       if !params[:from].nil?
-        args['waybill.from.tag'] = {:like => params[:from]}
+        args['waybill.from.real_tag'] = {:like => params[:from]}
       end
       if !params[:owner].nil?
-        args['waybill.owner.tag'] = {:like => params[:owner]}
+        args['waybill.owner.real_tag'] = {:like => params[:owner]}
       end
       if !params[:vatin].nil?
         args['waybill.vatin'] = {:like => params[:vatin]}
@@ -248,9 +248,9 @@ class StorehousesController < ApplicationController
       when 'created'
         params[:sidx] = 'waybill.created'
       when 'from'
-        params[:sidx] = 'waybill.from.tag'
+        params[:sidx] = 'waybill.from.real_tag'
       when 'owner'
-        params[:sidx] = 'waybill.owner.tag'
+        params[:sidx] = 'waybill.owner.real_tag'
       when 'vatin'
         params[:sidx] = 'waybill.vatin'
       when 'place'
@@ -268,7 +268,7 @@ class StorehousesController < ApplicationController
   end
 
   def waybill_entries_list
-    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
     @entries = Storehouse.new(current_user.entity,
                                current_user.place).
                           waybill_by_id(params[:id].to_i).resources
@@ -287,8 +287,8 @@ class StorehousesController < ApplicationController
   end
 
   def return_list
-    @columns = ['place.tag', 'product.resource.tag', 'amount',
-                'product.unit', 'owner.tag', 'owner.id']
+    @columns = ['place.tag', 'product.resource.real_tag', 'amount',
+                'product.unit', 'owner.real_tag', 'owner.id']
 
     StorehouseEntry.class_exec {
       def uid
@@ -306,7 +306,7 @@ class StorehousesController < ApplicationController
     if params[:_search]
       args = Hash.new
       if !params[:resource].nil?
-        args['product.resource.tag'] = {:like => params[:resource]}
+        args['product.resource.real_tag'] = {:like => params[:resource]}
       end
       if !params[:amount].nil?
         args['amount'] = {:like => params[:amount]}
@@ -319,7 +319,7 @@ class StorehousesController < ApplicationController
 
     case params[:sidx]
       when 'resource'
-        params[:sidx] = 'product.resource.tag'
+        params[:sidx] = 'product.resource.real_tag'
       when 'unit'
         params[:sidx] = 'product.unit'
     end

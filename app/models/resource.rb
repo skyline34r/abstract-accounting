@@ -5,6 +5,15 @@ class Asset < ActiveRecord::Base
   validates_uniqueness_of :tag
   has_many :deal_gives, :class_name => "Deal", :as => :give
   has_many :deal_takes, :class_name => "Deal", :as => :take
+  belongs_to :real, :class_name => "AssetReal"
+
+  def real_tag
+    if self.real.nil?
+      self.tag
+    else
+      self.real.tag
+    end
+  end
 end
 
 class Money < ActiveRecord::Base
@@ -17,6 +26,10 @@ class Money < ActiveRecord::Base
   has_many :deal_gives, :class_name => "Deal", :as => :give
   has_many :deal_takes, :class_name => "Deal", :as => :take
   has_many :quotes
+
+  def real_tag
+    self.alpha_code
+  end
 
   def quote
     quotes.where(:day =>

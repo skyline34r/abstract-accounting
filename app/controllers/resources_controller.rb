@@ -30,45 +30,113 @@ class ResourcesController < ApplicationController
       end
     }
 
-    @money = Money.all
-    if (session[:res_type] == 'money')
-      @resource = @money
-    else
-      @asset = Asset.all
-      @resource = @money + @asset
-    end
+    @resources = nil
+    if session[:res_type] == 'asset'
+      base_assets = nil
+      unless params[:sidx].nil?
+        base_assets = Asset.order('assets.' + params[:sidx] + " " + params[:sord].upcase)
+      end
+      unless params[:_search].nil?
+        base_assets = (base_assets.nil? ? Asset.where('lower(assets.tag) LIKE ?', "%#{params[:tag].downcase}%") :
+            base_assets.where('lower(assets.tag) LIKE ?', "%#{params[:tag].downcase}%")) unless params[:tag].nil?
+      end
+      @resources = (base_assets.nil? ? Asset.where('real_id is NULL') :
+          base_assets.where('real_id is NULL')) if params[:filter] == "unassigned"
+      @resources = (base_assets.nil? ? Asset.all : base_assets) if @resources.nil?
 
-    if params[:_search]
-      args = Hash.new
-      if !params[:tag].nil?
-        args['tag'] = {:like => params[:tag]}
-      end
-      if !params[:type].nil?
-        args['class.name'] = {:like => params[:type]}
-      end
-      @resource = @resource.where args
-    end
-    case params[:sidx]
-       when 'type'
-         params[:sidx] = 'class.name'
-    end
-    objects_order_by_from_params @resource, params
-    if session[:resource_id].nil?
-      @resources = @resource.paginate(
-        :page     => params[:page],
-        :per_page => params[:rows])
-    else
-      page = 1
-      begin
-        @resources = @resource.paginate(
-          :page     => page,
+      if session[:resource_id].nil?
+        @resources = @resources.paginate(
+          :page     => params[:page],
           :per_page => params[:rows])
-        page += 1
-      end while @resources.where(:uid => session[:resource_id]).first.nil?
-      session[:resource_id] = nil
+      else
+        page = 1
+        begin
+          @resources = @resources.paginate(
+            :page     => page,
+            :per_page => params[:rows])
+          page += 1
+        end while @resources.where(:uid => session[:resource_id]).first.nil?
+        session[:resource_id] = nil
+      end
+      if request.xhr?
+        render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'id')
+      end
+    else
+      @resources = Money.all
+      if session[:res_type] != 'money'
+        @resources = @resources + Asset.all
+      end
+      if params[:_search]
+        args = Hash.new
+        if !params[:tag].nil?
+          args['tag'] = {:like => params[:tag]}
+        end
+        if !params[:type].nil?
+          args['class.name'] = {:like => params[:type]}
+        end
+        @resources = @resources.where args
+      end
+      case params[:sidx]
+         when 'type'
+           params[:sidx] = 'class.name'
+      end
+      objects_order_by_from_params @resources, params
+      if session[:resource_id].nil?
+        @resources = @resources.paginate(
+          :page     => params[:page],
+          :per_page => params[:rows])
+      else
+        page = 1
+        begin
+          @resources = @resources.paginate(
+            :page     => page,
+            :per_page => params[:rows])
+          page += 1
+        end while @resources.where(:uid => session[:resource_id]).first.nil?
+        session[:resource_id] = nil
+      end
+      if request.xhr?
+        render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'uid')
+      end
     end
+  end
+
+  def asset_select
+    @with_check = false
+    unless params[:real_id].nil?
+      @list_url = asset_surrogates_url :real_id => params[:real_id]
+      if params[:type] == "edit"
+        @with_check = true
+        @list_url += "?filter=unassigned"
+      end
+    else
+      session[:res_type] = 'asset'
+      @list_url = view_resources_url + "?filter=unassigned"
+      @with_check = true
+    end
+  end
+
+  def asset_surrogates
+    @columns = ['tag', 'real.nil?']
+    base_assets = nil
+    unless params[:sidx].nil?
+      base_assets = Asset.order(params[:sidx] + " " + params[:sord].upcase)
+    end
+    unless params[:_search].nil? or params[:tag].nil?
+      base_assets = (base_assets.nil? ? Asset.where('lower(tag) LIKE ?', "%#{params[:tag].downcase}%") :
+          base_assets.where('lower(tag) LIKE ?', "%#{params[:tag].downcase}%"))
+    end
+    @assets = (base_assets.nil? ?
+        Asset.find_all_by_real_id(params[:real_id]) :
+        base_assets.find_all_by_real_id(params[:real_id])) if params[:filter].nil?
+    @assets = (base_assets.nil? ?
+        Asset.where('real_id = ? OR real_id is NULL', params[:real_id]) :
+        base_assets.where('real_id = ? OR real_id is NULL', params[:real_id])) if params[:filter] == "unassigned"
+    @assets = @assets.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'uid')
+      render :json => abstract_json_for_jqgrid(@assets, @columns, :id_column => 'id')
     end
   end
 

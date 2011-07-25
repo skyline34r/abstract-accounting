@@ -1,0 +1,13 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.resource'%> :: <%=t 'title.new'%>";
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'asset_reals/index') %>");
+}
+$("#asset_real_errors").html("<%= escape_javascript(render :partial => 'asset_reals/form_errors') %>");
+$("#asset_real_actions").html("<%= escape_javascript(render :partial => 'asset_reals/form_actions') %>");
+showAssetRealActionForm("", "new");
+$("#asset_real_choose").click(function() {
+  assetRealChooseSurrogates(-1);
+});
+if (getPageSessionData("asset_reals", "tag").length > 0) {
+  $('#save_asset_real').removeAttr('disabled');
+}

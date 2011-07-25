@@ -1,0 +1,13 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.entity'%> :: <%=t 'title.new'%>";
+if($("#body").html().length <= 1) {
+  $("#body").html("<%= escape_javascript(render :partial => 'entity_reals/index') %>");
+}
+$("#entity_real_errors").html("<%= escape_javascript(render :partial => 'entity_reals/form_errors') %>");
+$("#entity_real_actions").html("<%= escape_javascript(render :partial => 'entity_reals/form_actions') %>");
+showEntityRealActionForm("", "new");
+$("#entity_real_choose").click(function() {
+  entityRealChooseSurrogates(-1);
+});
+if (getPageSessionData("entity_reals", "tag").length > 0) {
+  $('#save_entity_real').removeAttr('disabled');
+}

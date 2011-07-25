@@ -71,4 +71,24 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:resources)
   end
+
+  test "should get surrogates resource" do
+    @asset.real = asset_reals(:abstractasi)
+    assert @asset.save, "Asset is not saved"
+    xml_http_request :get, :asset_surrogates, :real_id => asset_reals(:abstractasi).to_param
+    assert_response :success
+    assert_not_nil assigns(:assets)
+  end
+
+  test "should get select resource" do
+    xml_http_request :get, :asset_select
+    assert_response :success
+  end
+
+  test "should get select resource with real_id" do
+    @asset.real = asset_reals(:abstractasi)
+    assert @asset.save, "Asset is not saved"
+    xml_http_request :get, :asset_select, :real_id => asset_reals(:abstractasi).to_param
+    assert_response :success
+  end
 end

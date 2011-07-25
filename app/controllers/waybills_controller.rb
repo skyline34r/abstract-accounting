@@ -37,7 +37,7 @@ class WaybillsController < ApplicationController
   end
 
   def view
-    @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
+    @columns = ['document_id', 'created', 'from.real_tag', 'owner.real_tag', 'vatin',
                 'place.tag', 'has_in_the_storehouse?']
 
     @waybills = Waybill.not_disabled.find_by_owner_and_place(current_user.entity,
@@ -68,9 +68,9 @@ class WaybillsController < ApplicationController
 
     case params[:sidx]
        when 'from'
-         params[:sidx] = 'from.tag'
+         params[:sidx] = 'from.real_tag'
        when 'owner'
-         params[:sidx] = 'owner.tag'
+         params[:sidx] = 'owner.real_tag'
       when 'place'
         params[:sidx] = 'place.tag'
     end
@@ -87,7 +87,7 @@ class WaybillsController < ApplicationController
   end
 
   def show
-    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
     @entries = Waybill.find(params[:id]).resources
     @entries = @entries.paginate(
       :page     => params[:page],

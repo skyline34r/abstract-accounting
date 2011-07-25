@@ -1,0 +1,37 @@
+<script type="text/javascript">
+  var canSelectEntity = true;
+  var firstOpen = false;
+  if (crossPage) {
+    if (!hasPageSessionData(crossPage, "surrogates")) {
+      firstOpen = true;
+      setPageSessionData(crossPage, "surrogates", new Object());
+      setPageSessionData(crossPage, "base_surrogates", new Object());
+    }
+  }
+  function onRowChecked(id)
+  {
+    if (!$("#check_" + id).is(":checked")) {
+      delete getPageSessionData(crossPage, "surrogates")[id];
+    } else {
+      getPageSessionData(crossPage, "surrogates")[id] = true;
+    }
+    $("#entity_list").setSelection(id);
+  }
+</script>
+
+<%= raw(check_entities_jqgrid(@list_url)) %>
+
+<table>
+  <tr>
+    <td colspan="2">
+      <table id="entity_list"></table>
+      <div id="entity_pager"></div>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#entity_list").filterToolbar({searchOnEnter : false});
+  $("#entity_list")[0].toggleToolbar();
+</script>
