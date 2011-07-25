@@ -32,18 +32,18 @@ class EntitiesController < ApplicationController
         base_entities = base_entities.where('lower(entity_reals.tag) LIKE ?', "%#{params[:real].downcase}%")
       end
     end
-    @entities = (base_entities.nil? ? Entity.all : base_entities.all) if params[:filter].nil?
-    @entities = (base_entities.nil? ? Entity.where('real_id is NULL') :
+    base_entities = (base_entities.nil? ? Entity.all : base_entities.all) if params[:filter].nil?
+    base_entities = (base_entities.nil? ? Entity.where('real_id is NULL') :
         base_entities.where('real_id is NULL')) if params[:filter] == "unassigned"
 
     if session[:entity_id].nil?
-      @entities = @entities.paginate(
+      @entities = base_entities.paginate(
         :page     => params[:page],
         :per_page => params[:rows])
     else
       page = 1
       begin
-        @entities = @entities.paginate(
+        @entities = base_entities.paginate(
           :page     => page,
           :per_page => params[:rows])
         page += 1

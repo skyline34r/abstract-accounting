@@ -40,18 +40,18 @@ class ResourcesController < ApplicationController
         base_assets = (base_assets.nil? ? Asset.where('lower(assets.tag) LIKE ?', "%#{params[:tag].downcase}%") :
             base_assets.where('lower(assets.tag) LIKE ?', "%#{params[:tag].downcase}%")) unless params[:tag].nil?
       end
-      @resources = (base_assets.nil? ? Asset.where('real_id is NULL') :
+      base_assets = (base_assets.nil? ? Asset.where('real_id is NULL') :
           base_assets.where('real_id is NULL')) if params[:filter] == "unassigned"
-      @resources = (base_assets.nil? ? Asset.all : base_assets) if @resources.nil?
+      base_assets = (base_assets.nil? ? Asset.all : base_assets) if @resources.nil?
 
       if session[:resource_id].nil?
-        @resources = @resources.paginate(
+        @resources = base_assets.paginate(
           :page     => params[:page],
           :per_page => params[:rows])
       else
         page = 1
         begin
-          @resources = @resources.paginate(
+          @resources = base_assets.paginate(
             :page     => page,
             :per_page => params[:rows])
           page += 1
@@ -62,9 +62,9 @@ class ResourcesController < ApplicationController
         render :json => abstract_json_for_jqgrid(@resources, @columns, :id_column => 'id')
       end
     else
-      @resources = Money.all
+      resource = Money.all
       if session[:res_type] != 'money'
-        @resources = @resources + Asset.all
+        resource = resource + Asset.all
       end
       if params[:_search]
         args = Hash.new
@@ -74,21 +74,21 @@ class ResourcesController < ApplicationController
         if !params[:type].nil?
           args['class.name'] = {:like => params[:type]}
         end
-        @resources = @resources.where args
+        resource = resource.where args
       end
       case params[:sidx]
          when 'type'
            params[:sidx] = 'class.name'
       end
-      objects_order_by_from_params @resources, params
+      objects_order_by_from_params resource, params
       if session[:resource_id].nil?
-        @resources = @resources.paginate(
+        @resources = resource.paginate(
           :page     => params[:page],
           :per_page => params[:rows])
       else
         page = 1
         begin
-          @resources = @resources.paginate(
+          @resources = resource.paginate(
             :page     => page,
             :per_page => params[:rows])
           page += 1
