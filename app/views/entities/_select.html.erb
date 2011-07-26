@@ -14,6 +14,9 @@
       delete getPageSessionData(crossPage, "surrogates")[id];
     } else {
       getPageSessionData(crossPage, "surrogates")[id] = true;
+      var tRowData = $("#entity_list").getRowData(id);
+      $("#entity_list").delRowData(id);
+      $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "first");
     }
     $("#entity_list").setSelection(id);
   }

@@ -84,10 +84,14 @@ module EntitiesHelper
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if (rowObject.tag != undefined)
+                             return rowObject.tag;
                            return rowObject[0];
                          }'.to_json_var },
         { :name => 'empty', :index => 'empty', :hidden => true,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if (rowObject.empty != undefined)
+                             return rowObject.empty;
                            return rowObject[1];
                          }'.to_json_var}
       ],
@@ -120,7 +124,7 @@ module EntitiesHelper
 
     if @with_check
       grid[0][:colNames].insert(0, '')
-      grid[0][:colModel].insert(0, { :name => '', :index => 'check',
+      grid[0][:colModel].insert(0, { :name => 'check', :index => 'check',
                                      :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
                            var checked = "";
