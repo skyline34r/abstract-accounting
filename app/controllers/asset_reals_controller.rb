@@ -8,18 +8,29 @@ class AssetRealsController < ApplicationController
 
   def view
     @columns = ['tag', 'assets.empty?']
-    @asset_reals = AssetReal.all
+    base_reals = AssetReal.all
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
         args['tag'] = {:like => params[:tag]}
       end
-      @asset_reals = @asset_reals.where args
+      base_reals = base_reals.where args
     end
-    objects_order_by_from_params @asset_reals, params
-    @asset_reals = @asset_reals.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params base_reals, params
+    if session[:asset_real_id].nil?
+      @asset_reals = base_reals.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @asset_reals = base_reals.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @asset_reals.where(:id => session[:asset_real_id]).empty?
+      session[:asset_real_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@asset_reals, @columns, :id_column => 'id')
     end
@@ -41,6 +52,7 @@ class AssetRealsController < ApplicationController
     unless @asset_real.save
       render :action => "new"
     end
+    session[:asset_real_id] = @asset_real.id
   end
 
   def update
@@ -55,6 +67,7 @@ class AssetRealsController < ApplicationController
     unless @asset_real.save and @asset_real.update_attributes(params[:asset_real])
       render :action => "edit"
     end
+    session[:asset_real_id] = @asset_real.id
   end
 
 end

@@ -48,6 +48,13 @@ module AssetRealsHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "asset_real_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#asset_real_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

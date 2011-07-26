@@ -9,8 +9,11 @@
     setPageSessionData("asset_reals", "tag", "");
     $("#asset_real_choose").click(function() { assetRealChooseSurrogates(-1); });
   }
-  function showAssetRealIndexForm()
+  function showAssetRealIndexForm(id)
   {
+    if(id != null) {
+      editRowId = id;
+    }
     location.hash = "#asset_reals";
     clearPageSession("asset_reals");
     setPageSessionData("asset_reals", "base_tag", "");
@@ -38,7 +41,7 @@
   }
   function onCancelAssetReal()
   {
-    showAssetRealIndexForm();
+    showAssetRealIndexForm(null);
   }
   function onResetAssetReal()
   {
