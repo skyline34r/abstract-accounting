@@ -130,8 +130,8 @@ module EntitiesHelper
                            var checked = "";
                            if (firstOpen) {
                              if (rowObject[1] == false) {
-                               getPageSessionData(crossPage, "surrogates")[options.rowId.toString()] = true;
-                               getPageSessionData(crossPage, "base_surrogates")[options.rowId.toString()] = true;
+                               getPageSessionData(crossPage, "surrogates")[options.rowId.toString()] = rowObject;
+                               getPageSessionData(crossPage, "base_surrogates")[options.rowId.toString()] = rowObject;
                                checked = "checked";
                              }
                            } else if (options.rowId.toString() in getPageSessionData(crossPage, "surrogates")) {
@@ -143,6 +143,7 @@ module EntitiesHelper
                          }'.to_json_var })
       grid[0][:loadComplete] = 'function(data)
       {
+        entityListIDs = $("#entity_list").getDataIDs();
         if (firstOpen) {
           firstOpen = false;
         }
