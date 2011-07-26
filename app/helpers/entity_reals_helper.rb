@@ -48,6 +48,13 @@ module EntityRealsHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "entity_real_list");
+      }'.to_json_var,
+      :loadComplete => 'function()
+      {
+        if(editRowId != null) {
+          $("#entity_real_list").setSelection(editRowId);
+          editRowId = null;
+        }
       }'.to_json_var
     }]
 

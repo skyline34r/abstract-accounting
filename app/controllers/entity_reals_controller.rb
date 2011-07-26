@@ -8,18 +8,29 @@ class EntityRealsController < ApplicationController
 
   def view
     @columns = ['tag', 'entities.empty?']
-    @entity_reals = EntityReal.all
+    base_reals = EntityReal.all
     if params[:_search]
       args = Hash.new
       if !params[:tag].nil?
         args['tag'] = {:like => params[:tag]}
       end
-      @entity_reals = @entity_reals.where args
+      base_reals = base_reals.where args
     end
-    objects_order_by_from_params @entity_reals, params
-    @entity_reals = @entity_reals.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
+    objects_order_by_from_params base_reals, params
+    if session[:entity_id].nil?
+      @entity_reals = base_reals.paginate(
+        :page     => params[:page],
+        :per_page => params[:rows])
+    else
+      page = 1
+      begin
+        @entity_reals = base_reals.paginate(
+          :page     => page,
+          :per_page => params[:rows])
+        page += 1
+      end while @entity_reals.where(:id => session[:entity_id]).empty?
+      session[:entity_id] = nil
+    end
     if request.xhr?
       render :json => abstract_json_for_jqgrid(@entity_reals, @columns, :id_column => 'id')
     end
@@ -41,6 +52,7 @@ class EntityRealsController < ApplicationController
     unless @entity_real.save
       render :action => "new"
     end
+    session[:entity_id] = @entity_real.id
   end
 
   def update
@@ -55,6 +67,7 @@ class EntityRealsController < ApplicationController
     unless @entity_real.save and @entity_real.update_attributes(params[:entity_real])
       render :action => "edit"
     end
+    session[:entity_id] = @entity_real.id
   end
 
 end

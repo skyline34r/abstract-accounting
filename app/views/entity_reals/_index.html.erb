@@ -9,8 +9,11 @@
     setPageSessionData("entity_reals", "tag", "");
     $("#entity_real_choose").click(function() { entityRealChooseSurrogates(-1); });
   }
-  function showEntityRealIndexForm()
+  function showEntityRealIndexForm(id)
   {
+    if(id != null) {
+      editRowId = id;
+    }
     location.hash = "#entity_reals";
     clearPageSession("entity_reals");
     setPageSessionData("entity_reals", "base_tag", "");
@@ -38,7 +41,7 @@
   }
   function onCancelEntityReal()
   {
-    showEntityRealIndexForm();
+    showEntityRealIndexForm(null);
   }
   function onResetEntityReal()
   {
