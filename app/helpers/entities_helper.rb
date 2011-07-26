@@ -144,6 +144,13 @@ module EntitiesHelper
       grid[0][:loadComplete] = 'function(data)
       {
         entityListIDs = $("#entity_list").getDataIDs();
+        surrogates = getPageSessionData(crossPage, "surrogates");
+        for (var id in surrogates) {
+          if (entityListIDs.indexOf(id) >= 0) {
+            $("#entity_list").delRowData(id);
+          }
+          $("#entity_list").addRowData(id, {"tag": surrogates[id].tag, "empty": surrogates[id].empty}, "first");
+        }
         if (firstOpen) {
           firstOpen = false;
         }
