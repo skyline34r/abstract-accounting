@@ -57,11 +57,13 @@ class EntitiesController < ApplicationController
 
   def select
     @with_check = false
+    @entities = nil
     unless params[:real_id].nil?
       @list_url = entities_surrogates_url :real_id => params[:real_id]
       if params[:type] == "edit"
         @with_check = true
         @list_url += "?filter=unassigned"
+        @entities = Entity.where('real_id = ?', params[:real_id])
       end
     else
       @list_url = view_entities_url + "?filter=unassigned"
@@ -83,8 +85,8 @@ class EntitiesController < ApplicationController
         Entity.find_all_by_real_id(params[:real_id]) :
         base_entities.find_all_by_real_id(params[:real_id])) if params[:filter].nil?
     @entities = (base_entities.nil? ?
-        Entity.where('real_id = ? OR real_id is NULL', params[:real_id]) :
-        base_entities.where('real_id = ? OR real_id is NULL', params[:real_id])) if params[:filter] == "unassigned"
+        Entity.where('real_id is NULL') :
+        base_entities.where('real_id is NULL')) if params[:filter] == "unassigned"
     @entities = @entities.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
