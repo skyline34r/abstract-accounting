@@ -156,6 +156,13 @@ module ResourcesHelper
       grid[0][:loadComplete] = 'function(data)
       {
         surrogatesListIDs = $("#asset_list").getDataIDs();
+        surrogates = getPageSessionData(crossPage, "surrogates");
+ 	      for (var id in surrogates) {
+          if (surrogatesListIDs.indexOf(id) >= 0) {
+ 	          $("#asset_list").delRowData(id);
+ 	        }
+ 	        $("#asset_list").addRowData(id, {"tag": surrogates[id].tag, "empty": surrogates[id].empty}, "first");
+        }
         if (firstOpen) {
           firstOpen = false;
         }
