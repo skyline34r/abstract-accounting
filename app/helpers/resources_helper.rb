@@ -103,10 +103,14 @@ module ResourcesHelper
       :colModel => [
         { :name => 'tag',  :index => 'tag',   :width => 800,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if (rowObject.tag != undefined)
+                             return rowObject.tag;
                            return rowObject[0];
                          }'.to_json_var },
         { :name => 'empty', :index => 'empty', :hidden => true,
           :formatter => 'function(cellvalue, options, rowObject) {
+                           if (rowObject.empty != undefined)
+                             return rowObject.empty;
                            return rowObject[1];
                          }'.to_json_var}
       ],
