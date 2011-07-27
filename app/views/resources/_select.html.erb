@@ -1,6 +1,7 @@
 <script type="text/javascript">
   var canSelectAsset = true;
   var firstOpen = false;
+  var surrogatesListIDs = [];
   if (crossPage) {
     if (!hasPageSessionData(crossPage, "surrogates")) {
       firstOpen = true;
@@ -11,10 +12,50 @@
   function onRowChecked(id)
   {
     if (!$("#check_" + id).is(":checked")) {
+ 	  $("#asset_list").delRowData(id);
+ 	  tRowData = getPageSessionData(crossPage, "surrogates")[id];
       delete getPageSessionData(crossPage, "surrogates")[id];
+      if (surrogatesListIDs.indexOf(id) >= 0) {
+ 	    var pos = surrogatesListIDs.indexOf(id);
+ 	    var keys = Object.keys(getPageSessionData(crossPage, "surrogates"));
+        if (pos == 0 && keys.length == 0) {
+ 	      $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "first");
+ 	    } else if (pos == 0) {
+ 	      var ids = $("#asset_list").getDataIDs();
+ 	      var prev_id = null;
+ 	      for (var new_id in ids) {
+ 	        if (keys.indexOf(ids[new_id]) >= 0) prev_id = ids[new_id];
+ 	        else break;
+ 	      }
+          $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "after", prev_id);
+ 	    } else {
+ 	      var prev_id = null;
+ 	      for (var i = pos - 1; i >= 0; i--) {
+ 	        if (keys.indexOf(surrogatesListIDs[i]) < 0) {
+ 	          prev_id = surrogatesListIDs[i];
+ 	          break;
+ 	        }
+ 	      }
+ 	      if (prev_id == null) {
+ 	        for (i = pos + 1; i < surrogatesListIDs.length; i++) {
+ 	          if (keys.indexOf(surrogatesListIDs[i]) < 0) {
+ 	            prev_id = surrogatesListIDs[i];
+ 	            break;
+ 	          }
+ 	        }
+ 	        if (prev_id == null) {
+ 	          $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "last");
+ 	        } else {
+ 	          $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "before", prev_id);
+ 	        }
+ 	      } else {
+ 	        $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "after", prev_id);
+ 	      }
+        }
+      }
     } else {
-      getPageSessionData(crossPage, "surrogates")[id] = true;
       var tRowData = $("#asset_list").getRowData(id);
+      getPageSessionData(crossPage, "surrogates")[id] = tRowData;
       $("#asset_list").delRowData(id);
       $("#asset_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "first")
     }
