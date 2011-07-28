@@ -103,11 +103,13 @@ class ResourcesController < ApplicationController
 
   def asset_select
     @with_check = false
+    @assets = nil
     unless params[:real_id].nil?
       @list_url = asset_surrogates_url :real_id => params[:real_id]
       if params[:type] == "edit"
         @with_check = true
         @list_url += "?filter=unassigned"
+        @assets = Asset.where('real_id = ?', params[:real_id])
       end
     else
       session[:res_type] = 'asset'
@@ -130,8 +132,8 @@ class ResourcesController < ApplicationController
         Asset.find_all_by_real_id(params[:real_id]) :
         base_assets.find_all_by_real_id(params[:real_id])) if params[:filter].nil?
     @assets = (base_assets.nil? ?
-        Asset.where('real_id = ? OR real_id is NULL', params[:real_id]) :
-        base_assets.where('real_id = ? OR real_id is NULL', params[:real_id])) if params[:filter] == "unassigned"
+        Asset.where('real_id is NULL') :
+        base_assets.where('real_id is NULL')) if params[:filter] == "unassigned"
     @assets = @assets.paginate(
       :page     => params[:page],
       :per_page => params[:rows])

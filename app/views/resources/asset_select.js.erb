@@ -1,2 +1,8 @@
 document.title = "<%=t 'title.abstract'%> :: <%=t 'title.resource'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'resources/select') %>");
+<% unless @assets.nil? %>
+  <% @assets.each do |a| %>
+    getPageSessionData(crossPage, "surrogates")["<%= a.id %>"] = {"tag": "<%= a.tag %>", "empty": false};
+    getPageSessionData(crossPage, "base_surrogates")["<%= a.id %>"] = {"tag": "<%= a.tag %>", "empty": false};
+  <% end %>
+<% end %>
