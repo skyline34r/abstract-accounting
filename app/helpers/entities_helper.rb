@@ -129,7 +129,7 @@ module EntitiesHelper
           :formatter => 'function(cellvalue, options, rowObject) {
                            var checked = "";
                            if (firstOpen) {
-                             if (rowObject[1] == false) {
+                             if (rowObject[1] == false || (rowObject.empty != undefined && !rowObject.empty)) {
                                getPageSessionData(crossPage, "surrogates")[options.rowId.toString()] = rowObject;
                                getPageSessionData(crossPage, "base_surrogates")[options.rowId.toString()] = rowObject;
                                checked = "checked";
