@@ -40,49 +40,67 @@ class WaybillsController < ApplicationController
     @columns = ['document_id', 'created', 'from.real_tag', 'owner.real_tag', 'vatin',
                 'place.tag', 'has_in_the_storehouse?']
 
-    @waybills = Waybill.not_disabled.find_by_owner_and_place(current_user.entity,
-                                                current_user.place)
-
-    if params[:_search]
-      args = Hash.new
-      if !params[:document_id].nil?
-        args['document_id'] = {:like => params[:document_id]}
+    base_waybills = Waybill
+    unless params[:sidx].nil?
+      if params[:sidx] == 'from'
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS froms ON froms.id = waybills.from_id")
+          .joins("LEFT OUTER JOIN entity_reals AS from_reals ON from_reals.id = froms.real_id")
+          .order("CASE WHEN from_reals.id IS NULL THEN froms.tag ELSE from_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'owner'
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS owners ON owners.id = waybills.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .order("CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'place'
+        base_waybills = base_waybills
+          .joins(:place)
+          .order("places.tag " + params[:sord].upcase)
+      else
+        base_waybills = base_waybills
+          .order("waybills." + params[:sidx] + " " + params[:sord].upcase)
       end
-      if !params[:created].nil?
-        args['created'] = {:like => params[:created]}
-      end
-      if !params[:from].nil?
-        args['from.tag'] = {:like => params[:from]}
-      end
-      if !params[:owner].nil?
-        args['owner.tag'] = {:like => params[:owner]}
-      end
-      if !params[:vatin].nil?
-        args['vatin'] = {:like => params[:vatin]}
-      end
-      if !params[:place].nil?
-        args['place.tag'] = {:like => params[:place]}
-      end
-      @waybills = @waybills.where args
     end
-
-    case params[:sidx]
-       when 'from'
-         params[:sidx] = 'from.real_tag'
-       when 'owner'
-         params[:sidx] = 'owner.real_tag'
-      when 'place'
-        params[:sidx] = 'place.tag'
+    unless params[:_search].nil?
+      unless params[:document_id].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.document_id) LIKE ?', "%#{params[:document_id].downcase}%")
+      end
+      unless params[:created].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.created) LIKE ?', "%#{params[:created].downcase}%")
+      end
+      unless params[:vatin].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.vatin) LIKE ?', "%#{params[:vatin].downcase}%")
+      end
+      unless params[:place].nil?
+        base_waybills = base_waybills
+          .joins(:place)
+          .where('lower(places.tag) LIKE ?', "%#{params[:place].downcase}%")
+      end
+      unless params[:from].nil?
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS froms ON froms.id = waybills.from_id")
+          .joins("LEFT OUTER JOIN entity_reals AS from_reals ON from_reals.id = froms.real_id")
+          .where('lower(CASE WHEN from_reals.id IS NULL THEN froms.tag ELSE from_reals.tag END) LIKE ?', "%#{params[:from].downcase}%")
+      end
+      unless params[:owner].nil?
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS owners ON owners.id = waybills.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .where('lower(CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END) LIKE ?', "%#{params[:owner].downcase}%")
+      end
     end
-
-    objects_order_by_from_params @waybills, params
-    @waybills = @waybills.paginate(
+    base_waybills = base_waybills.not_disabled
+    base_waybills = base_waybills.find_by_owner_and_place(current_user.entity, current_user.place)
+    @waybills = base_waybills.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
 
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id',
-        :params => {'has_in_the_storehouse?' => Storehouse.new(current_user.entity, current_user.place)})
+      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')#,
+        #:params => {'has_in_the_storehouse?' => nil})#Storehouse.new(current_user.entity, current_user.place)})
     end
   end
 
