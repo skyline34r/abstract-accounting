@@ -15,44 +15,51 @@ class StorehousesController < ApplicationController
     if params[:release].nil?
       real_amount = true
       @columns = ['place.tag', 'product.resource.real_tag', 'real_amount',
-                  'amount', 'product.unit']
+                  'exp_amount', 'product.unit']
     else
       real_amount = false
       @columns = ['place.tag', 'product.resource.real_tag',
-                  'amount', 'product.unit']
-    end
-    
-    @storehouse = Storehouse.new(current_user.entity,
-                                 current_user.place, real_amount)
-    if params[:_search]
-      args = Hash.new
-      if !params[:place].nil?
-        args['place.tag'] = {:like => params[:place]}
-      end
-      if !params[:resource].nil?
-        args['product.resource.real_tag'] = {:like => params[:resource]}
-      end
-      if !params[:real_amount].nil?
-        args['real_amount'] = {:like => params[:real_amount]}
-      end
-      if !params[:amount].nil?
-        args['amount'] = {:like => params[:amount]}
-      end
-      if !params[:unit].nil?
-        args['product.unit'] = {:like => params[:unit]}
-      end
-      @storehouse = @storehouse.where args
+                  'exp_amount', 'product.unit']
     end
 
+    where = Hash.new
+    if params[:_search]
+      if !params[:place].nil?
+        where['place.tag'] = {:like => params[:place]}
+      end
+      if !params[:resource].nil?
+        where['product.resource.tag'] = {:like => params[:resource]}
+      end
+      if !params[:real_amount].nil?
+        where['real_amount'] = {:like => params[:real_amount]}
+      end
+      if !params[:amount].nil?
+        where['exp_amount'] = {:like => params[:amount]}
+      end
+      if !params[:unit].nil?
+        where['product.unit'] = {:like => params[:unit]}
+      end
+    end
+    order = Hash.new
     case params[:sidx]
       when 'place'
-        params[:sidx] = 'place.tag'
+        order['place.tag'] = params[:sord]
       when 'resource'
-        params[:sidx] = 'product.resource.real_tag'
+        order['product.resource.tag'] = params[:sord]
+        params[:sidx] = ''
       when 'unit'
-        params[:sidx] = 'product.unit'
+        order['product.unit'] = params[:sord]
+      when 'real_amount'
+        order['real_amount'] = params[:sord]
+      when 'amount'
+        order['exp_amount'] = params[:sord]
     end
-    objects_order_by_from_params @storehouse, params
+
+    @storehouse = Storehouse.all(:entity => current_user.entity,
+                                 :place => current_user.place,
+                                 :check_amount => real_amount,
+                                 :where => where,
+                                 :order => order)
 
     @storehouse = @storehouse.paginate(
       :page     => params[:page],
@@ -216,70 +223,70 @@ class StorehousesController < ApplicationController
   def waybill_list
     @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.real_tag',
                 'waybill.owner.real_tag', 'waybill.vatin', 'waybill.place.tag']
-    @waybills = Storehouse.new(current_user.entity,
-                               current_user.place).waybills
-
-    if params[:_search]
-      args = Hash.new
-      if !params[:document_id].nil?
-        args['waybill.document_id'] = {:like => params[:document_id]}
-      end
-      if !params[:created].nil?
-        args['waybill.created'] = {:like => params[:created]}
-      end
-      if !params[:from].nil?
-        args['waybill.from.real_tag'] = {:like => params[:from]}
-      end
-      if !params[:owner].nil?
-        args['waybill.owner.real_tag'] = {:like => params[:owner]}
-      end
-      if !params[:vatin].nil?
-        args['waybill.vatin'] = {:like => params[:vatin]}
-      end
-      if !params[:place].nil?
-        args['waybill.place.tag'] = {:like => params[:place]}
-      end
-      @waybills = @waybills.where args
-    end
-
-    case params[:sidx]
-      when 'document_id'
-        params[:sidx] = 'waybill.document_id'
-      when 'created'
-        params[:sidx] = 'waybill.created'
-      when 'from'
-        params[:sidx] = 'waybill.from.real_tag'
-      when 'owner'
-        params[:sidx] = 'waybill.owner.real_tag'
-      when 'vatin'
-        params[:sidx] = 'waybill.vatin'
-      when 'place'
-        params[:sidx] = 'waybill.place.tag'
-    end
-
-    objects_order_by_from_params @waybills, params
-    @waybills = @waybills.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
-    if request.xhr?
-      render :json => abstract_json_for_jqgrid(@waybills, @columns,
-                                               :id_column => 'waybill.id')
-    end
+    #@waybills = Storehouse.new(current_user.entity,
+    #                           current_user.place).waybills
+    #
+    #if params[:_search]
+    #  args = Hash.new
+    #  if !params[:document_id].nil?
+    #    args['waybill.document_id'] = {:like => params[:document_id]}
+    #  end
+    #  if !params[:created].nil?
+    #    args['waybill.created'] = {:like => params[:created]}
+    #  end
+    #  if !params[:from].nil?
+    #    args['waybill.from.real_tag'] = {:like => params[:from]}
+    #  end
+    #  if !params[:owner].nil?
+    #    args['waybill.owner.real_tag'] = {:like => params[:owner]}
+    #  end
+    #  if !params[:vatin].nil?
+    #    args['waybill.vatin'] = {:like => params[:vatin]}
+    #  end
+    #  if !params[:place].nil?
+    #    args['waybill.place.tag'] = {:like => params[:place]}
+    #  end
+    #  @waybills = @waybills.where args
+    #end
+    #
+    #case params[:sidx]
+    #  when 'document_id'
+    #    params[:sidx] = 'waybill.document_id'
+    #  when 'created'
+    #    params[:sidx] = 'waybill.created'
+    #  when 'from'
+    #    params[:sidx] = 'waybill.from.real_tag'
+    #  when 'owner'
+    #    params[:sidx] = 'waybill.owner.real_tag'
+    #  when 'vatin'
+    #    params[:sidx] = 'waybill.vatin'
+    #  when 'place'
+    #    params[:sidx] = 'waybill.place.tag'
+    #end
+    #
+    #objects_order_by_from_params @waybills, params
+    #@waybills = @waybills.paginate(
+    #  :page     => params[:page],
+    #  :per_page => params[:rows])
+    #if request.xhr?
+    #  render :json => abstract_json_for_jqgrid(@waybills, @columns,
+    #                                           :id_column => 'waybill.id')
+    #end
   end
 
   def waybill_entries_list
-    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
-    @entries = Storehouse.new(current_user.entity,
-                               current_user.place).
-                          waybill_by_id(params[:id].to_i).resources
-    objects_order_by_from_params @entries, params
-    @entries = @entries.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
-    if request.xhr?
-      render :json => abstract_json_for_jqgrid(@entries, @columns,
-                                               :id_column => 'product.resource.id')
-    end
+    #@columns = ['product.resource.real_tag', 'amount', 'product.unit']
+    #@entries = Storehouse.new(current_user.entity,
+    #                           current_user.place).
+    #                      waybill_by_id(params[:id].to_i).resources
+    #objects_order_by_from_params @entries, params
+    #@entries = @entries.paginate(
+    #  :page     => params[:page],
+    #  :per_page => params[:rows])
+    #if request.xhr?
+    #  render :json => abstract_json_for_jqgrid(@entries, @columns,
+    #                                           :id_column => 'product.resource.id')
+    #end
   end
 
   def return
@@ -287,51 +294,51 @@ class StorehousesController < ApplicationController
   end
 
   def return_list
-    @columns = ['place.tag', 'product.resource.real_tag', 'amount',
-                'product.unit', 'owner.real_tag', 'owner.id']
-
-    StorehouseEntry.class_exec {
-      def uid
-        return self.product.resource.id.to_s + "_" + self.owner.id.to_s
-      end
-    }
-
-    if can?(:manage, StorehouseReturn)
-      @storehouse = Storehouse.taskmaster(current_user.entity,
-                                          current_user.place)
-    else
-      @storehouse = Storehouse.taskmasters(current_user.entity,
-                                           current_user.place)
-    end
-    if params[:_search]
-      args = Hash.new
-      if !params[:resource].nil?
-        args['product.resource.real_tag'] = {:like => params[:resource]}
-      end
-      if !params[:amount].nil?
-        args['amount'] = {:like => params[:amount]}
-      end
-      if !params[:unit].nil?
-        args['product.unit'] = {:like => params[:unit]}
-      end
-      @storehouse = @storehouse.where args
-    end
-
-    case params[:sidx]
-      when 'resource'
-        params[:sidx] = 'product.resource.real_tag'
-      when 'unit'
-        params[:sidx] = 'product.unit'
-    end
-    objects_order_by_from_params @storehouse, params
-
-    @storehouse = @storehouse.paginate(
-      :page     => params[:page],
-      :per_page => params[:rows])
-    if request.xhr?
-      render :json => abstract_json_for_jqgrid(@storehouse, @columns,
-                                               :id_column => 'uid')
-    end
+    #@columns = ['place.tag', 'product.resource.real_tag', 'amount',
+    #            'product.unit', 'owner.real_tag', 'owner.id']
+    #
+    #Storehouse.class_exec {
+    #  def uid
+    #    return self.product.resource.id.to_s + "_" + self.owner.id.to_s
+    #  end
+    #}
+    #
+    #if can?(:manage, StorehouseReturn)
+    #  @storehouse = Storehouse.taskmaster(current_user.entity,
+    #                                      current_user.place)
+    #else
+    #  @storehouse = Storehouse.taskmasters(current_user.entity,
+    #                                       current_user.place)
+    #end
+    #if params[:_search]
+    #  args = Hash.new
+    #  if !params[:resource].nil?
+    #    args['product.resource.real_tag'] = {:like => params[:resource]}
+    #  end
+    #  if !params[:amount].nil?
+    #    args['amount'] = {:like => params[:amount]}
+    #  end
+    #  if !params[:unit].nil?
+    #    args['product.unit'] = {:like => params[:unit]}
+    #  end
+    #  @storehouse = @storehouse.where args
+    #end
+    #
+    #case params[:sidx]
+    #  when 'resource'
+    #    params[:sidx] = 'product.resource.real_tag'
+    #  when 'unit'
+    #    params[:sidx] = 'product.unit'
+    #end
+    #objects_order_by_from_params @storehouse, params
+    #
+    #@storehouse = @storehouse.paginate(
+    #  :page     => params[:page],
+    #  :per_page => params[:rows])
+    #if request.xhr?
+    #  render :json => abstract_json_for_jqgrid(@storehouse, @columns,
+    #                                           :id_column => 'uid')
+    #end
   end
 
   def return_resources
