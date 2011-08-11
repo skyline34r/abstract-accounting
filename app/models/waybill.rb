@@ -105,6 +105,11 @@ class Waybill < ActiveRecord::Base
 
   scope :not_disabled, where("disable_deal_id IS NULL")
   scope :disabled, where("disable_deal_id IS NOT NULL")
+  scope :by_storekeeper, lambda { |owner = nil, place = nil|
+    if !owner.nil? and !place.nil?
+      where("owner_id = ? AND place_id = ?", owner.id, place.id)
+    end
+  }
 
   alias_method :original_from=, :from=
   alias_method :original_from, :from
@@ -165,21 +170,42 @@ class Waybill < ActiveRecord::Base
   after_initialize :waybill_initialize
   before_save :waybill_before_save
 
-  def Waybill.find_by_owner_and_place entity = nil, place = nil, *args
-    if entity.nil? or (!entity.nil? and place.nil?)
-      Waybill.all *args
-    else
-      Waybill.find_all_by_place_id_and_owner_id(place, entity, *args)
+  def has_in_the_storehouse?
+    has = false
+    ActiveRecord::Base.connection.execute("
+    SELECT CASE WHEN SUM(rules.amount) = 0 THEN 0 WHEN SUM(rules.rule_rate) < SUM(rules.amount) THEN 1 ELSE 0 END as has FROM (
+      SELECT rules.to_id as rule_to_id, SUM(rules.rate) as rule_rate, states.amount as amount FROM rules
+        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+        INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
+      WHERE waybills.created >= (
+              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
+            ) AND rules.to_id IN (
+              SELECT rules.to_id FROM rules
+                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+              WHERE waybills.id = " + self.id.to_s + "
+            )
+      GROUP BY rules.to_id
+      UNION
+      SELECT rules.to_id as rule_to_id, -rules.rate as rule_rate, 0.0 as amount FROM rules
+        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+      WHERE waybills.id = " + self.id.to_s + "
+      UNION
+      SELECT rules.from_id as rule_to_id, 0.0 as rule_rate, -SUM(rules.rate) as amount FROM rules
+        INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id
+      WHERE storehouse_releases.created >= (
+              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
+            ) AND rules.from_id IN (
+              SELECT rules.to_id FROM rules
+                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+              WHERE waybills.id = " + self.id.to_s + "
+            ) AND storehouse_releases.state = 1
+      GROUP BY rules.from_id
+    ) as rules
+    GROUP BY rules.rule_to_id;
+    ").each do |item|
+      has = item["has"] == 1 ? true : has
     end
-  end
-
-  def has_in_the_storehouse? storehouse = nil
-    #if storehouse.nil?
-    #  storehouse = Storehouse.new self.owner, self.place
-    #end
-    #return true if !storehouse.waybill_by_id(self.id).nil?
-    #false
-    false
+    has
   end
 
   private

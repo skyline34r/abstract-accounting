@@ -92,15 +92,13 @@ class WaybillsController < ApplicationController
           .where('lower(CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END) LIKE ?', "%#{params[:owner].downcase}%")
       end
     end
-    base_waybills = base_waybills.not_disabled
-    base_waybills = base_waybills.find_by_owner_and_place(current_user.entity, current_user.place)
+    base_waybills = base_waybills.not_disabled.by_storekeeper(current_user.entity, current_user.place)
     @waybills = base_waybills.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
 
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')#,
-        #:params => {'has_in_the_storehouse?' => nil})#Storehouse.new(current_user.entity, current_user.place)})
+      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')
     end
   end
 
