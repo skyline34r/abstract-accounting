@@ -103,11 +103,11 @@ class Waybill < ActiveRecord::Base
   belongs_to :deal
   belongs_to :disable_deal, :class_name => 'Deal'
 
-  scope :not_disabled, where("disable_deal_id IS NULL")
-  scope :disabled, where("disable_deal_id IS NOT NULL")
+  scope :not_disabled, where("waybills.disable_deal_id IS NULL")
+  scope :disabled, where("waybills.disable_deal_id IS NOT NULL")
   scope :by_storekeeper, lambda { |owner = nil, place = nil|
     if !owner.nil? and !place.nil?
-      where("owner_id = ? AND place_id = ?", owner.id, place.id)
+      where("waybills.owner_id = ? AND waybills.place_id = ?", owner.id, place.id)
     end
   }
 
