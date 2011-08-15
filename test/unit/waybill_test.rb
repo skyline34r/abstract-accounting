@@ -365,13 +365,15 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 500
     assert wb.save, "Waybill not saved"
 
-    dOwner = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
-      Asset.find_by_tag("roof"), Entity.find_by_tag("Storekeeper")).first;
-    sOwner = dOwner.state
-    assert !sOwner.nil?, "Owner state is nil"
-    assert_equal "passive", sOwner.side, "Owner state side is invalid"
-    assert_equal 500, sOwner.amount, "Owner state amount is invalid"
-    assert_equal wb.created, sOwner.start, "Owner state date is invalid"
+    deal_owner = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
+      Asset.find_by_tag("roof"), Entity.find_by_tag("Storekeeper")).first
+    state_owner = deal_owner.state
+    assert !state_owner.nil?, "Owner state is nil"
+    assert_equal "passive", state_owner.side, "Owner state side is invalid"
+    assert_equal 500, state_owner.amount, "Owner state amount is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 state_owner.start, "Owner state date is invalid"
 
     dOrganization = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
       Asset.find_by_tag("roof"), Entity.find_by_tag("Organization")).first;
@@ -379,7 +381,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !sOrganization.nil?, "Organization state is nil"
     assert_equal "active", sOrganization.side, "Organization state side is invalid"
     assert_equal 500, sOrganization.amount, "Organization state amount is invalid"
-    assert_equal wb.created, sOrganization.start, "Organization state date is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 sOrganization.start, "Organization state date is invalid"
 
     wb = Waybill.new(:document_id => "123456",
                      :owner => Entity.find_by_tag("Storekeeper"),
@@ -396,7 +400,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !sOwner.nil?, "Owner state is nil"
     assert_equal "passive", sOwner.side, "Owner state side is invalid"
     assert_equal 1000, sOwner.amount, "Owner state amount is invalid"
-    assert_equal wb.created, sOwner.start, "Owner state date is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 sOwner.start, "Owner state date is invalid"
 
     dOrganization = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("roof"),
       Asset.find_by_tag("roof"), Entity.find_by_tag("Organization")).first;
@@ -404,7 +410,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !sOrganization.nil?, "Organization state is nil"
     assert_equal "active", sOrganization.side, "Organization state side is invalid"
     assert_equal 1000, sOrganization.amount, "Organization state amount is invalid"
-    assert_equal wb.created, sOrganization.start, "Organization state date is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 sOrganization.start, "Organization state date is invalid"
 
     dOwner = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("hammer"),
       Asset.find_by_tag("hammer"), Entity.find_by_tag("Storekeeper")).first;
@@ -412,7 +420,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !sOwner.nil?, "Owner state is nil"
     assert_equal "passive", sOwner.side, "Owner state side is invalid"
     assert_equal 5, sOwner.amount, "Owner state amount is invalid"
-    assert_equal wb.created, sOwner.start, "Owner state date is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 sOwner.start, "Owner state date is invalid"
 
     dOrganization = Deal.find_all_by_give_and_take_and_entity(Asset.find_by_tag("hammer"),
       Asset.find_by_tag("hammer"), Entity.find_by_tag("Organization")).first;
@@ -420,7 +430,9 @@ class WaybillTest < ActiveSupport::TestCase
     assert !sOrganization.nil?, "Organization state is nil"
     assert_equal "active", sOrganization.side, "Organization state side is invalid"
     assert_equal 5, sOrganization.amount, "Organization state amount is invalid"
-    assert_equal wb.created, sOrganization.start, "Organization state date is invalid"
+    dt_now = DateTime.now
+    assert_equal DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
+                 sOrganization.start, "Organization state date is invalid"
   end
 
   test "show waybills by owner and place" do

@@ -211,8 +211,9 @@ class Waybill < ActiveRecord::Base
           :change_side => true, :rate => item.amount).nil?
       end
       self.deal_id = self.deal.id
+      dt_now = DateTime.now
       return false if !Fact.new(:amount => 1.0,
-              :day => DateTime.civil(self.created.year, self.created.month, self.created.day, 12, 0, 0),
+              :day => DateTime.civil(dt_now.year, dt_now.month, dt_now.day, 12, 0, 0),
               :from => nil,
               :to => self.deal,
               :resource => self.deal.give).save

@@ -490,4 +490,58 @@ class StorehouseReturnTest < ActiveSupport::TestCase
     sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 15
     assert sr.invalid?, "StorehouseReturn invalid"
   end
+
+  test "check warehouse state" do
+    ste = StorehouseReturnEntry.new(Product.find_by_resource_id(assets(:sonyvaio)), 3)
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 3, 12, 0, 0)
+    assert_equal 30, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 2, 12, 0, 0)
+    assert_equal 0, amount, "Wrong warehouse amount"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => @storekeeper,
+      :place => @warehouse,
+      :to => @taskmaster)
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
+    assert sr.save, "StorehouseRelease not saved"
+    assert sr.apply, "Storehouse release is not applied"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 3, 12, 0, 0)
+    assert_equal 30, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 4, 12, 0, 0)
+    assert_equal 60, amount, "Wrong warehouse amount"
+
+    taskmaster2 = Entity.new :tag => "taskmaster2"
+    wb = Waybill.new(:owner => @storekeeper,
+      :document_id => "12834",
+      :place => @warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb.save, "Waybill is not saved"
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => @storekeeper,
+      :place => @warehouse,
+      :to => taskmaster2)
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
+    assert sr.save, "StorehouseRelease not saved"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 4, 12, 0, 0)
+    assert_equal 60, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state taskmaster2, @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 0, amount, "Wrong warehouse state"
+
+    assert sr.apply, "Storehouse release is not applied"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 4, 12, 0, 0)
+    assert_equal 60, amount, "Wrong warehouse state"
+    amount = ste.warehouse_state taskmaster2, @warehouse, DateTime.civil(2011, 4, 5, 12, 0, 0)
+    assert_equal 30, amount, "Wrong warehouse state"
+
+    sr = StorehouseReturn.new :created_at => DateTime.civil(2011, 4, 6, 12, 0, 0),
+        :from => @taskmaster,
+        :to => @storekeeper,
+        :place => @warehouse
+    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 15
+    assert sr.save, "Storehouse return is not saved"
+    amount = ste.warehouse_state @taskmaster, @warehouse, DateTime.civil(2011, 4, 6, 12, 0, 0)
+    assert_equal 45, amount, "Wrong warehouse state"
+  end
 end
