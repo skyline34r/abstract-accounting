@@ -107,37 +107,53 @@ class StorehousesController < ApplicationController
       state = StorehouseRelease::CANCELED
     end
 
-    @releases = StorehouseRelease.find_all_by_owner_and_place_and_state(current_user.entity,
-                                                                        current_user.place, state)
-
-    if params[:_search]
-      args = Hash.new
-      if !params[:created].nil?
-        args['created'] = {:like => params[:created]}
+    base_releases = StorehouseRelease
+    base_releases = base_releases.by_state(state) unless state.nil?
+    base_releases = base_releases.by_storekeeper(current_user.entity, current_user.place)
+    unless params[:sidx].nil?
+      if params[:sidx] == 'to'
+        base_releases = base_releases
+          .joins("INNER JOIN entities AS tos ON tos.id = storehouse_releases.to_id")
+          .joins("LEFT OUTER JOIN entity_reals AS to_reals ON to_reals.id = tos.real_id")
+          .order("CASE WHEN to_reals.id IS NULL THEN tos.tag ELSE to_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'owner'
+        base_releases = base_releases
+          .joins("INNER JOIN entities AS owners ON owners.id = storehouse_releases.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .order("CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'place'
+        base_releases = base_releases
+          .joins(:place)
+          .order("places.tag " + params[:sord].upcase)
+      else
+        base_releases = base_releases
+          .order("storehouse_releases." + params[:sidx] + " " + params[:sord].upcase)
       end
-      if !params[:owner].nil?
-        args['owner.real_tag'] = {:like => params[:owner]}
-      end
-      if !params[:to].nil?
-        args['to.real_tag'] = {:like => params[:to]}
-      end
-      if !params[:place].nil?
-        args['place.tag'] = {:like => params[:place]}
-      end
-      @releases = @releases.where args
     end
-
-    case params[:sidx]
-      when 'owner'
-        params[:sidx] = 'owner.real_tag'
-      when 'to'
-        params[:sidx] = 'to.real_tag'
-      when 'place'
-        params[:sidx] = 'place.tag'
+    unless params[:_search].nil?
+      unless params[:created].nil?
+        base_releases = base_releases
+          .where('lower(storehouse_releases.created) LIKE ?', "%#{params[:created].downcase}%")
+      end
+      unless params[:place].nil?
+        base_releases = base_releases
+          .joins(:place)
+          .where('lower(places.tag) LIKE ?', "%#{params[:place].downcase}%")
+      end
+      unless params[:to].nil?
+        base_releases = base_releases
+          .joins("INNER JOIN entities AS tos ON tos.id = storehouse_releases.to_id")
+          .joins("LEFT OUTER JOIN entity_reals AS to_reals ON to_reals.id = tos.real_id")
+          .where('lower(CASE WHEN to_reals.id IS NULL THEN tos.tag ELSE to_reals.tag END) LIKE ?', "%#{params[:to].downcase}%")
+      end
+      unless params[:owner].nil?
+        base_releases = base_releases
+          .joins("INNER JOIN entities AS owners ON owners.id = storehouse_releases.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .where('lower(CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END) LIKE ?', "%#{params[:owner].downcase}%")
+      end
     end
-
-    objects_order_by_from_params @releases, params
-    @releases = @releases.paginate(
+    @releases = base_releases.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
     if request.xhr?
