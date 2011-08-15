@@ -159,6 +159,49 @@ class Waybill < ActiveRecord::Base
     @entries
   end
 
+  def warehouse_resources
+    resources = Array.new
+    ActiveRecord::Base.connection.execute("
+    SELECT products.id as product_id, SUM(rules.rule_rate) as waybills_rate, SUM(rules.amount) as warehouse_amount FROM (
+      SELECT rules.to_id as rule_to_id, SUM(rules.rate) as rule_rate, states.amount as amount FROM rules
+        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+        INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
+      WHERE waybills.created >= (
+              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
+            ) AND rules.to_id IN (
+              SELECT rules.to_id FROM rules
+                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+              WHERE waybills.id = " + self.id.to_s + "
+            )
+      GROUP BY rules.to_id
+      UNION
+      SELECT rules.to_id as rule_to_id, -rules.rate as rule_rate, 0.0 as amount FROM rules
+        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+      WHERE waybills.id = " + self.id.to_s + "
+      UNION
+      SELECT rules.from_id as rule_to_id, 0.0 as rule_rate, -SUM(rules.rate) as amount FROM rules
+        INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id
+      WHERE storehouse_releases.created >= (
+              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
+            ) AND rules.from_id IN (
+              SELECT rules.to_id FROM rules
+                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
+              WHERE waybills.id = " + self.id.to_s + "
+            ) AND storehouse_releases.state = 1
+      GROUP BY rules.from_id
+    ) as rules
+      INNER JOIN deals ON deals.id = rules.rule_to_id
+      INNER JOIN assets ON assets.id = deals.give_id
+      INNER JOIN products ON products.resource_id = assets.id
+    GROUP BY rules.rule_to_id;
+    ").each do |item|
+      resources <<
+          WaybillEntry.new(Product.find(item["product_id"]), item["warehouse_amount"] - item["waybills_rate"]) if
+            item["warehouse_amount"] != 0 && item["warehouse_amount"] > item["waybills_rate"]
+    end
+    resources
+  end
+
   def disable arg_comment
     self.errors[:comment] << "mustn't be empty'" if arg_comment.nil? or arg_comment.empty?
     self.errors[:disable] << "Record already disabled" unless self.disable_deal.nil?

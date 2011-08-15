@@ -221,72 +221,83 @@ class StorehousesController < ApplicationController
   end
 
   def waybill_list
-    @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.real_tag',
-                'waybill.owner.real_tag', 'waybill.vatin', 'waybill.place.tag']
-    #@waybills = Storehouse.new(current_user.entity,
-    #                           current_user.place).waybills
-    #
-    #if params[:_search]
-    #  args = Hash.new
-    #  if !params[:document_id].nil?
-    #    args['waybill.document_id'] = {:like => params[:document_id]}
-    #  end
-    #  if !params[:created].nil?
-    #    args['waybill.created'] = {:like => params[:created]}
-    #  end
-    #  if !params[:from].nil?
-    #    args['waybill.from.real_tag'] = {:like => params[:from]}
-    #  end
-    #  if !params[:owner].nil?
-    #    args['waybill.owner.real_tag'] = {:like => params[:owner]}
-    #  end
-    #  if !params[:vatin].nil?
-    #    args['waybill.vatin'] = {:like => params[:vatin]}
-    #  end
-    #  if !params[:place].nil?
-    #    args['waybill.place.tag'] = {:like => params[:place]}
-    #  end
-    #  @waybills = @waybills.where args
-    #end
-    #
-    #case params[:sidx]
-    #  when 'document_id'
-    #    params[:sidx] = 'waybill.document_id'
-    #  when 'created'
-    #    params[:sidx] = 'waybill.created'
-    #  when 'from'
-    #    params[:sidx] = 'waybill.from.real_tag'
-    #  when 'owner'
-    #    params[:sidx] = 'waybill.owner.real_tag'
-    #  when 'vatin'
-    #    params[:sidx] = 'waybill.vatin'
-    #  when 'place'
-    #    params[:sidx] = 'waybill.place.tag'
-    #end
-    #
-    #objects_order_by_from_params @waybills, params
-    #@waybills = @waybills.paginate(
-    #  :page     => params[:page],
-    #  :per_page => params[:rows])
-    #if request.xhr?
-    #  render :json => abstract_json_for_jqgrid(@waybills, @columns,
-    #                                           :id_column => 'waybill.id')
-    #end
+    @columns = ['document_id', 'created', 'from.real_tag', 'owner.real_tag', 'vatin',
+                'place.tag', 'has_in_the_storehouse?']
+
+    base_waybills = Waybill
+    unless params[:sidx].nil?
+      if params[:sidx] == 'from'
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS froms ON froms.id = waybills.from_id")
+          .joins("LEFT OUTER JOIN entity_reals AS from_reals ON from_reals.id = froms.real_id")
+          .order("CASE WHEN from_reals.id IS NULL THEN froms.tag ELSE from_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'owner'
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS owners ON owners.id = waybills.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .order("CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END " + params[:sord].upcase)
+      elsif params[:sidx] == 'place'
+        base_waybills = base_waybills
+          .joins(:place)
+          .order("places.tag " + params[:sord].upcase)
+      else
+        base_waybills = base_waybills
+          .order("waybills." + params[:sidx] + " " + params[:sord].upcase)
+      end
+    end
+    unless params[:_search].nil?
+      unless params[:document_id].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.document_id) LIKE ?', "%#{params[:document_id].downcase}%")
+      end
+      unless params[:created].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.created) LIKE ?', "%#{params[:created].downcase}%")
+      end
+      unless params[:vatin].nil?
+        base_waybills = base_waybills
+          .where('lower(waybills.vatin) LIKE ?', "%#{params[:vatin].downcase}%")
+      end
+      unless params[:place].nil?
+        base_waybills = base_waybills
+          .joins(:place)
+          .where('lower(places.tag) LIKE ?', "%#{params[:place].downcase}%")
+      end
+      unless params[:from].nil?
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS froms ON froms.id = waybills.from_id")
+          .joins("LEFT OUTER JOIN entity_reals AS from_reals ON from_reals.id = froms.real_id")
+          .where('lower(CASE WHEN from_reals.id IS NULL THEN froms.tag ELSE from_reals.tag END) LIKE ?', "%#{params[:from].downcase}%")
+      end
+      unless params[:owner].nil?
+        base_waybills = base_waybills
+          .joins("INNER JOIN entities AS owners ON owners.id = waybills.owner_id")
+          .joins("LEFT OUTER JOIN entity_reals AS owner_reals ON owner_reals.id = owners.real_id")
+          .where('lower(CASE WHEN owner_reals.id IS NULL THEN owners.tag ELSE owner_reals.tag END) LIKE ?', "%#{params[:owner].downcase}%")
+      end
+    end
+    base_waybills = base_waybills.
+        not_disabled.
+        by_storekeeper(current_user.entity, current_user.place)
+    @waybills = base_waybills.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
+
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id')
+    end
   end
 
   def waybill_entries_list
-    #@columns = ['product.resource.real_tag', 'amount', 'product.unit']
-    #@entries = Storehouse.new(current_user.entity,
-    #                           current_user.place).
-    #                      waybill_by_id(params[:id].to_i).resources
-    #objects_order_by_from_params @entries, params
-    #@entries = @entries.paginate(
-    #  :page     => params[:page],
-    #  :per_page => params[:rows])
-    #if request.xhr?
-    #  render :json => abstract_json_for_jqgrid(@entries, @columns,
-    #                                           :id_column => 'product.resource.id')
-    #end
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
+    @entries = Waybill.find(params[:id].to_i).warehouse_resources
+    @entries = @entries.paginate(
+      :page     => params[:page],
+      :per_page => params[:rows])
+    if request.xhr?
+      render :json => abstract_json_for_jqgrid(@entries, @columns,
+                                               :id_column => 'product.resource.id')
+    end
   end
 
   def return

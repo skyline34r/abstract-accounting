@@ -114,7 +114,8 @@
                                                , from: tRowData.from
                                                , owner: tRowData.owner
                                                , place: tRowData.place
-                                               , vatin: tRowData.vatin }
+                                               , vatin: tRowData.vatin
+                                               , in_storehouse: tRowData.in_storehouse }
                                                , "first");
       if($("#release_waybills_tree_" + id + "_t").html()) {
         var subgridData = $("#release_waybills_tree_" + id + "_t").getRowData();
@@ -152,6 +153,7 @@
                                                , owner: tRowData.owner
                                                , place: tRowData.place
                                                , vatin: tRowData.vatin
+                                               , in_storehouse: tRowData.in_storehouse
                                                , options: "local" }
                                                , "first");
       var subgridData = $("#release_waybills_tree_" + sub_id + "_t").getRowData();
@@ -193,7 +195,8 @@
                  , from: storeHouseData[id].from
                  , owner: storeHouseData[id].owner
                  , place: storeHouseData[id].place
-                 , vatin: storeHouseData[id].vatin };
+                 , vatin: storeHouseData[id].vatin
+                 , in_storehouse: storeHouseData[id].in_storehouse };
       if(pos == 0) {
         var count = 0;
         var lastCheckRow = null;
