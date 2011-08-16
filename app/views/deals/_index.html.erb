@@ -56,6 +56,7 @@
   }
   function beforeDealSave()
   {
+    $("#save_deal").attr("disabled", "disabled");
     if((dataPage != null) && (dataPage["rules"].length > 0)) {
       var url = "";
       for(var i = 0; i < dataPage["rules"].length; i++) {

@@ -55,6 +55,7 @@
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
+    $("#save_button").attr("disabled", "disabled");
     var i;
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;

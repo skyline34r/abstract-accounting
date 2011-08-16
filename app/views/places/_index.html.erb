@@ -18,6 +18,7 @@
     if(crossPage.length) {
       canSelectPlace = true;
       $("#place_tag").attr("disabled","disabled");
+      $("#" + crossPage +  "_submit").removeAttr("disabled");
       $("#place_list").trigger("reloadGrid");
       $("#place_tag").val("");
       cancelRequest = true;
@@ -30,6 +31,8 @@
   }
   function sendTagPlace()
   {
+    $("#save_place").attr("disabled", "disabled");
+    $("#" + crossPage +  "_submit").attr("disabled", "disabled");
     $("#hide_place_tag").val(escape($("#place_tag").val()));
     savePlaceElements();
   }

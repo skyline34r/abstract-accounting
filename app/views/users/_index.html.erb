@@ -23,6 +23,7 @@
   }
   function sendDataUser()
   {
+    $("#save_user").attr("disabled", "disabled");
     <% for role in Role.all %>
       $('#role_ids_' + '<%= role.id.to_s %>').attr('checked',
         $('#user_role_id_' + '<%= role.id.to_s %>').is(':checked'));

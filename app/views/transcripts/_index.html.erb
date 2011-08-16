@@ -40,9 +40,11 @@
                            '&start=' + $("#from_datepicker").val() +
                            '&stop=' + $("#to_datepicker").val(),
                      beforeSend: function() {
+                       $("#load").attr("disabled", "disabled");
                        $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
                      },
                      complete: function() {
+                       $("#load").removeAttr("disabled", "disabled");
                        $.popup({remove:true});
                        var actionUrl = '/transcripts/load?deal_id=' + $("#transcript_deal_id").val() +
                                                         '&start=' + $("#from_datepicker").val() +

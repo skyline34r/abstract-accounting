@@ -9,6 +9,7 @@
   });
 
   function sendWaybill() {
+    $("#save_waybill").attr("disabled", "disabled");
     canSave = true;
     saveEdittedRow();
     var data = $("#waybills_list").getRowData();
