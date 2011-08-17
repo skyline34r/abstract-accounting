@@ -146,52 +146,52 @@ class StorehousesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should_get_return_of_storehouse" do
-    xml_http_request :get, :return
-    assert_response :success
-  end
-
-  test "should_get_return_list" do
-    xml_http_request :get, :return_list
-    assert_response :success
-    assert_not_nil assigns(:storehouse)
-  end
-
-  test "should_return_resource" do
-    p = Place.find_by_tag "Access to storehouse"
-    e = Entity.new :tag => "Entity 2"
-    assert e.save, "Entity is not saved"
-    u = User.new(:email => "test2@mail.com",
-                 :password => "test2_pass",
-                 :password_confirmation => "test2_pass",
-                 :entity_id => e.id,
-                 :role_ids => [roles(:operator).id])
-    u.place = p
-    assert u.save, "User can't be saved"
-
-    wb = Waybill.new :owner => e, :document_id => "12834", :place => p,
-      :from => "Organization Store", :created => DateTime.civil(2011, 4, 2, 12, 0, 0)
-    wb.add_resource assets(:sonyvaio).tag, "th", 100
-    assert wb.save, "Waybill is not saved"
-
-    sr = StorehouseRelease.new :created => DateTime.civil(2011, 4, 3, 12, 0, 0),
-      :owner => e, :place => p, :to => entities(:sergey)
-    sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
-    assert sr.save, "StorehouseRelease not saved"
-    assert sr.apply, "Storehouse release is not applied"
-
-    created = DateTime.now
-    assert_difference('StorehouseReturn.count') do
-       xml_http_request :post, :return_resources,
-                        :date => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
-                        :from_id => [entities(:sergey).id],
-                        :resource_id => [assets(:sonyvaio).id],
-                        :return_amount => [3]
-    end
-
-    assert_equal 1, StorehouseReturn.all.count, "StorehouseReturn count is not equal to 1"
-
-  end
+  #test "should_get_return_of_storehouse" do
+  #  xml_http_request :get, :return
+  #  assert_response :success
+  #end
+  #
+  #test "should_get_return_list" do
+  #  xml_http_request :get, :return_list
+  #  assert_response :success
+  #  assert_not_nil assigns(:storehouse)
+  #end
+  #
+  #test "should_return_resource" do
+  #  p = Place.find_by_tag "Access to storehouse"
+  #  e = Entity.new :tag => "Entity 2"
+  #  assert e.save, "Entity is not saved"
+  #  u = User.new(:email => "test2@mail.com",
+  #               :password => "test2_pass",
+  #               :password_confirmation => "test2_pass",
+  #               :entity_id => e.id,
+  #               :role_ids => [roles(:operator).id])
+  #  u.place = p
+  #  assert u.save, "User can't be saved"
+  #
+  #  wb = Waybill.new :owner => e, :document_id => "12834", :place => p,
+  #    :from => "Organization Store", :created => DateTime.civil(2011, 4, 2, 12, 0, 0)
+  #  wb.add_resource assets(:sonyvaio).tag, "th", 100
+  #  assert wb.save, "Waybill is not saved"
+  #
+  #  sr = StorehouseRelease.new :created => DateTime.civil(2011, 4, 3, 12, 0, 0),
+  #    :owner => e, :place => p, :to => entities(:sergey)
+  #  sr.add_resource Product.find_by_resource_id(assets(:sonyvaio)), 30
+  #  assert sr.save, "StorehouseRelease not saved"
+  #  assert sr.apply, "Storehouse release is not applied"
+  #
+  #  created = DateTime.now
+  #  assert_difference('StorehouseReturn.count') do
+  #     xml_http_request :post, :return_resources,
+  #                      :date => DateTime.civil(created.year, created.month, created.day, 12, 0, 0),
+  #                      :from_id => [entities(:sergey).id],
+  #                      :resource_id => [assets(:sonyvaio).id],
+  #                      :return_amount => [3]
+  #  end
+  #
+  #  assert_equal 1, StorehouseReturn.all.count, "StorehouseReturn count is not equal to 1"
+  #
+  #end
 
   test "should_get_resource_state_of_storehouse" do
     xml_http_request :get, :resource_state
