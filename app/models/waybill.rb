@@ -82,6 +82,14 @@ class WaybillEntry
   end
 end
 
+class WaybillWithWarehouse
+  attr_reader :waybill, :has_in_the_warehouse
+  def initialize(waybill, in_the_warehouse)
+    @waybill = waybill
+    @has_in_the_warehouse = in_the_warehouse
+  end
+end
+
 class Waybill < ActiveRecord::Base
   has_paper_trail
 
@@ -110,6 +118,331 @@ class Waybill < ActiveRecord::Base
       where("waybills.owner_id = ? AND waybills.place_id = ?", owner.id, place.id)
     end
   }
+  def Waybill.with_warehouse_state(attributes = nil)
+    where = ""
+    if !attributes.nil? and attributes.has_key?(:entity) and attributes.has_key?(:place) and
+       !attributes[:entity].nil? and !attributes[:place].nil?
+      where += " AND waybills.owner_id = " + attributes[:entity].id.to_s +
+               " AND waybills.place_id = " + attributes[:place].id.to_s
+    end
+    order = ""
+    if !attributes.nil? and attributes.has_key?(:sidx) and !attributes[:sidx].nil?
+      case attributes[:sidx]
+        when 'from'
+          order = "ORDER BY CASE WHEN from_reals.id IS NULL THEN from_entities.tag ELSE from_reals.tag END" + " " + attributes[:sord].upcase
+        when "owner"
+          order = "ORDER BY CASE WHEN owner_reals.id IS NULL THEN owner_entities.tag ELSE owner_reals.tag END" + " " + attributes[:sord].upcase
+        when "place"
+          order = "ORDER BY places.tag" + " " + attributes[:sord].upcase
+        else
+          order = "ORDER BY waybills." + attributes[:sidx] + " " + attributes[:sord].upcase
+      end
+    end
+    if !attributes.nil? and attributes.has_key?(:search)
+      attributes[:search].each do |attr, value|
+        if value.kind_of?(Hash)
+          case attr
+            when :owner
+              where += " AND lower(CASE WHEN owner_reals.id IS NULL THEN owner_entities.tag ELSE owner_reals.tag END)"
+            when :from
+              where += " AND lower(CASE WHEN from_reals.id IS NULL THEN from_entities.tag ELSE from_reals.tag END)"
+            when :document_id
+              where += " AND waybills.document_id"
+            when :vatin
+              where += " AND waybills.vatin"
+            when :created
+              where += " AND waybills.created"
+            when :place
+              where += " AND lower(places.tag)"
+          end
+          where += " LIKE lower('%" + value[:like].to_s + "%')"
+        end
+      end
+    end
+    limit = ""
+    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+      page = attributes[:page]
+      per_page = attributes[:per_page]
+      if page.kind_of?(String)
+        page = page.to_i
+      end
+      if per_page.kind_of?(String)
+        per_page = per_page.to_i
+      end
+      limit = " LIMIT " + per_page.to_s + " OFFSET " + ((page- 1) * per_page).to_s
+    end
+    sql = "
+    SELECT warehouse.id, SUM(CASE WHEN warehouse.sec_rate < warehouse.amount THEN 1 ELSE 0 END) as in_the_warehouse FROM (
+SELECT id, SUM(rate) as rate, SUM(amount) as amount, SUM(sec_rate) as sec_rate FROM (
+SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id AND sec_assets.id != assets.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND (sec_waybills.created > waybills.created OR (sec_waybills.created = waybills.created AND sec_waybills.id > waybills.id)) AND sec_waybills.owner_id = waybills.owner_id
+                                          AND sec_waybills.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL" + where + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, 0.0 as amount, SUM(CASE WHEN new_ws.id IS NULL THEN 0.0 ELSE new_rs.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.to_id = rules.to_id AND new_rs.id != rules.id
+  LEFT JOIN waybills AS new_ws ON new_ws.deal_id = new_rs.deal_id AND new_ws.disable_deal_id IS NULL
+                                  AND (new_ws.created > waybills.created OR (new_ws.created = waybills.created AND new_ws.id > waybills.id)) AND new_ws.owner_id = waybills.owner_id
+                                  AND new_ws.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND new_ws.id IS NOT NULL" + where + "
+GROUP BY waybills.id, rules.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id AND sec_deals.id != deals.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL" + where + "
+GROUP BY waybills.id, sec_deals.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(CASE WHEN sr.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.from_id = sec_deals.id
+  LEFT JOIN storehouse_releases AS sr ON sr.deal_id = sec_rules.deal_id
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND sr.id IS NOT NULL" + where + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(new_rs.rate) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.from_id = rules.to_id
+  INNER JOIN storehouse_releases AS sr ON sr.deal_id = new_rs.deal_id AND sr.state = 1
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL" + where + "
+GROUP BY waybills.id, rules.to_id)
+GROUP BY id, asset_id) as warehouse
+INNER JOIN waybills ON waybills.id = warehouse.id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+GROUP BY warehouse.id
+" + order + "
+" + limit + "
+    "
+    waybills = Array.new
+    ActiveRecord::Base.connection.execute(sql).each do |item|
+      waybills << WaybillWithWarehouse.new(Waybill.find(item["id"]), (item["in_the_warehouse"] > 0 ? true : false))
+    end
+    waybills
+  end
+  def Waybill.in_warehouse(attributes = nil)
+    where = ""
+    if !attributes.nil? and attributes.has_key?(:entity) and attributes.has_key?(:place) and
+       !attributes[:entity].nil? and !attributes[:place].nil?
+      where += " AND waybills.owner_id = " + attributes[:entity].id.to_s +
+               " AND waybills.place_id = " + attributes[:place].id.to_s
+    end
+    order = ""
+    if !attributes.nil? and attributes.has_key?(:sidx) and !attributes[:sidx].nil?
+      case attributes[:sidx]
+        when 'from'
+          order = "ORDER BY CASE WHEN from_reals.id IS NULL THEN from_entities.tag ELSE from_reals.tag END" + " " + attributes[:sord].upcase
+        when "owner"
+          order = "ORDER BY CASE WHEN owner_reals.id IS NULL THEN owner_entities.tag ELSE owner_reals.tag END" + " " + attributes[:sord].upcase
+        when "place"
+          order = "ORDER BY places.tag" + " " + attributes[:sord].upcase
+        else
+          order = "ORDER BY waybills." + attributes[:sidx] + " " + attributes[:sord].upcase
+      end
+    end
+    if !attributes.nil? and attributes.has_key?(:search)
+      attributes[:search].each do |attr, value|
+        if value.kind_of?(Hash)
+          case attr
+            when :owner
+              where += " AND lower(CASE WHEN owner_reals.id IS NULL THEN owner_entities.tag ELSE owner_reals.tag END)"
+            when :from
+              where += " AND lower(CASE WHEN from_reals.id IS NULL THEN from_entities.tag ELSE from_reals.tag END)"
+            when :document_id
+              where += " AND waybills.document_id"
+            when :vatin
+              where += " AND waybills.vatin"
+            when :created
+              where += " AND waybills.created"
+            when :place
+              where += " AND lower(places.tag)"
+          end
+          where += " LIKE lower('%" + value[:like].to_s + "%')"
+        end
+      end
+    end
+    limit = ""
+    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+      page = attributes[:page]
+      per_page = attributes[:per_page]
+      if page.kind_of?(String)
+        page = page.to_i
+      end
+      if per_page.kind_of?(String)
+        per_page = per_page.to_i
+      end
+      limit = " LIMIT " + per_page.to_s + " OFFSET " + ((page- 1) * per_page).to_s
+    end
+    sql = "
+    SELECT warehouse.id FROM (
+SELECT id, SUM(rate) as rate, SUM(amount) as amount, SUM(sec_rate) as sec_rate FROM (
+SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id AND sec_assets.id != assets.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND (sec_waybills.created > waybills.created OR (sec_waybills.created = waybills.created AND sec_waybills.id > waybills.id)) AND sec_waybills.owner_id = waybills.owner_id
+                                          AND sec_waybills.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL" + where + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, 0.0 as amount, SUM(CASE WHEN new_ws.id IS NULL THEN 0.0 ELSE new_rs.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.to_id = rules.to_id AND new_rs.id != rules.id
+  LEFT JOIN waybills AS new_ws ON new_ws.deal_id = new_rs.deal_id AND new_ws.disable_deal_id IS NULL
+                                  AND (new_ws.created > waybills.created OR (new_ws.created = waybills.created AND new_ws.id > waybills.id)) AND new_ws.owner_id = waybills.owner_id
+                                  AND new_ws.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND new_ws.id IS NOT NULL" + where + "
+GROUP BY waybills.id, rules.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id AND sec_deals.id != deals.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL" + where + "
+GROUP BY waybills.id, sec_deals.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(CASE WHEN sr.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.from_id = sec_deals.id
+  LEFT JOIN storehouse_releases AS sr ON sr.deal_id = sec_rules.deal_id
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND sr.id IS NOT NULL" + where + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(new_rs.rate) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.from_id = rules.to_id
+  INNER JOIN storehouse_releases AS sr ON sr.deal_id = new_rs.deal_id AND sr.state = 1
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL" + where + "
+GROUP BY waybills.id, rules.to_id)
+GROUP BY id, asset_id) as warehouse
+INNER JOIN waybills ON waybills.id = warehouse.id
+INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+INNER JOIN places ON places.id = waybills.place_id
+LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+WHERE warehouse.sec_rate < warehouse.amount
+GROUP BY warehouse.id
+" + order + "
+" + limit + "
+    "
+    waybills = Array.new
+    ActiveRecord::Base.connection.execute(sql).each do |item|
+      waybills << Waybill.find(item["id"])
+    end
+    waybills
+  end
 
   alias_method :original_from=, :from=
   alias_method :original_from, :from
@@ -161,43 +494,87 @@ class Waybill < ActiveRecord::Base
 
   def warehouse_resources
     resources = Array.new
-    ActiveRecord::Base.connection.execute("
-    SELECT products.id as product_id, SUM(rules.rule_rate) as waybills_rate, SUM(rules.amount) as warehouse_amount FROM (
-      SELECT rules.to_id as rule_to_id, SUM(rules.rate) as rule_rate, states.amount as amount FROM rules
-        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-        INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
-      WHERE waybills.created >= (
-              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
-            ) AND rules.to_id IN (
-              SELECT rules.to_id FROM rules
-                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-              WHERE waybills.id = " + self.id.to_s + "
-            )
-      GROUP BY rules.to_id
-      UNION
-      SELECT rules.to_id as rule_to_id, -rules.rate as rule_rate, 0.0 as amount FROM rules
-        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-      WHERE waybills.id = " + self.id.to_s + "
-      UNION
-      SELECT rules.from_id as rule_to_id, 0.0 as rule_rate, -SUM(rules.rate) as amount FROM rules
-        INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id
-      WHERE storehouse_releases.created >= (
-              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
-            ) AND rules.from_id IN (
-              SELECT rules.to_id FROM rules
-                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-              WHERE waybills.id = " + self.id.to_s + "
-            ) AND storehouse_releases.state = 1
-      GROUP BY rules.from_id
-    ) as rules
-      INNER JOIN deals ON deals.id = rules.rule_to_id
-      INNER JOIN assets ON assets.id = deals.give_id
-      INNER JOIN products ON products.resource_id = assets.id
-    GROUP BY rules.rule_to_id;
-    ").each do |item|
+    ActiveRecord::Base.connection.execute(
+    "
+    SELECT products.id as product_id, SUM(resources.rate) as rate, SUM(resources.amount) - SUM(resources.sec_rate) as warehouse_state FROM (
+SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id AND sec_assets.id != assets.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND (sec_waybills.created > waybills.created OR (sec_waybills.created = waybills.created AND sec_waybills.id > waybills.id)) AND sec_waybills.owner_id = waybills.owner_id
+                                          AND sec_waybills.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND waybills.id = " + self.id.to_s + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, 0.0 as amount, SUM(CASE WHEN new_ws.id IS NULL THEN 0.0 ELSE new_rs.rate END) as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.to_id = rules.to_id AND new_rs.id != rules.id
+  LEFT JOIN waybills AS new_ws ON new_ws.deal_id = new_rs.deal_id AND new_ws.disable_deal_id IS NULL
+                                  AND (new_ws.created > waybills.created OR (new_ws.created = waybills.created AND new_ws.id > waybills.id)) AND new_ws.owner_id = waybills.owner_id
+                                  AND new_ws.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND new_ws.id IS NOT NULL AND waybills.id = " + self.id.to_s + "
+GROUP BY waybills.id, rules.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id AND sec_deals.id != deals.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
+  LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
+                                          AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL AND waybills.id = " + self.id.to_s + "
+GROUP BY waybills.id, sec_deals.id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(CASE WHEN sr.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
+  LEFT JOIN assets AS sec_assets ON sec_assets.real_id = asset_reals.id
+  LEFT JOIN deals AS sec_deals ON sec_deals.give_id = sec_assets.id
+  LEFT JOIN rules AS sec_rules ON sec_rules.from_id = sec_deals.id
+  LEFT JOIN storehouse_releases AS sr ON sr.deal_id = sec_rules.deal_id
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND sr.id IS NOT NULL AND waybills.id = " + self.id.to_s + "
+GROUP BY waybills.id, rules.to_id
+UNION
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, -SUM(new_rs.rate) as amount, 0.0 as sec_rate FROM waybills
+  LEFT JOIN rules ON rules.deal_id = waybills.deal_id
+  INNER JOIN deals ON deals.id = rules.to_id
+  INNER JOIN assets ON assets.id = deals.give_id
+  LEFT JOIN rules AS new_rs ON new_rs.from_id = rules.to_id
+  INNER JOIN storehouse_releases AS sr ON sr.deal_id = new_rs.deal_id AND sr.state = 1
+                                          AND sr.created >= waybills.created AND sr.owner_id = waybills.owner_id
+                                          AND sr.place_id = waybills.place_id
+WHERE waybills.disable_deal_id IS NULL AND waybills.id = " + self.id.to_s + "
+GROUP BY waybills.id, rules.to_id) as resources
+INNER JOIN products ON products.resource_id = resources.asset_id
+GROUP BY resources.id, resources.asset_id
+    "
+    ).each do |item|
+      amount = 0
+      unless item["warehouse_state"] <= 0
+        if item["warehouse_state"] >= item["rate"]
+          amount = item["rate"]
+        else
+          amount = item["warehouse_state"]
+        end
+      end
       resources <<
-          WaybillEntry.new(Product.find(item["product_id"]), item["warehouse_amount"] - item["waybills_rate"]) if
-            item["warehouse_amount"] != 0 && item["warehouse_amount"] > item["waybills_rate"]
+          WaybillEntry.new(Product.find(item["product_id"]), amount) unless amount.zero?
     end
     resources
   end
@@ -212,44 +589,6 @@ class Waybill < ActiveRecord::Base
 
   after_initialize :waybill_initialize
   before_save :waybill_before_save
-
-  def has_in_the_storehouse?
-    has = false
-    ActiveRecord::Base.connection.execute("
-    SELECT CASE WHEN SUM(rules.amount) = 0 THEN 0 WHEN SUM(rules.rule_rate) < SUM(rules.amount) THEN 1 ELSE 0 END as has FROM (
-      SELECT rules.to_id as rule_to_id, SUM(rules.rate) as rule_rate, states.amount as amount FROM rules
-        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-        INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
-      WHERE waybills.created >= (
-              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
-            ) AND rules.to_id IN (
-              SELECT rules.to_id FROM rules
-                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-              WHERE waybills.id = " + self.id.to_s + "
-            )
-      GROUP BY rules.to_id
-      UNION
-      SELECT rules.to_id as rule_to_id, -rules.rate as rule_rate, 0.0 as amount FROM rules
-        INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-      WHERE waybills.id = " + self.id.to_s + "
-      UNION
-      SELECT rules.from_id as rule_to_id, 0.0 as rule_rate, -SUM(rules.rate) as amount FROM rules
-        INNER JOIN storehouse_releases ON storehouse_releases.deal_id = rules.deal_id
-      WHERE storehouse_releases.created >= (
-              SELECT waybills.created FROM waybills WHERE waybills.id = " + self.id.to_s + "
-            ) AND rules.from_id IN (
-              SELECT rules.to_id FROM rules
-                INNER JOIN waybills ON waybills.deal_id = rules.deal_id
-              WHERE waybills.id = " + self.id.to_s + "
-            ) AND storehouse_releases.state = 1
-      GROUP BY rules.from_id
-    ) as rules
-    GROUP BY rules.rule_to_id;
-    ").each do |item|
-      has = item["has"] == 1 ? true : has
-    end
-    has
-  end
 
   private
   def waybill_initialize

@@ -364,16 +364,10 @@ module StorehousesHelper
       :mtype => 'GET',
       :colNames => ['', t('waybill.tree.document_id'), t('waybill.tree.date'),
                     t('waybill.tree.organization'), t('waybill.tree.owner'),
-                    t('waybill.tree.vatin'), t('waybill.tree.place'), "in_storehouse"],
+                    t('waybill.tree.vatin'), t('waybill.tree.place')],
       :colModel => [
         { :name => 'check',  :index => 'check', :width => 14, :search => false,
           :formatter => 'function(cellvalue, options, rowObject) {
-                           var in_warehouse = true;
-                           if (rowObject.in_storehouse != undefined) in_warehouse = rowObject.in_storehouse;
-                           else in_warehouse = rowObject[6];
-                           if (!in_warehouse) {
-                             return "";
-                           }
                            if(((storeHouseData[options.rowId] == undefined)&&(!rowObject.check)) ||
                               (rowObject.check == "uncheck")) {
                              return "<input type=\'checkbox\' id=\'check_waybill_"
@@ -425,13 +419,6 @@ module StorehousesHelper
                              return rowObject.vatin;
                            }
                            return rowObject[5];
-                         }'.to_json_var },
-        { :name => 'in_storehouse', :index => 'in_storehouse', :hidden => true,
-          :formatter => 'function(cellvalue, options, rowObject) {
-                           if(rowObject.in_storehouse != undefined) {
-                             return rowObject.in_storehouse;
-                           }
-                           return rowObject[6];
                          }'.to_json_var }
       ],
       :pager => '#release_waybills_tree_pager',
@@ -453,13 +440,6 @@ module StorehousesHelper
       :loadComplete => 'function()
       {
         storeHouseDataIDs = $("#release_waybills_tree").getDataIDs();
-        var grid = $("#release_waybills_tree");
-        var subGridCells = $("td.sgcollapsed",grid[0]);
-        $.each(subGridCells,function(i,value){
-            if ($("#release_waybills_tree").getCell(storeHouseDataIDs[i], "in_storehouse") == "false") {
-                $(value).unbind("click").html("");
-            }
-        });
         if(listAction != "") {
           var _id = listAction;
           listAction = "check_waybill";
@@ -476,8 +456,7 @@ module StorehousesHelper
                                                       , from: storeHouseData[i].from
                                                       , owner: storeHouseData[i].owner
                                                       , place: storeHouseData[i].place
-                                                      , vatin: storeHouseData[i].vatin
-                                                      , in_storehouse: storeHouseData[i].in_storehouse }
+                                                      , vatin: storeHouseData[i].vatin }
                                                       , "first");
           }
         }
@@ -573,8 +552,6 @@ module StorehousesHelper
                              $("#release_waybills_tree").getCell(row_id, "place");
                            storeHouseData[row_id].vatin =
                              $("#release_waybills_tree").getCell(row_id, "vatin");
-                           storeHouseData[row_id].in_storehouse =
-                             $("#release_waybills_tree").getCell(row_id, "in_storehouse");
                          }
                          storeHouseData[row_id].data[options.rowId] = cellvalue;
                          return cellvalue;
