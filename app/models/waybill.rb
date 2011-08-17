@@ -83,10 +83,14 @@ class WaybillEntry
 end
 
 class WaybillWithWarehouse
-  attr_reader :waybill, :has_in_the_warehouse
-  def initialize(waybill, in_the_warehouse)
-    @waybill = waybill
+  attr_reader :has_in_the_warehouse
+  def initialize(waybill_id, in_the_warehouse)
+    @waybill_id = waybill_id
     @has_in_the_warehouse = in_the_warehouse
+  end
+
+  def waybill
+    Waybill.find(@waybill_id)
   end
 end
 
@@ -276,7 +280,7 @@ GROUP BY warehouse.id
     "
     waybills = Array.new
     ActiveRecord::Base.connection.execute(sql).each do |item|
-      waybills << WaybillWithWarehouse.new(Waybill.find(item["id"]), (item["in_the_warehouse"] > 0 ? true : false))
+      waybills << WaybillWithWarehouse.new(item["id"], (item["in_the_warehouse"] > 0 ? true : false))
     end
     waybills
   end
