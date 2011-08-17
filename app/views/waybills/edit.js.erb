@@ -1,2 +1,6 @@
 document.title = "<%=t 'title.abstract'%> :: <%=t 'title.waybill'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'waybills/disable_action') %>");
+$("#waybill_disable_form").submit(function() {
+    $('#save_waybill').attr('disabled', 'disabled');
+    return true;
+});
