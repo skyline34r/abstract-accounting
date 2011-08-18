@@ -10,10 +10,7 @@ class State < ActiveRecord::Base
   belongs_to :deal
   
   after_initialize :do_init
-
-  def State.open
-    State.find_all_by_paid nil
-  end
+  scope :open, where("states.paid IS NULL")
 
   def self.find_all_between_start_and_stop(start, stop)
     State.where("start <= ? AND (paid > ? OR paid IS NULL)",

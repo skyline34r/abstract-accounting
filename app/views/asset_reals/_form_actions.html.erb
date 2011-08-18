@@ -1,0 +1,13 @@
+<td>
+  <input name="cancel" type="button" value="<%=t 'resource.btn_cancel'%>"
+    onclick="onCancelAssetReal();"/>
+  <input name="reset" type="button" value="<%=t 'resource.btn_reset'%>"
+    onclick="onResetAssetReal();"/>
+</td>
+<td style="width: 45px">
+  <%= form_for @asset_real, :remote => true, :html => { :id => "asset_real_form" } do |f| %>
+  <%= f.submit t('resource.btn_save'), :id => "save_asset_real", :disabled => "true",
+                        :onclick => "sendTagAssetReal();" %>
+  <%= f.hidden_field :tag, :id => "hide_asset_real_tag", :value => @asset_real.tag %>
+  <% end %>
+</td>

@@ -15,24 +15,30 @@ class DealsController < ApplicationController
         return alpha_code
       end
     }
-    @columns = ['tag', 'entity.tag', 'rate', 'give.tag', 'take.tag', 'take.id',
+    @columns = ['tag', 'entity.real_tag', 'rate', 'give.tag', 'take.tag', 'take.id',
                 'take.class.name', 'isOffBalance']
-    @deal = Deal.all
-    if params[:_search]
-      args = Hash.new
-      if !params[:tag].nil?
-        args['tag'] = {:like => params[:tag]}
+    base_deals = Deal
+    unless params[:_search].nil?
+      unless params[:tag].nil?
+        base_deals = base_deals
+          .where('lower(deals.tag) LIKE ?', "%#{params[:tag].downcase}%")
       end
-      if !params[:entity].nil?
-        args['entity.tag'] = {:like => params[:entity]}
+      unless params[:entity].nil?
+        base_deals = base_deals.joins(:entity)
+          .joins("LEFT OUTER JOIN entity_reals ON entity_reals.id = entities.real_id")
+          .where('lower(CASE WHEN entity_reals.id IS NULL THEN entities.tag ELSE entity_reals.tag END) LIKE ?', "%#{params[:entity].downcase}%")
       end
-      @deal = @deal.where args
     end
-    case params[:sidx]
-       when 'entity'
-         params[:sidx] = 'entity.tag'
+    unless params[:sidx].nil?
+      if params[:sidx] == "entity"
+        base_deals = base_deals.joins(:entity)
+          .joins("LEFT OUTER JOIN entity_reals ON entity_reals.id = entities.real_id")
+          .order("CASE WHEN entity_reals.id IS NULL THEN entities.tag ELSE entity_reals.tag END " + params[:sord].upcase)
+      else
+        base_deals = base_deals.order('deals.' + params[:sidx] + " " + params[:sord].upcase)
+      end
     end
-    objects_order_by_from_params @deal, params
+    @deal = base_deals
     if session[:deal_id].nil?
       @deals = @deal.paginate(
         :page     => params[:page],

@@ -16,6 +16,11 @@ Abstract::Application.routes.draw do
       get 'view'
     end
   end
+  resources :entity_reals do
+    collection do
+      get 'view'
+    end
+  end
   resources :resources do
     member do
       get 'edit_asset'
@@ -28,6 +33,11 @@ Abstract::Application.routes.draw do
       get 'new_money'
       post 'create_asset'
       post 'create_money'
+      get 'view'
+    end
+  end
+  resources :asset_reals do
+    collection do
       get 'view'
     end
   end
@@ -115,6 +125,19 @@ Abstract::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
+  match 'entities/surrogates/:real_id' => 'entities#surrogates',
+        :as => :entities_surrogates
+  match 'entity_reals/:real_id/surrogates(/:type)' => 'entities#select',
+        :as => :entity_real_surrogates,
+        :constraints => { :type => /edit/ }
+  match 'entity_reals/surrogates/new' => 'entities#select'
+
+  match 'resources/assets/surrogates/:real_id' => 'resources#asset_surrogates',
+        :as => :asset_surrogates
+  match 'asset_reals/:real_id/surrogates(/:type)' => 'resources#asset_select',
+        :as => :asset_real_surrogates,
+        :constraints => { :type => /edit/ }
+  match 'asset_reals/surrogates/new' => 'resources#asset_select'
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products

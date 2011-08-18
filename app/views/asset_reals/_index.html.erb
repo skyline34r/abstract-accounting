@@ -1,0 +1,183 @@
+<script type="text/javascript">
+  var canSelectAssetReal = true;
+  var actionMode = "";
+  if (crossPage == "asset_reals") {
+    crossPage = "";
+  } else {
+    clearPageSession("asset_reals");
+    setPageSessionData("asset_reals", "base_tag", "");
+    setPageSessionData("asset_reals", "tag", "");
+    $("#asset_real_choose").click(function() { assetRealChooseSurrogates(-1); });
+  }
+  function showAssetRealIndexForm(id)
+  {
+    if(id != null) {
+      editRowId = id;
+    }
+    location.hash = "#asset_reals";
+    clearPageSession("asset_reals");
+    setPageSessionData("asset_reals", "base_tag", "");
+    setPageSessionData("asset_reals", "tag", "");
+    actionMode = "";
+  }
+  function sendTagAssetReal()
+  {
+    $("#hide_asset_real_tag").val(escape($("#asset_real_tag").val()));
+    if (hasPageSessionData("asset_reals", "surrogates")) {
+      var params = "";
+      var surrogates = getPageSessionData("asset_reals", "surrogates");
+      if (Object.keys(surrogates).length > 0) {
+        for (key in surrogates) {
+          params += "&assets[]=" + key;
+        }
+      } else {
+        params += "&assets[]=empty";
+      }
+      if (params.length > 0) {
+        $("#asset_real_form").attr("action",
+          $("#asset_real_form").attr("action") + "?" + params);
+      }
+    }
+  }
+  function onCancelAssetReal()
+  {
+    showAssetRealIndexForm(null);
+  }
+  function onResetAssetReal()
+  {
+    if (hasPageSessionData("asset_reals", "base_surrogates")) {
+      if (hasPageSessionData("asset_reals", "history_surrogates")) {
+        deletePageSessionData("asset_reals", "history_surrogates");
+      }
+      setPageSessionData("asset_reals", "surrogates",
+        jQuery.extend(true, {},
+          getPageSessionData("asset_reals", "base_surrogates")));
+    }
+    $("#asset_real_tag").val(getPageSessionData("asset_reals", "base_tag"));
+    $("#save_asset_real").attr("disabled","disabled");
+  }
+  function showAssetRealActionForm(tag, action)
+  {
+    if (getPageSessionData("asset_reals", "tag").length > 0) {
+      tag = getPageSessionData("asset_reals", "tag");
+    } else {
+      setPageSessionData("asset_reals", "base_tag", tag);
+      setPageSessionData("asset_reals", "tag", tag);
+    }
+    $("#asset_real_tag").val(tag);
+    $("#asset_real_tag").removeAttr("disabled");
+    $("#asset_real_choose").removeAttr("disabled");
+    $("#asset_real_list").resetSelection();
+    canSelectAssetReal = false;
+    actionMode = action;
+  }
+  function doCrossPage(aPageName, aDiscard, aSubmit, aPageUrl) {
+    crossPage = aPageName;
+    $("#home_btn_discard").css("visibility", "visible");
+    $("#home_btn_submit").css("visibility", "visible");
+    $("#home_btn_discard").unbind("click");
+    $("#home_btn_discard").click(aDiscard);
+    $("#home_btn_submit").unbind("click");
+    $("#home_btn_submit").click(aSubmit);
+    location.href = aPageUrl;
+  }
+  function crossPageClickFn(aBackUrl, aFN) {
+    return function() {
+      $("#home_btn_discard").css("visibility", "hidden");
+      $("#home_btn_submit").css("visibility", "hidden");
+      $("#body").html("");
+      aFN();
+      location.href = aBackUrl;
+    };
+  }
+  function compareHashKeys(o1, o2) {
+    for(var p in o1){
+      if(!o2.hasOwnProperty(p)){
+        return false;
+      }
+    }
+    for(var p in o2){
+      if(!o1.hasOwnProperty(p)){
+        return false;
+      }
+    }
+    return true;
+  }
+  function assetRealChooseSurrogates(id)
+  {
+    var discardFn = function() {
+      if (hasPageSessionData("asset_reals", "history_surrogates")) {
+        setPageSessionData("asset_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("asset_reals", "history_surrogates")));
+      } else {
+        setPageSessionData("asset_reals", "surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("asset_reals", "base_surrogates")));
+      }
+    };
+    var submitFn = function() {
+      setPageSessionData("asset_reals", "history_surrogates",
+          jQuery.extend(true, {},
+            getPageSessionData("asset_reals", "surrogates")));
+    };
+    if (actionMode == "new") {
+      setPageSessionData("asset_reals", "tag", $("#asset_real_tag").val());
+      doCrossPage("asset_reals",
+                  crossPageClickFn('#asset_reals/new', discardFn),
+                  crossPageClickFn('#asset_reals/new', submitFn),
+                  "#asset_reals/surrogates/new");
+    } else if (actionMode == "edit") {
+      setPageSessionData("asset_reals", "tag", $("#asset_real_tag").val());
+      doCrossPage("asset_reals",
+                  crossPageClickFn('#asset_reals/' + id + '/edit', discardFn),
+                  crossPageClickFn('#asset_reals/' + id + '/edit', submitFn),
+                  '#asset_reals/' + id + "/surrogates/edit");
+    } else {
+      $("#home_btn_back").css("visibility", "visible");
+      $("#home_btn_back").click(function() {
+        $("#home_btn_back").css("visibility", "hidden");
+        location.href = '#asset_reals';
+      });
+      location.href = '#asset_reals/' + id + "/surrogates";
+    }
+  }
+</script>
+
+<%= raw(asset_real_jqgrid) %>
+
+<div id="asset_real_body">
+  <table>
+    <tr>
+        <td colspan="2" id="asset_real_errors"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table id="asset_real_list"></table>
+        <div id="asset_real_pager"></div>
+        </td>
+    </tr>
+    <tr id="asset_real_actions" align="right">
+        <%= render 'asset_reals/form_index' %>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <%=t 'resource.tag'%>:
+        <input id="asset_real_tag" type="text" value="" size="83" disabled="true"
+             onkeypress="$('#save_asset_real').removeAttr('disabled');"/>
+      </td>
+    </tr>
+    <tr align="left">
+      <td colspan="2">
+        <input id="asset_real_choose" type="button" disabled="true"
+             value="<%= t('quote.btn_choose')%>"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#asset_real_list").filterToolbar({searchOnEnter : false});
+  $("#asset_real_list")[0].toggleToolbar();
+</script>

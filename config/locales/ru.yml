@@ -3,6 +3,8 @@ ru:
     models:
       waybill: накладная
       storehouse_release: список выдачи
+      entity_real: лицо
+      asset_real: подлиннеые активы
     attributes:
       waybill:
         resources: Ресурсы
@@ -12,6 +14,10 @@ ru:
         resources: Ресурсы
         created: Дата
         to_id: Кому
+      entity_real:
+        tag: Название
+      asset_real:
+        tag: Название
     errors:
       template:
         header:
@@ -31,6 +37,16 @@ ru:
               blank: "должна быть введена"
             to_id:
               blank: "не указано"
+        entity_real:
+          attributes:
+            tag:
+              taken: "уже существует"
+              blank: "должно быть введено"
+        asset_real:
+          attributes:
+            tag:
+              taken: "уже существует"
+              blank: "должно быть введено"
         user:
           attributes:
             email:
@@ -42,8 +58,14 @@ ru:
     logout: Выход
     manage: Состояние
     place: Объекты
-    entity: Лица
+    entity:
+      original: Лица
+      surrogate: Суррогаты для лиц
+    entity_real: Оригинальные лица
     resource: Ресурсы
+    asset:
+      surrogate: Сурогаты для активов
+    asset_real: Оригинальные активы
     chart: План счетов
     quote: Курс
     process: Операции
@@ -65,6 +87,7 @@ ru:
   grid:
     btn_find: Поиск
   buttons:
+    btn_back: Возврат
     btn_submit: Подтвердить
     btn_discard: Отменить
   title:
@@ -229,6 +252,7 @@ ru:
     parsererror: Синтаксическая ошибка запроса!
   entity:
     tag: Название
+    real: Подлинное название
     btn_new: Создать
     btn_change: Изменить
     btn_cancel: Отмена

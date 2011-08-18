@@ -37,57 +37,34 @@ class WaybillsController < ApplicationController
   end
 
   def view
-    @columns = ['document_id', 'created', 'from.tag', 'owner.tag', 'vatin',
-                'place.tag', 'has_in_the_storehouse?']
-
-    @waybills = Waybill.not_disabled.find_by_owner_and_place(current_user.entity,
-                                                current_user.place)
-
+    @columns = ['waybill.document_id', 'waybill.created', 'waybill.from.real_tag', 'waybill.owner.real_tag',
+                'waybill.vatin', 'waybill.place.tag', 'has_in_the_warehouse']
+    search = Hash.new
     if params[:_search]
-      args = Hash.new
-      if !params[:document_id].nil?
-        args['document_id'] = {:like => params[:document_id]}
-      end
-      if !params[:created].nil?
-        args['created'] = {:like => params[:created]}
-      end
-      if !params[:from].nil?
-        args['from.tag'] = {:like => params[:from]}
-      end
-      if !params[:owner].nil?
-        args['owner.tag'] = {:like => params[:owner]}
-      end
-      if !params[:vatin].nil?
-        args['vatin'] = {:like => params[:vatin]}
-      end
-      if !params[:place].nil?
-        args['place.tag'] = {:like => params[:place]}
-      end
-      @waybills = @waybills.where args
+      search[:document_id] = {:like => params[:document_id]} unless params[:document_id].nil?
+      search[:created] = {:like => params[:created]} unless params[:created].nil?
+      search[:vatin] = {:like => params[:vatin]} unless params[:vatin].nil?
+      search[:place] = {:like => params[:place]} unless params[:place].nil?
+      search[:from] = {:like => params[:from]} unless params[:from].nil?
+      search[:owner] = {:like => params[:owner]} unless params[:owner].nil?
     end
-
-    case params[:sidx]
-       when 'from'
-         params[:sidx] = 'from.tag'
-       when 'owner'
-         params[:sidx] = 'owner.tag'
-      when 'place'
-        params[:sidx] = 'place.tag'
-    end
-
-    objects_order_by_from_params @waybills, params
-    @waybills = @waybills.paginate(
+    #base_waybills = base_waybills.not_disabled.by_storekeeper(current_user.entity, current_user.place)
+    base_waybills = Waybill.with_warehouse_state :entity => current_user.entity,
+                                                 :place => current_user.place,
+                                                 :sidx => params[:sidx],
+                                                 :sord => params[:sord],
+                                                 :search => search
+    @waybills = base_waybills.paginate(
       :page     => params[:page],
       :per_page => params[:rows])
 
     if request.xhr?
-      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'id',
-        :params => {'has_in_the_storehouse?' => Storehouse.new(current_user.entity, current_user.place)})
+      render :json => abstract_json_for_jqgrid(@waybills, @columns, :id_column => 'waybill.id')
     end
   end
 
   def show
-    @columns = ['product.resource.tag', 'amount', 'product.unit']
+    @columns = ['product.resource.real_tag', 'amount', 'product.unit']
     @entries = Waybill.find(params[:id]).resources
     @entries = @entries.paginate(
       :page     => params[:page],

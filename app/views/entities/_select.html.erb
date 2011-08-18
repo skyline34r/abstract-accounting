@@ -1,0 +1,81 @@
+<script type="text/javascript">
+  var canSelectEntity = true;
+  var firstOpen = false;
+  var entityListIDs = [];
+  if (crossPage) {
+    if (!hasPageSessionData(crossPage, "surrogates")) {
+      firstOpen = true;
+      setPageSessionData(crossPage, "surrogates", new Object());
+      setPageSessionData(crossPage, "base_surrogates", new Object());
+    }
+  }
+  function onRowChecked(id)
+  {
+    if (!$("#check_" + id).is(":checked")) {
+      $("#entity_list").delRowData(id);
+      tRowData = getPageSessionData(crossPage, "surrogates")[id];
+      delete getPageSessionData(crossPage, "surrogates")[id];
+      if (entityListIDs.indexOf(id) >= 0) {
+        var pos = entityListIDs.indexOf(id);
+        var keys = Object.keys(getPageSessionData(crossPage, "surrogates"));
+        if (pos == 0 && keys.length == 0) {
+          $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "first");
+        } else if (pos == 0) {
+          var ids = $("#entity_list").getDataIDs();
+          var prev_id = null;
+          for (var new_id in ids) {
+            if (keys.indexOf(ids[new_id]) >= 0) prev_id = ids[new_id];
+            else break;
+          }
+          $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "after", prev_id);
+        } else {
+          var prev_id = null;
+          for (var i = pos - 1; i >= 0; i--) {
+            if (keys.indexOf(entityListIDs[i]) < 0) {
+              prev_id = entityListIDs[i];
+              break;
+            }
+          }
+          if (prev_id == null) {
+            for (i = pos + 1; i < entityListIDs.length; i++) {
+              if (keys.indexOf(entityListIDs[i]) < 0) {
+                prev_id = entityListIDs[i];
+                break;
+              }
+            }
+            if (prev_id == null) {
+              $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "last");
+            } else {
+              $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "before", prev_id);
+            }
+          } else {
+            $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "after", prev_id);
+          }
+        }
+      }
+    } else {
+      var tRowData = $("#entity_list").getRowData(id);
+      getPageSessionData(crossPage, "surrogates")[id] = tRowData;
+      $("#entity_list").delRowData(id);
+      $("#entity_list").addRowData(id, {"tag": tRowData.tag, "empty": tRowData.empty}, "first");
+    }
+    $("#entity_list").setSelection(id);
+  }
+</script>
+
+<%= raw(check_entities_jqgrid(@list_url)) %>
+
+<table>
+  <tr>
+    <td colspan="2">
+      <table id="entity_list"></table>
+      <div id="entity_pager"></div>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  var filter = false;
+  $("#entity_list").filterToolbar({searchOnEnter : false});
+  $("#entity_list")[0].toggleToolbar();
+</script>

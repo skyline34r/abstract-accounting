@@ -556,7 +556,7 @@ module StorehousesHelper
                          storeHouseData[row_id].data[options.rowId] = cellvalue;
                          return cellvalue;
                      }},
-                     modelAmount
+                     modelUnit
                     ],
           height: "100%",
           editurl: "clientArray",

@@ -12,8 +12,15 @@
 
 ActiveRecord::Schema.define(:version => 20110715124511) do
 
-  create_table "assets", :force => true do |t|
+  create_table "asset_reals", :force => true do |t|
     t.string "tag"
+  end
+
+  add_index "asset_reals", ["tag"], :name => "index_asset_reals_on_tag", :unique => true
+
+  create_table "assets", :force => true do |t|
+    t.string  "tag"
+    t.integer "real_id"
   end
 
   add_index "assets", ["tag"], :name => "index_assets_on_tag", :unique => true
@@ -47,8 +54,15 @@ ActiveRecord::Schema.define(:version => 20110715124511) do
   add_index "deals", ["entity_id", "tag"], :name => "index_deals_on_entity_id_and_tag", :unique => true
 
   create_table "entities", :force => true do |t|
+    t.string  "tag"
+    t.integer "real_id"
+  end
+
+  create_table "entity_reals", :force => true do |t|
     t.string "tag"
   end
+
+  add_index "entity_reals", ["tag"], :name => "index_entity_reals_on_tag", :unique => true
 
   create_table "facts", :force => true do |t|
     t.datetime "day"

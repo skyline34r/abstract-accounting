@@ -79,6 +79,15 @@ class StorehouseRelease < ActiveRecord::Base
   belongs_to :to, :class_name => 'Entity'
   belongs_to :deal
 
+  scope :by_state, lambda { |state|
+    where("storehouse_releases.state = ?", state)
+  }
+  scope :by_storekeeper, lambda { |owner = nil, place = nil|
+    if !owner.nil? and !place.nil?
+      where("storehouse_releases.owner_id = ? AND storehouse_releases.place_id = ?", owner.id, place.id)
+    end
+  }
+
   alias_method :original_to=, :to=
   alias_method :original_to, :to
   def to=(entity)

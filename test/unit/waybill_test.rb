@@ -441,13 +441,13 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Storekeeper 2").save, "Entity not saved"
     assert Place.new(:tag => "Minsk").save, "Entity not saved"
 
-    assert_equal 0, Waybill.find_by_owner_and_place.length,
+    assert_equal 0, Waybill.by_storekeeper.length,
       "Wrong waybills count"
-    assert_equal 0, Waybill.find_by_owner_and_place(
+    assert_equal 0, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper"),
       Place.find_by_tag("Moscow")).length,
       "Wrong waybills count"
-    assert_equal 0, Waybill.find_by_owner_and_place(
+    assert_equal 0, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper 2"),
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
@@ -460,13 +460,13 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 500
     assert wb.save, "Waybill not saved"
 
-    assert_equal 1, Waybill.find_by_owner_and_place.length,
+    assert_equal 1, Waybill.by_storekeeper.length,
       "Wrong waybills count"
-    assert_equal 1, Waybill.find_by_owner_and_place(
+    assert_equal 1, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper"),
       Place.find_by_tag("Moscow")).length,
       "Wrong waybills count"
-    assert_equal 0, Waybill.find_by_owner_and_place(
+    assert_equal 0, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper 2"),
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
@@ -479,13 +479,13 @@ class WaybillTest < ActiveSupport::TestCase
     wb.add_resource "roof", "m2", 300
     assert wb.save, "Waybill not saved"
 
-    assert_equal 2, Waybill.find_by_owner_and_place.length,
+    assert_equal 2, Waybill.by_storekeeper.length,
       "Wrong waybills count"
-    assert_equal 1, Waybill.find_by_owner_and_place(
+    assert_equal 1, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper"),
       Place.find_by_tag("Moscow")).length,
       "Wrong waybills count"
-    assert_equal 1, Waybill.find_by_owner_and_place(
+    assert_equal 1, Waybill.by_storekeeper(
       Entity.find_by_tag("Storekeeper 2"),
       Place.find_by_tag("Minsk")).length,
       "Wrong waybills count"
@@ -509,6 +509,14 @@ class WaybillTest < ActiveSupport::TestCase
     assert Entity.new(:tag => "Storekeeper").save, "Entity not saved"
     assert Place.new(:tag => "Moscow").save, "Entity not saved"
 
+    wb0 = Waybill.new(:document_id => "123345",
+                     :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :from => "Organization",
+      :created => DateTime.civil(2011, 4, 3, 12, 0, 0))
+    wb0.add_resource "roof", "m2", 500
+    assert wb0.save, "Waybill is not saved"
+
     wb = Waybill.new(:document_id => "12345",
                      :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
@@ -516,8 +524,6 @@ class WaybillTest < ActiveSupport::TestCase
       :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
     wb.add_resource "roof", "m2", 500
     assert wb.save, "Waybill is not saved"
-
-    assert wb.has_in_the_storehouse?(Storehouse.new(wb.owner, wb.place)), "Waybill is not in the warehouse"
 
     wb1 = Waybill.new(:document_id => "123456",
                      :owner => Entity.find_by_tag("Storekeeper"),
@@ -527,17 +533,61 @@ class WaybillTest < ActiveSupport::TestCase
     wb1.add_resource "shovel", "th", 50
     assert wb1.save, "Waybill is not saved"
 
-    assert wb1.has_in_the_storehouse?(Storehouse.new(wb.owner, wb.place)), "Waybill is not in the warehouse"
+    waybills = Waybill.with_warehouse_state :sidx => "created", :sord => "ASC"
+    assert_equal 3, waybills.length, "Wrong waybills length"
+    assert_equal wb0.id, waybills[0].waybill.id, "Wrong waybill id"
+    assert waybills[0].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb.id, waybills[1].waybill.id, "Wrong waybill id"
+    assert waybills[1].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb1.id, waybills[2].waybill.id, "Wrong waybill id"
+    assert waybills[2].has_in_the_warehouse, "Wrong waybill not in the warehouse"
 
     sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 6, 12, 0, 0),
       :owner => Entity.find_by_tag("Storekeeper"),
       :place => Place.find_by_tag("Moscow"),
       :to => "Test entity to")
-    sr.add_resource Product.find_by_resource_tag("roof"), 500
+    sr.add_resource Product.find_by_resource_tag("roof"), 130
     assert sr.save, "StorehouseRelease is not saved"
 
-    assert !wb.has_in_the_storehouse?, "Waybill is in the warehouse"
-    assert wb1.has_in_the_storehouse?, "Waybill is not in the warehouse"
+    sr1 = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 7, 12, 0, 0),
+      :owner => Entity.find_by_tag("Storekeeper"),
+      :place => Place.find_by_tag("Moscow"),
+      :to => "Test entity to")
+    sr1.add_resource Product.find_by_resource_tag("roof"), 370
+    assert sr1.save, "StorehouseRelease is not saved"
+
+    waybills = Waybill.with_warehouse_state :sidx => "created", :sord => "ASC"
+    assert_equal 3, waybills.length, "Wrong waybills length"
+    assert_equal wb0.id, waybills[0].waybill.id, "Wrong waybill id"
+    assert !waybills[0].has_in_the_warehouse, "Wrong waybill in the warehouse"
+    assert_equal wb.id, waybills[1].waybill.id, "Wrong waybill id"
+    assert waybills[1].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb1.id, waybills[2].waybill.id, "Wrong waybill id"
+    assert waybills[2].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+
+    assert wb0.disable("haha"), "Cann't disable waybill'"
+    waybills = Waybill.with_warehouse_state :sidx => "created", :sord => "ASC"
+    assert_equal 2, waybills.length, "Wrong waybills length"
+    assert_equal wb.id, waybills[0].waybill.id, "Wrong waybill id"
+    assert !waybills[0].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb1.id, waybills[1].waybill.id, "Wrong waybill id"
+    assert waybills[1].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+
+    assert sr.apply, "Release is not applied"
+    waybills = Waybill.with_warehouse_state :sidx => "created", :sord => "ASC"
+    assert_equal 2, waybills.length, "Wrong waybills length"
+    assert_equal wb.id, waybills[0].waybill.id, "Wrong waybill id"
+    assert !waybills[0].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb1.id, waybills[1].waybill.id, "Wrong waybill id"
+    assert waybills[1].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+
+    assert sr1.cancel, "Release is not applied"
+    waybills = Waybill.with_warehouse_state :sidx => "created", :sord => "ASC"
+    assert_equal 2, waybills.length, "Wrong waybills length"
+    assert_equal wb.id, waybills[0].waybill.id, "Wrong waybill id"
+    assert waybills[0].has_in_the_warehouse, "Wrong waybill not in the warehouse"
+    assert_equal wb1.id, waybills[1].waybill.id, "Wrong waybill id"
+    assert waybills[1].has_in_the_warehouse, "Wrong waybill not in the warehouse"
   end
 
   test "destroy wrong waybill" do
@@ -631,6 +681,547 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal 2, Waybill.not_disabled.count, "Wrong not disabled count"
     Waybill.not_disabled.each do |item|
       assert false, "Wrong item id" if item.id != wb1.id and item.id != wb2.id
+    end
+  end
+
+  test "get waybills for storehouse" do
+    p = Place.new(:tag => "Storehouse")
+    assert p.save, "Place not saved"
+    wb1 = Waybill.new(:owner => entities(:sergey),
+      :document_id => "12345",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 4, 12, 0, 0))
+    wb1.add_resource "roof", "m2", 200
+    assert wb1.save, "Waybill is not saved"
+
+    wb2 = Waybill.new(:owner => entities(:sergey),
+      :document_id => "123456",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb2.add_resource "roof", "m2", 200
+    wb2.add_resource "shovel", "th", 100
+    assert wb2.save, "Waybill is not saved"
+
+    wb3 = Waybill.new(:owner => entities(:sergey),
+      :document_id => "1234567",
+      :place => p,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 6, 12, 0, 0))
+    wb3.add_resource "shovel", "th", 50
+    assert wb3.save, "Waybill is not saved"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb1.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 200, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb2.id
+        assert_equal 2, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 200, sw.amount, "Wrong resource amount"
+          elsif sw.product.resource.tag == "shovel"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 4, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => p,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("roof"), 100
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb1.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb2.id
+        assert_equal 2, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 200, sw.amount, "Wrong resource amount"
+          elsif sw.product.resource.tag == "shovel"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    assert sr.apply, "Release is not applied"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb1.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb2.id
+        assert_equal 2, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 200, sw.amount, "Wrong resource amount"
+          elsif sw.product.resource.tag == "shovel"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 5, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => p,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("roof"), 102
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 2, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 2, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 198, sw.amount, "Wrong resource amount"
+          elsif sw.product.resource.tag == "shovel"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    assert sr.cancel, "Release is not canceled"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb1.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb2.id
+        assert_equal 2, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 200, sw.amount, "Wrong resource amount"
+          elsif sw.product.resource.tag == "shovel"
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 8, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => p,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("roof"), 102
+    assert sr.save, "StorehouseRelease not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 9, 12, 0, 0),
+      :owner => entities(:sergey),
+      :place => p,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("shovel"), 102
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh = Storehouse.all(:entity => entities(:sergey), :place => p)
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 2, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 198, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 48, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    e = Entity.new(:tag => "Storekeeper 2")
+    assert e.save, "Entity is not saved"
+    p1 = Place.new :tag => "Storehouse 2"
+    assert p1.save, "Place is not saved"
+
+    wb4 = Waybill.new(:owner => e,
+      :document_id => "123456789",
+      :place => p1,
+      :from => "Storehouse organization",
+      :created => DateTime.civil(2011, 4, 8, 12, 0, 0))
+    wb4.add_resource "roof", "m2", 130
+    assert wb4.save, "Waybill is not saved"
+
+    sh = Storehouse.all :entity => entities(:sergey), :place => p
+    assert_equal 2, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse :entity => entities(:sergey), :place => p
+    assert_equal 2, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 198, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 48, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sh = Storehouse.all :entity => e, :place => p1
+    assert_equal 1, sh.length, "Wrong storehouse length"
+    sh_waybills = Waybill.in_warehouse :entity => e, :place => p1
+    assert_equal 1, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb4.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 130, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 198, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 48, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb4.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 130, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 9, 12, 0, 0),
+      :owner => e,
+      :place => p1,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("roof"), 102
+    assert sr.save, "StorehouseRelease not saved"
+
+    sh_waybills = Waybill.in_warehouse
+    assert_equal 3, sh_waybills.length, "Wrong waybills count"
+    sh_waybills.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 198, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "shovel"
+            assert_equal 48, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb4.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "roof"
+            assert_equal 28, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+  end
+
+  test "group storehouses entry by resource and check waybills" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Some warehouse")
+    assert warehouse.save, "Entity not saved"
+
+    wb1 = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb1.add_resource assets(:sonyvaio).tag, "th", 100
+    assert wb1.save, "Waybill is not saved"
+
+    wb2 = Waybill.new(:owner => storekeeper,
+      :document_id => "12345",
+      :place => warehouse,
+      :from => "Organization Store 2",
+      :created => DateTime.civil(2011, 4, 2, 12, 0, 0))
+    wb2.add_resource "sony VAI O", "th", 150
+    assert wb2.save, "Waybill is not saved"
+
+    a = asset_reals(:notebooksv)
+    a.assets << Asset.find_by_tag("sony VAI O")
+    a.assets << assets(:sonyvaio)
+
+    wb3 = Waybill.new(:owner => storekeeper,
+      :document_id => "123456",
+      :place => warehouse,
+      :from => "Organization Store 3",
+      :created => DateTime.civil(2011, 4, 5, 12, 0, 0))
+    wb3.add_resource "sony 3D", "th", 50
+    assert wb3.save, "Waybill is not saved"
+
+    sh = Storehouse.all :entity => storekeeper, :place => warehouse
+    assert_equal 2, sh.length, "Wrong entries count"
+    wbs = Waybill.in_warehouse :entity => storekeeper, :place => warehouse
+    assert_equal 3, wbs.length, "Wrong waybills count"
+    wbs.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb1.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.real_tag == asset_reals(:notebooksv).tag
+            assert_equal 100, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.real_tag == asset_reals(:notebooksv).tag
+            assert_equal 150, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "sony 3D"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
+    end
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 4, 9, 12, 0, 0),
+      :owner => storekeeper,
+      :place => warehouse,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("sony VAI O"), 102
+    assert sr.save, "StorehouseRelease not saved"
+
+    wbs = Waybill.in_warehouse :entity => storekeeper, :place => warehouse
+    assert_equal 2, wbs.length, "Wrong waybills count"
+    wbs.each do |item|
+      assert item.instance_of?(Waybill), "Unknown instance"
+      assert !item.warehouse_resources.nil?, "Wrong resources"
+      if item.id == wb2.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.real_tag == asset_reals(:notebooksv).tag
+            assert_equal 148, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      elsif item.id == wb3.id
+        assert_equal 1, item.warehouse_resources.length, "Wrong resources count"
+        item.warehouse_resources.each do |sw|
+          if sw.product.resource.tag == "sony 3D"
+            assert_equal 50, sw.amount, "Wrong resource amount"
+          else
+            assert false, "Wrong resource"
+          end
+        end
+      else
+        assert false, "Unknown waybill"
+      end
     end
   end
 end

@@ -8,8 +8,12 @@
     $("#waybill_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   });
 
+<<<<<<< HEAD
   function sendWaybill() {
     $("#save_waybill").attr("disabled", "disabled");
+=======
+  $("#new_waybill").submit(function() {
+>>>>>>> origin/storage
     canSave = true;
     saveEdittedRow();
     var data = $("#waybills_list").getRowData();
@@ -19,7 +23,6 @@
                  "&entry_amount[]=" + data[i]["amount"] +
                  "&entry_unit[]=" + data[i]["unit"];
     }
-    $("#new_waybill").unbind("submit");
     var d = new Date($("#waybill_date").val());
     d.setUTCHours(12);
     $("#hide_waybill_number").val(escape($("#waybill_number").val()));
@@ -29,7 +32,8 @@
     $("#new_waybill").attr("action", "/waybills?" + entries);
     saveWaybillElements();
     $("#save_waybill").attr("disabled", "disabled");
-  }
+    return true;
+  });
 
   function saveEdittedRow() {
     if(editRowId >= 0 && editColId >= 0) {
@@ -143,8 +147,7 @@
     </tr>
     <tr align="right">
       <td colspan="2" style="width: 45px">
-        <%= f.submit t('waybill.btn_save'), :id => "save_waybill",
-                                        :onclick => "sendWaybill();" %>
+        <%= f.submit t('waybill.btn_save'), :id => "save_waybill" %>
         <%= f.hidden_field :document_id, :id => "hide_waybill_number" %>
         <%= f.hidden_field :created, :id => "hide_waybill_date" %>
         <%= f.hidden_field :vatin, :id => "hide_waybill_vatin" %>

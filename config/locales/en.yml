@@ -6,8 +6,14 @@ en:
     logout: Logout
     manage: Manage
     place: Place
-    entity: Entity
+    entity:
+      original: Entity
+      surrogate: Entity surrogates
+    entity_real: Real entities
     resource: Resource
+    asset:
+      surrogate: Asset surrogates
+    asset_real: Real assets
     chart: Chart
     quote: Quote
     process: Process
@@ -29,6 +35,7 @@ en:
   grid:
     btn_find: Find
   buttons:
+    btn_back: Back
     btn_submit: Submit
     btn_discard: Discard
   title:
@@ -193,6 +200,7 @@ en:
     parsererror: Syntactic error of request!
   entity:
     tag: Tag
+    real: Real tag
     btn_new: New
     btn_change: Change
     btn_cancel: Cancel

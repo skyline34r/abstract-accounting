@@ -1,0 +1,8 @@
+document.title = "<%=t 'title.abstract'%> :: <%=t 'title.entity'%>";
+$("#body").html("<%= escape_javascript(render :partial => 'entities/select') %>");
+<% unless @entities.nil? %>
+  <% @entities.each do |e| %>
+    getPageSessionData(crossPage, "surrogates")["<%= e.id %>"] = {"tag": "<%= e.tag %>", "empty": false};
+    getPageSessionData(crossPage, "base_surrogates")["<%= e.id %>"] = {"tag": "<%= e.tag %>", "empty": false};
+  <% end %>
+<% end %>

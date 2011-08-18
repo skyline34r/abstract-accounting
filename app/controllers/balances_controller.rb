@@ -14,12 +14,7 @@ class BalancesController < ApplicationController
   end
 
   def load_grid(date)
-    Money.class_exec {
-      def tag
-        return alpha_code
-      end
-    }
-    @columns = ['deal.tag', 'deal.entity.tag', 'deal.give.tag', 'amount',
+    @columns = ['deal.tag', 'deal.entity.real_tag', 'deal.give.real_tag', 'amount',
                 'value', 'side']
     if date == ''
       @balances = BalanceSheet.new DateTime.now
@@ -36,10 +31,10 @@ class BalancesController < ApplicationController
         args['deal.tag'] = {:like => params[:deal]}
       end
       if !params[:entity].nil?
-        args['deal.entity.tag'] = {:like => params[:entity]}
+        args['deal.entity.real_tag'] = {:like => params[:entity]}
       end
       if !params[:resource].nil?
-        args['deal.give.tag'] = {:like => params[:resource]}
+        args['deal.give.real_tag'] = {:like => params[:resource]}
       end
       @balances = @balances.where args
     end
@@ -47,9 +42,9 @@ class BalancesController < ApplicationController
       when 'deal'
         params[:sidx] = 'deal.tag'
       when 'entity'
-        params[:sidx] = 'deal.entity.tag'
+        params[:sidx] = 'deal.entity.real_tag'
       when 'resource'
-        params[:sidx] = 'deal.give.tag'
+        params[:sidx] = 'deal.give.real_tag'
     end
     objects_order_by_from_params @balances, params
     @balances = @balances.paginate(
