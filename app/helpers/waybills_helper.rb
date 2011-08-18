@@ -142,16 +142,23 @@ module WaybillsHelper
           $("#waybills_release").attr("disabled","disabled");
           $("#waybills_release_1").attr("disabled","disabled");
         }
-        $("#waybills_disable").unbind("click");
-        $("#waybills_disable_1").unbind("click");
-        $("#waybills_disable").click(function() {
-          location.hash = "#waybills/" + row_id + "/edit";
-        });
-        $("#waybills_disable_1").click(function() {
-          location.hash = "#waybills/" + row_id + "/edit";
-        });
-        $("#waybills_disable").removeAttr("disabled");
-        $("#waybills_disable_1").removeAttr("disabled");
+        if ($("#waybills_disable").length > 0) {
+          if ($("#waybills_tree").getCell(row_id, "in_storehouse") == "true") {
+            $("#waybills_disable").unbind("click");
+            $("#waybills_disable_1").unbind("click");
+            $("#waybills_disable").click(function() {
+              location.hash = "#waybills/" + row_id + "/edit";
+            });
+            $("#waybills_disable_1").click(function() {
+              location.hash = "#waybills/" + row_id + "/edit";
+            });
+            $("#waybills_disable").removeAttr("disabled");
+            $("#waybills_disable_1").removeAttr("disabled");
+          } else {
+            $("#waybills_disable").attr("disabled", "disabled");
+            $("#waybills_disable_1").attr("disabled", "disabled");
+          }
+        }
       }'.to_json_var,
       :onPaging => 'function(param)
       {
