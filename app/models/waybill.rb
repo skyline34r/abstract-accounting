@@ -105,7 +105,6 @@ class Waybill < ActiveRecord::Base
   validates :created, :presence => true
   
   validates_with VatinValidator, :if => "!vatin.nil? && !vatin.empty?"
-  validates :vatin, :uniqueness => true, :if => "!vatin.nil? && !vatin.empty?"
 
   validates_with ResourcesValidator
   #associations

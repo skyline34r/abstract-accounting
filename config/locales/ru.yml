@@ -10,6 +10,7 @@ ru:
         resources: Ресурсы
         created: Дата
         comment: Комментарий
+        vatin: ИНН
       storehouse_release:
         resources: Ресурсы
         created: Дата

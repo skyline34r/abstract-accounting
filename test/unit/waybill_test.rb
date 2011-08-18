@@ -87,7 +87,7 @@ class WaybillTest < ActiveSupport::TestCase
     assert wb.invalid?, "Waybill invalid vatin number"
   end
 
-  test "VATIN must be unique" do
+  test "dublicated VATIN" do
     wb = Waybill.new(:document_id => "12345",
                      :created => DateTime.now, :owner => entities(:sergey),
               :from => entities(:abstract),
@@ -103,7 +103,7 @@ class WaybillTest < ActiveSupport::TestCase
               :place => places(:orsha),
               :vatin => "500100732259")
     wb.add_resource "roof", "m2", 500
-    assert wb.invalid?, "Waybill vatin is not unique"
+    assert wb.valid?, "Waybill vatin is not unique"
   end
 
   test "assign entity as text" do
