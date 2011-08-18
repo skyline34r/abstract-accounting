@@ -47,23 +47,7 @@
       }
     }
     function ajaxRequest(_url) {
-      $.ajax({url: _url,
-              beforeSend: function() {
-                            $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
-                          },
-              success: function() {
-                         $.popup({remove:true});
-                       },
-              error: function(jqXHR, textStatus, errorThrown) {
-                       $.popup({remove:true});
-                       switch(textStatus) {
-                         case "timeout": $.popup({note:"<%=t 'popup.timeout'%>",time:2000}); break;
-                         case "error": $.popup({note:"<%=t 'popup.error'%>",time:2000}); break;
-                         case "abort": $.popup({note:"<%=t 'popup.abort'%>",time:2000}); break;
-                         case "parsererror": $.popup({note:"<%=t 'popup.parsererror'%>",time:2000}); break;
-                       }
-                     }
-             });
+      $.ajax({url: _url});
     }
     onload = function() {
       <% if !user_signed_in? %>
