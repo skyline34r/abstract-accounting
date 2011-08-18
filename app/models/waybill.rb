@@ -177,14 +177,16 @@ class Waybill < ActiveRecord::Base
     sql = "
     SELECT warehouse.id, SUM(CASE WHEN warehouse.sec_rate < warehouse.amount THEN 1 ELSE 0 END) as in_the_warehouse FROM (
 SELECT id, SUM(rate) as rate, SUM(amount) as amount, SUM(sec_rate) as sec_rate FROM (
-SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
+SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate,
+       CASE WHEN states.id IS NULL THEN 0.0 ELSE states.amount END as amount,
+       SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
   LEFT JOIN rules ON rules.deal_id = waybills.deal_id
-INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
-INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
-INNER JOIN places ON places.id = waybills.place_id
-LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
-LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
-  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+  INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+  INNER JOIN places ON places.id = waybills.place_id
+  LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+  LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  LEFT JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
   INNER JOIN deals ON deals.id = rules.to_id
   INNER JOIN assets ON assets.id = deals.give_id
   LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
@@ -213,7 +215,8 @@ LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
 WHERE waybills.disable_deal_id IS NULL AND new_ws.id IS NOT NULL" + where + "
 GROUP BY waybills.id, rules.id
 UNION
-SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as amount, 0.0 as sec_rate FROM waybills
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate,
+       CASE WHEN states.id IS NULL THEN 0.0 ELSE states.amount END as amount, 0.0 as sec_rate FROM waybills
   LEFT JOIN rules ON rules.deal_id = waybills.deal_id
 INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
 INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
@@ -228,7 +231,7 @@ LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
   LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
   LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
                                           AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
-  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id AND states.paid IS NULL
 WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL" + where + "
 GROUP BY waybills.id, sec_deals.id
 UNION
@@ -346,7 +349,7 @@ INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
 INNER JOIN places ON places.id = waybills.place_id
 LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
 LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
-  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
   INNER JOIN deals ON deals.id = rules.to_id
   INNER JOIN assets ON assets.id = deals.give_id
   LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
@@ -375,13 +378,14 @@ LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
 WHERE waybills.disable_deal_id IS NULL AND new_ws.id IS NOT NULL" + where + "
 GROUP BY waybills.id, rules.id
 UNION
-SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as amount, 0.0 as sec_rate FROM waybills
+SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate,
+       CASE WHEN states.id IS NULL THEN 0.0 ELSE states.amount END as amount, 0.0 as sec_rate FROM waybills
   LEFT JOIN rules ON rules.deal_id = waybills.deal_id
-INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
-INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
-INNER JOIN places ON places.id = waybills.place_id
-LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
-LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
+  INNER JOIN entities AS from_entities ON from_entities.id = waybills.from_id
+  INNER JOIN entities AS owner_entities ON owner_entities.id = waybills.owner_id
+  INNER JOIN places ON places.id = waybills.place_id
+  LEFT JOIN entity_reals AS from_reals ON from_reals.id = from_entities.real_id
+  LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
   INNER JOIN deals ON deals.id = rules.to_id
   INNER JOIN assets ON assets.id = deals.give_id
   LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
@@ -390,7 +394,7 @@ LEFT JOIN entity_reals AS owner_reals ON owner_reals.id = owner_entities.real_id
   LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
   LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
                                           AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
-  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id AND states.paid IS NULL
 WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL" + where + "
 GROUP BY waybills.id, sec_deals.id
 UNION
@@ -502,7 +506,7 @@ GROUP BY warehouse.id
     SELECT products.id as product_id, SUM(resources.rate) as rate, SUM(resources.amount) - SUM(resources.sec_rate) as warehouse_state FROM (
 SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
   LEFT JOIN rules ON rules.deal_id = waybills.deal_id
-  INNER JOIN states ON states.deal_id = rules.to_id
+  INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL
   INNER JOIN deals ON deals.id = rules.to_id
   INNER JOIN assets ON assets.id = deals.give_id
   LEFT JOIN asset_reals ON asset_reals.id = assets.real_id
@@ -536,7 +540,7 @@ SELECT waybills.id as id, assets.id as asset_id, 0.0 as rate, states.amount as a
   LEFT JOIN rules AS sec_rules ON sec_rules.to_id = sec_deals.id AND sec_rules.id != rules.id
   LEFT JOIN waybills AS sec_waybills ON sec_waybills.deal_id = sec_rules.deal_id AND sec_waybills.disable_deal_id IS NULL
                                           AND sec_waybills.owner_id = waybills.owner_id AND sec_waybills.place_id = waybills.place_id
-  LEFT JOIN states ON states.deal_id = sec_rules.to_id
+  LEFT JOIN states ON states.deal_id = sec_rules.to_id AND states.paid IS NULL
 WHERE waybills.disable_deal_id IS NULL AND sec_waybills.id IS NOT NULL AND waybills.id = " + self.id.to_s + "
 GROUP BY waybills.id, sec_deals.id
 UNION
