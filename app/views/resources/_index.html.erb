@@ -38,7 +38,6 @@
       $("#resource_tag").attr("disabled","disabled");
       $("#resource_type").attr("disabled","disabled");
       $("#money_code").attr("disabled","disabled");
-      $("#" + crossPage +  "_submit").removeAttr("disabled");
       $("#resources_list").trigger("reloadGrid");
       cancelRequest = true;
       location.hash = crossPageLink;
@@ -48,14 +47,12 @@
   }
   function sendAsset()
   {
-    $("#save_resource").attr("disabled", "disabled");
-    $("#" + crossPage +  "_submit").attr("disabled", "disabled");
+    submitId = "save_resource";
     $("#hide_asset_tag").val(escape($("#resource_tag").val()));
   }
   function sendMoney()
   {
-    $("#save_resource").attr("disabled", "disabled");
-    $("#" + crossPage +  "_submit").attr("disabled", "disabled");
+    submitId = "save_resource";
     $("#hide_money_code").val(escape($("#money_code").val()));
     $("#hide_money_tag").val(escape($("#resource_tag").val()));
   }

@@ -22,7 +22,7 @@
   }
   function sendTagAssetReal()
   {
-    $("#save_asset_real").attr("disabled", "disabled");
+    submitId = "save_asset_real";
     $("#hide_asset_real_tag").val(escape($("#asset_real_tag").val()));
     if (hasPageSessionData("asset_reals", "surrogates")) {
       var params = "";

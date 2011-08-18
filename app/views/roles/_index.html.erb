@@ -4,7 +4,7 @@
   var rolePages = '';
   function sendDataRole()
   {
-    $("#save_role").attr("disabled", "disabled");
+    submitId = "save_role";
     var count = 0;
     <% if !@project_pages.nil? %>
       count = "<%= @project_pages.count %>";

@@ -8,12 +8,8 @@
     $("#waybill_date").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   });
 
-<<<<<<< HEAD
-  function sendWaybill() {
-    $("#save_waybill").attr("disabled", "disabled");
-=======
   $("#new_waybill").submit(function() {
->>>>>>> origin/storage
+    submitId = "save_waybill";
     canSave = true;
     saveEdittedRow();
     var data = $("#waybills_list").getRowData();

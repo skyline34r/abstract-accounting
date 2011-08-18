@@ -46,7 +46,7 @@
   }
   function beforeQuoteSave()
   {
-    $("#save_quote").attr("disabled", "disabled");
+    submitId = "save_quote";
     var d = new Date($("#quote_datepicker").val());
     $("#hide_quote_day").val(d.toUTCString());
     $("#hide_quote_rate").val($("#quote_rate").val());
