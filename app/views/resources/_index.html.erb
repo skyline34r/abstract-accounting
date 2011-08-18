@@ -47,10 +47,12 @@
   }
   function sendAsset()
   {
+    submitId = "save_resource";
     $("#hide_asset_tag").val(escape($("#resource_tag").val()));
   }
   function sendMoney()
   {
+    submitId = "save_resource";
     $("#hide_money_code").val(escape($("#money_code").val()));
     $("#hide_money_tag").val(escape($("#resource_tag").val()));
   }

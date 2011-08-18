@@ -56,6 +56,7 @@
   }
   function beforeDealSave()
   {
+    submitId = "save_deal";
     if((dataPage != null) && (dataPage["rules"].length > 0)) {
       var url = "";
       for(var i = 0; i < dataPage["rules"].length; i++) {

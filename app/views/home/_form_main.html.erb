@@ -4,6 +4,7 @@
   var crossPageLink = "";
   var cancelRequest = false;
   var editRowId = null;
+  var submitId = "";
 
   function clearPageSession(model) {
     dataPage = new Object();
@@ -58,6 +59,41 @@
                                  .attr("selected", "true");
     }
   }
+
+  $(document).ajaxSuccess(function() {
+    if(submitId != "") {
+      $("#" + submitId).removeAttr("disabled");
+    }
+    if(crossPage != "") {
+      $("#" + crossPage +  "_submit").removeAttr("disabled");
+    }
+    $.popup({remove:true});
+    submitId = "";
+  });
+  $(document).ajaxStart(function() {
+    if(submitId != "") {
+      $("#" + submitId).attr("disabled", "disabled");
+    }
+    if(crossPage != "") {
+      $("#" + crossPage +  "_submit").attr("disabled", "disabled");
+    }
+    $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
+  });
+  $(document).ajaxError(function(jqXHR, textStatus, errorThrown) {
+    if(submitId != "") {
+      $("#" + submitId).removeAttr("disabled");
+    }
+    if(crossPage != "") {
+      $("#" + crossPage +  "_submit").removeAttr("disabled");
+    }
+    $.popup({remove:true});
+    switch(textStatus.statusText) {
+      case "timeout": $.popup({note:"<%=t 'popup.timeout'%>",time:2000}); break;
+      case "error": $.popup({note:"<%=t 'popup.error'%>",time:2000}); break;
+      case "abort": $.popup({note:"<%=t 'popup.abort'%>",time:2000}); break;
+      case "parsererror": $.popup({note:"<%=t 'popup.parsererror'%>",time:2000}); break;
+    }
+  });
 </script>
 
 <div id="menu">

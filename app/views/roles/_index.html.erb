@@ -4,6 +4,7 @@
   var rolePages = '';
   function sendDataRole()
   {
+    submitId = "save_role";
     var count = 0;
     <% if !@project_pages.nil? %>
       count = "<%= @project_pages.count %>";

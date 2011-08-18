@@ -40,10 +40,10 @@
                            '&start=' + $("#from_datepicker").val() +
                            '&stop=' + $("#to_datepicker").val(),
                      beforeSend: function() {
-                       $.popup({note:"<%=t 'popup.wait'%>",sticked:true});
+                       $("#load").attr("disabled", "disabled");
                      },
                      complete: function() {
-                       $.popup({remove:true});
+                       $("#load").removeAttr("disabled", "disabled");
                        var actionUrl = '/transcripts/load?deal_id=' + $("#transcript_deal_id").val() +
                                                         '&start=' + $("#from_datepicker").val() +
                                                         '&stop=' + $("#to_datepicker").val() +

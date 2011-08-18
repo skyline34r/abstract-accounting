@@ -55,6 +55,7 @@
    $("#storehouse_release_list").setSelection(id);
   }
   function sendRelease() {
+    submitId = "save_button";
     var i;
     dataPage = new Object();
     dataPage["dataGrid"] = storeHouseData;
@@ -87,7 +88,6 @@
     for (i in storeHouseData) {
       entries += "&resource_id[]=" + i + "&release_amount[]=" + storeHouseData[i].release;
     }
-    $("#save_button").attr("disabled", "disabled");
     ajaxRequest("/storehouses/releases/create?to=" + $("#storehouse_to").val() +
                 "&date=" + d.toUTCString() + entries);
   }

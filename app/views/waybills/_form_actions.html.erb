@@ -9,6 +9,7 @@
   });
 
   $("#new_waybill").submit(function() {
+    submitId = "save_waybill";
     canSave = true;
     saveEdittedRow();
     var data = $("#waybills_list").getRowData();

@@ -22,6 +22,7 @@
   }
   function sendTagEntityReal()
   {
+    submitId = "save_entity_real";
     $("#hide_entity_real_tag").val(escape($("#entity_real_tag").val()));
     if (hasPageSessionData("entity_reals", "surrogates")) {
       var params = "";
