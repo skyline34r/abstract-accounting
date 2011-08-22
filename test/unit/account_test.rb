@@ -921,10 +921,10 @@ class AccountTest < ActiveSupport::TestCase
 
     bs = BalanceSheet.new
     assert_equal 7, bs.count, "Wrong balance sheet count"
-    assert !bs[6].nil?, "Wrong element in balance sheet"
-    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[6].value,
+    assert !bs[2].nil?, "Wrong element in balance sheet"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[2].value,
       "Wrong income value"
-    assert_equal "active", bs[6].side, "Wrong income value"
+    assert_equal "active", bs[2].side, "Wrong income value"
 
     assert_equal 242300, bs.assets, "Wrong balance sheet assets"
     assert_equal 242300, bs.liabilities, "Wrong balance sheet liabilities"
