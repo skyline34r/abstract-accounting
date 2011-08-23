@@ -298,6 +298,42 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:equityshare1).id, b[4].deal_id, "Wrong resource sorting"
     assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong resource sorting"
     assert_equal "Income", b[6].class.name, "Wrong resource sorting"
+
+    b = BalanceSheet.find(:order => { 'physical.debit' => 'asc' }).balances
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong physical debit sorting"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong physical debit sorting"
+    assert_equal "Income", b[2].class.name, "Wrong physical debit sorting"
+    assert_equal deals(:purchase).id, b[3].deal_id, "Wrong physical debit sorting"
+    assert_equal office.id, b[4].deal_id, "Wrong physical debit sorting"
+    assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong physical debit sorting"
+    assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong physical debit sorting"
+
+    b = BalanceSheet.find(:order => { 'accounting.debit' => 'asc' }).balances
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong accounting debit sorting"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong accounting debit sorting"
+    assert_equal "Income", b[2].class.name, "Wrong accounting debit sorting"
+    assert_equal office.id, b[3].deal_id, "Wrong accounting debit sorting"
+    assert_equal deals(:bankaccount2).id, b[4].deal_id, "Wrong accounting debit sorting"
+    assert_equal deals(:purchase).id, b[5].deal_id, "Wrong accounting debit sorting"
+    assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong accounting debit sorting"
+
+    b = BalanceSheet.find(:order => { 'physical.credit' => 'asc' }).balances
+    assert_equal "Income", b[0].class.name, "Wrong physical credit sorting"
+    assert_equal deals(:purchase).id, b[1].deal_id, "Wrong physical credit sorting"
+    assert_equal office.id, b[2].deal_id, "Wrong physical credit sorting"
+    assert_equal deals(:bankaccount).id, b[3].deal_id, "Wrong physical credit sorting"
+    assert_equal deals(:bankaccount2).id, b[4].deal_id, "Wrong physical credit sorting"
+    assert_equal deals(:equityshare2).id, b[5].deal_id, "Wrong physical credit sorting"
+    assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong physical credit sorting"
+
+    b = BalanceSheet.find(:order => { 'accounting.credit' => 'asc' }).balances
+    assert_equal deals(:purchase).id, b[0].deal_id, "Wrong accounting credit sorting"
+    assert_equal office.id, b[1].deal_id, "Wrong accounting credit sorting"
+    assert_equal deals(:bankaccount).id, b[2].deal_id, "Wrong accounting credit sorting"
+    assert_equal deals(:bankaccount2).id, b[3].deal_id, "Wrong accounting credit sorting"
+    assert_equal "Income", b[4].class.name, "Wrong accounting credit sorting"
+    assert_equal deals(:equityshare2).id, b[5].deal_id, "Wrong accounting credit sorting"
+    assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong accounting credit sorting"
   end
 
   def check_balance b, amount, value, side

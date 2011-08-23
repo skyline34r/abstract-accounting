@@ -27,11 +27,24 @@ class BalanceSheet
           order = "ORDER BY entity_tag COLLATE NOCASE " + value.upcase
         elsif key == 'resource.tag'
           order = "ORDER BY resource_tag COLLATE NOCASE " + value.upcase
+        elsif key == 'physical.debit'
+          order = "ORDER BY CASE WHEN sheet.side=='active'
+                     THEN 0.0 ELSE sheet.amount END " + value.upcase
+        elsif key == 'accounting.debit'
+          order = "ORDER BY CASE WHEN sheet.side=='active'
+                     THEN 0.0 ELSE sheet.value END " + value.upcase
+        elsif key == 'physical.credit'
+          order = "ORDER BY CASE WHEN sheet.side=='passive'
+                     THEN 0.0 ELSE sheet.amount END " + value.upcase
+        elsif key == 'accounting.credit'
+          order = "ORDER BY CASE WHEN sheet.side=='passive'
+                     THEN 0.0 ELSE sheet.value END " + value.upcase
         end
       end
     end
 
     sql = "
+    SELECT * FROM (
     SELECT states.id AS id, link.id AS deal_id, link.tag AS deal_tag,
            IFNULL(entity_reals.tag, entities.tag) AS entity_tag,
            IFNULL(money.alpha_code, IFNULL(asset_reals.tag, assets.tag)) AS resource_tag,
@@ -60,7 +73,7 @@ class BalanceSheet
            incomes.start AS start
     FROM incomes
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
-    " + order
+    ) AS sheet " + order
 
     assets = 0.0
     liabilities = 0.0
