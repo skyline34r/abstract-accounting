@@ -1,12 +1,22 @@
 
-class BalanceSheet < Array
+class BalanceSheet
   attr_reader :day, :assets, :liabilities
 
-  def initialize(day = DateTime.now)
-    @day = day
-    @assets = 0.0
-    @liabilities = 0.0
+  def initialize(attributes = nil)
+    @day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : nil)
+    @assets = (!attributes.nil? && attributes.has_key?(:assets) ? attributes[:assets] : 0.0)
+    @liabilities = (!attributes.nil? && attributes.has_key?(:liabilities) ?
+                    attributes[:liabilities] : 0.0)
+    @balances = (!attributes.nil? && attributes.has_key?(:balances) ?
+                 attributes[:balances] : nil)
+  end
 
+  def balances
+    @balances
+  end
+
+  def BalanceSheet.find(attributes = nil)
+    day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
     sql = "
     SELECT states.id AS id, link.id AS deal_id, states.side AS side,
            states.amount AS amount, IFNULL(balances.value, 0.0) AS value,
@@ -29,21 +39,26 @@ class BalanceSheet < Array
     FROM incomes
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)"
 
+    assets = 0.0
+    liabilities = 0.0
+    balances = Array.new
     ActiveRecord::Base.connection.execute(sql).each do |result|
       attrs = Hash.new
       result.each { |key, value| attrs[key.to_sym] = value if key.kind_of?(String) }
       if attrs[:side] == "passive"
-        @assets += attrs[:value]
+        assets += attrs[:value]
       else
-        @liabilities += attrs[:value]
+        liabilities += attrs[:value]
       end
       if attrs[:deal_id].nil? and attrs[:amount].nil?
-        self << Income.new(:side => attrs[:side],
-                           :value => attrs[:value],
-                           :start => attrs[:start])
+        balances << Income.new(:side => attrs[:side],
+                               :value => attrs[:value],
+                               :start => attrs[:start])
       else
-        self << Balance.new(attrs)
+        balances << Balance.new(attrs)
       end
     end
+    BalanceSheet.new(:day => day, :assets => assets, :liabilities => liabilities,
+                     :balances => balances)
   end
 end

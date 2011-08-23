@@ -336,7 +336,7 @@ class CurrencyTest < ActiveSupport::TestCase
   end
 
   def test_balance_sheet
-    b = (BalanceSheet.new)[0]
+    b = BalanceSheet.find.balances[0]
     assert !b.nil?, "Balance is nil"
     assert_equal 30000.0, b.amount, "Wrong balance amount"
     assert_equal 45000.0, b.value, "Wrong balance value"
