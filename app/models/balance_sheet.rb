@@ -25,6 +25,8 @@ class BalanceSheet
           order = "ORDER BY deal_tag COLLATE NOCASE " + value.upcase
         elsif key == 'entity.tag'
           order = "ORDER BY entity_tag COLLATE NOCASE " + value.upcase
+        elsif key == 'resource.tag'
+          order = "ORDER BY resource_tag COLLATE NOCASE " + value.upcase
         end
       end
     end
@@ -32,6 +34,7 @@ class BalanceSheet
     sql = "
     SELECT states.id AS id, link.id AS deal_id, link.tag AS deal_tag,
            IFNULL(entity_reals.tag, entities.tag) AS entity_tag,
+           IFNULL(money.alpha_code, IFNULL(asset_reals.tag, assets.tag)) AS resource_tag,
            states.side AS side, states.amount AS amount,
            IFNULL(balances.value, 0.0) AS value, states.start AS start
     FROM
@@ -48,9 +51,12 @@ class BalanceSheet
     LEFT JOIN balances ON link.id=balances.deal_id AND balances.start=link.start
     LEFT JOIN entities ON entities.id==link.entity_id
     LEFT JOIN entity_reals ON entity_reals.id==entities.real_id
+    LEFT JOIN money ON money.id==link.give_id AND link.give_type == 'Money'
+    LEFT JOIN assets ON assets.id==link.give_id AND link.give_type == 'Asset'
+    LEFT JOIN asset_reals ON asset_reals.id==assets.real_id
     UNION
     SELECT id, NULL, '" + I18n.t('activerecord.data.deal_income.tag_value') + "',
-           '', incomes.side AS side, NULL, incomes.value AS value,
+           '', '', incomes.side AS side, NULL, incomes.value AS value,
            incomes.start AS start
     FROM incomes
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
