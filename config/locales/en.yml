@@ -1,4 +1,8 @@
 en:
+  activerecord:
+    data:
+      deal_income:
+        tag_value: profit and loss
   reqFields: required fields
   loading: Loading...
   menu:

@@ -19,6 +19,9 @@ ru:
         tag: Название
       asset_real:
         tag: Название
+    data:
+      deal_income:
+        tag_value: прибыли и убытки
     errors:
       template:
         header:

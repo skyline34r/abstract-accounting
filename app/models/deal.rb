@@ -12,7 +12,8 @@ class Deal < ActiveRecord::Base
   def Deal.income
     #TODO: deprecate any changes
     income = Deal.where(:id => 0).first
-    income = Deal.new :tag => "profit and loss", :rate => 1.0 if income.nil?
+    income = Deal.new :tag => I18n.t('activerecord.data.deal_income.tag_value'),
+                      :rate => 1.0 if income.nil?
     income.id = 0 if income.id.nil?
     income
   end
