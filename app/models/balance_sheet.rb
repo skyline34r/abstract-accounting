@@ -17,10 +17,20 @@ class BalanceSheet
 
   def BalanceSheet.find(attributes = nil)
     day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
+
+    order = ""
+    if !attributes.nil? and attributes.has_key?(:order)
+      attributes[:order].each do |key, value|
+        if key == 'deal.tag'
+          order = "ORDER BY deal_tag COLLATE NOCASE " + value.upcase
+        end
+      end
+    end
+
     sql = "
-    SELECT states.id AS id, link.id AS deal_id, states.side AS side,
-           states.amount AS amount, IFNULL(balances.value, 0.0) AS value,
-           states.start AS start
+    SELECT states.id AS id, link.id AS deal_id, link.tag AS deal_tag,
+           states.side AS side, states.amount AS amount,
+           IFNULL(balances.value, 0.0) AS value, states.start AS start
     FROM
       (SELECT deals.id AS id, deals.tag AS tag, deals.rate AS rate,
               deals.entity_id AS entity_id, deals.give_type AS give_type,
@@ -34,10 +44,12 @@ class BalanceSheet
     LEFT JOIN states ON link.id=states.deal_id AND states.start=link.start
     LEFT JOIN balances ON link.id=balances.deal_id AND balances.start=link.start
     UNION
-    SELECT id, NULL, incomes.side AS side, NULL, incomes.value AS value,
+    SELECT id, NULL, '" + I18n.t('activerecord.data.deal_income.tag_value') + "',
+           incomes.side AS side, NULL, incomes.value AS value,
            incomes.start AS start
     FROM incomes
-    WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)"
+    WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
+    " + order
 
     assets = 0.0
     liabilities = 0.0
@@ -55,7 +67,11 @@ class BalanceSheet
                                :value => attrs[:value],
                                :start => attrs[:start])
       else
-        balances << Balance.new(attrs)
+        balances << Balance.new(:deal_id => attrs[:deal_id],
+                                :side => attrs[:side],
+                                :amount => attrs[:amount],
+                                :value => attrs[:value],
+                                :start => attrs[:start])
       end
     end
     BalanceSheet.new(:day => day, :assets => assets, :liabilities => liabilities,
