@@ -253,6 +253,28 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:equityshare1).id, b[4].deal_id, "Wrong deal sorting"
     assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong deal sorting"
     assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong deal sorting"
+
+    b = BalanceSheet.find(:order => { 'entity.tag' => 'asc' }).balances
+    assert_equal "Income", b[0].class.name, "Wrong entity sorting"
+    assert_equal office.id, b[1].deal_id, "Wrong entity sorting"
+    assert_equal deals(:purchase).id, b[2].deal_id, "Wrong entity sorting"
+    assert_equal deals(:equityshare2).id, b[3].deal_id, "Wrong entity sorting"
+    assert_equal deals(:bankaccount).id, b[4].deal_id, "Wrong entity sorting"
+    assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong entity sorting"
+    assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong entity sorting"
+
+    sbrfbank = entities(:sbrfbank)
+    sbrfbank.real = entity_reals(:aa)
+    assert sbrfbank.save, "Entity is not saved"
+
+    b = BalanceSheet.find(:order => { 'entity.tag' => 'desc' }).balances
+    assert_equal deals(:equityshare1).id, b[0].deal_id, "Wrong entity sorting"
+    assert_equal deals(:equityshare2).id, b[1].deal_id, "Wrong entity sorting"
+    assert_equal deals(:purchase).id, b[2].deal_id, "Wrong entity sorting"
+    assert_equal office.id, b[3].deal_id, "Wrong entity sorting"
+    assert_equal deals(:bankaccount).id, b[4].deal_id, "Wrong entity sorting"
+    assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong entity sorting"
+    assert_equal "Income", b[6].class.name, "Wrong entity sorting"
   end
 
   def check_balance b, amount, value, side
