@@ -8,6 +8,8 @@ class GeneralLedger
           order = "ORDER BY facts.day COLLATE NOCASE " + value.upcase
         elsif key == 'resource.tag'
             order = "ORDER BY resource_tag COLLATE NOCASE " + value.upcase
+        elsif key == 'fact.amount'
+            order = "ORDER BY facts.amount COLLATE NOCASE " + value.upcase
         end
       end
     end

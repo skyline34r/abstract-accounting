@@ -117,5 +117,21 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     assert_equal f5.id, gl[3].fact_id, "Wrong resource sorting"
     assert_equal f4.id, gl[4].fact_id, "Wrong resource sorting"
     assert_equal f6.id, gl[5].fact_id, "Wrong resource sorting"
+
+    gl = GeneralLedger.find(:order => { 'fact.amount' => 'asc' })
+    assert_equal f4.id, gl[0].fact_id, "Wrong amount sorting"
+    assert_equal f6.id, gl[1].fact_id, "Wrong amount sorting"
+    assert_equal f5.id, gl[2].fact_id, "Wrong amount sorting"
+    assert_equal f3.id, gl[3].fact_id, "Wrong amount sorting"
+    assert_equal f1.id, gl[4].fact_id, "Wrong amount sorting"
+    assert_equal f2.id, gl[5].fact_id, "Wrong amount sorting"
+
+    gl = GeneralLedger.find(:order => { 'fact.amount' => 'desc' })
+    assert_equal f2.id, gl[0].fact_id, "Wrong amount sorting"
+    assert_equal f1.id, gl[1].fact_id, "Wrong amount sorting"
+    assert_equal f3.id, gl[2].fact_id, "Wrong amount sorting"
+    assert_equal f5.id, gl[3].fact_id, "Wrong amount sorting"
+    assert_equal f4.id, gl[4].fact_id, "Wrong amount sorting"
+    assert_equal f6.id, gl[5].fact_id, "Wrong amount sorting"
   end
 end
