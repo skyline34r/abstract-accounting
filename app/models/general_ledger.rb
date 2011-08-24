@@ -10,6 +10,8 @@ class GeneralLedger
             order = "ORDER BY resource_tag COLLATE NOCASE " + value.upcase
         elsif key == 'fact.amount'
             order = "ORDER BY facts.amount COLLATE NOCASE " + value.upcase
+        elsif key == 'debit'
+            order = "ORDER BY (value + earnings) " + value.upcase
         end
       end
     end
