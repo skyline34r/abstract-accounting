@@ -149,5 +149,21 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     assert_equal f6.id, gl[3].fact_id, "Wrong debit sorting"
     assert_equal f4.id, gl[4].fact_id, "Wrong debit sorting"
     assert_equal f5.id, gl[5].fact_id, "Wrong debit sorting"
+
+    gl = GeneralLedger.find(:order => { 'credit' => 'asc' })
+    assert_equal f4.id, gl[0].fact_id, "Wrong credit sorting"
+    assert_equal f5.id, gl[1].fact_id, "Wrong credit sorting"
+    assert_equal f6.id, gl[2].fact_id, "Wrong credit sorting"
+    assert_equal f3.id, gl[3].fact_id, "Wrong credit sorting"
+    assert_equal f1.id, gl[4].fact_id, "Wrong credit sorting"
+    assert_equal f2.id, gl[5].fact_id, "Wrong credit sorting"
+
+    gl = GeneralLedger.find(:order => { 'credit' => 'desc' })
+    assert_equal f2.id, gl[0].fact_id, "Wrong credit sorting"
+    assert_equal f1.id, gl[1].fact_id, "Wrong credit sorting"
+    assert_equal f3.id, gl[2].fact_id, "Wrong credit sorting"
+    assert_equal f4.id, gl[3].fact_id, "Wrong credit sorting"
+    assert_equal f5.id, gl[4].fact_id, "Wrong credit sorting"
+    assert_equal f6.id, gl[5].fact_id, "Wrong credit sorting"
   end
 end

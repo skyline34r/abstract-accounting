@@ -12,6 +12,8 @@ class GeneralLedger
             order = "ORDER BY facts.amount COLLATE NOCASE " + value.upcase
         elsif key == 'debit'
             order = "ORDER BY (value + earnings) " + value.upcase
+        elsif key == 'credit'
+            order = "ORDER BY value " + value.upcase
         end
       end
     end
