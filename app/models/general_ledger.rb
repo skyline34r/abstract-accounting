@@ -16,6 +16,12 @@ class GeneralLedger
           if value.kind_of?(Hash)
             where += " LIKE '%" + value[:like].downcase.to_s + "%'"
           end
+        elsif attr == 'fact.amount'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "facts.amount"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].downcase.to_s + "%'"
+          end
         end
       end
     end
