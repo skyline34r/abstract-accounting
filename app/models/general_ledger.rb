@@ -55,6 +55,19 @@ class GeneralLedger
       end
     end
 
+    limit = ""
+    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+      page = attributes[:page]
+      per_page = attributes[:per_page]
+      if page.kind_of?(String)
+        page = page.to_i
+      end
+      if per_page.kind_of?(String)
+        per_page = per_page.to_i
+      end
+      limit = " LIMIT " + per_page.to_s + " OFFSET " + ((page-1) * per_page).to_s
+    end
+
     sql = "
     SELECT facts.id AS fact_id, IFNULL(txns.value, 0.0) AS value,
            IFNULL(money.alpha_code, IFNULL(asset_reals.tag, assets.tag)) AS resource_tag,
@@ -63,7 +76,8 @@ class GeneralLedger
     LEFT JOIN txns ON txns.fact_id == facts.id
     LEFT JOIN money ON money.id==facts.resource_id AND facts.resource_type == 'Money'
     LEFT JOIN assets ON assets.id==facts.resource_id AND facts.resource_type == 'Asset'
-    LEFT JOIN asset_reals ON asset_reals.id==assets.real_id " + where + " " + order
+    LEFT JOIN asset_reals ON asset_reals.id==assets.real_id " + where + " " + order +
+    " " + limit
 
     txns = Array.new
     ActiveRecord::Base.connection.execute(sql).each do |result|

@@ -201,5 +201,16 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     gl = GeneralLedger.find(:where => {'fact.amount' => {:like => "10"},
                                        'credit' => {:like => "110"}})
     assert_equal 0, gl.length, "Wrong general ledger length"
+
+    gl = GeneralLedger.find(:page => '1', :per_page => '3')
+    assert_equal 3, gl.length, "Wrong general ledger length"
+    assert_equal f1.id, gl[0].fact_id, "Wrong general ledger filtering"
+    assert_equal f2.id, gl[1].fact_id, "Wrong general ledger filtering"
+    assert_equal f3.id, gl[2].fact_id, "Wrong general ledger filtering"
+
+    gl = GeneralLedger.find(:page => '2', :per_page => '2')
+    assert_equal 2, gl.length, "Wrong general ledger length"
+    assert_equal f3.id, gl[0].fact_id, "Wrong general ledger filtering"
+    assert_equal f4.id, gl[1].fact_id, "Wrong general ledger filtering"
   end
 end
