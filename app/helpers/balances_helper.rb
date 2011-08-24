@@ -17,7 +17,7 @@ module BalancesHelper
         { :name => 'deal',     :index => 'deal',    :width => 240 },
         { :name => 'entity',   :index => 'entity',  :width => 230 },
         { :name => 'resource', :index => 'resource',:width => 230 },
-        { :name => 'debit',    :index => 'amount',  :width => 50, :search => false,
+        { :name => 'debit',    :index => 'amount',  :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[5] == "active") return "";
                            if($("#accounting").is(":checked"))
@@ -26,7 +26,7 @@ module BalancesHelper
                            }
                            return rowObject[3];
                          }'.to_json_var  },
-        { :name => 'credit',   :index => 'value',   :width => 50, :search => false,
+        { :name => 'credit',   :index => 'value',   :width => 50,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if(rowObject[5] == "passive") return "";
                            if($("#accounting").is(":checked"))

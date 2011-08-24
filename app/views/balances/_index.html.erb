@@ -27,11 +27,9 @@ function loadBalance()
     <td colspan="2">
       <%=t 'balance.units'%>:
       <%=t 'balance.physical'%>
-      <input type="radio" id="physical" name="unit" checked="true"
-             onchange="$('#data_list').trigger('reloadGrid');"/>
+      <input type="radio" id="physical" name="unit" checked="true"/>
       <%=t 'balance.accounting'%>
-      <input type="radio" id="accounting" name="unit"
-             onchange="$('#data_list').trigger('reloadGrid');"/>
+      <input type="radio" id="accounting" name="unit"/>
     </td>
   </tr>
   <tr>

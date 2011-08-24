@@ -1,2 +1,16 @@
+function changeTypeLoadBalance() {
+  var actionUrl = "/balances/load?date=" + $("#balance_datepicker").val();
+  if(this.id == "physical") {
+    actionUrl += "&physical=true";
+  } else {
+    actionUrl += "&accounting=true";
+  }
+  $("#data_list").setGridParam({url: actionUrl});
+  $('#data_list').trigger('reloadGrid');
+}
+
 document.title = "<%=t 'title.abstract'%> :: <%=t 'title.balance'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'balances/index' ) %>");
+
+$("#physical").change(changeTypeLoadBalance);
+$("#accounting").change(changeTypeLoadBalance);
