@@ -33,6 +33,12 @@ class BalanceSheet
           if value.kind_of?(Hash)
             where += " LIKE '%" + value[:like].downcase.to_s + "%'"
           end
+        elsif attr == 'resource.tag'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "lower(resource_tag)"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].downcase.to_s + "%'"
+          end
         end
       end
     end

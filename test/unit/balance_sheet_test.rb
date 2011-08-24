@@ -346,6 +346,11 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:bankaccount2).id, b[1].deal_id, "Wrong balance sheet filtering"
+
+    b = BalanceSheet.find(:where => {'resource.tag' => {:like => "on"}}).balances
+    assert_equal 2, b.length, "Wrong balance sheet length"
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
   end
 
   def check_balance b, amount, value, side
