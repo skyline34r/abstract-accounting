@@ -92,6 +92,19 @@ class BalanceSheet
       end
     end
 
+    limit = ""
+    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+      page = attributes[:page]
+      per_page = attributes[:per_page]
+      if page.kind_of?(String)
+        page = page.to_i
+      end
+      if per_page.kind_of?(String)
+        per_page = per_page.to_i
+      end
+      limit = " LIMIT " + per_page.to_s + " OFFSET " + ((page-1) * per_page).to_s
+    end
+
     sql = "
     SELECT * FROM (
     SELECT states.id AS id, link.id AS deal_id, link.tag AS deal_tag,
@@ -122,7 +135,7 @@ class BalanceSheet
            incomes.start AS start
     FROM incomes
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
-    ) AS sheet " + where + " " + order
+    ) AS sheet " + where + " " + order + " " + limit
 
     assets = 0.0
     liabilities = 0.0

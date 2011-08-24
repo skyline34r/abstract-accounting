@@ -382,6 +382,17 @@ class BalanceSheetTest < ActiveSupport::TestCase
     b = BalanceSheet.find(:where => {'physical.debit' => {:like => "1"},
                                      'physical.credit' => {:like => "1"}}).balances
     assert_equal 0, b.length, "Wrong balance sheet length"
+
+    b = BalanceSheet.find(:page => '1', :per_page => '3').balances
+    assert_equal 3, b.length, "Wrong balance sheet length"
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
+    assert_equal "Income", b[2].class.name, "Wrong accounting credit sorting"
+
+    b = BalanceSheet.find(:page => '2', :per_page => '2').balances
+    assert_equal 2, b.length, "Wrong balance sheet length"
+    assert_equal "Income", b[0].class.name, "Wrong accounting credit sorting"
+    assert_equal deals(:purchase).id, b[1].deal_id, "Wrong balance sheet filtering"
   end
 
   def check_balance b, amount, value, side
