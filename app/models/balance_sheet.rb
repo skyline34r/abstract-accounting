@@ -18,6 +18,19 @@ class BalanceSheet
   def BalanceSheet.find(attributes = nil)
     day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
 
+    where = ""
+    if !attributes.nil? and attributes.has_key?(:where)
+      attributes[:where].each do |attr, value|
+        if attr == 'deal.tag'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "lower(deal_tag)"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].downcase.to_s + "%'"
+          end
+        end
+      end
+    end
+
     order = ""
     if !attributes.nil? and attributes.has_key?(:order)
       attributes[:order].each do |key, value|
@@ -73,7 +86,7 @@ class BalanceSheet
            incomes.start AS start
     FROM incomes
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
-    ) AS sheet " + order
+    ) AS sheet " + where + " " + order
 
     assets = 0.0
     liabilities = 0.0

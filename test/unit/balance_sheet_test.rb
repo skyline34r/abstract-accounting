@@ -334,6 +334,13 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal "Income", b[4].class.name, "Wrong accounting credit sorting"
     assert_equal deals(:equityshare2).id, b[5].deal_id, "Wrong accounting credit sorting"
     assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong accounting credit sorting"
+
+    assert_equal 7, BalanceSheet.find.balances.length, "Wrong balance sheet length"
+    b = BalanceSheet.find(:where => {'deal.tag' => {:like => "ac"}}).balances
+    assert_equal 3, b.length, "Wrong balance sheet length"
+    assert_equal deals(:purchase).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:bankaccount).id, b[1].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:bankaccount2).id, b[2].deal_id, "Wrong balance sheet filtering"
   end
 
   def check_balance b, amount, value, side
