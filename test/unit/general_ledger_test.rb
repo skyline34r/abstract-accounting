@@ -182,5 +182,9 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     assert_equal f1.id, gl[0].fact_id, "Wrong general ledger filtering"
     assert_equal f4.id, gl[1].fact_id, "Wrong general ledger filtering"
     assert_equal f6.id, gl[2].fact_id, "Wrong general ledger filtering"
+
+    gl = GeneralLedger.find(:where => {'debit' => {:like => "10"}})
+    assert_equal 1, gl.length, "Wrong general ledger length"
+    assert_equal f1.id, gl[0].fact_id, "Wrong general ledger filtering"
   end
 end

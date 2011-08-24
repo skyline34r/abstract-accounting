@@ -22,6 +22,12 @@ class GeneralLedger
           if value.kind_of?(Hash)
             where += " LIKE '%" + value[:like].downcase.to_s + "%'"
           end
+        elsif attr == 'debit'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "(value + earnings)"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].downcase.to_s + "%'"
+          end
         end
       end
     end
