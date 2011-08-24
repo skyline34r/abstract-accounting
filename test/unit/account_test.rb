@@ -974,7 +974,7 @@ class AccountTest < ActiveSupport::TestCase
 
   def test_general_ledger
     assert_equal 20, Txn.all.count, "Wrong count of txns"
-    assert_equal 20, GeneralLedger.new.count,
+    assert_equal 20, GeneralLedger.find.count,
       "Wrong count of general ledger items"
   end
 
