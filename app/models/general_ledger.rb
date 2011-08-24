@@ -1,6 +1,19 @@
 
 class GeneralLedger
   def GeneralLedger.find(attributes = nil)
+    where = ""
+    if !attributes.nil? and attributes.has_key?(:where)
+      attributes[:where].each do |attr, value|
+        if attr == 'fact.day'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "facts.day"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].downcase.to_s + "%'"
+          end
+        end
+      end
+    end
+
     order = ""
     if !attributes.nil? and attributes.has_key?(:order)
       attributes[:order].each do |key, value|
@@ -26,7 +39,7 @@ class GeneralLedger
     LEFT JOIN txns ON txns.fact_id == facts.id
     LEFT JOIN money ON money.id==facts.resource_id AND facts.resource_type == 'Money'
     LEFT JOIN assets ON assets.id==facts.resource_id AND facts.resource_type == 'Asset'
-    LEFT JOIN asset_reals ON asset_reals.id==assets.real_id " + order
+    LEFT JOIN asset_reals ON asset_reals.id==assets.real_id " + where + " " + order
 
     txns = Array.new
     ActiveRecord::Base.connection.execute(sql).each do |result|

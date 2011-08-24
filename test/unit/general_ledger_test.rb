@@ -165,5 +165,11 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     assert_equal f4.id, gl[3].fact_id, "Wrong credit sorting"
     assert_equal f5.id, gl[4].fact_id, "Wrong credit sorting"
     assert_equal f6.id, gl[5].fact_id, "Wrong credit sorting"
+
+    gl = GeneralLedger.find(:where => {'fact.day' => {:like => "30"}})
+    assert_equal 3, gl.length, "Wrong general ledger length"
+    assert_equal f3.id, gl[0].fact_id, "Wrong general ledger filtering"
+    assert_equal f4.id, gl[1].fact_id, "Wrong general ledger filtering"
+    assert_equal f5.id, gl[2].fact_id, "Wrong general ledger filtering"
   end
 end
