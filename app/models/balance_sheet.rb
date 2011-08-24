@@ -39,6 +39,30 @@ class BalanceSheet
           if value.kind_of?(Hash)
             where += " LIKE '%" + value[:like].downcase.to_s + "%'"
           end
+        elsif attr == 'physical.debit'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "CASE WHEN sheet.side=='active' THEN 0.0 ELSE sheet.amount END"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].to_s + "%'"
+          end
+        elsif attr == 'accounting.debit'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "CASE WHEN sheet.side=='active' THEN 0.0 ELSE sheet.value END"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].to_s + "%'"
+          end
+        elsif attr == 'physical.credit'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "CASE WHEN sheet.side=='passive' THEN 0.0 ELSE sheet.amount END"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].to_s + "%'"
+          end
+        elsif attr == 'accounting.credit'
+          where += where.empty? ? "WHERE " : " AND "
+          where += "CASE WHEN sheet.side=='passive' THEN 0.0 ELSE sheet.value END"
+          if value.kind_of?(Hash)
+            where += " LIKE '%" + value[:like].to_s + "%'"
+          end
         end
       end
     end

@@ -351,6 +351,26 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
+
+    b = BalanceSheet.find(:where => {'physical.debit' => {:like => "1"}}).balances
+    assert_equal 3, b.length, "Wrong balance sheet length"
+    assert_equal deals(:purchase).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal office.id, b[1].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:bankaccount).id, b[2].deal_id, "Wrong balance sheet filtering"
+
+    b = BalanceSheet.find(:where => {'accounting.debit' => {:like => "1"}}).balances
+    assert_equal 1, b.length, "Wrong balance sheet length"
+    assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong balance sheet filtering"
+
+    b = BalanceSheet.find(:where => {'physical.credit' => {:like => "1"}}).balances
+    assert_equal 2, b.length, "Wrong balance sheet length"
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
+
+    b = BalanceSheet.find(:where => {'accounting.credit' => {:like => "1"}}).balances
+    assert_equal 2, b.length, "Wrong balance sheet length"
+    assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
+    assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
   end
 
   def check_balance b, amount, value, side
