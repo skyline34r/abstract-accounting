@@ -3,12 +3,35 @@ class BalanceSheet
   attr_reader :day, :assets, :liabilities
 
   def initialize(attributes = nil)
-    @day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : nil)
-    @assets = (!attributes.nil? && attributes.has_key?(:assets) ? attributes[:assets] : 0.0)
-    @liabilities = (!attributes.nil? && attributes.has_key?(:liabilities) ?
-                    attributes[:liabilities] : 0.0)
+    @day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
     @balances = (!attributes.nil? && attributes.has_key?(:balances) ?
                  attributes[:balances] : nil)
+    @assets = 0.0
+    @liabilities = 0.0
+    if !attributes.nil? && attributes.has_key?(:totals) ? attributes[:totals] : false
+      sql = "
+      SELECT sum(CASE WHEN side=='passive' THEN value ELSE 0.0 END) AS assets,
+             sum(CASE WHEN side=='active' THEN value ELSE 0.0 END) AS liabilities
+      FROM (
+        SELECT link.id, states.side AS side, IFNULL(balances.value, 0.0) AS value
+        FROM
+          (SELECT deals.id AS id, deals.tag AS tag, states.start AS start
+           FROM deals
+           LEFT JOIN states ON states.deal_id==deals.id AND states.start <= '" + @day.to_s + "'
+             AND (states.paid > '" + @day.to_s + "' OR states.paid IS NULL)
+           WHERE states.start IS NOT NULL) AS link
+        LEFT JOIN states ON link.id==states.deal_id AND states.start==link.start
+        LEFT JOIN balances ON link.id==balances.deal_id AND balances.start==link.start
+        UNION
+        SELECT NULL, incomes.side AS side, incomes.value AS value
+        FROM incomes
+        WHERE start<='" + @day.to_s + "' AND (paid>'" + @day.to_s + "' OR paid IS NULL)
+      )"
+      ActiveRecord::Base.connection.execute(sql).each do |result|
+        @assets += result['assets'] unless result['assets'].nil?
+        @liabilities += result['liabilities'] unless result['liabilities'].nil?
+      end
+    end
   end
 
   def balances
@@ -137,17 +160,10 @@ class BalanceSheet
     WHERE start<='" + day.to_s + "' AND (paid>'" + day.to_s + "' OR paid IS NULL)
     ) AS sheet " + where + " " + order + " " + limit
 
-    assets = 0.0
-    liabilities = 0.0
     balances = Array.new
     ActiveRecord::Base.connection.execute(sql).each do |result|
       attrs = Hash.new
       result.each { |key, value| attrs[key.to_sym] = value if key.kind_of?(String) }
-      if attrs[:side] == "passive"
-        assets += attrs[:value]
-      else
-        liabilities += attrs[:value]
-      end
       if attrs[:deal_id].nil? and attrs[:amount].nil?
         balances << Income.new(:side => attrs[:side],
                                :value => attrs[:value],
@@ -160,7 +176,6 @@ class BalanceSheet
                                 :start => attrs[:start])
       end
     end
-    BalanceSheet.new(:day => day, :assets => assets, :liabilities => liabilities,
-                     :balances => balances)
+    BalanceSheet.new(:day => day, :balances => balances)
   end
 end

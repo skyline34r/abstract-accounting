@@ -66,13 +66,14 @@ class BalancesController < ApplicationController
       args[:where] = where
     end
 
+    sb = BalanceSheet.new(:day => (args.has_key?(:day) ? args[:day] : DateTime.now), :totals => true)
+    session[:balance_assets] = sb.assets
+    session[:balance_liabilities] = sb.liabilities
+
     sheet_balances = BalanceSheet.find(args)
     balances = sheet_balances.balances.paginate(
      :page     => params[:page],
      :per_page => params[:rows])
-
-    session[:balance_assets] = sheet_balances.assets
-    session[:balance_liabilities] = sheet_balances.liabilities
 
     if request.xhr?
       render :json => abstract_json_for_jqgrid(balances, columns)

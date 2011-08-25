@@ -925,14 +925,16 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs.balances[2].value,
       "Wrong income value"
     assert_equal "active", bs.balances[2].side, "Wrong income value"
-
-    assert_equal 242300, bs.assets, "Wrong balance sheet assets"
-    assert_equal 242300, bs.liabilities, "Wrong balance sheet liabilities"
+    bs_totals = BalanceSheet.new(:totals => true)
+    assert_equal 242300, bs_totals.assets, "Wrong balance sheet assets"
+    assert_equal 242300, bs_totals.liabilities, "Wrong balance sheet liabilities"
 
     bs = BalanceSheet.find(:day => DateTime.civil(2007, 9, 7, 12, 0, 0))
     assert_equal 6, bs.balances.count, "Wrong balance sheet count"
-    assert_equal 242000, bs.assets, "Wrong balance sheet assets"
-    assert_equal 242000, bs.liabilities, "Wrong balance sheet liabilities"
+    bs_totals = BalanceSheet.new(:day => DateTime.civil(2007, 9, 7, 12, 0, 0),
+                                 :totals => true)
+    assert_equal 242000, bs_totals.assets, "Wrong balance sheet assets"
+    assert_equal 242000, bs_totals.liabilities, "Wrong balance sheet liabilities"
 
     test_balance bs.balances[0],
                  100000.0 / 10000.0,
