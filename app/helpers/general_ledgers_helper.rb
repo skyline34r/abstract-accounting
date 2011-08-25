@@ -41,17 +41,16 @@ module GeneralLedgersHelper
                            return ((rowObject[5] + rowObject[6]) / rowObject[2]).toFixed(2);
                          }'.to_json_var
         },
-        { :name => 'debit', :index => 'debit',       :width => 100, :search => false, :sortable => false,
+        { :name => 'debit', :index => 'debit',       :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.debit) return rowObject.debit;
                            return "";
                          }'.to_json_var
         },
-        { :name => 'credit', :index => 'credit',     :width => 100, :search => false, :sortable => false,
+        { :name => 'credit', :index => 'credit',     :width => 100,
           :formatter => 'function(cellvalue, options, rowObject) {
                            if (rowObject.credit) return "";
-                           return ((rowObject[5] + rowObject[6]) / rowObject[2]
-                                   * rowObject[2]).toFixed(2);
+                           return rowObject[5].toFixed(2);
                          }'.to_json_var
         }
       ],
@@ -78,7 +77,7 @@ module GeneralLedgersHelper
             return (rowData.price / rowData.quantity).toFixed(2);
           }
           function getDebit() {
-            return (rowData.quantity * rowData.price / rowData.quantity).toFixed(2);
+            return (rowData.quantity * rowData.price).toFixed(2);
           }
           $("#data_list").addRowData("sub", { date: "",
                                               resource: "",
