@@ -920,53 +920,53 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal dt, BalanceSheet.find(:day => dt).day, "Wrong balance sheet day"
 
     bs = BalanceSheet.find
-    assert_equal 7, bs.balances.count, "Wrong balance sheet count"
-    assert !bs.balances[2].nil?, "Wrong element in balance sheet"
-    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs.balances[2].value,
+    assert_equal 7, bs.count, "Wrong balance sheet count"
+    assert !bs[2].nil?, "Wrong element in balance sheet"
+    assert_equal (400.0 * (34.95 - 34.2)).accounting_norm, bs[2].value,
       "Wrong income value"
-    assert_equal "active", bs.balances[2].side, "Wrong income value"
+    assert_equal "active", bs[2].side, "Wrong income value"
     bs_totals = BalanceSheet.new(:totals => true)
     assert_equal 242300, bs_totals.assets, "Wrong balance sheet assets"
     assert_equal 242300, bs_totals.liabilities, "Wrong balance sheet liabilities"
 
     bs = BalanceSheet.find(:day => DateTime.civil(2007, 9, 7, 12, 0, 0))
-    assert_equal 6, bs.balances.count, "Wrong balance sheet count"
+    assert_equal 6, bs.count, "Wrong balance sheet count"
     bs_totals = BalanceSheet.new(:day => DateTime.civil(2007, 9, 7, 12, 0, 0),
                                  :totals => true)
     assert_equal 242000, bs_totals.assets, "Wrong balance sheet assets"
     assert_equal 242000, bs_totals.liabilities, "Wrong balance sheet liabilities"
 
-    test_balance bs.balances[0],
+    test_balance bs[0],
                  100000.0 / 10000.0,
                  100000.0,
                  "active" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    test_balance bs.balances[1],
+    test_balance bs[1],
                  142000.0 / 10000.0,
                  142000.0,
                  "active" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    test_balance bs.balances[2],
+    test_balance bs[2],
                  1.0,
                  70000.0,
                  "passive" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    test_balance bs.balances[3],
+    test_balance bs[3],
                  2400,
                  (2400 * 34.2).accounting_norm,
                  "passive" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    test_balance bs.balances[4],
+    test_balance bs[4],
                  1.0,
                  2000.0,
                  "passive" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    test_balance bs.balances[5],
+    test_balance bs[5],
                  87920.0,
                  87920.0,
                  "passive" do |expected, value, msg|

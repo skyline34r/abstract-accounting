@@ -16,7 +16,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert keep.save, "Deal is not saved"
 
     bs = BalanceSheet.find(:day => DateTime.now)
-    assert_equal 0, bs.balances.length, "Wrong balances count"
+    assert_equal 0, bs.length, "Wrong balances count"
 
     t = Txn.new(:fact => Fact.new(:amount => 310.0,
               :day => DateTime.civil(2011, 6, 6, 12, 0, 0),
@@ -26,14 +26,14 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert t.fact.save, "Fact is not saved"
 
     bs = BalanceSheet.find(:day => DateTime.now)
-    assert_equal 2, bs.balances.length, "Wrong balances count"
-    check_balance bs.balances[0],
+    assert_equal 2, bs.length, "Wrong balances count"
+    check_balance bs[0],
                  10.0,
                  0.0,
                  "active" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    check_balance bs.balances[1],
+    check_balance bs[1],
                  310.0,
                  0.0,
                  "passive" do |expected, value, msg|
@@ -43,14 +43,14 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert t.save, "Txn is not saved"
 
     bs = BalanceSheet.find(:day => DateTime.now)
-    assert_equal 2, bs.balances.length, "Wrong balances count"
-    check_balance bs.balances[0],
+    assert_equal 2, bs.length, "Wrong balances count"
+    check_balance bs[0],
                  10.0,
                  310.0,
                  "active" do |expected, value, msg|
       assert_equal expected, value, msg
     end
-    check_balance bs.balances[1],
+    check_balance bs[1],
                  310.0,
                  310.0,
                  "passive" do |expected, value, msg|
@@ -236,7 +236,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     t = Txn.new :fact => f
     assert t.save, "Txn is not saved"
 
-    b = BalanceSheet.find(:order => { 'deal.tag' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'deal.tag' => 'asc' })
     assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong deal sorting"
     assert_equal deals(:bankaccount2).id, b[1].deal_id, "Wrong deal sorting"
     assert_equal deals(:equityshare1).id, b[2].deal_id, "Wrong deal sorting"
@@ -245,7 +245,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal office.id, b[5].deal_id, "Wrong deal sorting"
     assert_equal "Income", b[6].class.name, "Wrong deal sorting"
 
-    b = BalanceSheet.find(:order => { 'deal.tag' => 'desc' }).balances
+    b = BalanceSheet.find(:order => { 'deal.tag' => 'desc' })
     assert_equal "Income", b[0].class.name, "Wrong deal sorting"
     assert_equal office.id, b[1].deal_id, "Wrong deal sorting"
     assert_equal deals(:purchase).id, b[2].deal_id, "Wrong deal sorting"
@@ -254,7 +254,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong deal sorting"
     assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong deal sorting"
 
-    b = BalanceSheet.find(:order => { 'entity.tag' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'entity.tag' => 'asc' })
     assert_equal "Income", b[0].class.name, "Wrong entity sorting"
     assert_equal office.id, b[1].deal_id, "Wrong entity sorting"
     assert_equal deals(:purchase).id, b[2].deal_id, "Wrong entity sorting"
@@ -267,7 +267,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     sbrfbank.real = entity_reals(:aa)
     assert sbrfbank.save, "Entity is not saved"
 
-    b = BalanceSheet.find(:order => { 'entity.tag' => 'desc' }).balances
+    b = BalanceSheet.find(:order => { 'entity.tag' => 'desc' })
     assert_equal deals(:equityshare1).id, b[0].deal_id, "Wrong entity sorting"
     assert_equal deals(:equityshare2).id, b[1].deal_id, "Wrong entity sorting"
     assert_equal deals(:purchase).id, b[2].deal_id, "Wrong entity sorting"
@@ -277,7 +277,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal "Income", b[6].class.name, "Wrong entity sorting"
 
 
-    b = BalanceSheet.find(:order => { 'resource.tag' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'resource.tag' => 'asc' })
     assert_equal "Income", b[0].class.name, "Wrong resource sorting"
     assert_equal deals(:equityshare2).id, b[1].deal_id, "Wrong resource sorting"
     assert_equal deals(:equityshare1).id, b[2].deal_id, "Wrong resource sorting"
@@ -290,7 +290,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     aasiishare.real = asset_reals(:notebooksv)
     assert aasiishare.save, "Asset is not saved"
 
-    b = BalanceSheet.find(:order => { 'resource.tag' => 'desc' }).balances
+    b = BalanceSheet.find(:order => { 'resource.tag' => 'desc' })
     assert_equal deals(:purchase).id, b[0].deal_id, "Wrong resource sorting"
     assert_equal office.id, b[1].deal_id, "Wrong resource sorting"
     assert_equal deals(:bankaccount).id, b[2].deal_id, "Wrong resource sorting"
@@ -299,7 +299,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong resource sorting"
     assert_equal "Income", b[6].class.name, "Wrong resource sorting"
 
-    b = BalanceSheet.find(:order => { 'physical.debit' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'physical.debit' => 'asc' })
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong physical debit sorting"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong physical debit sorting"
     assert_equal "Income", b[2].class.name, "Wrong physical debit sorting"
@@ -308,7 +308,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:bankaccount2).id, b[5].deal_id, "Wrong physical debit sorting"
     assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong physical debit sorting"
 
-    b = BalanceSheet.find(:order => { 'accounting.debit' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'accounting.debit' => 'asc' })
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong accounting debit sorting"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong accounting debit sorting"
     assert_equal "Income", b[2].class.name, "Wrong accounting debit sorting"
@@ -317,7 +317,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:purchase).id, b[5].deal_id, "Wrong accounting debit sorting"
     assert_equal deals(:bankaccount).id, b[6].deal_id, "Wrong accounting debit sorting"
 
-    b = BalanceSheet.find(:order => { 'physical.credit' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'physical.credit' => 'asc' })
     assert_equal "Income", b[0].class.name, "Wrong physical credit sorting"
     assert_equal deals(:purchase).id, b[1].deal_id, "Wrong physical credit sorting"
     assert_equal office.id, b[2].deal_id, "Wrong physical credit sorting"
@@ -326,7 +326,7 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:equityshare2).id, b[5].deal_id, "Wrong physical credit sorting"
     assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong physical credit sorting"
 
-    b = BalanceSheet.find(:order => { 'accounting.credit' => 'asc' }).balances
+    b = BalanceSheet.find(:order => { 'accounting.credit' => 'asc' })
     assert_equal deals(:purchase).id, b[0].deal_id, "Wrong accounting credit sorting"
     assert_equal office.id, b[1].deal_id, "Wrong accounting credit sorting"
     assert_equal deals(:bankaccount).id, b[2].deal_id, "Wrong accounting credit sorting"
@@ -335,64 +335,70 @@ class BalanceSheetTest < ActiveSupport::TestCase
     assert_equal deals(:equityshare2).id, b[5].deal_id, "Wrong accounting credit sorting"
     assert_equal deals(:equityshare1).id, b[6].deal_id, "Wrong accounting credit sorting"
 
-    assert_equal 7, BalanceSheet.find.balances.length, "Wrong balance sheet length"
-    b = BalanceSheet.find(:where => {'deal.tag' => {:like => "ac"}}).balances
+    assert_equal 7, BalanceSheet.find.length, "Wrong balance sheet length"
+    b = BalanceSheet.find(:where => {'deal.tag' => {:like => "ac"}})
     assert_equal 3, b.length, "Wrong balance sheet length"
     assert_equal deals(:purchase).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:bankaccount).id, b[1].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:bankaccount2).id, b[2].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'entity.tag' => {:like => "bs"}}).balances
+    b = BalanceSheet.find(:where => {'entity.tag' => {:like => "bs"}})
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:bankaccount2).id, b[1].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'resource.tag' => {:like => "on"}}).balances
+    b = BalanceSheet.find(:where => {'resource.tag' => {:like => "on"}})
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'physical.debit' => {:like => "1"}}).balances
+    b = BalanceSheet.find(:where => {'physical.debit' => {:like => "1"}})
     assert_equal 3, b.length, "Wrong balance sheet length"
     assert_equal deals(:purchase).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal office.id, b[1].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:bankaccount).id, b[2].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'accounting.debit' => {:like => "1"}}).balances
+    b = BalanceSheet.find(:where => {'accounting.debit' => {:like => "1"}})
     assert_equal 1, b.length, "Wrong balance sheet length"
     assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'physical.credit' => {:like => "1"}}).balances
+    b = BalanceSheet.find(:where => {'physical.credit' => {:like => "1"}})
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:where => {'accounting.credit' => {:like => "1"}}).balances
+    b = BalanceSheet.find(:where => {'accounting.credit' => {:like => "1"}})
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
 
     b = BalanceSheet.find(:order => { 'entity.tag' => 'asc' },
-                          :where => {'physical.debit' => {:like => "1"}}).balances
+                          :where => {'physical.debit' => {:like => "1"}})
     assert_equal 3, b.length, "Wrong balance sheet length"
     assert_equal deals(:bankaccount).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal office.id, b[1].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:purchase).id, b[2].deal_id, "Wrong balance sheet filtering"
 
     b = BalanceSheet.find(:where => {'physical.debit' => {:like => "1"},
-                                     'physical.credit' => {:like => "1"}}).balances
+                                     'physical.credit' => {:like => "1"}})
     assert_equal 0, b.length, "Wrong balance sheet length"
 
-    b = BalanceSheet.find(:page => '1', :per_page => '3').balances
+    b = BalanceSheet.find(:page => '1', :per_page => '3')
     assert_equal 3, b.length, "Wrong balance sheet length"
     assert_equal deals(:equityshare2).id, b[0].deal_id, "Wrong balance sheet filtering"
     assert_equal deals(:equityshare1).id, b[1].deal_id, "Wrong balance sheet filtering"
     assert_equal "Income", b[2].class.name, "Wrong accounting credit sorting"
+    assert_equal 1, b.current_page, "Wrong balance sheet filtering"
+    assert_equal 3, b.total_pages, "Wrong balance sheet filtering"
+    assert_equal 7, b.total_entries, "Wrong balance sheet filtering"
 
-    b = BalanceSheet.find(:page => '2', :per_page => '2').balances
+    b = BalanceSheet.find(:page => '2', :per_page => '2')
     assert_equal 2, b.length, "Wrong balance sheet length"
     assert_equal "Income", b[0].class.name, "Wrong accounting credit sorting"
     assert_equal deals(:purchase).id, b[1].deal_id, "Wrong balance sheet filtering"
+    assert_equal 2, b.current_page, "Wrong balance sheet filtering"
+    assert_equal 4, b.total_pages, "Wrong balance sheet filtering"
+    assert_equal 7, b.total_entries, "Wrong balance sheet filtering"
   end
 
   def check_balance b, amount, value, side

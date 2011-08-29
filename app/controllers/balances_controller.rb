@@ -63,11 +63,10 @@ class BalancesController < ApplicationController
       end
       args[:where] = where
     end
+    args[:page] = params[:page]
+    args[:per_page] = params[:rows]
 
-    sheet_balances = BalanceSheet.find(args)
-    balances = sheet_balances.balances.paginate(
-     :page     => params[:page],
-     :per_page => params[:rows])
+    balances = BalanceSheet.find(args)
 
     if request.xhr?
       render :json => abstract_json_for_jqgrid(balances, columns)

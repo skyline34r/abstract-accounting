@@ -1,13 +1,18 @@
 
-class BalanceSheet
-  attr_reader :day, :assets, :liabilities
+class BalanceSheet < Array
+  attr_reader :day, :assets, :liabilities,
+              :current_page, :total_pages, :total_entries
 
   def initialize(attributes = nil)
     @day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
-    @balances = (!attributes.nil? && attributes.has_key?(:balances) ?
-                 attributes[:balances] : nil)
     @assets = 0.0
     @liabilities = 0.0
+    @current_page = (!attributes.nil? && attributes.has_key?(:current_page) ?
+                      attributes[:current_page] : 0)
+    @total_entries = (!attributes.nil? && attributes.has_key?(:total_entries) ?
+                       attributes[:total_entries] : 0)
+    @total_pages = (!attributes.nil? && attributes.has_key?(:total_pages) ?
+                    attributes[:total_pages] : 0)
     if !attributes.nil? && attributes.has_key?(:totals) ? attributes[:totals] : false
       sql = "
       SELECT sum(CASE WHEN side=='passive' THEN value ELSE 0.0 END) AS assets,
@@ -32,15 +37,13 @@ class BalanceSheet
         @liabilities += result['liabilities'] unless result['liabilities'].nil?
       end
     end
-  end
-
-  def balances
-    @balances
+    if !attributes.nil? && attributes.has_key?(:balances) && !attributes[:balances].nil?
+      self.concat(attributes[:balances])
+    end
   end
 
   def BalanceSheet.find(attributes = nil)
     day = (!attributes.nil? && attributes.has_key?(:day) ? attributes[:day] : DateTime.now)
-
     where = ""
     if !attributes.nil? and attributes.has_key?(:where)
       attributes[:where].each do |attr, value|
@@ -116,7 +119,8 @@ class BalanceSheet
     end
 
     limit = ""
-    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+    if !attributes.nil? && attributes.has_key?(:page) && attributes.has_key?(:per_page) &&
+       !attributes[:page].nil? && !attributes[:per_page].nil?
       page = attributes[:page]
       per_page = attributes[:per_page]
       if page.kind_of?(String)
@@ -176,6 +180,21 @@ class BalanceSheet
                                 :start => attrs[:start])
       end
     end
-    BalanceSheet.new(:day => day, :balances => balances)
+
+    attrs = Hash.new
+    attrs[:day] = day
+    attrs[:balances] = balances unless balances.nil?
+    attrs[:current_page] = attributes[:page].to_i if !attributes.nil? && attributes.has_key?(:page)
+    attrs[:total_entries] = State.find_all_between_start_and_stop(day,day).count +
+                            Income.find_all_between_start_and_stop(day,day).count
+    total_pages = 0
+    if !attributes.nil? && attributes.has_key?(:per_page) && (attributes[:per_page].to_i > 0)
+      total_pages = attrs[:total_entries].to_i / attributes[:per_page].to_i
+      if ((total_pages * attributes[:per_page].to_i) < attrs[:total_entries].to_i)
+        total_pages += 1
+      end
+    end
+    attrs[:total_pages] = total_pages
+    BalanceSheet.new(attrs)
   end
 end
