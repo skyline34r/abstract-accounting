@@ -10,14 +10,12 @@ class BalancesController < ApplicationController
   end
 
   def load
-    load_grid(params[:date])
-  end
-
-  def load_grid(date)
     columns = ['deal.tag', 'deal.entity.real_tag', 'deal.give.real_tag', 'amount',
                'value', 'side']
     args = Hash.new
-    args[:day] = DateTime.strptime(date, '%m/%d/%Y') unless date.empty?
+    if !params.nil? && !params[:date].nil? && !params[:date].empty?
+      args[:day] = DateTime.strptime(params[:date], '%m/%d/%Y')
+    end
     case params[:sidx]
       when 'deal'
         args[:order] = {'deal.tag' => params[:sord]}
@@ -40,23 +38,23 @@ class BalancesController < ApplicationController
     end
     if params[:_search]
       where = Hash.new
-      if !params[:deal].nil?
+      unless params[:deal].nil?
         where['deal.tag'] = {:like => params[:deal]}
       end
-      if !params[:entity].nil?
+      unless params[:entity].nil?
         where['entity.tag'] = {:like => params[:entity]}
       end
-      if !params[:resource].nil?
+      unless params[:resource].nil?
         where['resource.tag'] = {:like => params[:resource]}
       end
-      if !params[:amount].nil?
+      unless params[:amount].nil?
         if params[:accounting]
           where['accounting.debit'] = {:like => params[:amount]}
         else
           where['physical.debit'] = {:like => params[:amount]}
         end
       end
-      if !params[:value].nil?
+      unless params[:value].nil?
         if params[:accounting]
           where['accounting.credit'] = {:like => params[:value]}
         else
@@ -65,10 +63,6 @@ class BalancesController < ApplicationController
       end
       args[:where] = where
     end
-
-    sb = BalanceSheet.new(:day => (args.has_key?(:day) ? args[:day] : DateTime.now), :totals => true)
-    session[:balance_assets] = sb.assets
-    session[:balance_liabilities] = sb.liabilities
 
     sheet_balances = BalanceSheet.find(args)
     balances = sheet_balances.balances.paginate(
@@ -81,5 +75,13 @@ class BalancesController < ApplicationController
   end
 
   def total
+    args = Hash.new
+    if !params.empty? && !params[:date].nil? && !params[:date].empty?
+      args[:day] = DateTime.strptime(params[:date], '%m/%d/%Y')
+    end
+    args[:totals] = true
+    bs_totals = BalanceSheet.new(args)
+    @assets = bs_totals.assets
+    @liabilities = bs_totals.liabilities
   end
 end

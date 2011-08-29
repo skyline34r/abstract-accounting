@@ -8,9 +8,19 @@ function changeTypeLoadBalance() {
   $("#data_list").setGridParam({url: actionUrl});
   $('#data_list').trigger('reloadGrid');
 }
+function loadBalance()
+{
+  var actionUrl = "/balances/load?date=" + $("#balance_datepicker").val();
+  $("#data_list").setGridParam({url: actionUrl});
+  $("#data_list").clearGridData(true);
+  $("#data_list").trigger("reloadGrid");
+  ajaxRequest("/balances/total?date=" + $("#balance_datepicker").val());
+}
 
 document.title = "<%=t 'title.abstract'%> :: <%=t 'title.balance'%>";
 $("#body").html("<%= escape_javascript(render :partial => 'balances/index' ) %>");
 
 $("#physical").change(changeTypeLoadBalance);
 $("#accounting").change(changeTypeLoadBalance);
+
+ajaxRequest("/balances/total");

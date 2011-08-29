@@ -46,10 +46,6 @@ module BalancesHelper
       :viewrecords => true,
       :gridview => true,
       :toppager => true,
-      :loadComplete => 'function()
-      {
-        ajaxRequest("/balances/total");
-      }'.to_json_var,
       :onPaging => 'function(param)
       {
         fixPager(param, "data_list");

@@ -4,14 +4,6 @@ $(function() {
   $("#balance_datepicker").datepicker($.datepicker.regional['<%= I18n.locale.to_s %>']);
   $("#balance_datepicker").val(getDateString(curr_date));
 });
-
-function loadBalance()
-{
-  var actionUrl = "/balances/load?date=" + $("#balance_datepicker").val();
-  $("#data_list").setGridParam({url: actionUrl});
-  $("#data_list").clearGridData(true);
-  $("#data_list").trigger("reloadGrid");
-}
 </script>
 
 <%= raw(balances_jqgrid) %>
