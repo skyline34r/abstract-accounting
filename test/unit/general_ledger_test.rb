@@ -207,10 +207,16 @@ class GeneralLedgerTest < ActiveSupport::TestCase
     assert_equal f1.id, gl[0].fact_id, "Wrong general ledger filtering"
     assert_equal f2.id, gl[1].fact_id, "Wrong general ledger filtering"
     assert_equal f3.id, gl[2].fact_id, "Wrong general ledger filtering"
+    assert_equal 1, gl.current_page, "Wrong general ledger filtering"
+    assert_equal 2, gl.total_pages, "Wrong general ledger filtering"
+    assert_equal 6, gl.total_entries, "Wrong general ledger filtering"
 
     gl = GeneralLedger.find(:page => '2', :per_page => '2')
     assert_equal 2, gl.length, "Wrong general ledger length"
     assert_equal f3.id, gl[0].fact_id, "Wrong general ledger filtering"
     assert_equal f4.id, gl[1].fact_id, "Wrong general ledger filtering"
+    assert_equal 2, gl.current_page, "Wrong general ledger filtering"
+    assert_equal 3, gl.total_pages, "Wrong general ledger filtering"
+    assert_equal 6, gl.total_entries, "Wrong general ledger filtering"
   end
 end

@@ -49,10 +49,10 @@ class GeneralLedgersController < ApplicationController
       end
       args[:where] = where
     end
+    args[:page] = params[:page]
+    args[:per_page] = params[:rows]
+
     general_ledgers = GeneralLedger.find(args)
-    general_ledgers = general_ledgers.paginate(
-     :page     => params[:page],
-     :per_page => params[:rows])
     if request.xhr?
       render :json => abstract_json_for_jqgrid(general_ledgers, columns,
                                                :id_column => 'fact.id')

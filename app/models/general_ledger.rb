@@ -1,5 +1,16 @@
 
-class GeneralLedger
+class GeneralLedger < Array
+  attr_reader :current_page, :total_pages, :total_entries
+
+  def initialize(attributes = nil)
+    @current_page = (!attributes.nil? && attributes.has_key?(:current_page) ?
+                      attributes[:current_page] : 0)
+    @total_entries = (!attributes.nil? && attributes.has_key?(:total_entries) ?
+                       attributes[:total_entries] : 0)
+    @total_pages = (!attributes.nil? && attributes.has_key?(:total_pages) ?
+                    attributes[:total_pages] : 0)
+  end
+
   def GeneralLedger.find(attributes = nil)
     where = ""
     if !attributes.nil? and attributes.has_key?(:where)
@@ -79,7 +90,19 @@ class GeneralLedger
     LEFT JOIN asset_reals ON asset_reals.id==assets.real_id " + where + " " + order +
     " " + limit
 
-    txns = Array.new
+    attrs = Hash.new
+    attrs[:current_page] = attributes[:page].to_i if !attributes.nil? && attributes.has_key?(:page)
+    attrs[:total_entries] = Fact.all.count
+    total_pages = 0
+    if !attributes.nil? && attributes.has_key?(:per_page) && (attributes[:per_page].to_i > 0)
+      total_pages = attrs[:total_entries].to_i / attributes[:per_page].to_i
+      if ((total_pages * attributes[:per_page].to_i) < attrs[:total_entries].to_i)
+        total_pages += 1
+      end
+    end
+    attrs[:total_pages] = total_pages
+
+    txns = GeneralLedger.new(attrs)
     ActiveRecord::Base.connection.execute(sql).each do |result|
       attrs = Hash.new
       result.each { |key, value| attrs[key.to_sym] = value if key.kind_of?(String) }
