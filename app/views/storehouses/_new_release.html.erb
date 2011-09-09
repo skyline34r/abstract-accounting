@@ -70,9 +70,9 @@
             tmpData[j] = new Object();
           }
           if(tmpData[j].release) {
-            tmpData[j].release += parseInt(storeHouseData[i].data[j]);
+            tmpData[j].release += parseFloat(storeHouseData[i].data[j]);
           } else {
-            tmpData[j].release = parseInt(storeHouseData[i].data[j]);
+            tmpData[j].release = parseFloat(storeHouseData[i].data[j]);
           }
         }
       }
