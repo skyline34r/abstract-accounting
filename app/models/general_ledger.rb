@@ -67,7 +67,8 @@ class GeneralLedger < Array
     end
 
     limit = ""
-    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page)
+    if !attributes.nil? and attributes.has_key?(:page) and attributes.has_key?(:per_page) and
+       !attributes[:page].nil? and !attributes[:per_page].nil?
       page = attributes[:page]
       per_page = attributes[:per_page]
       if page.kind_of?(String)
