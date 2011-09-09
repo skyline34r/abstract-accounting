@@ -503,7 +503,8 @@ GROUP BY warehouse.id
     resources = Array.new
     ActiveRecord::Base.connection.execute(
     "
-    SELECT products.id as product_id, SUM(resources.rate) as rate, SUM(resources.amount) - SUM(resources.sec_rate) as warehouse_state FROM (
+    SELECT products.id as product_id, ROUND(SUM(resources.rate),2) as rate,
+           ROUND((SUM(resources.amount) - SUM(resources.sec_rate)),2) as warehouse_state FROM (
 SELECT waybills.id as id, assets.id as asset_id, rules.rate as rate, states.amount as amount, SUM(CASE WHEN sec_waybills.id IS NULL THEN 0.0 ELSE sec_rules.rate END) as sec_rate FROM waybills
   LEFT JOIN rules ON rules.deal_id = waybills.deal_id
   INNER JOIN states ON states.deal_id = rules.to_id AND states.paid IS NULL

@@ -1262,4 +1262,28 @@ class WaybillTest < ActiveSupport::TestCase
     assert_equal wb1.id, waybills[0].waybill.id, "Wrong waybill id"
     assert !waybills[0].has_in_the_warehouse, "Waybill is not in the warehouse"
   end
+
+  test "check warehouse resources float amount" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    warehouse = Place.new(:tag => "Some warehouse")
+    assert warehouse.save, "Entity not saved"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => warehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 8, 17, 12, 0, 0))
+    wb.add_resource "carpet", "th", 12.3
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 8, 18, 12, 0, 0),
+      :owner => storekeeper,
+      :place => warehouse,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("carpet"), 2.2
+    assert sr.save, "StorehouseRelease not saved"
+
+    assert_equal 10.1, Waybill.find(sr.id).warehouse_resources[0].amount, "Wrong waybill entry amount"
+  end
 end
