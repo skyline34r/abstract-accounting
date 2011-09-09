@@ -504,6 +504,33 @@ class StorehouseTest < ActiveSupport::TestCase
     assert_equal 3, Storehouse.all(:page => "1", :per_page => 4).length, "Wrong storehouse length"
   end
 
+  test "check view storehouse resources float amount" do
+    storekeeper = Entity.new(:tag => "Storekeeper")
+    assert storekeeper.save, "Entity not saved"
+    storehouse = Place.new(:tag => "Some storehouse")
+    assert storehouse.save, "Entity not saved"
+
+    wb = Waybill.new(:owner => storekeeper,
+      :document_id => "12834",
+      :place => storehouse,
+      :from => "Organization Store",
+      :created => DateTime.civil(2011, 8, 17, 12, 0, 0))
+    wb.add_resource "carpet", "th", 12.3
+    assert wb.save, "Waybill is not saved"
+
+    sr = StorehouseRelease.new(:created => DateTime.civil(2011, 8, 18, 12, 0, 0),
+      :owner => storekeeper,
+      :place => storehouse,
+      :to => "Taskmaster")
+    sr.add_resource Product.find_by_resource_tag("carpet"), 2.2
+    assert sr.save, "StorehouseRelease not saved"
+
+    storehouse = Storehouse.all(:entity => storekeeper,
+                                :place => storehouse,
+                                :check_amount => false)
+    assert_equal 10.1, storehouse[0].exp_amount, "Wrong storehouse entry amount"
+  end
+
   #test "check storehouse for taskmasters" do
   #  stm = Storehouse.taskmasters entities(:sergey), places(:orsha)
   #  assert_equal entities(:sergey), stm.entity, "Wrong storehouse entity"

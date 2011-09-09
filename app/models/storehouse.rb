@@ -191,7 +191,7 @@ class Storehouse
     end
     states = "
     SELECT warehouse.* FROM
-      (SELECT SUM(amount) as real_amount, SUM(amount - exp_amount) as exp_amount,
+      (SELECT SUM(amount) as real_amount, ROUND(SUM(amount - exp_amount),2) as exp_amount,
              state_deal_id as deal_id, owner_id, place_id, products.id as product_id FROM (
         SELECT w_states.id as state_id, w_states.start as state_start, w_states.paid as state_paid,
                w_states.deal_id as state_deal_id, w_states.amount as amount, 0.0 as exp_amount,
