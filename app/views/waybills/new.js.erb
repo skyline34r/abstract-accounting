@@ -10,3 +10,36 @@ if(dataPage != null) {
                                       , unit: "" });
   uin++;
 }
+
+$("#new_waybill").submit(function() {
+  submitId = "save_waybill";
+  canSave = true;
+  saveEdittedRow();
+  var data = $("#waybills_list").getRowData();
+  var newInput = null;
+  for(var i=0; i<data.length; i++) {
+    newInput = document.createElement("input");
+    newInput.type = "hidden";
+    newInput.name = "entry_resource[]";
+    newInput.value = data[i]["resource"];
+    this.appendChild(newInput);
+    newInput = document.createElement("input");
+    newInput.type = "hidden";
+    newInput.name = "entry_amount[]";
+    newInput.value = data[i]["amount"];
+    this.appendChild(newInput);
+    newInput = document.createElement("input");
+    newInput.type = "hidden";
+    newInput.name = "entry_unit[]";
+    newInput.value = data[i]["unit"];
+    this.appendChild(newInput);
+  }
+  $("#hide_waybill_number").val(escape($("#waybill_number").val()));
+  var d = new Date($("#waybill_date").val());
+  d.setHours(12);
+  $("#hide_waybill_date").val(d.toUTCString());
+  $("#hide_waybill_vatin").val(escape($("#waybill_vatin").val()));
+  $("#hide_waybill_from").val(escape($("#waybill_organization").val()));
+  saveWaybillElements();
+  $("#save_waybill").attr("disabled", "disabled");
+});
