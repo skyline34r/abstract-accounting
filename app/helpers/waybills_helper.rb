@@ -107,23 +107,6 @@ module WaybillsHelper
       :viewrecords => true,
       :gridview => true,
       :toppager => true,
-      :subGrid => true,
-      :subGridUrl => '/waybills/',
-      :subGridModel => [
-        { :name => [t('waybill.tree.resource'), t('waybill.tree.amount'),
-                    t('waybill.tree.unit')],
-          :width => [300, 100, 100],
-          :params => [
-            { :name => 'resource', :index => 'resource' },
-            { :name => 'amount',   :index => 'amount' },
-            { :name => 'unit', :index => 'unit' }
-          ]
-        }
-      ],
-      :subGridBeforeExpand => 'function(pId, id)
-      {
-        $("#waybills_tree").setGridParam({subGridUrl: "/waybills/" + id });
-      }'.to_json_var,
       :onSelectRow => 'function(row_id)
       {
         if((canManageWaybill == "true") &&
@@ -163,6 +146,32 @@ module WaybillsHelper
       :onPaging => 'function(param)
       {
         fixPager(param, "waybills_tree");
+      }'.to_json_var,
+      :subGrid => true,
+      :subGridRowExpanded => 'function(subgrid_id, row_id)
+      {
+        var subgrid_table_id = subgrid_id + "_t";
+        var subgrid_pager_id = subgrid_id + "_p";
+        $("#"+subgrid_id).html("<table id=\"" + subgrid_table_id + "\"></table>\
+                                <div id=\"" + subgrid_pager_id + "\"></div>");
+        $("#"+subgrid_table_id).jqGrid({
+          url: "/waybills/" + row_id,
+          datatype: "json",
+          mtype: "GET",
+          colNames: ["resource", "amount", "unit"],
+          colModel: [{ name: "resource", index: "resource", width: 400, sortable: false },
+                     { name: "amount", index: "amount", width: 150, sortable: false },
+                     { name: "unit", index: "unit", width: 150, sortable: false }],
+          height: "100%",
+          rowNum: 10,
+          rowList: [10, 20, 30],
+          viewrecords: true,
+          pager: "#" + subgrid_pager_id,
+          beforeSelectRow: function()
+          {
+            return false;
+          }
+        });
       }'.to_json_var
     }]
 
