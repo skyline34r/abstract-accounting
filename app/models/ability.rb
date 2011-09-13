@@ -30,7 +30,9 @@ class Ability
                 can :taskmaster, Storehouse
                 can :manage, StorehouseReturn
               when "WaybillDisable"
-                can :destroy, Waybill
+                alias_action :destroy, :edit, :disable,
+                             :to => :storehouse_disable
+                can :storehouse_disable, Waybill
               else
                 can :manage, eval(p.chomp(','))
             end
