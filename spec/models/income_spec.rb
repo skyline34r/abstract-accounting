@@ -19,5 +19,6 @@ describe Income do
     should allow_value(Income::PASSIVE).for(:side)
     should allow_value(Income::ACTIVE).for(:side)
     should_not allow_value("other").for(:side)
+    should have_many Income.versions_association_name
   end
 end
