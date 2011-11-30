@@ -81,4 +81,10 @@ FactoryGirl.define do
     r.change_side true
     r.rate 1.0
   end
+
+  factory :user do |u|
+    u.sequence(:email) { |n| "user#{n}@aasii.org" }
+    u.crypted_password "secret"
+    u.entity { |user| user.association(:entity) }
+  end
 end
