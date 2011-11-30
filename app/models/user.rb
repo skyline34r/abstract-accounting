@@ -18,4 +18,17 @@ class User < ActiveRecord::Base
   validates_length_of :password, :minimum => 6, :on => :create
   validates_confirmation_of :password
   belongs_to :entity
+
+  def self.authenticate(email, password, *credentials)
+    if Settings.admin.email == email &&
+       Settings.admin.password.to_s == password.to_s
+      UserAdmin.new
+    else
+      super(email, password, *credentials)
+    end
+  end
+
+  def admin?
+    false
+  end
 end

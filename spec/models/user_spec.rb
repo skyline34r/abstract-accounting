@@ -25,5 +25,14 @@ describe User do
     should_not allow_mass_assignment_of(:salt)
     should belong_to(:entity)
     should have_many User.versions_association_name
+    User.new.admin?.should be_false
+
+    authenticated_from_config
+  end
+
+  def authenticated_from_config
+    config = YAML::load(File.open("#{Rails.root}/config/application.yml"))
+    user = User.authenticate(config["defaults"]["admin"]["email"], config["defaults"]["admin"]["password"])
+    user.should_not be_nil
   end
 end
