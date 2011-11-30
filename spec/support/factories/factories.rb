@@ -93,4 +93,10 @@ FactoryGirl.define do
     be.rate 0.45
     be.bom_id 1
   end
+
+  factory :user do |u|
+    u.sequence(:email) { |n| "user#{n}@aasii.org" }
+    u.crypted_password "secret"
+    u.entity { |user| user.association(:entity) }
+  end
 end
