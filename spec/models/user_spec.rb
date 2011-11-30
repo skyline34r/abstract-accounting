@@ -28,11 +28,19 @@ describe User do
     User.new.admin?.should be_false
 
     authenticated_from_config
+    check_remember_me
   end
 
   def authenticated_from_config
     config = YAML::load(File.open("#{Rails.root}/config/application.yml"))
     user = User.authenticate(config["defaults"]["admin"]["email"], config["defaults"]["admin"]["password"])
     user.should_not be_nil
+  end
+
+  def check_remember_me
+    user = Factory(:user)
+    expect { user.remember_me! }.to change{user.remember_me_token}.from(nil)
+    user = Factory(:user)
+    expect { user.remember_me! }.to change{user.remember_me_token_expires_at}.from(nil)
   end
 end
