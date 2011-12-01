@@ -197,7 +197,7 @@ describe Quote do
     tr.total_credits_value.should eq(1000.0)
 
     #balance sheet
-    balance = (BalanceSheet.new)[0]
+    balance = (BalanceSheet.all)[0]
     balance.should_not be_nil
     balance.amount.should eq(30000.0)
     balance.value.should eq(45000.0)
