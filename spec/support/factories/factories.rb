@@ -93,4 +93,9 @@ FactoryGirl.define do
   factory :work do |w|
     w.sequence(:tag) { |n| "work#{n}" }
   end
+
+  factory :group do |g|
+    g.sequence(:tag) { |n| "group#{n}" }
+    g.manager { |group| group.association(:user) }
+  end
 end

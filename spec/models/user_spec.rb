@@ -26,6 +26,7 @@ describe User do
     should belong_to(:entity)
     should have_many User.versions_association_name
     User.new.admin?.should be_false
+    should have_and_belong_to_many(:groups)
 
     authenticated_from_config
     check_remember_me

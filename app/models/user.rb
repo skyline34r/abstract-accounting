@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :minimum => 6, :on => :create
   validates_confirmation_of :password
   belongs_to :entity
+  has_and_belongs_to_many :groups
 
   def self.authenticate(email, password, *credentials)
     if Settings.admin.email == email &&

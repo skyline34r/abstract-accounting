@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111201123548) do
+ActiveRecord::Schema.define(:version => 20111201143918) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -58,6 +58,16 @@ ActiveRecord::Schema.define(:version => 20111201123548) do
     t.integer  "to_deal_id"
     t.integer  "resource_id"
     t.string   "resource_type"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string  "tag"
+    t.integer "manager_id"
+  end
+
+  create_table "groups_users", :id => false, :force => true do |t|
+    t.integer "group_id"
+    t.integer "user_id"
   end
 
   create_table "incomes", :force => true do |t|
