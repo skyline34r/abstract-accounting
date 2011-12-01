@@ -89,4 +89,8 @@ FactoryGirl.define do
     u.entity { |user| user.association(:entity) }
     u.sequence(:reset_password_token) { |n| "anything#{n}" }
   end
+
+  factory :work do |w|
+    w.sequence(:tag) { |n| "work#{n}" }
+  end
 end
