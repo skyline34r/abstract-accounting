@@ -549,7 +549,7 @@ describe Txn do
                                                      DateTime.civil(2011, 11, 26, 12, 0, 0))
     #general ledger
     Txn.all.count.should eq(20)
-    GeneralLedger.new.count.should eq(20)
-    GeneralLedger.new.to_a.should =~ Txn.all
+    GeneralLedger.all.count.should eq(20)
+    GeneralLedger.all.to_a.should =~ Txn.all
   end
 end
