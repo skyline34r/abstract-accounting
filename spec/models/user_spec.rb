@@ -29,6 +29,7 @@ describe User do
 
     authenticated_from_config
     check_remember_me
+    check_password_reset
   end
 
   def authenticated_from_config
@@ -42,5 +43,13 @@ describe User do
     expect { user.remember_me! }.to change{user.remember_me_token}.from(nil)
     user = Factory(:user)
     expect { user.remember_me! }.to change{user.remember_me_token_expires_at}.from(nil)
+  end
+
+  def check_password_reset
+    user = Factory(:user)
+    new_user = User.load_from_reset_password_token(user.reset_password_token)
+    new_user.should eq(user)
+    new_user.change_password!("changed")
+    new_user.crypted_password.should_not eq(user.crypted_password)
   end
 end
