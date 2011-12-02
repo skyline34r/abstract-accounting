@@ -102,4 +102,11 @@ FactoryGirl.define do
   factory :place do |e|
     e.sequence(:tag) { |n| "place#{n}" }
   end
+
+  factory :credential do |c|
+    c.user { |credential| credential.association(:user) }
+    c.place { |credential| credential.association(:place) }
+    c.work { |credential| credential.association(:work) }
+    c.sequence(:document_type) { |n| "document_type#{n}" }
+  end
 end

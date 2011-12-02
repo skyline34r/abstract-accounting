@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
   belongs_to :entity
   has_and_belongs_to_many :groups
+  has_many :credentials
 
   def self.authenticate(email, password, *credentials)
     if Settings.admin.email == email &&

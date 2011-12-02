@@ -34,6 +34,16 @@ ActiveRecord::Schema.define(:version => 20111202091857) do
     t.integer "currency_id"
   end
 
+  create_table "credentials", :force => true do |t|
+    t.integer "user_id"
+    t.integer "place_id"
+    t.integer "work_id"
+    t.string  "document_type"
+    t.string  "actions"
+  end
+
+  add_index "credentials", ["user_id", "place_id", "work_id", "document_type"], :name => "credentials_index", :unique => true
+
   create_table "deals", :force => true do |t|
     t.string  "tag"
     t.float   "rate"
