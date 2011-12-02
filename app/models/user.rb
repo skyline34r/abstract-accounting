@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   belongs_to :entity
   has_and_belongs_to_many :groups
   has_many :credentials
+  has_many :accesses, :class_name => "DirectAccess"
 
   def self.authenticate(email, password, *credentials)
     if Settings.admin.email == email &&

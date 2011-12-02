@@ -109,4 +109,9 @@ FactoryGirl.define do
     c.work { |credential| credential.association(:work) }
     c.sequence(:document_type) { |n| "document_type#{n}" }
   end
+
+  factory :direct_access do |d|
+    d.user { |direct_access| direct_access.association(:user) }
+    d.item { |direct_access| direct_access.association(:asset) }
+  end
 end

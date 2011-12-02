@@ -28,6 +28,7 @@ describe User do
     User.new.admin?.should be_false
     should have_and_belong_to_many(:groups)
     should have_many(:credentials)
+    should have_many(:accesses).class_name(DirectAccess)
 
     authenticated_from_config
     check_remember_me

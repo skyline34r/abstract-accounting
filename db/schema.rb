@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111202091857) do
+ActiveRecord::Schema.define(:version => 20111202095731) do
 
   create_table "assets", :force => true do |t|
     t.string "tag"
@@ -56,6 +56,14 @@ ActiveRecord::Schema.define(:version => 20111202091857) do
   end
 
   add_index "deals", ["entity_id", "tag"], :name => "index_deals_on_entity_id_and_tag", :unique => true
+
+  create_table "direct_accesses", :force => true do |t|
+    t.integer "user_id"
+    t.integer "item_id"
+    t.string  "item_type"
+  end
+
+  add_index "direct_accesses", ["user_id", "item_id", "item_type"], :name => "index_direct_accesses_on_user_id_and_item_id_and_item_type", :unique => true
 
   create_table "entities", :force => true do |t|
     t.string "tag"
