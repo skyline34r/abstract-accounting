@@ -98,4 +98,8 @@ FactoryGirl.define do
     g.sequence(:tag) { |n| "group#{n}" }
     g.manager { |group| group.association(:user) }
   end
+
+  factory :place do |e|
+    e.sequence(:tag) { |n| "place#{n}" }
+  end
 end
