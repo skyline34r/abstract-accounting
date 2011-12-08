@@ -8,10 +8,11 @@
 # Please see ./COPYING for details
 
 require 'spec_helper'
+require "cancan/matchers"
 
 describe Ability do
   it "should have next behaviour" do
-    Ability.new(Factory(:user)).can?(:manage, :all).should be_false
-    Ability.new(UserAdmin.new).can?(:manage, :all).should be_true
+    Ability.new(Factory(:user)).should_not be_able_to(:manage, :all)
+    Ability.new(UserAdmin.new).should be_able_to(:manage, :all)
   end
 end
