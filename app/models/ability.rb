@@ -11,12 +11,20 @@ class Ability
           sym_action = action.to_sym
           if sym_action == :read
             users = user.subordinates << user
-            can sym_action, clazz, clazz.created_by_many(users) do |obj|
-              versions = obj.versions.creations
-              if versions.empty?
+            scope = clazz.created_by_many(users)
+            if credential.place and clazz.column_names.include?("place_id")
+              scope = scope.where("place_id = ?", credential.place)
+            end
+            can sym_action, clazz, scope do |obj|
+              if credential.place and clazz.column_names.include?("place_id") and obj.place_id != credential.place_id
                 false
               else
-                users.collect { |usr| usr.id }.include?(versions.first.whodunnit.to_i)
+                versions = obj.versions.creations
+                if versions.empty?
+                  false
+                else
+                  users.collect { |usr| usr.id }.include?(versions.first.whodunnit.to_i)
+                end
               end
             end
           else

@@ -70,5 +70,25 @@ describe Ability do
     Ability.new(boss).should be_able_to(:read, employee_creation.first)
     Ability.new(boss).should_not be_able_to(:read, manager.credentials.first)
     Ability.new(manager).should be_able_to(:read, user_creation.first)
+
+    #check ability by credentials place
+    place = Factory(:place)
+    user.credentials.where(:document_type => Credential.name).first.update_attributes :place => place
+    employee.credentials.where(:document_type => Credential.name).first.update_attributes :place => place
+    manager.credentials.where(:document_type => Credential.name).first.update_attributes :place => place
+    PaperTrail.whodunnit = user
+    user_creation_with_place = (1..3).collect { Factory(:credential, :place => place) }
+    PaperTrail.whodunnit = employee
+    Credential.accessible_by(Ability.new(employee)).should be_empty
+    employee_creation_with_place = (1..3).collect { Factory(:credential, :place => place) }
+
+    user_creation_with_place.should =~ Credential.accessible_by(Ability.new(user))
+    user_creation_with_place.should =~ Credential.accessible_by(Ability.new(manager))
+    employee_creation_with_place.should =~ Credential.accessible_by(Ability.new(employee))
+    (manager_creation | user_creation | employee_creation |
+    user_creation_with_place | employee_creation_with_place).should =~ Credential.accessible_by(Ability.new(boss))
+    Ability.new(user).should be_able_to(:read, user_creation_with_place.first)
+    Ability.new(user).should_not be_able_to(:read, user_creation.first)
+    Ability.new(employee).should be_able_to(:read, employee_creation_with_place.first)
   end
 end
