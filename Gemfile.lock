@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:sergeygaychuk/paper_trail.git
+  revision: af504d5b04544d1e831d148739127216d7402334
+  specs:
+    paper_trail (2.5.0)
+      rails (~> 3)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -65,8 +72,6 @@ GEM
     oauth2 (0.4.1)
       faraday (~> 0.6.1)
       multi_json (>= 0.0.5)
-    paper_trail (2.5.0)
-      rails (~> 3)
     polyglot (0.3.3)
     rack (1.3.5)
     rack-cache (1.0.3)
@@ -140,7 +145,7 @@ DEPENDENCIES
   factory_girl
   guard-rspec
   guard-spork
-  paper_trail
+  paper_trail!
   rails (= 3.1.0)
   rspec-rails
   settingslogic

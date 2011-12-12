@@ -6,7 +6,7 @@ gem 'rails', '3.1.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
-gem 'paper_trail'
+gem 'paper_trail', :git => "git@github.com:sergeygaychuk/paper_trail.git"
 gem 'sorcery'
 gem 'settingslogic'
 gem 'cancan'

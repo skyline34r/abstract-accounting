@@ -16,29 +16,59 @@ describe Ability do
     Ability.new(UserAdmin.new).should be_able_to(:manage, :all)
 
     #check permissions
-    credential = Factory(:credential, :document_type => User.name, :actions => [:create])
-    user = Factory(:user, :credentials => [credential])
+    user = Factory(:user)
+    credential = user.credentials.create!(:document_type => User.name, :actions => [:create])
     Ability.new(user).should be_able_to(:create, User)
-    user.credentials << Factory(:credential, :document_type => Credential.name, :actions => [:update])
+    user.credentials.create!(:document_type => Credential.name, :actions => [:update])
     Ability.new(user).should be_able_to(:create, User)
     Ability.new(user).should be_able_to(:update, Credential)
     credential.actions << :update
+    credential.save!
     Ability.new(user).should be_able_to(:update, Credential)
     Ability.new(user).should be_able_to(:create, User)
     Ability.new(user).should be_able_to(:update, User)
     credential.actions = ["create", :update]
+    credential.save!
     Ability.new(user).should be_able_to(:update, Credential)
     Ability.new(user).should be_able_to(:create, User)
     Ability.new(user).should be_able_to(:update, User)
-    user.credentials << Factory(:credential, :document_type => Group.name, :actions => [:create])
+    user.credentials.create!(:document_type => Group.name, :actions => [:create])
     Ability.new(user).should be_able_to(:update, Credential)
     Ability.new(user).should be_able_to(:create, Group)
     Ability.new(user).should be_able_to(:create, User)
     Ability.new(user).should be_able_to(:update, User)
     credential.actions << :read
+    credential.save!
     Ability.new(user).should be_able_to(:update, Credential)
     Ability.new(user).should be_able_to(:read, User)
     Ability.new(user).should be_able_to(:create, User)
     Ability.new(user).should be_able_to(:update, User)
+
+    #check that current user can read only objects created by current user
+    credential = user.credentials.where(:document_type => Credential.name).first
+    credential.actions << :read
+    credential.save!
+    manager = Factory(:user)
+    manager.credentials.create!(:document_type => Credential.name, :actions => [:read])
+    Factory(:group, :manager => manager, :users => [user])
+    employee = Factory(:user)
+    employee.credentials.create!(:document_type => Credential.name, :actions => [:read])
+    boss = Factory(:user)
+    boss.credentials.create!(:document_type => Credential.name, :actions => [:read])
+    Factory(:group, :manager => boss, :users => [manager, employee])
+
+    PaperTrail.whodunnit = user
+    user_creation = (1..3).collect { Factory(:credential) }
+    PaperTrail.whodunnit = employee
+    employee_creation = (1..3).collect { Factory(:credential) }
+    PaperTrail.whodunnit = manager
+    manager_creation = (1..2).collect { Factory(:credential) }
+    user_creation.should =~ Credential.accessible_by(Ability.new(user))
+    employee_creation.should =~ Credential.accessible_by(Ability.new(employee))
+    (manager_creation | user_creation).should =~ Credential.accessible_by(Ability.new(manager))
+    (manager_creation | user_creation | employee_creation).should =~ Credential.accessible_by(Ability.new(boss))
+    Ability.new(boss).should be_able_to(:read, employee_creation.first)
+    Ability.new(boss).should_not be_able_to(:read, manager.credentials.first)
+    Ability.new(manager).should be_able_to(:read, user_creation.first)
   end
 end
