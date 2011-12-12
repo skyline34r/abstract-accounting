@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :groups
   has_many :credentials
   has_many :accesses, :class_name => "DirectAccess"
+  has_many :managed_groups, :class_name => "Group", :foreign_key => :manager_id
+  has_many :managed_users, :class_name => "User", :through => :managed_groups, :source => :users
 
   def self.authenticate(email, password, *credentials)
     if Settings.admin.email == email &&
@@ -33,5 +35,13 @@ class User < ActiveRecord::Base
 
   def admin?
     false
+  end
+
+  def subordinates
+    self.managed_users(:force_update).inject([]) do |children, user|
+      children << user
+      children |= user.subordinates
+      children
+    end
   end
 end

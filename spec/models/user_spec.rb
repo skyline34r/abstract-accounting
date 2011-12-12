@@ -29,10 +29,13 @@ describe User do
     should have_and_belong_to_many(:groups)
     should have_many(:credentials)
     should have_many(:accesses).class_name(DirectAccess)
+    should have_many(:managed_groups).class_name(Group)
+    should have_many(:managed_users).class_name(User).through(:managed_groups)
 
     authenticated_from_config
     check_remember_me
     check_password_reset
+    check_subordinates
   end
 
   def authenticated_from_config
@@ -54,5 +57,25 @@ describe User do
     new_user.should eq(user)
     new_user.change_password!("changed")
     new_user.crypted_password.should_not eq(user.crypted_password)
+  end
+
+  def check_subordinates
+    group = Factory(:group)
+    group.users = (1..3).collect { Factory(:user) }
+    group1 = Factory(:group, :manager => group.users.first)
+    group1.users = (1..4).collect { Factory(:user) }
+    group2 = Factory(:group, :manager => group.users.last)
+    group2.users = (1..3).collect { Factory(:user) }
+    group3 = Factory(:group, :manager => group1.users.first)
+    group3.users = (1..10).collect { Factory(:user) }
+    (group1.users | group3.users).should =~ group1.manager.subordinates
+    group2.users.should =~ group2.manager.subordinates
+    (group.users | group1.users | group2.users | group3.users).should =~
+        group.manager.subordinates
+    group4 = Factory(:group, :manager => group1.users.first)
+    group4.users = (1..5).collect { Factory(:user) }
+    (group1.users | group3.users | group4.users).should =~ group1.manager.subordinates
+    (group.users | group1.users | group2.users | group3.users | group4.users).should =~
+        group.manager.subordinates
   end
 end
