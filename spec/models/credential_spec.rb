@@ -18,5 +18,10 @@ describe Credential do
     should belong_to :place
     should belong_to :work
     should have_many Credential.versions_association_name
+
+    actions = [:read, :update]
+    credential = Factory(:credential, :actions => actions)
+    credential.actions.should =~ actions
+    Credential.find(credential).actions.should =~ actions
   end
 end

@@ -9,6 +9,7 @@
 
 class Credential < ActiveRecord::Base
   has_paper_trail
+  serialize :actions
 
   validates_presence_of :user_id
   validates_uniqueness_of :document_type, :scope =>[ :user_id, :place_id, :work_id ]
