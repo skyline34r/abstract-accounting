@@ -15,8 +15,13 @@ class Ability
             if credential.place and clazz.column_names.include?("place_id")
               scope = scope.where("place_id = ?", credential.place)
             end
+            if credential.work and clazz.column_names.include?("work_id")
+              scope = scope.where("work_id = ?", credential.work)
+            end
             can sym_action, clazz, scope do |obj|
               if credential.place and clazz.column_names.include?("place_id") and obj.place_id != credential.place_id
+                false
+              elsif credential.work and clazz.column_names.include?("work_id") and obj.work_id != credential.work_id
                 false
               else
                 versions = obj.versions.creations

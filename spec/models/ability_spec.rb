@@ -90,5 +90,36 @@ describe Ability do
     Ability.new(user).should be_able_to(:read, user_creation_with_place.first)
     Ability.new(user).should_not be_able_to(:read, user_creation.first)
     Ability.new(employee).should be_able_to(:read, employee_creation_with_place.first)
+
+    #check ability by credentials work
+    work = Factory(:work)
+    user.credentials.where(:document_type => Credential.name).first.update_attributes :work => work, :place => nil
+    employee.credentials.where(:document_type => Credential.name).first.update_attributes :work => work, :place => nil
+    manager.credentials.where(:document_type => Credential.name).first.update_attributes :work => work, :place => nil
+    PaperTrail.whodunnit = user
+    user_creation_with_work = (1..3).collect { Factory(:credential, :work => work) }
+    PaperTrail.whodunnit = employee
+    Credential.accessible_by(Ability.new(employee)).should be_empty
+    employee_creation_with_work = (1..3).collect { Factory(:credential, :work => work) }
+
+    user_creation_with_work.should =~ Credential.accessible_by(Ability.new(user))
+    user_creation_with_work.should =~ Credential.accessible_by(Ability.new(manager))
+    employee_creation_with_work.should =~ Credential.accessible_by(Ability.new(employee))
+    (manager_creation | user_creation | employee_creation |
+    user_creation_with_place | employee_creation_with_place |
+    user_creation_with_work | employee_creation_with_work).should =~ Credential.accessible_by(Ability.new(boss))
+    Ability.new(user).should be_able_to(:read, user_creation_with_work.first)
+    Ability.new(user).should_not be_able_to(:read, user_creation.first)
+    Ability.new(employee).should be_able_to(:read, employee_creation_with_work.first)
+
+    #check ability by credentials work and place
+    manager.credentials.where(:document_type => Credential.name).first.update_attributes :work => nil, :place => nil
+    (user_creation | user_creation_with_place |
+        user_creation_with_work | manager_creation).should =~ Credential.accessible_by(Ability.new(manager))
+    manager.credentials.where(:document_type => Credential.name).first.update_attributes :work => work, :place => place
+    Credential.accessible_by(Ability.new(manager)).should be_empty
+    PaperTrail.whodunnit = user
+    objects_with_work_and_place = (1..3).collect { Factory(:credential, :work => work, :place => place) }
+    objects_with_work_and_place.should =~ Credential.accessible_by(Ability.new(manager))
   end
 end
