@@ -121,5 +121,10 @@ describe Ability do
     PaperTrail.whodunnit = user
     objects_with_work_and_place = (1..3).collect { Factory(:credential, :work => work, :place => place) }
     objects_with_work_and_place.should =~ Credential.accessible_by(Ability.new(manager))
+
+    #check ability to read by direct access
+    direct_credential = Factory(:credential)
+    Factory(:direct_access, :user => manager, :item => direct_credential)
+    Credential.accessible_by(Ability.new(manager)).should =~ (objects_with_work_and_place << direct_credential)
   end
 end

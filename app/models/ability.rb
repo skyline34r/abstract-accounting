@@ -11,13 +11,16 @@ class Ability
           sym_action = action.to_sym
           if sym_action == :read
             users = user.subordinates << user
-            scope = clazz.created_by_many(users)
+            where = "versions.event='create' AND versions.whodunnit IN (?)"
             if credential.place and clazz.column_names.include?("place_id")
-              scope = scope.where("place_id = ?", credential.place)
+              where += " AND place_id = #{credential.place.id}"
             end
             if credential.work and clazz.column_names.include?("work_id")
-              scope = scope.where("work_id = ?", credential.work)
+              where += " AND work_id = #{credential.work.id}"
             end
+            scope = clazz.joins(clazz.versions_association_name).
+                          joins("LEFT JOIN direct_accesses AS da ON da.item_id = #{clazz.table_name}.id AND da.item_type = '#{clazz.name}'").
+                          where("(#{where}) OR (da.id IS NOT NULL)", users)#clazz.created_by_many(users)
             can sym_action, clazz, scope do |obj|
               if credential.place and clazz.column_names.include?("place_id") and obj.place_id != credential.place_id
                 false
