@@ -97,7 +97,7 @@ FactoryGirl.define do
   factory :user do |u|
     u.sequence(:email) { |n| "user#{n}@aasii.org" }
     u.password "secret"
-    u.password_confirmation "secret"
+    u.password_confirmation { |user| user.password }
     u.entity { |user| user.association(:entity) }
     u.sequence(:reset_password_token) { |n| "anything#{n}" }
   end
