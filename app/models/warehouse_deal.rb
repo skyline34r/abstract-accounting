@@ -111,7 +111,7 @@ module WarehouseDeal
     resource = Asset.send("#{self.class.warehouse_fields[:item]}_by_tag_and_mu",
                           attrs[:tag], attrs[:mu])
     attrs[:object] = self
-
+    p attrs
     @items << WaybillItem.new(object: self, amount: attrs[:amount],
                               resource: resource, price: attrs[:price])
   end

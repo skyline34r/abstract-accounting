@@ -1,0 +1,35 @@
+<script type="text/javascript">
+  function create(resource_id) {
+    var value = $("#value_" + resource_id).val();
+    if(parseInt(value) > 0) {
+      var url = "<%= new_db_converter_path({place_id: params[:place_id]}) %>";
+      url += "&resource_id=" + resource_id;
+      url += "&count=" + value;
+      window.location = url;
+    } else {
+      alert("Введите количество большее 0");
+    }
+  }
+</script>
+<table>
+  <thead>
+    <tr>
+      <th>Ресурс</th>
+      <th>Ед. изм.</th>
+      <th>Кол-во на складе</th>
+      <th>Реальное кол-во</th>
+      <th>Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @warehouse.each do |resource| %>
+      <tr>
+        <td><%= resource[:tag] %></td>
+        <td><%= resource[:mu] %></td>
+        <td><%= resource[:amount] %></td>
+        <td><%= text_field_tag "value_#{resource[:id]}", resource[:amount] %></td>
+        <td><%= link_to "Добавить", "#", { onclick: "create(#{resource[:id]}); return false;" } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
