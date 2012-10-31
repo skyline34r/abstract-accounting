@@ -370,6 +370,19 @@ $ ->
   class HomeViewModel
     constructor: ->
       $.sammy( ->
+        this.get('#help', ->
+          $.get('/help', {}, (form) ->
+            $('.paginate').hide()
+            $('#container_documents').html(form)
+          )
+        )
+        this.get('#help/:id', ->
+          id = this.params.id
+          $.get("/help/#{id}", {}, (form) ->
+            $('.paginate').hide()
+            $('#container_documents').html(form)
+          )
+        )
         this.get('#inbox', ->
           $.get('/inbox', {}, (form) ->
             $.getJSON('/inbox.json', {}, (objects) ->
