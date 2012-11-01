@@ -318,6 +318,12 @@ input[type=text], input[type=password] {
           float: right;
         }
 
+        input[type=button].without_float {
+          margin: 0;
+          float: none;
+        }
+
+
         table {
           border-spacing: 0;
           width: 100%;

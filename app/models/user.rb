@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :minimum => 6, :on => :create
   validates_confirmation_of :password
   belongs_to :entity
+  belongs_to :help
   has_many :credentials
   has_and_belongs_to_many :groups
   has_one :managed_group, class_name: Group, foreign_key: :manager_id

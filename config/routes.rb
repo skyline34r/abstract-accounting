@@ -13,7 +13,13 @@ Abstract::Application.routes.draw do
   get "archive" => "home#archive"
 
 
-  resources :help, only:[:index, :show]
+  resources :help, only:[:index, :show] do
+    collection do
+      match 'clear_notification'
+      match 'notification'
+      match 'dont_show_me_help'
+    end
+  end
 
   resources :user_sessions
   get "login" => "user_sessions#new", :as => "login"

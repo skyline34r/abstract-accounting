@@ -24,7 +24,6 @@
         $("a.ancLinks").click(function () {
             elementClick = $(this).attr("href");
             destination = $(elementClick).offset().top;
-            console.log(destination);
             $('body').animate( { scrollTop: destination }, 1100 );
             return false;
         });

@@ -140,6 +140,8 @@ $ ->
               hash = 'inbox'
             $.sammy().refresh() unless location.hash == hash
             location.hash = hash
+          else if response['result'] == 'clear'
+
           else
             $('#container_notification').css('display', 'block')
             $('#container_notification ul').css('display', 'block')
