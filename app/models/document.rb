@@ -35,6 +35,20 @@ class Document < Version
     self.item.versions.first.created_at
   end
 
+  def self.list(current_user)
+    order("created_at DESC").joins{item(Waybill).deal}.
+                             where{(event == 'create') &
+                                    (whodunnit != my{current_user.id.to_s}) &
+                                    (item.deal.entity_id == my{current_user.entity_id})}
+
+  end
+
+  def viewed?(current_user)
+    Viewed.find_by_user_id_and_item_id_and_item_type(current_user.id,
+                                                     self.item.id,
+                                                     self.item.class.name).nil?
+  end
+
   def document_updated_at
     self.item.versions.last.created_at
   end

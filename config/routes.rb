@@ -12,6 +12,9 @@ Abstract::Application.routes.draw do
   get "inbox" => "home#inbox"
   get "archive" => "home#archive"
 
+  get "viewed/view" => "viewed#view"
+  get "home/unviewed" => "home#unviewed"
+
   resources :user_sessions
   get "login" => "user_sessions#new", :as => "login"
   get "logout" => "user_sessions#destroy", :as => "logout"

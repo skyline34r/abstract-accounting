@@ -41,3 +41,11 @@ $ ->
 
     showDocument: (object) ->
       location.hash = "documents/#{object.type}/#{object.id}"
+      $.ajax(
+        type: 'get'
+        url: '/viewed/view'
+        data: {user_id: object.user_id, item_id: object.id, item_type: object.name }
+        complete: ->
+          true
+      )
+      ko.contextFor($('#body').get(0)).$root.inbox()

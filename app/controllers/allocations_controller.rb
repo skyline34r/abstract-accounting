@@ -54,7 +54,8 @@ class AllocationsController < ApplicationController
         allocation.save!
         render json: { result: 'success', id: allocation.id }
       end
-    rescue
+    rescue Exception => e
+      ap e
       render json: allocation.errors.full_messages
     end
   end

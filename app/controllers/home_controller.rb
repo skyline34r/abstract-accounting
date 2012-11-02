@@ -28,8 +28,8 @@ class HomeController < ApplicationController
       format.json do
         @documents = []
         @count = 0
-        if current_user.root? || (!current_user.root? && !current_user.managed_documents.empty?)
-          scoped_versions = Document.lasts.by_user(current_user).filter(params[:like])
+        unless current_user.root?
+          scoped_versions = Document.list(current_user)
           @documents = scoped_versions.paginate(page: params[:page],
                                                 per_page: params[:per_page]).all
           @count = scoped_versions.count
@@ -53,6 +53,16 @@ class HomeController < ApplicationController
         end
         render "home/data"
       end
+    end
+  end
+
+  def unviewed
+    if current_user.root?
+      render :json => { result: false }
+    else
+      @count  = Document.list(current_user).count
+      @view_count = Viewed.find_all_by_user_id(current_user.id).count
+      render :json => { result: @count - @view_count }
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121030103635) do
+ActiveRecord::Schema.define(:version => 20121102133507) do
 
   create_table "allocations", :force => true do |t|
     t.integer  "deal_id"
@@ -220,6 +220,13 @@ ActiveRecord::Schema.define(:version => 20121030103635) do
 
   add_index "groups_users", ["group_id", "user_id"], :name => "index_groups_users_on_group_id_and_user_id", :unique => true
 
+  create_table "helps", :force => true do |t|
+    t.integer  "user_id"
+    t.boolean  "looked"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "identity_documents", :force => true do |t|
     t.integer "country_id"
     t.string  "number"
@@ -402,6 +409,14 @@ ActiveRecord::Schema.define(:version => 20121030103635) do
   end
 
   add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
+
+  create_table "vieweds", :force => true do |t|
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "waybills", :force => true do |t|
     t.string   "document_id"

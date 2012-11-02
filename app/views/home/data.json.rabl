@@ -11,9 +11,11 @@ object false
 child(@documents => :objects) do
   attributes document_id: :id, document_name: :name, document_content: :content
   node(:type) { |doc| doc.document_name.pluralize.downcase }
-  node(:sum) { 0.0 }
+  node(:sum) {  |doc| doc.item.sum }
   node(:created_at) { |doc| doc.document_created_at.strftime('%Y-%m-%d') }
   node(:update_at) { |doc| doc.document_updated_at.strftime('%Y-%m-%d') }
+  node(:user_id) { current_user.id }
+  node(:view) { |doc| doc.viewed?(current_user) }
 end
 node (:per_page) { params[:per_page] || Settings.root.per_page }
 node (:count) { @count }

@@ -131,6 +131,7 @@ $ ->
         url: url
         data: params
         complete: (data) =>
+          console.log(data)
           response = JSON.parse(data.responseText)
           if response['result'] == 'success'
             hash = ''
@@ -581,6 +582,23 @@ $ ->
       ).run()
 
       location.hash = defaultPage if $('#main').length && location.hash.length == 0
+
+      @count = ko.observable('')
+      @inbox()
+
+    inbox: =>
+      $.ajax(
+        type: 'get'
+        url: '/home/unviewed'
+        complete: (data) =>
+          unless data.responseText.indexOf('<') >= 0
+            response = JSON.parse(data.responseText)
+            if response['result'] > 0
+              @count(" (#{response['result']})")
+            else
+              @count(" ")
+            setTimeout(@inbox, 60000)
+      )
 
     expandResources: (object, event) =>
       @expand($('#slide_menu_resources'), $('#arrow_resources_actions'))
