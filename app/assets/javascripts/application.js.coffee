@@ -16,6 +16,7 @@
 #= require sammy
 #= require knockout
 #= require knockout.mapping
+#= require sticky.min
 #= require i18n
 #= require i18n/opentask_translations
 #= require_self
@@ -383,6 +384,7 @@ $ ->
           $.get("/help/#{id}", {}, (form) ->
             $('.paginate').hide()
             $('#container_documents').html(form)
+            scrolling()
           )
         )
         this.get('#inbox', ->

@@ -23,7 +23,7 @@ class HelpController < ApplicationController
     end
   end
 
-  def dont_show_me_help
+  def help_notification_hide
     Help.create(user_id: current_user.id)
   end
 end
