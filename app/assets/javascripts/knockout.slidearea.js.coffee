@@ -12,7 +12,8 @@ ko.bindingHandlers.slider =
 
     $(document).click (event) ->
       if $("##{slidearea}").css("display") != 'none' &&
-         $(event.target).parents("##{slidearea}").length == 0
+         ($(event.target).parents("##{slidearea}").length == 0 ||
+          $(event.target).attr('type') == 'button')
         $("##{slidearea}").slideUp("fast")
 
 
