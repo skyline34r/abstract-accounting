@@ -11,3 +11,10 @@ $ ->
       $.getJSON("estimate/locals/#{this.params.id}.json", {}, (object) ->
         self.application.object(new EstimateLocalViewModel(object, true))
       )
+
+    resources: =>
+      id = this.params.id
+      @render "estimate/locals/#{id}/resources"
+      $.getJSON("estimate/locals/#{id}/resources.json", {}, (object) ->
+        self.application.object(new EstimateLocalResourcesViewModel(object, id))
+      )

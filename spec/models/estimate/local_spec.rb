@@ -19,6 +19,8 @@ describe Estimate::Local do
 
     should have_many Estimate::Local.versions_association_name
     should have_many(:items).class_name(Estimate::LocalElement)
+    should have_many(:machinery).through :items
+    should have_many(:materials).through :items
   end
 
   it { subject.class.should include(Helpers::Commentable) }
@@ -40,5 +42,18 @@ describe Estimate::Local do
     expect { local.cancel.should be_true }.to change(Comment, :count).by(1)
     local.canceled.should_not be_nil
     Comment.first.message.should eq I18n.t("activerecord.attributes.estimate.local.comment.cancel")
+  end
+
+  it 'should return resources' do
+    local = create :local
+    bom = create(:bo_m, bom_type: 1, amount: 50)
+    create(:bo_m, bom_type: 2, parent_id: bom.id, amount: 60)
+    local.items.create(price_id: create(:price, bo_m_id: bom.id).id, amount: 10)
+    local.save.should be_true
+    local.resources(:machinery).should eq local.machinery.group{resource_id}.
+      group{uid}.select{resource_id}.select{uid}.
+      select{sum(amount * estimate_local_elements.amount).as :amount}
+    local.resources(:machinery)[0].amount.should eq 600
+
   end
 end

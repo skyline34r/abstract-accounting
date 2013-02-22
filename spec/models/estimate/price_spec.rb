@@ -21,6 +21,9 @@ describe Estimate::Price do
     should belong_to(:bo_m).class_name(Estimate::BoM)
     should belong_to :catalog
     should have_many(Estimate::Price.versions_association_name)
+    should have_many(:machinery).through :bo_m
+    should have_many(:materials).through :bo_m
+
 
     should delegate_method(:uid).to(:bo_m)
     should delegate_method(:tag).to(:bo_m)

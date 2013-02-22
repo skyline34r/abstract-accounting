@@ -17,6 +17,9 @@ module Estimate
 
     has_many :items, class_name: LocalElement, foreign_key: :local_id
 
+    has_many :machinery, :through => :items
+    has_many :materials, :through => :items
+
     include Helpers::Commentable
     has_comments :auto_comment
 
@@ -28,6 +31,11 @@ module Estimate
       def without_canceled
         where{canceled == nil}
       end
+    end
+
+    def resources type
+      self.send(type.to_sym).group{resource_id}.group{uid}.select{resource_id}.select{uid}.
+          select{sum(amount * estimate_local_elements.amount).as :amount}
     end
 
     def apply

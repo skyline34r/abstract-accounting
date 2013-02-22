@@ -66,7 +66,10 @@
                             disable: readonly">
         </span>
       </div>
-
+      <div>
+        <input type="button" id="local_resources" value="<%= t('views.estimates.boms') %>"
+                data-bind="click: resources, visible: readonly"/>
+      </div>
     </div>
   </fieldset>
   <fieldset class="with-legend" data-bind="with: object.items()">

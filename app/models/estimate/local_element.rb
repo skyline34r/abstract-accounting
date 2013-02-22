@@ -14,6 +14,9 @@ module Estimate
     belongs_to :price
     belongs_to :local
 
+    has_many :machinery, :through => :price
+    has_many :materials, :through => :price
+
     include Helpers::Commentable
     has_comments
 

@@ -13,6 +13,9 @@ $ ->
       )
       @object.items().getPaginateData()
 
+    resources: =>
+      location.hash = "#estimate/locals/#{@object.id()}/resources"
+
     namespace: =>
       ""
     save: =>
@@ -42,3 +45,11 @@ $ ->
 
     select: (object) =>
       @object.items().select(object)
+
+  class self.EstimateLocalResourcesViewModel extends ObjectViewModel
+    constructor: (object, id) ->
+      @url = "/estimate/locals/#{id}/resources.json"
+      super(object)
+      @params =
+        page: @page
+        per_page: @per_page

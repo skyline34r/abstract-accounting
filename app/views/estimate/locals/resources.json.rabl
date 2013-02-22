@@ -8,14 +8,11 @@
 # Please see ./COPYING for details
 
 object false
-child(@bo_ms => :objects) do
-  attributes :id, :uid, :amount, :workers_amount, :avg_work_level, :drivers_amount
-  child(:resource => :resource) { attributes :tag, :mu }
-  child(:catalog => :catalog) { attributes :tag }
-  child(:machinery => :machinery) do
+child(Object.new => :resources) do
+  child(@local.resources(:machinery) => :machinery) do
     extends "estimate/bo_ms/bom"
   end
-  child(:materials => :materials) do
+  child(@local.resources(:materials) => :materials) do
     extends "estimate/bo_ms/bom"
   end
 end

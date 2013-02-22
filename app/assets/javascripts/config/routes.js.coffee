@@ -43,6 +43,7 @@ $ ->
 
 
     this.get "foreman/resources", "foreman#index"
+    this.get "estimate/locals/:id/resources", "locals#resources"
 
     this.namespace "estimate", ->
       this.resource "bo_ms", only: [Routes.INDEX, Routes.NEW, Routes.SHOW]

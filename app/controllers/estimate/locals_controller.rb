@@ -112,5 +112,11 @@ module Estimate
         @count = 0
       end
     end
+
+    def resources
+      @local = Local.find params[:id]
+      @count = @local.resources(:machinery).count.count + @local.resources(:materials).count.count
+      render layout: false
+    end
   end
 end

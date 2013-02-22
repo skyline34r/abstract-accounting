@@ -101,7 +101,7 @@ module Estimate
 
     private
       def initialize_bom_type
-        self.bom_type ||= BOM
+        self.bom_type ||= BOM if self.attributes.has_key?('bom_type')
       end
   end
 end

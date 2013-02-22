@@ -22,6 +22,9 @@ describe Estimate::LocalElement do
     should belong_to :price
 
     should have_many Estimate::LocalElement.versions_association_name
+
+    should have_many(:machinery).through :price
+    should have_many(:materials).through :price
   end
 
   it 'should calculate total sum' do

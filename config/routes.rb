@@ -200,6 +200,7 @@ Abstract::Application.routes.draw do
         get 'load_local_elements'
       end
       member do
+        get 'resources'
         get 'apply'
         get 'cancel'
       end

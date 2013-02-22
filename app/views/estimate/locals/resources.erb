@@ -1,0 +1,43 @@
+<div class='actions'>
+  <input type='button' value="<%= t 'views.users.back' %>" data-bind='click: back'/>
+</div>
+<table class="elements-align-center">
+  <thead>
+  <tr>
+    <th class="col-width"><%= t('views.estimates.code') %></th>
+    <th class="tag-width"><%= t('views.resources.tag') %></th>
+    <th class="col-width"><%= t('views.resources.mu') %></th>
+    <th class="col-width"><%= t('views.estimates.rate') %></th>
+  </tr>
+  </thead>
+  <tbody data-bind="with: object.resources">
+  <tr class="font-bold">
+    <td>3</td>
+    <td><%= t('views.estimates.elements.machinery') %></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <!-- ko foreach: machinery -->
+  <tr>
+    <td data-bind="text: uid, disable: $parent.readonly"></td>
+    <td data-bind="text: resources.tag"></td>
+    <td><%= t('views.estimates.elements.mu.machine') %></td>
+    <td data-bind="text: amount"></td>
+  </tr>
+  <!-- /ko -->
+  <tr class="font-bold">
+    <td>4</td>
+    <td><%= t('views.estimates.elements.resources') %></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <!-- ko foreach: materials -->
+  <tr>
+    <td data-bind="text: uid"></td>
+    <td data-bind="text: resources.tag"></td>
+    <td data-bind="text: resources.mu"></td>
+    <td data-bind="text: amount"></td>
+  </tr>
+  <!-- /ko -->
+  </tbody>
+</table>

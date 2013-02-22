@@ -15,6 +15,9 @@ module Estimate
     belongs_to :bo_m, class_name: BoM
     belongs_to :catalog
 
+    has_many :machinery, :through => :bo_m
+    has_many :materials, :through => :bo_m
+
     delegate :uid, :tag, :mu, to: :bo_m, allow_nil: true
     delegate :resource, to: :bo_m, allow_nil: true
 

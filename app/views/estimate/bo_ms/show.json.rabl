@@ -20,14 +20,8 @@ child(@bo_m.catalog => :catalog) do
   attributes :tag
 end
 child(@bo_m.machinery => :machinery) do
-  attributes :uid, :resource_id, :amount
-  child(:resource => :resource) do
-    attributes :tag, :mu
-  end
+  extends "estimate/bo_ms/bom"
 end
 child(@bo_m.materials => :materials) do
-  attributes :uid, :resource_id, :amount
-  child(:resource => :resource) do
-    attributes :tag, :mu
-  end
+  extends "estimate/bo_ms/bom"
 end
