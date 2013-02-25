@@ -39,9 +39,8 @@ $ ->
       this.collection "index" if BasicRoutes.INDEX in @options.only
       this.collection "new" if BasicRoutes.NEW in @options.only
 
-      @routes.push new Route("##{@path}#{@name}/:id", @name,
-        "show") if BasicRoutes.SHOW in @options.only
-      @routes.push new Route("##{@path}#{@name}/:id/edit", @name, "edit")
+      this.member "show" if BasicRoutes.SHOW in @options.only
+      this.member "edit"
       this
 
     collection: (method) ->
@@ -49,6 +48,12 @@ $ ->
         @routes.push new Route("##{@path}#{@name}", @name, method)
       else
         @routes.push new Route("##{@path}#{@name}/#{method}", @name, method)
+
+    member: (method) ->
+      if method == "show"
+        @routes.push new Route("##{@path}#{@name}/:id", @name, method)
+      else
+        @routes.push new Route("##{@path}#{@name}/:id/#{method}", @name, method)
 
 
   class self.NamespaceRoutes extends self.BasicRoutes
