@@ -65,6 +65,7 @@ module Estimate
 
     def build_machinery(args)
       if args.has_key?(:resource) && args[:resource].kind_of?(Hash)
+        args[:resource][:mu] = I18n.t('views.estimates.elements.mu.machine') unless args[:resource][:mu]
         args[:resource] = BoM.create_resource(args[:resource])
       end
       self.machinery.build(args)

@@ -59,7 +59,7 @@ module Estimate
 
     private
       def save
-        if params[:materials] || params[:materials] ||
+        if params[:materials] || params[:machinery] ||
             params[:bo_m][:workers_amount] || params[:bo_m][:drivers_amount]
           BoM.transaction do
             params[:bo_m][:resource_id] ||= BoM.create_resource(params[:resource]).id

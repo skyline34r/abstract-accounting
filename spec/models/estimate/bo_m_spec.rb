@@ -73,6 +73,18 @@ describe Estimate::BoM do
         mach.amount.should eq(102)
       end
 
+      it "should set mu if not setted" do
+        bom.machinery.delete_all
+        bom.build_machinery(uid: "ALSA1121", resource: {tag: "tag"}, amount: 102)
+        bom.machinery.size.should eq(1)
+        mach = bom.machinery.first
+        mach.uid.should eq("ALSA1121")
+        mach.resource.should_not be_new_record
+        mach.resource.tag.should eq("tag")
+        mach.resource.mu.should eq(I18n.t('views.estimates.elements.mu.machine'))
+        mach.amount.should eq(102)
+      end
+
       it "should find asset by params with case insensitive" do
         bom.machinery.delete_all
         asset = create(:asset, tag: "TAG1", mu: "mu2")

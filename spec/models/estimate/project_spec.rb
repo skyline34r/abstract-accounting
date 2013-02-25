@@ -51,12 +51,20 @@ describe Estimate::Project do
     params = { project: {
       customer_id: legal.id,
       customer_type: LegalEntity.name,
-      place_id: place.id
+      place_id: place.id,
+      boms_catalog: {
+          id: 1
+      },
+      prices_catalog: {
+          id: 1
+      }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: legal.id,
         customer_type: LegalEntity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     params = { project: {
@@ -67,12 +75,20 @@ describe Estimate::Project do
             tag: legal.tag,
             identifier_value: legal.identifier_value
         },
-        place: {tag: place.tag}
+        place: {tag: place.tag},
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
+        }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: legal.id + 1,
         customer_type: LegalEntity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     params = { project: {
@@ -82,12 +98,20 @@ describe Estimate::Project do
         legal_entity: {
             tag: legal.tag,
             identifier_value: legal.identifier_value
+        },
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
         }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: legal.id + 1,
         customer_type: LegalEntity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     params = { project: {
@@ -97,12 +121,20 @@ describe Estimate::Project do
         legal_entity: {
             tag: 'legal.tag',
             identifier_value: 'legal.identifier_value'
+        },
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
         }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: legal.id + 2,
         customer_type: LegalEntity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     entity = create :entity
@@ -112,12 +144,20 @@ describe Estimate::Project do
         place_id: place.id,
         entity: {
             tag: entity.tag,
+        } ,
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
         }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: entity.id,
         customer_type: Entity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     params = { project: {
@@ -126,23 +166,39 @@ describe Estimate::Project do
         place_id: place.id,
         entity: {
             tag: 'entity.tag',
+        },
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
         }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: entity.id + 1,
         customer_type: Entity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
 
     params = { project: {
         customer_id: entity.id,
         customer_type: Entity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog: {
+            id: 1
+        },
+        prices_catalog: {
+            id: 1
+        }
     }}
     Estimate::Project.build_params(params).should eq ({
         customer_id: entity.id,
         customer_type: Entity.name,
-        place_id: place.id
+        place_id: place.id,
+        boms_catalog_id: 1,
+        prices_catalog_id: 1
     })
   end
 end
