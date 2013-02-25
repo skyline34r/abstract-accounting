@@ -17,6 +17,8 @@ group :assets do
 end
 
 gem 'jquery-rails', '2.1.1'
+gem 'knockoutjs-rails'
+
 gem 'therubyracer'
 gem 'rabl'
 gem 'squeel'
