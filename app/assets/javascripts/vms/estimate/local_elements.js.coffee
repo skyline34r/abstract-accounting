@@ -82,3 +82,6 @@ $ ->
         else
           alert("Нету подходящего списка цен!")
       )
+
+    toJSON: =>
+      normalizeHash(ko.mapping.toJS(@documents))

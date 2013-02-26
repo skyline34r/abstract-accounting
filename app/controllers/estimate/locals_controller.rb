@@ -52,28 +52,26 @@ module Estimate
 
     def update
       local = Local.find(params[:id])
-      params[:local].delete(:boms_catalog)
-      if local.update_attributes(params[:local])
+      if params[:items]
         ids = local.items.pluck :id
-        if params[:items]
-          params[:items].values.each do |item|
-            if ids.include? item[:id].to_i
-              LocalElement.find(item[:id]).
-                  update_attributes(price_id: item[:price][:id], amount: item[:amount])
-            elsif item[:id].to_i == 0 and item[:correct] == 'true'
-              local.items.build(price_id: item[:price][:id], amount: item[:amount])
-            end
-            ids.delete item[:id].to_i
+        params[:items].values.each do |item|
+          if ids.include? item[:id].to_i
+            LocalElement.find(item[:id]).
+                update_attributes(price_id: item[:price][:id], amount: item[:amount])
+          elsif item[:id].to_i == 0 and item[:correct] == 'true'
+            local.items.build(price_id: item[:price][:id], amount: item[:amount])
           end
-          local.items.each { |item| item.delete if ids.include? item.id }
+          ids.delete item[:id].to_i
         end
-        if local.save
+        local.items.each { |item| item.delete if ids.include? item.id }
+        if local.update_attributes(params[:local])
           render json: { result: 'success', id: local.id }
         else
           render json: local.errors.full_messages
         end
       else
-        render json: local.errors.full_messages
+        render json: ["#{I18n.t('views.estimates.boms')} : #{
+                         I18n.t('errors.messages.blanks')}"]
       end
     end
 
@@ -115,7 +113,8 @@ module Estimate
 
     def resources
       @local = Local.find params[:id]
-      @count = @local.resources(:machinery).count.count + @local.resources(:materials).count.count
+      @count = @local.resources(:machinery).count.
+          count + @local.resources(:materials).count.count
       render layout: false
     end
   end

@@ -46,7 +46,10 @@ $ ->
     normalize = (hash) ->
       for key, value of hash
         if (typeof value == 'object') && !$.isEmptyObject(value)
-          normalize(value)
+          if value.toJSON?
+            hash[key] = value.toJSON()
+          else
+            normalize(value)
         else
           delete hash[key] unless (value != null) && (hash[key] == undefined ||
           value.toString().length ||
