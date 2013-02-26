@@ -47,8 +47,7 @@ $ ->
       @object.items().select(object)
 
   class self.EstimateLocalResourcesViewModel extends ObjectViewModel
-    constructor: (object, id) ->
-      @url = "/estimate/locals/#{id}/resources.json"
+    constructor: (object) ->
       super(object)
       @params =
         page: @page

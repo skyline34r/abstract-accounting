@@ -13,6 +13,9 @@ $ ->
         @object.locals = ko.observable(new EstimateLocalsViewModel({objects: []}, {project_id: @object.id()}))
         @object.locals().getPaginateData()
 
+    resources: =>
+      location.hash = "#estimate/projects/#{@object.id()}/resources"
+
     namespace: =>
       ""
 
@@ -48,3 +51,10 @@ $ ->
 
     addLocal: =>
       location.hash = "#estimate/locals/new?#{$.param(project_id: @object.id())}"
+
+  class self.EstimateProjectResourcesViewModel extends ObjectViewModel
+    constructor: (object) ->
+      super(object)
+      @params =
+        page: @page
+        per_page: @per_page

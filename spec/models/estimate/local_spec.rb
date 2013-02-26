@@ -54,6 +54,5 @@ describe Estimate::Local do
       group{uid}.select{resource_id}.select{uid}.
       select{sum(amount * estimate_local_elements.amount).as :amount}
     local.resources(:machinery)[0].amount.should eq 600
-
   end
 end

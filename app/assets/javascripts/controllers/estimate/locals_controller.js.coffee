@@ -16,5 +16,5 @@ $ ->
       id = this.params.id
       @render "estimate/locals/#{id}/resources"
       $.getJSON("estimate/locals/#{id}/resources.json", {}, (object) ->
-        self.application.object(new EstimateLocalResourcesViewModel(object, id))
+        self.application.object(new EstimateLocalResourcesViewModel(object))
       )

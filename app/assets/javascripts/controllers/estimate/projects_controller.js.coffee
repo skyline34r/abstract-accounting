@@ -20,3 +20,9 @@ $ ->
         toggleSelect("estimate_projects_data")
         self.application.object(new EstimateProjectViewModel(object, true))
       )
+    resources: =>
+      id = this.params.id
+      @render "estimate/locals/#{id}/resources"
+      $.getJSON("estimate/projects/#{id}/resources.json", {}, (object) ->
+        self.application.object(new EstimateProjectResourcesViewModel(object))
+      )

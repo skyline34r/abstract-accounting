@@ -57,5 +57,12 @@ module Estimate
         end
       end
     end
+
+    def resources
+      @project = Project.find params[:id]
+      @count = @project.resources(:machinery).count.
+          count + @project.resources(:materials).count.count
+      render layout: false
+    end
   end
 end

@@ -139,6 +139,7 @@
       </div>
     </div>
   </fieldset>
+
   <fieldset>
     <legend><%= t 'views.estimates.projects.find_by_catalogs' %></legend>
     <div>
@@ -180,6 +181,12 @@
         </span>
       </div>
     </div>
+  </fieldset>
+  <fieldset>
+  <div>
+    <input type="button" id="project_resources" value="<%= t('views.estimates.boms') %>"
+           data-bind="click: resources, visible: readonly"/>
+  </div>
   </fieldset>
   <!-- ko if: readonly -->
   <fieldset data-bind="with: object.locals">

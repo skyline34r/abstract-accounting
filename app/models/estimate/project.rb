@@ -18,6 +18,9 @@ module Estimate
 
     has_many :locals
 
+    has_many :machinery, :through => :locals
+    has_many :materials, :through => :locals
+
     include Helpers::Commentable
     has_comments :auto_comment
 
@@ -69,6 +72,11 @@ module Estimate
           boms_catalog_id: params[:project][:boms_catalog][:id],
           prices_catalog_id: params[:project][:prices_catalog][:id]
       }
+    end
+
+    def resources type
+      self.send(type.to_sym).group{resource_id}.group{uid}.select{resource_id}.select{uid}.
+        select{sum(amount * estimate_local_elements.amount).as :amount}
     end
   end
 end

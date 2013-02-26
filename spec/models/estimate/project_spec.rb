@@ -19,6 +19,8 @@ describe Estimate::Project do
     should belong_to :place
     should have_many Estimate::Project.versions_association_name
     should have_many :locals
+    should have_many(:machinery).through :locals
+    should have_many(:materials).through :locals
   end
 
   it 'should sort projects' do
@@ -200,5 +202,21 @@ describe Estimate::Project do
         boms_catalog_id: 1,
         prices_catalog_id: 1
     })
+  end
+
+  it 'should return resources' do
+    proj = create :project
+    local1 = create(:local, project_id: proj.id)
+    local2 = create(:local, project_id: proj.id)
+    bom = create(:bo_m, bom_type: 1, amount: 50)
+    create(:bo_m, bom_type: 2, parent_id: bom.id, amount: 60)
+    local1.items.create(price_id: create(:price, bo_m_id: bom.id).id, amount: 10)
+    local1.save.should be_true
+    local2.items.create(price_id: create(:price, bo_m_id: bom.id).id, amount: 10)
+    local2.save.should be_true
+    proj.resources(:machinery).should eq proj.machinery.group{resource_id}.
+                                              group{uid}.select{resource_id}.select{uid}.
+                                              select{sum(amount * estimate_local_elements.amount).as :amount}
+    proj.resources(:machinery)[0].amount.should eq 1200
   end
 end
