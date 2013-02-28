@@ -32,7 +32,7 @@ module Estimate
 
     def create
       save do
-        BoM.new(params[:bo_m])
+        BoM.new(uid: params[:bo_m][:uid], catalog_id: params[:bo_m][:catalog_id])
       end
     end
 
@@ -59,21 +59,11 @@ module Estimate
 
     private
       def save
-        if params[:materials] || params[:machinery] ||
-            params[:bo_m][:workers_amount] || params[:bo_m][:drivers_amount]
-          BoM.transaction do
-            params[:bo_m][:resource_id] ||= BoM.create_resource(params[:resource]).id
-            bom = yield
-            params[:materials].values.each { |item| bom.build_materials(item) } if params[:materials]
-            params[:machinery].values.each { |item| bom.build_machinery(item) } if params[:machinery]
-            if bom.save
-              render json: { result: 'success', id: bom.id }
-            else
-              render json: bom.errors.full_messages
-            end
-          end
+        bom = yield
+        if bom.save_with_items params
+          render json: { result: 'success', id: bom.id }
         else
-          render json: ["#{I18n.t('views.estimates.boms')} : #{I18n.t('errors.messages.blanks')}"]
+          render json: bom.errors.full_messages
         end
       end
   end

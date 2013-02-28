@@ -13,9 +13,11 @@ module Estimate
     MACHINERY = 2
     MATERIALS = 3
 
+    attr_accessible :uid, :catalog_id, :resource_id
     validates_presence_of :resource_id, :uid, :bom_type
     validates_presence_of :catalog_id, if: Proc.new { |bom| bom.bom_type == BOM }
     validates_inclusion_of :bom_type, in: [BOM, MACHINERY, MATERIALS]
+    validate :empty_resources
 
     belongs_to :resource, class_name: "::#{Asset.name}"
     belongs_to :catalog
@@ -43,6 +45,13 @@ module Estimate
       joins{catalog}.order{catalog.tag.__send__(dir)}
     end
 
+    def empty_resources
+      if self.workers_amount.nil? and self.avg_work_level.nil? and self.drivers_amount.nil? and
+         self.machinery.size == 0 and self.materials.size == 0 and self.bom_type == 1
+        self.errors.add(I18n.t('views.estimates.boms'), I18n.t('errors.messages.blanks'))
+      end
+    end
+
     class << self
       def create_resource(args)
         resource = Asset.with_lower_tag_eq_to(args[:tag]).with_lower_mu_eq_to(args[:mu]).first
@@ -68,14 +77,32 @@ module Estimate
         args[:resource][:mu] = I18n.t('views.estimates.elements.mu.machine') unless args[:resource][:mu]
         args[:resource] = BoM.create_resource(args[:resource])
       end
-      self.machinery.build(args)
+      self.machinery.build(uid: args[:uid], resource_id: args[:resource][:id]).amount = args[:amount]
     end
 
     def build_materials(args)
       if args.has_key?(:resource) && args[:resource].kind_of?(Hash)
         args[:resource] = BoM.create_resource(args[:resource])
       end
-      self.materials.build(args)
+      self.materials.build(uid: args[:uid], resource_id: args[:resource][:id]).amount = args[:amount]
+    end
+
+    def save_with_items params
+      BoM.transaction do
+        params[:bo_m][:resource_id] ||= BoM.create_resource(params[:resource]).id
+        self.resource_id = params[:bo_m][:resource_id]
+        self.workers_amount = params[:bo_m][:workers_amount] if params[:bo_m][:workers_amount]
+        self.avg_work_level = params[:bo_m][:avg_work_level] if params[:bo_m][:avg_work_level]
+        self.drivers_amount = params[:bo_m][:drivers_amount] if params[:bo_m][:drivers_amount]
+        params[:materials].values.each { |item| self.build_materials(item) } if params[:materials]
+        params[:machinery].values.each { |item| self.build_machinery(item) } if params[:machinery]
+        if self.save
+          true
+        else
+          raise ActiveRecord::Rollback
+          false
+        end
+      end
     end
 
     custom_search(:mu) do |value|

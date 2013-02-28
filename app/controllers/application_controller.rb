@@ -65,6 +65,8 @@ class ApplicationController < ActionController::Base
       when CanCan::AccessDenied
         render :js => "window.location = '/#inbox'"
       else
+        ap e
+        ap e.backtrace
         render :json => { error: e.message}, :status => 500
     end
   end

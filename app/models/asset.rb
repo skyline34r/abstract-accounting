@@ -12,6 +12,7 @@ class Asset < ActiveRecord::Base
 
   validates_presence_of :tag
   validates_uniqueness_of :tag, :scope => :mu
+  validates :tag, :length => { :maximum => 250 }
   # TODO: fix direct access to side
   has_many :terms_as_give, :class_name => Term, :as => :resource, :conditions => { :side => false }
   has_many :terms_as_take, :class_name => Term, :as => :resource, :conditions => { :side => true }
